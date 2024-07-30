@@ -1,0 +1,38 @@
+name: AuthTGEM
+version: '${project.version}'
+main: org.ezhik.authtgem.AuthTGEM
+api-version: '1.20'
+Author: 'Ezhik24'
+website: 'https://t.me/ezhichek11'
+
+commands:
+  tellfriends:
+    description: 'Отправить сообщение друзьям в телеграмм'
+  listfriends:
+    description: 'Список друзей'
+  removefriend:
+    description: 'Удалить из друзей'
+  addfriend:
+    description: 'Добавить  в друзья'
+  code:
+    description: 'Код потверждения'
+    usage: '/code <код>'
+  register:
+    description: 'Регистрация'
+    aliases:
+      - 'reg'
+  login:
+    description: 'Вход'
+    aliases:
+      - 'l'
+  changepassword:
+    description: 'Смена пароля'
+    aliases:
+      - 'cp'
+  setpassword:
+    permission: 'minetelegram.setpassword'
+    description: 'Установка пароля'
+  tgbc:
+    description: 'Telegramm Broadcast Command'
+    usage: '/tgbc <message>'
+    permission: 'minetelegram.tgbc'
