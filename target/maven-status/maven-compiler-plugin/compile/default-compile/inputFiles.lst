@@ -1,18 +1,18 @@
-/home/ezhik24/Рабочий стол/AuthTGEM/src/main/java/org/ezhik/authtgem/BotTelegram.java
-/home/ezhik24/Рабочий стол/AuthTGEM/src/main/java/org/ezhik/authtgem/commands/TellFriendsCMD.java
-/home/ezhik24/Рабочий стол/AuthTGEM/src/main/java/org/ezhik/authtgem/events/OnJoinEvent.java
-/home/ezhik24/Рабочий стол/AuthTGEM/src/main/java/org/ezhik/authtgem/events/MuterEvent.java
-/home/ezhik24/Рабочий стол/AuthTGEM/src/main/java/org/ezhik/authtgem/commands/SetPasswordCMD.java
-/home/ezhik24/Рабочий стол/AuthTGEM/src/main/java/org/ezhik/authtgem/commands/CodeCMD.java
-/home/ezhik24/Рабочий стол/AuthTGEM/src/main/java/org/ezhik/authtgem/commands/RemFriendCMD.java
-/home/ezhik24/Рабочий стол/AuthTGEM/src/main/java/org/ezhik/authtgem/Handler.java
-/home/ezhik24/Рабочий стол/AuthTGEM/src/main/java/org/ezhik/authtgem/commands/LoginCMD.java
-/home/ezhik24/Рабочий стол/AuthTGEM/src/main/java/org/ezhik/authtgem/PasswordHasher.java
-/home/ezhik24/Рабочий стол/AuthTGEM/src/main/java/org/ezhik/authtgem/commands/ChangepasswordCMD.java
-/home/ezhik24/Рабочий стол/AuthTGEM/src/main/java/org/ezhik/authtgem/AuthTGEM.java
-/home/ezhik24/Рабочий стол/AuthTGEM/src/main/java/org/ezhik/authtgem/User.java
-/home/ezhik24/Рабочий стол/AuthTGEM/src/main/java/org/ezhik/authtgem/events/FreezerEvent.java
-/home/ezhik24/Рабочий стол/AuthTGEM/src/main/java/org/ezhik/authtgem/commands/AddFriendCMD.java
-/home/ezhik24/Рабочий стол/AuthTGEM/src/main/java/org/ezhik/authtgem/commands/ListFriendsCMD.java
-/home/ezhik24/Рабочий стол/AuthTGEM/src/main/java/org/ezhik/authtgem/commands/TgbcCMD.java
-/home/ezhik24/Рабочий стол/AuthTGEM/src/main/java/org/ezhik/authtgem/commands/RegisterCMD.java
+/home/ezhik/AuthTG/src/main/java/org/ezhik/authtgem/commands/SetPasswordCMD.java
+/home/ezhik/AuthTG/src/main/java/org/ezhik/authtgem/events/FreezerEvent.java
+/home/ezhik/AuthTG/src/main/java/org/ezhik/authtgem/User.java
+/home/ezhik/AuthTG/src/main/java/org/ezhik/authtgem/commands/LoginCMD.java
+/home/ezhik/AuthTG/src/main/java/org/ezhik/authtgem/commands/AddFriendCMD.java
+/home/ezhik/AuthTG/src/main/java/org/ezhik/authtgem/events/OnJoinEvent.java
+/home/ezhik/AuthTG/src/main/java/org/ezhik/authtgem/commands/CodeCMD.java
+/home/ezhik/AuthTG/src/main/java/org/ezhik/authtgem/commands/ChangepasswordCMD.java
+/home/ezhik/AuthTG/src/main/java/org/ezhik/authtgem/events/MuterEvent.java
+/home/ezhik/AuthTG/src/main/java/org/ezhik/authtgem/commands/RegisterCMD.java
+/home/ezhik/AuthTG/src/main/java/org/ezhik/authtgem/commands/RemFriendCMD.java
+/home/ezhik/AuthTG/src/main/java/org/ezhik/authtgem/commands/TellFriendsCMD.java
+/home/ezhik/AuthTG/src/main/java/org/ezhik/authtgem/commands/TgbcCMD.java
+/home/ezhik/AuthTG/src/main/java/org/ezhik/authtgem/Handler.java
+/home/ezhik/AuthTG/src/main/java/org/ezhik/authtgem/commands/ListFriendsCMD.java
+/home/ezhik/AuthTG/src/main/java/org/ezhik/authtgem/BotTelegram.java
+/home/ezhik/AuthTG/src/main/java/org/ezhik/authtgem/PasswordHasher.java
+/home/ezhik/AuthTG/src/main/java/org/ezhik/authtgem/AuthTGEM.java
