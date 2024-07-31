@@ -2,6 +2,7 @@ package org.ezhik.authtgem;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -68,6 +69,24 @@ public class BotTelegram extends TelegramLongPollingBot {
     @Override
     public void onUpdateReceived(Update update) {
         if (update.hasMessage()) {
+            if (update.getMessage().getText().toString().startsWith("#")){
+                User user = User.getCurrentUser(update.getMessage().getChatId());
+                String message = update.getMessage().getText().toString().replace("#", "");
+                if (user == null){
+                    this.sendMessage(update.getMessage().getChatId(), "[Бот] Привяжите телеграм к аккаунту");
+                }else {
+                    if (user.player != null){
+                        Handler.sendMCmessage(user.playername, message);
+                    }else{
+                        Bukkit.broadcastMessage(ChatColor.GREEN + "[MT] Игрок " + user.playername + " передает сообщение из офлайна: " + message);
+
+
+                    }
+
+
+                }
+                this.deleteMessage(update.getMessage());
+            }
             if (update.getMessage().getText().toString().startsWith("/")) {
                 if (update.getMessage().getText().toString().equals("/start") || update.getMessage().getText().toString().equals("/link")) {
                     User.starcmd(update.getMessage());
@@ -108,8 +127,19 @@ public class BotTelegram extends TelegramLongPollingBot {
                 if (update.getMessage().getText().toString().equals("/friends")) {
                     this.showFriendsList(update.getMessage());
                 }
+                this.deleteMessage(update.getMessage());
 
-            } else {
+            }
+            else {
+                if (!nextStep.containsKey(update.getMessage().getChatId().toString()) || update.getMessage().getText().toString().startsWith("#")) {
+                    User user = User.getCurrentUser(update.getMessage().getChatId());
+                    if (user == null) {
+                        this.sendMessage(update.getMessage().getChatId(), "[Бот] Привяжите учетную запись к Телеграмму");
+                    } else {
+                        this.sendBroadcastMessage(update.getMessage().getText().toString(), user.playername);
+                    }
+                    this.deleteMessage(update.getMessage());
+                }
                 if (nextStep.containsKey(update.getMessage().getChatId().toString())) {
                     if (nextStep.get(update.getMessage().getChatId().toString()).equals("askpassword")) {
                         String password = update.getMessage().getText().toString().replace(" ", "").replace("\n", "");
@@ -360,6 +390,12 @@ public class BotTelegram extends TelegramLongPollingBot {
         }
         this.deleteMessage(message);
 
+    }
+    public void sendBroadcastMessage(String message, String sendername) {
+        for (String chatIdS : curentplayer.keySet()) {
+            Long chatID = Long.parseLong(chatIdS);
+            this.sendMessage(chatID, sendername + "> " + message);
+        }
     }
 
 }

@@ -12,7 +12,7 @@ org/ezhik/authtgem/events/OnJoinEvent.class
 org/ezhik/authtgem/commands/TgbcCMD.class
 org/ezhik/authtgem/commands/LoginCMD.class
 org/ezhik/authtgem/User.class
-org/ezhik/authtgem/Handler.class
 org/ezhik/authtgem/commands/RemFriendCMD.class
+org/ezhik/authtgem/Handler.class
 org/ezhik/authtgem/commands/ListFriendsCMD.class
 org/ezhik/authtgem/commands/RegisterCMD.class

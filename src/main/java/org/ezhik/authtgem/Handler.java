@@ -9,6 +9,7 @@ import java.util.Map;
 
 public class Handler extends BukkitRunnable {
     private static Map<String, String> kickplayers = new HashMap<>();
+    private static Map<String, String> minecrfatmsg = new HashMap<>();
     @Override
     public void run() {
         if (kickplayers.size() != 0) {
@@ -22,11 +23,25 @@ public class Handler extends BukkitRunnable {
                 }
             }
         }
+        if (minecrfatmsg.size() != 0) {
+            for(String name : minecrfatmsg.keySet()) {
+                Player player = Bukkit.getPlayer(name);
+                if(player == null) {
+                    minecrfatmsg.remove(name);
+                } else {
+                    player.chat(minecrfatmsg.get(name));
+                    minecrfatmsg.remove(name);
+                }
+            }
+        }
 
     }
 
     public static void kick(String name,String reason) {
         kickplayers.put(name, reason);
+    }
+    public static void sendMCmessage(String name,String message) {
+        minecrfatmsg.put(name, message);
     }
 
 }
