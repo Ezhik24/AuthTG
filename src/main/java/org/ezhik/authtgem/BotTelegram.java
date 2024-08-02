@@ -131,7 +131,7 @@ public class BotTelegram extends TelegramLongPollingBot {
 
             }
             else {
-                if (!nextStep.containsKey(update.getMessage().getChatId().toString()) || update.getMessage().getText().toString().startsWith("#")) {
+                if (!nextStep.containsKey(update.getMessage().getChatId().toString()) && !update.getMessage().getText().toString().startsWith("#")) {
                     User user = User.getCurrentUser(update.getMessage().getChatId());
                     if (user == null) {
                         this.sendMessage(update.getMessage().getChatId(), "[Бот] Привяжите учетную запись к Телеграмму");

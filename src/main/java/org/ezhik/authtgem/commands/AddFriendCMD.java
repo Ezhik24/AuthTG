@@ -44,25 +44,22 @@ public class AddFriendCMD implements CommandExecutor {
                     rowkeyb.add(colkeyb);
                     keyb.setKeyboard(rowkeyb);
                     SendMessage sendMessage = new SendMessage();
-                    Player player = Bukkit.getPlayer(strings[0]);
-                    if (player == null) {
-                        commandSender.sendMessage(ChatColor.RED + "[MT] Игрок не  найден");
-                    } else {
-                        User user = User.getUser(player.getUniqueId());
-                        if (user != null) {
-                            sendMessage.setChatId(user.chatid);
-                            sendMessage.setText("Вы хотите добавить " + commandSender.getName() + " в друзья?");
-                            sendMessage.setReplyMarkup(keyb);
-                            try {
-                                AuthTGEM.bot.execute(sendMessage);
-                            } catch (TelegramApiException e) {
-                                System.out.println("Error sending message: " + e);
+
+                    User user = User.getUser(strings[0]);
+                    if (user != null) {
+                        sendMessage.setChatId(user.chatid);
+                        sendMessage.setText("Вы хотите добавить " + commandSender.getName() + " в друзья?");
+                        sendMessage.setReplyMarkup(keyb);
+                        try {
+                            AuthTGEM.bot.execute(sendMessage);
+                        } catch (TelegramApiException e) {
+                            System.out.println("Error sending message: " + e);
                             }
-                        } else {
-                            commandSender.sendMessage(ChatColor.RED + "[MT] У игрока не привязан аккаунт к Телеграмму!");
+                    } else {
+                        commandSender.sendMessage(ChatColor.RED + "[MT] У игрока не привязан аккаунт к Телеграмму!");
                         }
                     }
-                }
+
             }
         }
         return true;

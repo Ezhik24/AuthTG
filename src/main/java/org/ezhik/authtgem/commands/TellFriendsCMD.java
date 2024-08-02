@@ -23,6 +23,7 @@ public class TellFriendsCMD implements CommandExecutor {
                 } else {
                     String message = String.join(" ", strings).replace(strings[0], " сообщение от " + user.playername + " :");
                     friend.sendMessage(message);
+                    commandSender.sendMessage(ChatColor.GREEN + "[MT] Сообщение успешно отправлено!");
                 }
             }
         }
