@@ -2,6 +2,7 @@ package org.ezhik.authtgem;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -32,6 +33,8 @@ public class User {
     public  UUID uuid = null;
     public String playername = "";
     public List<String> friends = new ArrayList<>();
+    public boolean admin = false;
+    public boolean moderator = false;
 
     private User(UUID uuid) {
         YamlConfiguration userconfig = new YamlConfiguration();
@@ -49,6 +52,8 @@ public class User {
             this.player = Bukkit.getPlayer(uuid);
             this.active = userconfig.getBoolean("active");
             this.friends = userconfig.getStringList("friends");
+            this.admin = this.isAdmin();
+            this.moderator = userconfig.getBoolean("moderator");
         } catch (FileNotFoundException e) {
             System.out.println("Error file not found: " + e);
         } catch (IOException e) {
@@ -85,6 +90,9 @@ public class User {
         userconfig.set("lastname", message.getChat().getLastName());
         userconfig.set("active", false);
         userconfig.set("twofactor", true);
+        userconfig.set("admin", false);
+        userconfig.set("moderator", false);
+        userconfig.set("playername", p.getName());
 
 
         try {
@@ -391,6 +399,85 @@ public class User {
                 frienduser.sendMessage(this.player.getName() + " удалил вас из друзей");
             }
             return ChatColor.RED + "[MT] Вы удалили " + friendname + " из друзей";
+        }
+    }
+    private boolean isAdmin() {
+        YamlConfiguration userconf = new YamlConfiguration();
+        File file = new File("plugins/Minetelegram/users/" + this.uuid + ".yml");
+        try {
+            userconf.load(file);
+        } catch (IOException e) {
+            System.out.println("Error loading config file: " + e);
+        } catch (InvalidConfigurationException e) {
+            System.out.println("Error parsing config file: " + e);
+        }
+        boolean admin = userconf.getBoolean("admin");
+        if(AuthTGEM.bot.integration){
+            if(this.player != null){
+                return this.player.hasPermission("mt.admin");
+            }else {
+                return admin;
+            }
+        }else{
+            return admin;
+        }
+    }
+
+    private boolean isModerator() {
+        YamlConfiguration userconf = new YamlConfiguration();
+        File file = new File("plugins/Minetelegram/users/" + this.uuid + ".yml");
+        try {
+            userconf.load(file);
+        } catch (IOException e) {
+            System.out.println("Error loading config file: " + e);
+        } catch (InvalidConfigurationException e) {
+            System.out.println("Error parsing config file: " + e);
+        }
+        boolean moderator = userconf.getBoolean("moderator");
+        if (AuthTGEM.bot.integration) {
+            if (this.player != null) {
+                return this.player.hasPermission("mt.moderator");
+            } else {
+                return moderator;
+            }
+        } else {
+            return moderator;
+        }
+    }
+
+    public void setAdmin(){
+        YamlConfiguration userconf = new YamlConfiguration();
+        File file = new File("plugins/Minetelegram/users/" + this.uuid + ".yml");
+        try {
+            userconf.load(file);
+        } catch (IOException e) {
+            System.out.println("Error loading config file: " + e);
+        } catch (InvalidConfigurationException e) {
+            System.out.println("Error parsing config file: " + e);
+        }
+        userconf.set("admin", true);
+        try {
+            userconf.save(file);
+        } catch (IOException e) {
+            System.out.println("Error saving config file: " + e);
+        }
+    }
+
+    public void setModerator(){
+        YamlConfiguration userconf = new YamlConfiguration();
+        File file = new File("plugins/Minetelegram/users/" + this.uuid + ".yml");
+        try {
+            userconf.load(file);
+        } catch (IOException e) {
+            System.out.println("Error loading config file: " + e);
+        } catch (InvalidConfigurationException e) {
+            System.out.println("Error parsing config file: " + e);
+        }
+        userconf.set("moderator", true);
+        try {
+            userconf.save(file);
+        } catch (IOException e) {
+            System.out.println("Error saving config file: " + e);
         }
     }
 }

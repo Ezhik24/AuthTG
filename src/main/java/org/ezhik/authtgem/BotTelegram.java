@@ -26,6 +26,9 @@ public class BotTelegram extends TelegramLongPollingBot {
     private String token = "changeme";
     private static Map<String, String> nextStep = new HashMap<>();
     private static Map<String, UUID> playerUUID = new HashMap<>();
+    public boolean integration = false;
+    public String adminCommand = "changeme";
+    public String moderatorCommand = "changeme";
     private Map<String, String> sendMessageData = new HashMap<>();
     public static Map<String, String> curentplayer = new HashMap<>();
 
@@ -36,6 +39,9 @@ public class BotTelegram extends TelegramLongPollingBot {
         if (!file.exists()) {
             config.set("username", username);
             config.set("token", token);
+            config.set("integration", integration);
+            config.set("adminCommand", adminCommand);
+            config.set("moderatorCommand", moderatorCommand);
             try {
                 config.save(file);
             } catch (Exception e) {
@@ -51,6 +57,9 @@ public class BotTelegram extends TelegramLongPollingBot {
             }
             username = config.getString("username");
             token = config.getString("token");
+            integration = config.getBoolean("integration");
+            adminCommand = config.getString("adminCommand");
+            moderatorCommand = config.getString("moderatorCommand");
         }
 
 
