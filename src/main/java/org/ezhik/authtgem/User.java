@@ -393,4 +393,24 @@ public class User {
             return ChatColor.RED + "[MT] Вы удалили " + friendname + " из друзей";
         }
     }
+    public void sendMessageB(String message, String friend) {
+        InlineKeyboardMarkup playerKB = new InlineKeyboardMarkup();
+        List<InlineKeyboardButton> colkeyb = new ArrayList<>();
+        List<List<InlineKeyboardButton>> rowkeyb = new ArrayList<>();
+        InlineKeyboardButton acts = new InlineKeyboardButton();
+        acts.setText("Действия");
+        acts.setCallbackData("chfr" + friend);
+        colkeyb.add(acts);
+        rowkeyb.add(colkeyb);
+        playerKB.setKeyboard(rowkeyb);
+        SendMessage sendMessage = new SendMessage();
+        sendMessage.setText(message);
+        sendMessage.setChatId(this.chatid);
+        sendMessage.setReplyMarkup(playerKB);
+        try {
+            AuthTGEM.bot.execute(sendMessage);
+        } catch (TelegramApiException e) {
+            System.out.println(e);
+        }
+    }
 }

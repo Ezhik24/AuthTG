@@ -51,7 +51,7 @@ public class LoginCMD implements CommandExecutor {
         User user = User.getUser(p.getUniqueId());
         if (user != null) {
             for (User u : user.getUnicFriends()) {
-                u.sendMessage(p.getName() + " вошел в игру");
+                u.sendMessageB(p.getName() + "вошёл в игру", p.getName());
             }
         } else {
             commandSender.sendMessage(ChatColor.RED + "[MT] Привяжи акаунт к телеграмму!");

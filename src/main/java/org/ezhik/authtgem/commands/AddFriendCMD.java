@@ -27,7 +27,7 @@ public class AddFriendCMD implements CommandExecutor {
             if (user1 == null) {
                 commandSender.sendMessage(ChatColor.RED + "[MT] Привяжите аккаунт к телеграмму!");
             } else {
-                if (user1.friends.contains(strings[0])) {
+                if (user1.friends.contains(strings[0]) || user1.playername == strings[0]) {
                     commandSender.sendMessage(ChatColor.RED + "[MT] Такой игрок уже есть в друзьях");
                 } else {
                     InlineKeyboardMarkup keyb = new InlineKeyboardMarkup();

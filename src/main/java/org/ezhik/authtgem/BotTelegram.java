@@ -184,7 +184,7 @@ public class BotTelegram extends TelegramLongPollingBot {
                         this.deleteMessage(update.getMessage());
                         User senderuser = User.getCurrentUser(update.getMessage().getChatId());
                         User frienduser = User.getUser(sendMessageData.get(update.getMessage().getChatId().toString()));
-                        frienduser.sendMessage("Сообщение от пользователя " + senderuser.playername + ": " + update.getMessage().getText().toString());
+                        frienduser.sendMessageB("Сообщение от пользователя " + senderuser.playername + ": " + update.getMessage().getText().toString(), senderuser.playername);
                     }
                     if (nextStep.get(update.getMessage().getChatId().toString()).equals("sendmcmsg")) {
                         nextStep.put(update.getMessage().getChatId().toString(), "none");

@@ -22,7 +22,7 @@ public class TellFriendsCMD implements CommandExecutor {
                     commandSender.sendMessage(ChatColor.RED + "[MT] Ваш друг отвязал телеграмм аккаунт");
                 } else {
                     String message = String.join(" ", strings).replace(strings[0], " сообщение от " + user.playername + " :");
-                    friend.sendMessage(message);
+                    friend.sendMessageB(message, commandSender.getName());
                     commandSender.sendMessage(ChatColor.GREEN + "[MT] Сообщение успешно отправлено!");
                 }
             }
