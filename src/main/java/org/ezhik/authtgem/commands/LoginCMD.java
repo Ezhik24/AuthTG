@@ -48,14 +48,7 @@ public class LoginCMD implements CommandExecutor {
         } catch (IOException e) {
             System.out.println("Error saving config file: " + e);
         }
-        User user = User.getUser(p.getUniqueId());
-        if (user != null) {
-            for (User u : user.getUnicFriends()) {
-                u.sendMessageB(p.getName() + "вошёл в игру", p.getName());
-            }
-        } else {
-            commandSender.sendMessage(ChatColor.RED + "[MT] Привяжи акаунт к телеграмму!");
-        }
+
         return true;
     }
 }
