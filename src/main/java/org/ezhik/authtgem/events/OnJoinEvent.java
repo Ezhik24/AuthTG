@@ -25,7 +25,7 @@ public class OnJoinEvent implements Listener {
         User user = User.getUser(p.getUniqueId());
         if (user != null) {
             for (User u : user.getUnicFriends()) {
-                u.sendMessageB(p.getName() + "вошёл в игру", p.getName());
+                u.sendMessageB(p.getName() + " вошёл в игру", p.getName());
             }
         } else {
             p.sendMessage(ChatColor.RED + "[MT] Привяжи акаунт к телеграмму!");
