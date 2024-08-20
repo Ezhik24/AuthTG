@@ -1,8 +1,8 @@
 org/ezhik/authtgem/BotTelegram.class
 org/ezhik/authtgem/commands/SetPasswordCMD.class
 org/ezhik/authtgem/PasswordHasher.class
-org/ezhik/authtgem/commands/TellFriendsCMD.class
 org/ezhik/authtgem/commands/ChangepasswordCMD.class
+org/ezhik/authtgem/commands/TellFriendsCMD.class
 org/ezhik/authtgem/events/FreezerEvent.class
 org/ezhik/authtgem/commands/CodeCMD.class
 org/ezhik/authtgem/events/MuterEvent.class
@@ -11,8 +11,8 @@ org/ezhik/authtgem/commands/AddFriendCMD.class
 org/ezhik/authtgem/events/OnJoinEvent.class
 org/ezhik/authtgem/commands/TgbcCMD.class
 org/ezhik/authtgem/commands/LoginCMD.class
+org/ezhik/authtgem/commands/RemFriendCMD.class
 org/ezhik/authtgem/User.class
 org/ezhik/authtgem/Handler.class
-org/ezhik/authtgem/commands/RemFriendCMD.class
 org/ezhik/authtgem/commands/ListFriendsCMD.class
 org/ezhik/authtgem/commands/RegisterCMD.class
