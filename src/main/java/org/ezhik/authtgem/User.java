@@ -404,7 +404,7 @@ public class User {
         rowkeyb.add(colkeyb);
         playerKB.setKeyboard(rowkeyb);
         SendMessage sendMessage = new SendMessage();
-        sendMessage.setText(message);
+        sendMessage.setText("[Бот@" + this.username + "] " + message);
         sendMessage.setChatId(this.chatid);
         sendMessage.setReplyMarkup(playerKB);
         try {
