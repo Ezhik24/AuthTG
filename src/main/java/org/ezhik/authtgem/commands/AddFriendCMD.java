@@ -20,7 +20,7 @@ public class AddFriendCMD implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
         if (strings.length == 0) {
-            commandSender.sendMessage(ChatColor.GREEN + "[MT] Команда введена неверною Введите команду так: /addfriend <ник>");
+            commandSender.sendMessage(ChatColor.RED + "[MT] Команда введена неверно. Введите команду так: /addfriend <ник>");
         } else {
             Player player1 = (Player) commandSender;
             User user1 = User.getUser(player1.getUniqueId());

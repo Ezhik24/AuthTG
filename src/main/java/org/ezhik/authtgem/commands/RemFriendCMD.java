@@ -11,7 +11,7 @@ public class RemFriendCMD implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
         if (strings.length == 0) {
-            commandSender.sendMessage(ChatColor.GREEN + "[MT] Команда введена неверною Введите команду так: /removefriend <ник>");
+            commandSender.sendMessage(ChatColor.RED + "[MT] Команда введена неверно. Введите команду так: /removefriend <ник>");
         } else {
             Player player = (Player) commandSender;
             User user = User.getUser(player.getUniqueId());
