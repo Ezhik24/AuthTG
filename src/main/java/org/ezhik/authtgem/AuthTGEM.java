@@ -15,6 +15,8 @@ public final class AuthTGEM extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        System.out.println("Пожалуйста,подпишитесь на мой телеграмм канал https://t.me/ezhichek11");
+        System.out.println("Please,subcribe for my telegram channel https://t.me/ezhichek11")
         System.out.println("MineTelegramm plugin has been enabled");
         Bukkit.getServer().getPluginManager().registerEvents(new FreezerEvent(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new OnJoinEvent(), this);
