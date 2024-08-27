@@ -2,6 +2,7 @@ package org.ezhik.authtgem;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -413,4 +414,36 @@ public class User {
             System.out.println(e);
         }
     }
+    public static void setSpawnLocation(Location spawnlocation) {
+        File file = new File("plugins/Minetelegram/config.yml");
+        YamlConfiguration config = new YamlConfiguration();
+        try {
+            config.load(file);
+        } catch (IOException e) {
+            System.out.println("Error loading config file: " + e);
+        } catch (InvalidConfigurationException e) {
+            System.out.println("Error parsing config file: " + e);
+        }
+        config.set("spawn", spawnlocation);
+        try {
+            config.save(file);
+        } catch (IOException e) {
+            System.out.println("Error saving config file: " + e);
+        }
+    }
+    public static Location getSpawnLocation() {
+        Location spawn = null;
+        File file = new File("plugins/Minetelegram/config.yml");
+        YamlConfiguration config = new YamlConfiguration();
+        try {
+            config.load(file);
+        } catch (IOException e) {
+            System.out.println("Error loading config file: " + e);
+        } catch (InvalidConfigurationException e) {
+            return spawn;
+        }
+        spawn = config.getLocation("spawn");
+        return spawn;
+    }
+
 }

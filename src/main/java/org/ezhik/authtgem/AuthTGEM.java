@@ -16,7 +16,7 @@ public final class AuthTGEM extends JavaPlugin {
     @Override
     public void onEnable() {
         System.out.println("Пожалуйста,подпишитесь на мой телеграмм канал https://t.me/ezhichek11");
-        System.out.println("Please,subcribe for my telegram channel https://t.me/ezhichek11")
+        System.out.println("Please,subcribe for my telegram channel https://t.me/ezhichek11");
         System.out.println("MineTelegramm plugin has been enabled");
         Bukkit.getServer().getPluginManager().registerEvents(new FreezerEvent(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new OnJoinEvent(), this);
@@ -33,6 +33,7 @@ public final class AuthTGEM extends JavaPlugin {
         getCommand("removefriend").setExecutor(new RemFriendCMD());
         getCommand("listfriends").setExecutor(new ListFriendsCMD());
         getCommand("tellfriends").setExecutor(new TellFriendsCMD());
+        getCommand("setspawn").setExecutor(new SetSpawnCMD());
         bot = new BotTelegram();
         if (bot.getBotToken() == "changeme" && bot.getBotUsername() == "changeme") {
             System.out.println("Please set your bot token and username in config.yml");
