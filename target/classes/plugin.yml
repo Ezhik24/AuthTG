@@ -36,3 +36,6 @@ commands:
     description: 'Telegramm Broadcast Command'
     usage: '/tgbc <message>'
     permission: 'minetelegram.tgbc'
+  setspawn:
+    description: 'Поставить точку спавна'
+    permission: 'minetelegram.setspawn'
