@@ -41,6 +41,8 @@ public class LoginCMD implements CommandExecutor {
                     p.sendMessage(ChatColor.GREEN + "[MT] Потвердите вход через Телеграмм");
                     p.sendTitle(ChatColor.RED + "Потвердите вход", "через Телеграмм", 20, 1000000000, 0);
                 }
+            } else {
+                p.sendMessage(ChatColor.RED + "[MT] Неверный пароль");
             }
             userconfig.set("playername", p.getName());
             try {

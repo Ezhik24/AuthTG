@@ -35,6 +35,8 @@ public class SetPasswordCMD implements CommandExecutor {
                     System.out.println("Error saving config file: " + e);
                 }
                 commandSender.sendMessage(ChatColor.GREEN + "[MT] Вы успешно изменили пароль игроку" + player.getName());
+            } else {
+                commandSender.sendMessage(ChatColor.RED + "[MT] Пароли не совпадают");
             }
         } else commandSender.sendMessage(ChatColor.RED + "[MT] Неверена введена команда. Введите команду так: /setpassword <Ник игрока> <пароль> <повторите пароль> ");
         return true;
