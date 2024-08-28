@@ -1,5 +1,6 @@
 package org.ezhik.authtgem.commands;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -15,7 +16,7 @@ import java.io.IOException;
 public class SetPasswordCMD implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
-        Player player = (Player) commandSender;
+        Player player = Bukkit.getPlayer(strings[0]);
         YamlConfiguration userconfig = new YamlConfiguration();
         File file = new File("plugins/Minetelegram/users/" + player.getUniqueId() + ".yml");
         if (strings.length == 3) {
@@ -35,7 +36,7 @@ public class SetPasswordCMD implements CommandExecutor {
                 }
                 player.sendMessage(ChatColor.GREEN + "[MT] Вы успешно изменили пароль игроку" + player.getName());
             }
-        } else player.sendMessage(ChatColor.RED + "[MT] Неверена введена команда. Введите команду так: /setpassword <пароль> <повторите пароль> ");
+        } else player.sendMessage(ChatColor.RED + "[MT] Неверена введена команда. Введите команду так: /setpassword <Ник игрока> <пароль> <повторите пароль> ");
         return true;
     }
 }
