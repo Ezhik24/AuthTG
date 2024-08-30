@@ -1,6 +1,7 @@
 package org.ezhik.authtgem.events;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -14,6 +15,7 @@ public class OnJoinEvent implements Listener {
     public void onJoin(PlayerJoinEvent event) {
         Player p = event.getPlayer();
         File file = new File("plugins/Minetelegram/users/" + p.getUniqueId() + ".yml");
+        if (User.getSpawnLocation() != null) p.teleport(User.getSpawnLocation());
         FreezerEvent.freezeplayer(p.getName());
         if (file.exists()) {
             MuterEvent.mute(p.getName(), ChatColor.GREEN + "[MT] Авторизуйтесь! Для авторизации введите команду: /login <пароль>");

@@ -25,12 +25,7 @@ public class FreezerEvent implements Listener {
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
         if (freezeplayer.containsKey(event.getPlayer().getName())) {
-            if (User.getSpawnLocation() == null) {
-                event.getPlayer().teleport(freezeplayer.get(event.getPlayer().getName()));
-            } else {
-                event.getPlayer().teleport(User.getSpawnLocation());
-            }
-            
+            event.getPlayer().teleport(freezeplayer.get(event.getPlayer().getName()));
         }
     }
 
