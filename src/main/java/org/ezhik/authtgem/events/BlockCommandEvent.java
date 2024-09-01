@@ -8,7 +8,13 @@ import org.bukkit.event.player.PlayerCommandSendEvent;
 
 public class BlockCommandEvent implements Listener {
     @EventHandler
-    public void onBlockCommands(PlayerCommandPreprocessEvent event) {
-        System.out.println(event.getMessage());
-            }
+    public void onCommmand(PlayerCommandPreprocessEvent event) {
+        Player player = event.getPlayer();
+        if(MuterEvent.isMute(player)) {
+           if(!(event.getMessage().startsWith("/login") || event.getMessage().startsWith("/register"))) {
+               event.setCancelled(true);
+               player.sendMessage("Эта команда доступна только для зарегистрированных пользователей!");
+           }
+        }
+    }
 }
