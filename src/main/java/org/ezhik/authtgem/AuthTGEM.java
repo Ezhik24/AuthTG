@@ -3,6 +3,7 @@ package org.ezhik.authtgem;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.ezhik.authtgem.commands.*;
+import org.ezhik.authtgem.events.BlockCommandEvent;
 import org.ezhik.authtgem.events.FreezerEvent;
 import org.ezhik.authtgem.events.MuterEvent;
 import org.ezhik.authtgem.events.OnJoinEvent;
@@ -21,6 +22,7 @@ public final class AuthTGEM extends JavaPlugin {
         Bukkit.getServer().getPluginManager().registerEvents(new FreezerEvent(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new OnJoinEvent(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new MuterEvent(), this);
+        Bukkit.getServer().getPluginManager().registerEvents(new BlockCommandEvent(), this);
         Handler handler = new Handler();
         handler.runTaskTimer(this,0,1);
         getCommand("code").setExecutor(new CodeCMD());
@@ -52,6 +54,8 @@ public final class AuthTGEM extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        System.out.println("Пожалуйста,подпишитесь на мой телеграмм канал https://t.me/ezhichek11");
+        System.out.println("Please,subcribe for my telegram channel https://t.me/ezhichek11");
         // Plugin shutdown logic
     }
 
