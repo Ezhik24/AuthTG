@@ -13,9 +13,9 @@ public class ListFriendsCMD implements CommandExecutor {
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
         Player player = (Player) commandSender;
         User user = User.getUser(player.getUniqueId());
-        player.sendMessage(ChatColor.GREEN + "[MT] Ваши друзей: ");
+        player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] &c&lСписок друзей:"));
         for (String friend : user.friends) {
-            player.sendMessage(ChatColor.GREEN + friend + " " + User.getplayerstatus(friend));
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&a&l" + friend + " " + User.getplayerstatus(friend)));
         }
 
         return true;

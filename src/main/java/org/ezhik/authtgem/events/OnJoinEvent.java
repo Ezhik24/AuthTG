@@ -18,11 +18,11 @@ public class OnJoinEvent implements Listener {
         if (User.getSpawnLocation() != null) p.teleport(User.getSpawnLocation());
         FreezerEvent.freezeplayer(p.getName());
         if (file.exists()) {
-            MuterEvent.mute(p.getName(), ChatColor.GREEN + "[MT] Авторизуйтесь! Для авторизации введите команду: /login <пароль>");
-            p.sendTitle(ChatColor.RED + "Авторизуйтесь!", "для авторизации введите команду: /login <пароль>", 20, 10000000, 0);
+            MuterEvent.mute(p.getName(), ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] &c&lАвторизуйтесь! Для авторизации введите команду: /login <пароль>"));
+            p.sendTitle(ChatColor.translateAlternateColorCodes('&', "&a&lАвторизуйтесь!"), "для авторизации введите команду: /login <пароль>", 20, 10000000, 0);
         } else {
-            MuterEvent.mute(p.getName(), ChatColor.GREEN + "[MT] Авторизуйтесь! Для авторизации введите команду: /register <пароль> <повтор пароля>");
-            p.sendTitle(ChatColor.RED + "Авторизуйтесь!", "для авторизации введите команду: /register <пароль> <повтор пароля>", 20, 10000000, 0);
+            MuterEvent.mute(p.getName(), ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] &c&lАвторизуйтесь! Для авторизации введите команду: /register <пароль> <повтор пароля>"));
+            p.sendTitle(ChatColor.translateAlternateColorCodes('&', "&c&lАвторизуйтесь!"), "для авторизации введите команду: /register <пароль> <повтор пароля>", 20, 10000000, 0);
         }
         User user = User.getUser(p.getUniqueId());
         if (user != null) {
@@ -30,7 +30,7 @@ public class OnJoinEvent implements Listener {
                 u.sendMessageB(p.getName() + " вошёл в игру", p.getName());
             }
         } else {
-            p.sendMessage(ChatColor.RED + "[MT] Привяжи акаунт к телеграмму!");
+            p.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] &c&lПривяжите аккаунт к Телеграмму"));
         }
     }
 }

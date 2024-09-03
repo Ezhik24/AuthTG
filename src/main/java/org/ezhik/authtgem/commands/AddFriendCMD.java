@@ -25,10 +25,10 @@ public class AddFriendCMD implements CommandExecutor {
             Player player1 = (Player) commandSender;
             User user1 = User.getUser(player1.getUniqueId());
             if (user1 == null) {
-                commandSender.sendMessage(ChatColor.RED + "[MT] Привяжите аккаунт к телеграмму!");
+                commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] &c&lПривяжите аккаунт к телеграмму"));
             } else {
                 if (user1.friends.contains(strings[0]) || user1.playername == strings[0]) {
-                    commandSender.sendMessage(ChatColor.RED + "[MT] Такой игрок уже есть в друзьях");
+                    commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] &c&lВы уже добавляли этого игрока в друзья"));
                 } else {
                     InlineKeyboardMarkup keyb = new InlineKeyboardMarkup();
                     List<InlineKeyboardButton> colkeyb = new ArrayList<>();
@@ -56,7 +56,7 @@ public class AddFriendCMD implements CommandExecutor {
                             System.out.println("Error sending message: " + e);
                             }
                     } else {
-                        commandSender.sendMessage(ChatColor.RED + "[MT] У игрока не привязан аккаунт к Телеграмму!");
+                        commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] &c&lДанный игрок не привязывал аккаунт к телеграмму"));
                         }
                     }
 

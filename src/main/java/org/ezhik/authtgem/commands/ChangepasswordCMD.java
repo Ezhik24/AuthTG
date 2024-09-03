@@ -34,11 +34,11 @@ public class ChangepasswordCMD implements CommandExecutor {
                     } catch (IOException e) {
                         System.out.println("Error saving config file: " + e);
                     }
-                    player.sendMessage(ChatColor.GREEN + "[MT] Пароль успешно изменен");
-                } else player.sendMessage(ChatColor.RED + "[MT] Неверный старый пароль");
-            } else player.sendMessage(ChatColor.RED + "[MT] Пароли не совпадают");
+                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] &a&lВы успешно изменили пароль"));
+                } else player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] &c&lНеверный старый пароль"));
+            } else player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] &c&lПароли не совпадают"));
         }else {
-            player.sendMessage(ChatColor.RED + "[MT] Неверная команда. Введите команду так: /changepassword <старый пароль> <новый пароль> <повторите пароль>");
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] &c&lКоманда введена неверно. Введите команду так: /changepassword <старый пароль> <новый пароль>"));
         }
 
         return true;

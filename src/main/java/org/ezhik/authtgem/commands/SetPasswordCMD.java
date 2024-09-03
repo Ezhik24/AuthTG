@@ -16,29 +16,34 @@ import java.io.IOException;
 public class SetPasswordCMD implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
-        Player player = Bukkit.getPlayer(strings[0]);
-        YamlConfiguration userconfig = new YamlConfiguration();
-        File file = new File("plugins/Minetelegram/users/" + player.getUniqueId() + ".yml");
-        if (strings.length == 3) {
-            if (strings[1].equals(strings[2])) {
-                try {
-                    userconfig.load(file);
-                } catch (IOException e) {
-                    System.out.println("Error loading config file: " + e);
-                } catch (InvalidConfigurationException e) {
-                    System.out.println("Error parsing config file: " + e);
+        if (commandSender.hasPermission("minetelegram.setpassword")) {
+            Player player = Bukkit.getPlayer(strings[0]);
+            YamlConfiguration userconfig = new YamlConfiguration();
+            File file = new File("plugins/Minetelegram/users/" + player.getUniqueId() + ".yml");
+            if (strings.length == 3) {
+                if (strings[1].equals(strings[2])) {
+                    try {
+                        userconfig.load(file);
+                    } catch (IOException e) {
+                        System.out.println("Error loading config file: " + e);
+                    } catch (InvalidConfigurationException e) {
+                        System.out.println("Error parsing config file: " + e);
+                    }
+                    userconfig.set("password", PasswordHasher.hashPassword(strings[1]));
+                    try {
+                        userconfig.save(file);
+                    } catch (IOException e) {
+                        System.out.println("Error saving config file: " + e);
+                    }
+                    commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] &a&lВы успешно изменили пароль игроку" + player.getName()));
+                } else {
+                    commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] &c&lПароли не совпадают"));
                 }
-                userconfig.set("password", PasswordHasher.hashPassword(strings[1]));
-                try {
-                    userconfig.save(file);
-                } catch (IOException e) {
-                    System.out.println("Error saving config file: " + e);
-                }
-                commandSender.sendMessage(ChatColor.GREEN + "[MT] Вы успешно изменили пароль игроку" + player.getName());
-            } else {
-                commandSender.sendMessage(ChatColor.RED + "[MT] Пароли не совпадают");
-            }
-        } else commandSender.sendMessage(ChatColor.RED + "[MT] Неверена введена команда. Введите команду так: /setpassword <Ник игрока> <пароль> <повторите пароль> ");
+            } else
+                commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] &c&lКоманда введена неверно. Введите команду так: /setpassword <ник> <старый пароль> <новый пароль>"));
+        } else {
+            commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] &c&lУ вас нет прав для использования этой команды"));
+        }
         return true;
     }
 }

@@ -78,8 +78,7 @@ public class BotTelegram extends TelegramLongPollingBot {
                     if (user.player != null){
                         Handler.sendMCmessage(user.playername, message);
                     }else{
-                        Bukkit.broadcastMessage(ChatColor.GREEN + "[MT] Игрок " + user.playername + " передает сообщение из офлайна: " + message);
-
+                        Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] &a&lИгрок " + user.playername + " передает сообщение из офлайна: " + message));
 
                     }
 
@@ -191,7 +190,7 @@ public class BotTelegram extends TelegramLongPollingBot {
                         this.deleteMessage(update.getMessage());
                         User senderuser = User.getCurrentUser(update.getMessage().getChatId());
                         User frienduser = User.getUser(sendMessageData.get(update.getMessage().getChatId().toString()));
-                        frienduser.player.sendMessage(ChatColor.GREEN + " [MT] Сообщение от пользователя " + senderuser.playername + ": " + update.getMessage().getText().toString());
+                        frienduser.player.sendMessage(ChatColor.translateAlternateColorCodes('&'," &f&l[&b&lMT&f&l] &a&lСообщение от пользователя " + senderuser.playername + ": " + update.getMessage().getText().toString()));
 
                     }
                     if(nextStep.get(update.getMessage().getChatId().toString()).equals("none")) nextStep.remove(update.getMessage().getChatId().toString());
@@ -207,11 +206,11 @@ public class BotTelegram extends TelegramLongPollingBot {
                 this.deleteMessage(update.getCallbackQuery().getMessage());
                 Player player = Bukkit.getPlayer(playername);
                 player.resetTitle();
-                player.sendMessage(ChatColor.GREEN + "[MT] Успешный вход в аккаунт");
+                player.sendMessage(ChatColor.translateAlternateColorCodes('&'," &f&l[&b&lMT&f&l] &a&lУспешный вход в аккаунт!"));
             }
             if (update.getCallbackQuery().getData().toString().startsWith("no")) {
                 String playername = update.getCallbackQuery().getData().toString().replace("no", "");
-                Handler.kick(playername, "Отклонено Владельцем учетной записи из Телеграмма");
+                Handler.kick(playername,   ChatColor.translateAlternateColorCodes('&'," &f&l[&b&lMT&f&l] &c&lОтклонено Владельцем учетной записи из Телеграмма"));
                 this.deleteMessage(update.getCallbackQuery().getMessage());
             }
 
@@ -227,8 +226,8 @@ public class BotTelegram extends TelegramLongPollingBot {
                     User user2 = User.getUser(Bukkit.getPlayer(friendname).getUniqueId());
                     if (!user1.friends.contains(user2.playername)) user1.addfriend(user2.playername);
                     if (!user2.friends.contains(user1.playername)) user2.addfriend(user1.playername);
-                    user2.player.sendMessage(ChatColor.GREEN + "[MT] Вам добавлен в друзья " + user1.playername);
-                    user1.player.sendMessage(ChatColor.GREEN + "[MT] Вам добавлен в друзья " + user2.playername);
+                    user2.player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] &a&lВам добавлен в друзья " + user1.playername));
+                    user1.player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] &a&lВам добавлен в друзья " + user2.playername));
                     user1.sendMessage("Вам добавлен в друзья " + user2.playername);
                     this.deleteMessage(update.getCallbackQuery().getMessage());
                 }
@@ -236,7 +235,7 @@ public class BotTelegram extends TelegramLongPollingBot {
                     String friendname = update.getCallbackQuery().getData().toString().replace("addfrno", "");
                     User user2 = User.getUser(Bukkit.getPlayer(friendname).getUniqueId());
                     User user1 = User.getOnlineUser(update.getCallbackQuery().getMessage().getChatId());
-                    user2.player.sendMessage(ChatColor.RED + "[MT] Вам отказали в добавлении в друзья");
+                    user2.player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] &c&lВы отклонили заявку в друзья "));
                     user1.sendMessage("Заявка успешно отклонена");
                     this.deleteMessage(update.getCallbackQuery().getMessage());
                 }

@@ -6,6 +6,7 @@ import org.bukkit.Location;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
@@ -98,7 +99,7 @@ public class User {
         oldfile.delete();
         String code = generateConfirmationCode();
         AuthTGEM.bot.sendMessage(message.getChatId(), "[Бот] В игре выполните команду /code " + code + " что бы привязать аккаунт.");
-        p.sendMessage(ChatColor.RED + "[MT] Выполните команду /code (из телеграмма). Если это не вы, то проигнорируйте это сообщение.");
+        p.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] &c&lВыполните команду /code (из телеграмма). Если это не вы, то проигнорируйте это сообщение."));
         CodeCMD.code.put(p.getUniqueId(), code);
 
     }
@@ -257,7 +258,7 @@ public class User {
     public void unlink(){
         String code = generateConfirmationCode();
         this.sendMessage("Выполните в игре команду: /code " + code + " что бы отвязать аккаунт.");
-        this.player.sendMessage( ChatColor.RED + "[MT] Выполните в игре команду: /code <код из телеграмма> что бы отвязать аккаунт.");
+        this.player.sendMessage( ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] Выполните в игре команду: /code <код из телеграмма> что бы отвязать аккаунт."));
         CodeCMD.code.put(this.player.getUniqueId(), code);
 
     }
@@ -374,10 +375,10 @@ public class User {
     public static String getplayerstatus(String playername){
         User user = User.getUser(playername);
         if(user.player != null){
-            return " [Online]";
+            return ChatColor.translateAlternateColorCodes('&', " &a&l[Online]");
         }
         else{
-            return " [Offline]";
+            return ChatColor.translateAlternateColorCodes('&', " &c&l[Offline]");
         }
     }
     public String remFriend(String friendname) {
@@ -388,10 +389,10 @@ public class User {
             User frienduser = User.getUser(friendname);
             if (frienduser != null) {
                 frienduser.remFriendFromConf(this.playername);
-                if (frienduser.player != null) player.sendMessage(ChatColor.GREEN + "[MT] " + this.player.getName() + " удалил вас из друзей");
+                if (frienduser.player != null) player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] &a&l" + this.player.getName() + " удалил вас из друзей"));
                 frienduser.sendMessage(this.player.getName() + " удалил вас из друзей");
             }
-            return ChatColor.RED + "[MT] Вы удалили " + friendname + " из друзей";
+            return ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] &a&l[MT] Вы удалили " + friendname + " из друзей");
         }
     }
     public void sendMessageB(String message, String friend) {

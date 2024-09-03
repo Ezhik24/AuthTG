@@ -22,7 +22,7 @@ public class CodeCMD implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
         if (strings.length == 0) {
-            commandSender.sendMessage(ChatColor.RED + "[MT] Неверный ввод команды: Введите команду так: /code <код>");
+            commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] &c&lКоманда введена неверно. Введите команду так: /code <код>"));
         } else {
             Player player = (Player) commandSender;
             YamlConfiguration userconf = new YamlConfiguration();
@@ -39,7 +39,7 @@ public class CodeCMD implements CommandExecutor {
                     userconf.set("active", false);
                     userconf.set("twofactor", false);
                     code.remove(player.getUniqueId());
-                    player.sendMessage(ChatColor.RED + "[MT] Аккаунт успешно деактивирован!");
+                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] &c&lАккаунт был успешно деактивирован"));
                     try {
                         userconf.save(file);
                     } catch (IOException e) {
@@ -48,7 +48,7 @@ public class CodeCMD implements CommandExecutor {
                 } else {
                     userconf.set("active", true);
                     code.remove(player.getUniqueId());
-                    player.sendMessage(ChatColor.GREEN + "[MT] Аккаунт успешно активирован!");
+                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] &a&lАккаунт был успешно активирован"));
                     try {
                         userconf.save(file);
                     } catch (IOException e) {
@@ -60,7 +60,7 @@ public class CodeCMD implements CommandExecutor {
                 }
 
 
-            } else player.sendMessage(ChatColor.RED + "[MT] Неверный код активации аккаунта. Попробуйте ещё раз");
+            } else player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] &c&lНеверный код. Попробуйте еще раз."));
         }
         return true;
     }

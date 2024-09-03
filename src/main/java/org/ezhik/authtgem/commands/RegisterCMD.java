@@ -20,7 +20,7 @@ public class RegisterCMD implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
         if (strings.length < 2) {
-            commandSender.sendMessage(ChatColor.RED + "[MT] Неверена введена команда. Введите команду так: /register <пароль> <повторите пароль>");
+            commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] &c&lКоманда введена неверно. Введите команду так: /register <пароль> <повтор пароля>"));
             return false;
         }
         Player player = (Player) commandSender;
@@ -42,16 +42,16 @@ public class RegisterCMD implements CommandExecutor {
                 } catch (IOException e) {
                     System.out.println("Error saving config file: " + e);
                 }
-                player.sendMessage(ChatColor.GREEN + "[MT] Вы успешно зарегистрировались!");
+                player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] &a&lВы успешно зарегистрировали аккаунт"));
                 player.resetTitle();
 
 
                 FreezerEvent.unfreezeplayer(player.getName());
                 MuterEvent.unmute(player.getName());
-            } else player.sendMessage(ChatColor.RED + "[MT] Пароли не совпадают!");
+            } else player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] &c&lПароли не совпадают"));
         }
         else {
-            player.sendMessage(ChatColor.RED + "[MT] Вы уже зарегистрированы! Для сброса пароля обратитесь к Администратору!");
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] &c&lВы уже зарегистрированы.Для сброса пароля обратитесь к Администратору"));
         }
         return true;
     }

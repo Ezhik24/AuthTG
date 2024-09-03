@@ -31,18 +31,18 @@ public class LoginCMD implements CommandExecutor {
             }
             if (userconfig.getString("password").equals(PasswordHasher.hashPassword(strings[0]))) {
                 if (!userconfig.contains("twofactor") || !userconfig.getBoolean("twofactor")) {
-                    p.sendMessage(ChatColor.GREEN + "[MT] Вы успешно вошли в аккаунт");
+                    p.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] &a&lВы успешно вошли в игру"));
                     FreezerEvent.unfreezeplayer(p.getName());
                     MuterEvent.unmute(p.getName());
                     p.resetTitle();
                 } else {
                     User user = User.getUser(p.getUniqueId());
                     user.sendLoginAccepted("[Бот] Это вы вошли в игру?");
-                    p.sendMessage(ChatColor.GREEN + "[MT] Потвердите вход через Телеграмм");
-                    p.sendTitle(ChatColor.RED + "Потвердите вход", "через Телеграмм", 20, 1000000000, 0);
+                    p.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] &a&lЭто вы вошли в игру?"));
+                    p.sendTitle(ChatColor.translateAlternateColorCodes('&', "&c&l") + "Потвердите вход", "через Телеграмм", 20, 1000000000, 0);
                 }
             } else {
-                p.sendMessage(ChatColor.RED + "[MT] Неверный пароль");
+                p.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] &c&lНеверный пароль"));
             }
             userconfig.set("playername", p.getName());
             try {
@@ -52,7 +52,7 @@ public class LoginCMD implements CommandExecutor {
             }
         } else {
             Player player = (Player) commandSender;
-            player.sendMessage(ChatColor.RED + "[MT] Неправильно введена команда. Введите команду так: /login <пароль>");
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] &c&lКоманда введена неверно. Введите команду так: /login <пароль>"));
 
         }
         return true;

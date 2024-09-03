@@ -1,6 +1,7 @@
 package org.ezhik.authtgem;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.ezhik.authtgem.commands.*;
 import org.ezhik.authtgem.events.BlockCommandEvent;
@@ -16,9 +17,10 @@ public final class AuthTGEM extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        System.out.println("Пожалуйста,подпишитесь на мой телеграмм канал https://t.me/ezhichek11");
-        System.out.println("Please,subcribe for my telegram channel https://t.me/ezhichek11");
-        System.out.println("MineTelegramm plugin has been enabled");
+        System.out.println(ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] Пожалуйста,подпишитесь на мой телеграмм канал https://t.me/ezhichek11"));
+        System.out.println(ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] Please,subcribe for my telegram channel https://t.me/ezhichek11"));
+        System.out.println(ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] &c&lПлагин включен!"));
+        System.out.println(ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] Plugin enabled!"));
         Bukkit.getServer().getPluginManager().registerEvents(new FreezerEvent(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new OnJoinEvent(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new MuterEvent(), this);
@@ -54,9 +56,10 @@ public final class AuthTGEM extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        System.out.println("Пожалуйста,подпишитесь на мой телеграмм канал https://t.me/ezhichek11");
-        System.out.println("Please,subcribe for my telegram channel https://t.me/ezhichek11");
-        // Plugin shutdown logic
+        System.out.println(ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] Пожалуйста,подпишитесь на мой телеграмм канал https://t.me/ezhichek11"));
+        System.out.println(ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] Please,subcribe for my telegram channel https://t.me/ezhichek11"));
+        System.out.println(ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] &c&lПлагин выключен!"));
+        System.out.println(ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] Plugin disabled!"));
     }
 
 
