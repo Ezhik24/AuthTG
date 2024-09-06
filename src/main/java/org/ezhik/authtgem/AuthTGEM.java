@@ -20,7 +20,7 @@ public final class AuthTGEM extends JavaPlugin {
         System.out.println(ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] Пожалуйста,подпишитесь на мой телеграмм канал https://t.me/ezhichek11"));
         System.out.println(ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] Please,subcribe for my telegram channel https://t.me/ezhichek11"));
         System.out.println(ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] &c&lПлагин включен!"));
-        System.out.println(ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] Plugin enabled!"));
+        System.out.println(ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] &c&lPlugin enabled!"));
         Bukkit.getServer().getPluginManager().registerEvents(new FreezerEvent(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new OnJoinEvent(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new MuterEvent(), this);
@@ -59,7 +59,7 @@ public final class AuthTGEM extends JavaPlugin {
         System.out.println(ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] Пожалуйста,подпишитесь на мой телеграмм канал https://t.me/ezhichek11"));
         System.out.println(ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] Please,subcribe for my telegram channel https://t.me/ezhichek11"));
         System.out.println(ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] &c&lПлагин выключен!"));
-        System.out.println(ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] Plugin disabled!"));
+        System.out.println(ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] &c&lPlugin disabled!"));
     }
 
 
