@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.ezhik.authtgem.MessageTranslationMC;
 import org.ezhik.authtgem.User;
 
 import java.io.File;
@@ -30,7 +31,7 @@ public class OnJoinEvent implements Listener {
                 u.sendMessageB(p.getName() + " вошёл в игру", p.getName());
             }
         } else {
-            p.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] &c&lПривяжите аккаунт к Телеграмму"));
+            p.sendMessage(ChatColor.translateAlternateColorCodes('&',MessageTranslationMC.tg_asign));
         }
     }
 }
