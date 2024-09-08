@@ -11,6 +11,9 @@ import java.lang.reflect.Field;
 public class MessageTranslationTG {
     public static String code_accept_message = "[Бот] В игре выполните команду /code {CODE} что бы привязать аккаунт.";
     public static String start_message = "[Бот] Выполните следующие пункты:\n1.Войдите в игру.\n2.Авторизуйтесь.\n3.Напишите свой никнейм.";
+    public static String friendadd = "Вы хотите добавить {PLAYER_NAME} в друзья?";
+    public static String friendadd_no = "Нет";
+    public static String friendadd_yes = "Да";
 
     public static void load() {
         File file = new File("plugins/Minetelegram/messagetg.yml");
@@ -20,6 +23,9 @@ public class MessageTranslationTG {
         } catch (FileNotFoundException e) {
             message_tg.set("Code_Accept_Message", code_accept_message);
             message_tg.set("Start_Message", start_message);
+            message_tg.set("FriendAdd", friendadd);
+            message_tg.set("FriendAdd_No", friendadd_no);
+            message_tg.set("FriendAdd_Yes", friendadd_yes);
             try {
                 message_tg.save(file);
             } catch (IOException ex) {
@@ -32,5 +38,8 @@ public class MessageTranslationTG {
         }
         code_accept_message = message_tg.getString("Code_Accept_Message");
         start_message = message_tg.getString("Start_Message");
+        friendadd = message_tg.getString("FriendAdd");
+        friendadd_no = message_tg.getString("FriendAdd_No");
+        friendadd_yes = message_tg.getString("FriendAdd_Yes");
     }
 }

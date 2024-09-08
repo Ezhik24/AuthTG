@@ -391,7 +391,7 @@ public class User {
                 if (frienduser.player != null) player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] &a&l" + this.player.getName() + " удалил вас из друзей"));
                 frienduser.sendMessage(this.player.getName() + " удалил вас из друзей");
             }
-            return ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] &a&l[MT] Вы удалили " + friendname + " из друзей");
+            return ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] Вы удалили " + friendname + " из друзей");
         }
     }
     public void sendMessageB(String message, String friend) {
