@@ -10,7 +10,7 @@ import java.lang.reflect.Field;
 
 public class MessageTranslationTG {
     public static String code_accept_message = "[Бот] В игре выполните команду /code {CODE} что бы привязать аккаунт.";
-    public static String start_message = "[Бот] Выполните следующие пункты:\n1.Войдите в игру.\n2.Авторизуйтесь.\n3.Напишите свой никнейм.";
+    public static String start_message = "[Бот] Выполните следующие пункты: {BR} 1.Войдите в игру. {BR} 2.Авторизуйтесь. {BR} 3.Напишите свой никнейм.";
     public static String friendadd = "Вы хотите добавить {PLAYER_NAME} в друзья?";
     public static String friendadd_no = "Нет";
     public static String friendadd_yes = "Да";

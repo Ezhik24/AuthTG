@@ -104,7 +104,7 @@ public class User {
     }
 
     public static void starcmd(Message message) {
-        AuthTGEM.bot.sendMessage(message.getChatId(), MessageTranslationTG.start_message);
+        AuthTGEM.bot.sendMessage(message.getChatId(), MessageTranslationTG.start_message.replace("{BR}", "\n"));
     }
 
     public static boolean isNickname(String nickname){
