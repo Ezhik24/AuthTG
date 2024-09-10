@@ -1,3 +1,2 @@
-org\ezhik\authtgem\events\BlockCommandEvent.class
-org\ezhik\authtgem\MessageTranslationTG.class
-org\ezhik\authtgem\MessageTranslationMC.class
+org/ezhik/authtgem/MessageTranslationMC.class
+org/ezhik/authtgem/MessageTranslationTG.class
