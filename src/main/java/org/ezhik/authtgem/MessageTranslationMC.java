@@ -16,7 +16,7 @@ public class MessageTranslationMC {
     public static String command_entered_incorrently_addfriend = "&f&l[&b&lMT&f&l] &c&lКоманда введена неверно. Введите команду так: /addfriend <ник>";
 
     public static void load(){
-        File file = new File("plugins/Minetelegram/messagemc.yml");
+        File file = new File("plugins/Minetelegram/messageMC_RU.yml");
         YamlConfiguration message_mc = new YamlConfiguration();
         try {
             message_mc.load(file);

@@ -16,7 +16,7 @@ public class MessageTranslationTG {
     public static String friendadd_yes = "Да";
 
     public static void load() {
-        File file = new File("plugins/Minetelegram/messagetg.yml");
+        File file = new File("plugins/Minetelegram/messageTG_RU.yml");
         YamlConfiguration message_tg = new YamlConfiguration();
         try {
             message_tg.load(file);
