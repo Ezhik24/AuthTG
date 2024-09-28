@@ -97,14 +97,14 @@ public class User {
         File oldfile = new File("plugins/Minetelegram/users/" + message.getChatId().toString() + ".yml");
         oldfile.delete();
         String code = generateConfirmationCode();
-        AuthTGEM.bot.sendMessage(message.getChatId(), MessageTranslationTG.code_accept_message.replace("{CODE}", code));
-        p.sendMessage(ChatColor.translateAlternateColorCodes('&', MessageTranslationMC.code_accept_message));
+        AuthTGEM.bot.sendMessage(message.getChatId(), "[Бот] В игре выполните команду /code " + code + " что бы привязать аккаунт.");
+        p.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] &c&lВыполните команду /code (из телеграмма). Если это не вы, то проигнорируйте это сообщение."));
         CodeCMD.code.put(p.getUniqueId(), code);
 
     }
 
     public static void starcmd(Message message) {
-        AuthTGEM.bot.sendMessage(message.getChatId(), MessageTranslationTG.start_message.replace("{BR}", "\n"));
+        AuthTGEM.bot.sendMessage(message.getChatId(), "[Бот] Выполните следующие пункты: \n 1.Войдите в игру. \n 2.Авторизуйтесь. \n 3.Напишите свой никнейм.");
     }
 
     public static boolean isNickname(String nickname){
