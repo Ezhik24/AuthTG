@@ -18,7 +18,7 @@ public class MessageTranslationTG extends HashMap<String, String>{
             messageconfig.load(configfile);
 
         } catch (FileNotFoundException e) {
-            this.put("assign_acc", "[Бот] Привяжите телеграм к аккаунту");
+            this.put("tg_noasign_hashtag", "[Бот] Привяжите учётную запись к телеграму.");
             this.put("addfriends_yes", "Да");
             this.put("addfriends_no", "Нет");
             this.put("start_message", "[Бот] Выполните следующие пункты: {BR} 1.Войдите в игру. {BR} 2.Авторизуйтесь. {BR} 3.Напишите свой никнейм.");

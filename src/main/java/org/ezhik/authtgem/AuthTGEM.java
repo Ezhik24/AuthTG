@@ -43,6 +43,7 @@ public final class AuthTGEM extends JavaPlugin {
         bot = new BotTelegram();
         if (bot.getBotToken() == "changeme" && bot.getBotUsername() == "changeme") {
             System.out.println("Please set your bot token and username in config.yml");
+            System.out.println("Пожалуйста, укажите ваш токен и имя в config.yml");
         } else {
             TelegramBotsApi botsApi = null;
             try {
