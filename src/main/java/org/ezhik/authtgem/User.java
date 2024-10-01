@@ -104,7 +104,7 @@ public class User {
     }
 
     public static void starcmd(Message message) {
-        AuthTGEM.bot.sendMessage(message.getChatId(), "[Бот] Выполните следующие пункты: \n 1.Войдите в игру. \n 2.Авторизуйтесь. \n 3.Напишите свой никнейм.");
+        AuthTGEM.bot.sendMessage(message.getChatId(), AuthTGEM.messageTG.get("start_message"));
     }
 
     public static boolean isNickname(String nickname){

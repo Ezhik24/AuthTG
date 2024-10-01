@@ -73,7 +73,7 @@ public class BotTelegram extends TelegramLongPollingBot {
                 User user = User.getCurrentUser(update.getMessage().getChatId());
                 String message = update.getMessage().getText().toString().replace("#", "");
                 if (user == null){
-                    this.sendMessage(update.getMessage().getChatId(), "[Бот] Привяжите телеграм к аккаунту");
+                    this.sendMessage(update.getMessage().getChatId(), AuthTGEM.messageTG.get("assign_acc"));
                 }else {
                     if (user.player != null){
                         Handler.sendMCmessage(user.playername, message);

@@ -11,19 +11,23 @@ import java.util.Map;
 
 public class MessageTranslationTG extends HashMap<String, String>{
 
-    public  MessageTranslationTG(){
+    public  MessageTranslationTG() {
         File configfile = new File("plugins/Minetelegram/messages/messageTG_RU.yml");
         YamlConfiguration messageconfig = new YamlConfiguration();
         try {
             messageconfig.load(configfile);
 
         } catch (FileNotFoundException e) {
-            this.put("assign_acc","[Бот] Привяжите телеграм к аккаунту");
+            this.put("assign_acc", "[Бот] Привяжите телеграм к аккаунту");
+            this.put("addfriends_yes", "Да");
+            this.put("addfriends_no", "Нет");
+            this.put("start_message", "[Бот] Выполните следующие пункты: {BR} 1.Войдите в игру. {BR} 2.Авторизуйтесь. {BR} 3.Напишите свой никнейм.");
 
             File newconfigfile = new File("plugins/Minetelegram/messages/messageTG_RU.yml");
             YamlConfiguration newmessageconfig = new YamlConfiguration();
-            for(String key : this.keySet()){
+            for (String key : this.keySet()) {
                 newmessageconfig.set(key, this.get(key));
+                this.replace(key, this.get(key).replace("{BR}", "\n"));
             }
             try {
                 newmessageconfig.save(newconfigfile);
@@ -34,6 +38,9 @@ public class MessageTranslationTG extends HashMap<String, String>{
             System.out.println("Error loading config file: " + e);
         } catch (InvalidConfigurationException e) {
             System.out.println("Error parsing config file: " + e);
+        }
+        for (String key : messageconfig.getKeys(false)) {
+            this.put(key, messageconfig.getString(key).replace("{BR}", "\n"));
         }
     }
 }

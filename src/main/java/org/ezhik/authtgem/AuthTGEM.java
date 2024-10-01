@@ -14,6 +14,7 @@ import org.telegram.telegrambots.meta.TelegramBotsApi;
 
 public final class AuthTGEM extends JavaPlugin {
     public static BotTelegram bot;
+    public static MessageTranslationTG messageTG;
 
     @Override
     public void onEnable() {
@@ -38,6 +39,7 @@ public final class AuthTGEM extends JavaPlugin {
         getCommand("listfriends").setExecutor(new ListFriendsCMD());
         getCommand("tellfriends").setExecutor(new TellFriendsCMD());
         getCommand("setspawn").setExecutor(new SetSpawnCMD());
+        messageTG = new MessageTranslationTG();
         bot = new BotTelegram();
         if (bot.getBotToken() == "changeme" && bot.getBotUsername() == "changeme") {
             System.out.println("Please set your bot token and username in config.yml");
