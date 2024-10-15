@@ -20,15 +20,15 @@ public class AddFriendCMD implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
         if (strings.length == 0) {
-            commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] &c&lКоманда введена неверно. Введите команду так: /addfriend <ник>"));
+            commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.get("addfriends_wrong_command")));
         } else {
             Player player1 = (Player) commandSender;
             User user1 = User.getUser(player1.getUniqueId());
             if (user1 == null) {
-                commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] &c&lПривяжите аккаунт к телеграмму"));
+                commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.get("addfriends_tg_noasign")));
             } else {
                 if (user1.friends.contains(strings[0]) || user1.playername == strings[0]) {
-                    commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] &c&lВы уже добавляли этого игрока в друзья"));
+                    commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.get("friend_already_added")));
                 } else {
                     InlineKeyboardMarkup keyb = new InlineKeyboardMarkup();
                     List<InlineKeyboardButton> colkeyb = new ArrayList<>();
@@ -48,7 +48,7 @@ public class AddFriendCMD implements CommandExecutor {
                     User user = User.getUser(strings[0]);
                     if (user != null) {
                         sendMessage.setChatId(user.chatid);
-                        sendMessage.setText("Вы хотите добавить " + commandSender.getName() + " в друзья?");
+                        sendMessage.setText(AuthTGEM.messageTG.getAddFriendsReq(commandSender));
                         sendMessage.setReplyMarkup(keyb);
                         try {
                             AuthTGEM.bot.execute(sendMessage);
@@ -56,7 +56,7 @@ public class AddFriendCMD implements CommandExecutor {
                             System.out.println("Error sending message: " + e);
                             }
                     } else {
-                        commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] &c&lДанный игрок не привязывал аккаунт к телеграмму"));
+                        commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.get("friend_tg_noasign")));
                         }
                     }
 

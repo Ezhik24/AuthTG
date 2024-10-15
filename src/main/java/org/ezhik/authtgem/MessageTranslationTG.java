@@ -1,5 +1,6 @@
 package org.ezhik.authtgem;
 
+import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -21,6 +22,7 @@ public class MessageTranslationTG extends HashMap<String, String>{
             this.put("tg_noasign_hashtag", "[Бот] Привяжите учётную запись к телеграму.");
             this.put("addfriends_yes", "Да");
             this.put("addfriends_no", "Нет");
+            this.put("addfriends_req", "Вы хотите добавить {PLAYER} в друзья?");
             this.put("start_message", "[Бот] Выполните следующие пункты: {BR} 1.Войдите в игру. {BR} 2.Авторизуйтесь. {BR} 3.Напишите свой никнейм.");
 
             File newconfigfile = new File("plugins/Minetelegram/messages/messageTG_RU.yml");
@@ -42,5 +44,8 @@ public class MessageTranslationTG extends HashMap<String, String>{
         for (String key : messageconfig.getKeys(false)) {
             this.put(key, messageconfig.getString(key).replace("{BR}", "\n"));
         }
+    }
+    public String getAddFriendsReq(CommandSender sender) {
+        return this.get("addfriends_req").replace("{PLAYER}", sender.getName());
     }
 }

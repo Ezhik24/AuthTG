@@ -7,7 +7,9 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.ezhik.authtgem.AuthTGEM;
 import org.ezhik.authtgem.PasswordHasher;
+import sun.security.krb5.internal.rcache.AuthTimeWithHash;
 
 import java.io.File;
 import java.io.IOException;
@@ -34,11 +36,11 @@ public class ChangepasswordCMD implements CommandExecutor {
                     } catch (IOException e) {
                         System.out.println("Error saving config file: " + e);
                     }
-                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] &a&lВы успешно изменили пароль"));
-                } else player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] &c&lНеверный старый пароль"));
-            } else player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] &c&lПароли не совпадают"));
-        }else {
-            player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] &c&lКоманда введена неверно. Введите команду так: /changepassword <старый пароль> <новый пароль>"));
+                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.get("changepassword_success")));
+                } else player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.get("changepassword_oldpasswd_wrong")));
+            } else player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.get("changepassword_newpasswd_wrong")));
+        } else {
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageTG.get("changepassword_wrong_command")));
         }
 
         return true;
