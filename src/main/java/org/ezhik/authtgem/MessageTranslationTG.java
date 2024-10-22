@@ -11,7 +11,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MessageTranslationTG extends HashMap<String, String>{
-
     public  MessageTranslationTG() {
         File configfile = new File("plugins/Minetelegram/messages/messageTG_RU.yml");
         YamlConfiguration messageconfig = new YamlConfiguration();

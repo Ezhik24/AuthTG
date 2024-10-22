@@ -24,6 +24,7 @@ public class MessageTranslationMC extends HashMap<String, String> {
             this.put("changepassword_oldpasswd_wrong", "&f&l[&b&lMT&f&l] &c&lНеверный старый пароль");
             this.put("changepassword_newpasswd_wrong", "&f&l[&b&lMT&f&l] &c&lПароли не совпадают");
             this.put("changepassword_wrong_command", "&f&l[&b&lMT&f&l] &c&lКоманда введена неверно. Введите команду так: /changepassword <старый пароль> <новый пароль>");
+            this.put("code_wrong_command", "&f&l[&b&lMT&f&l] &c&lКоманда введена неверно. Введите команду так: /code <код>");
             File newconfigfile = new File("plugins/Minetelegram/messages/messageMC_RU.yml");
             YamlConfiguration newmessageconfig = new YamlConfiguration();
             for (String key : this.keySet()) {
