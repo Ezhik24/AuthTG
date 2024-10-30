@@ -119,7 +119,7 @@ public class User {
 
 
     public void sendMessage(String message) {
-        AuthTGEM.bot.sendMessage(this.chatid, "[Бот@" + this.playername + "] " + message);
+        AuthTGEM.bot.sendMessage(this.chatid, "[" + AuthTGEM.messageTG.get("prefix") + this.playername + "] " + message);
     }
 
 

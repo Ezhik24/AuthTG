@@ -39,7 +39,7 @@ public class CodeCMD implements CommandExecutor {
                     userconf.set("active", false);
                     userconf.set("twofactor", false);
                     code.remove(player.getUniqueId());
-                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] &c&lАккаунт был успешно деактивирован"));
+                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.get("code_account_deactivated")));
                     try {
                         userconf.save(file);
                     } catch (IOException e) {
@@ -48,19 +48,19 @@ public class CodeCMD implements CommandExecutor {
                 } else {
                     userconf.set("active", true);
                     code.remove(player.getUniqueId());
-                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] &a&lАккаунт был успешно активирован"));
+                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.get("code_account_activated")));
                     try {
                         userconf.save(file);
                     } catch (IOException e) {
                         System.out.println("Error saving config file: " + e);
                     }
                     User user = User.getUser(player.getUniqueId());
-                    user.sendMessage(" Ваш аккаунт успешно активирован!");
+                    user.sendMessage(AuthTGEM.messageTG.get("code_account_activated"));
 
                 }
 
 
-            } else player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] &c&lНеверный код. Попробуйте еще раз."));
+            } else player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.get("code_invalid")));
         }
         return true;
     }

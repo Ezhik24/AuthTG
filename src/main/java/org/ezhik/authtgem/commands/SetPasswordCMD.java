@@ -8,6 +8,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.ezhik.authtgem.AuthTGEM;
 import org.ezhik.authtgem.PasswordHasher;
 
 import java.io.File;
@@ -35,14 +36,15 @@ public class SetPasswordCMD implements CommandExecutor {
                     } catch (IOException e) {
                         System.out.println("Error saving config file: " + e);
                     }
-                    commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] &a&lВы успешно изменили пароль игроку" + player.getName()));
+
+                    commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] &a&lВы успешно изменили пароль игроку " + player.getName()));
                 } else {
-                    commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] &c&lПароли не совпадают"));
+                    commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.get("setpassword_wrong_password")));
                 }
             } else
-                commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] &c&lКоманда введена неверно. Введите команду так: /setpassword <ник> <старый пароль> <новый пароль>"));
+                commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.get("setpassword_wrong_command")));
         } else {
-            commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] &c&lУ вас нет прав для использования этой команды"));
+            commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.get("setpassword_nopermission")));
         }
         return true;
     }

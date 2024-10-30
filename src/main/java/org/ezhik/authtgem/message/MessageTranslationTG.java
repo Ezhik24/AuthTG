@@ -1,16 +1,18 @@
-package org.ezhik.authtgem;
+package org.ezhik.authtgem.message;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.ezhik.authtgem.User;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Map;
+import java.util.LinkedHashMap;
 
-public class MessageTranslationTG extends HashMap<String, String>{
+public class MessageTranslationTG extends LinkedHashMap<String, String> {
+
     public  MessageTranslationTG() {
         File configfile = new File("plugins/Minetelegram/messages/messageTG_RU.yml");
         YamlConfiguration messageconfig = new YamlConfiguration();
@@ -18,11 +20,14 @@ public class MessageTranslationTG extends HashMap<String, String>{
             messageconfig.load(configfile);
 
         } catch (FileNotFoundException e) {
+            this.put("prefix", "Бот@");
+            this.put("start_message", "[Бот] Выполните следующие пункты: {BR} 1.Войдите в игру. {BR} 2.Авторизуйтесь. {BR} 3.Напишите свой никнейм.");
             this.put("tg_noasign_hashtag", "[Бот] Привяжите учётную запись к телеграму.");
             this.put("addfriends_yes", "Да");
             this.put("addfriends_no", "Нет");
             this.put("addfriends_req", "Вы хотите добавить {PLAYER} в друзья?");
-            this.put("start_message", "[Бот] Выполните следующие пункты: {BR} 1.Войдите в игру. {BR} 2.Авторизуйтесь. {BR} 3.Напишите свой никнейм.");
+            this.put("code_account_activated", "Ваш аккаунт успешно активирован!");
+            this.put("login_who_entered","[Бот] Это вы вошли в игру?");
 
             File newconfigfile = new File("plugins/Minetelegram/messages/messageTG_RU.yml");
             YamlConfiguration newmessageconfig = new YamlConfiguration();

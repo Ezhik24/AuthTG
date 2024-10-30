@@ -7,6 +7,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.ezhik.authtgem.AuthTGEM;
 import org.ezhik.authtgem.PasswordHasher;
 import org.ezhik.authtgem.events.FreezerEvent;
 import org.ezhik.authtgem.events.MuterEvent;
@@ -20,7 +21,7 @@ public class RegisterCMD implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
         if (strings.length < 2) {
-            commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] &c&lКоманда введена неверно. Введите команду так: /register <пароль> <повтор пароля>"));
+            commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.get("register_wrong_command")));
             return false;
         }
         Player player = (Player) commandSender;
@@ -42,16 +43,16 @@ public class RegisterCMD implements CommandExecutor {
                 } catch (IOException e) {
                     System.out.println("Error saving config file: " + e);
                 }
-                player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] &a&lВы успешно зарегистрировали аккаунт"));
+                player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.get("register_successful_register")));
                 player.resetTitle();
 
 
                 FreezerEvent.unfreezeplayer(player.getName());
                 MuterEvent.unmute(player.getName());
-            } else player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] &c&lПароли не совпадают"));
+            } else player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.get("register_wrong_passwords")));
         }
         else {
-            player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] &c&lВы уже зарегистрированы.Для сброса пароля обратитесь к Администратору"));
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.get("register_already_register")));
         }
         return true;
     }

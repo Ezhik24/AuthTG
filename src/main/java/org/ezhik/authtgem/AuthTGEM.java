@@ -8,6 +8,8 @@ import org.ezhik.authtgem.events.BlockCommandEvent;
 import org.ezhik.authtgem.events.FreezerEvent;
 import org.ezhik.authtgem.events.MuterEvent;
 import org.ezhik.authtgem.events.OnJoinEvent;
+import org.ezhik.authtgem.message.MessageTranslationMC;
+import org.ezhik.authtgem.message.MessageTranslationTG;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 import org.telegram.telegrambots.meta.TelegramBotsApi;

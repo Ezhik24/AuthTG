@@ -7,6 +7,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.ezhik.authtgem.AuthTGEM;
 import org.ezhik.authtgem.PasswordHasher;
 import org.ezhik.authtgem.User;
 import org.ezhik.authtgem.events.FreezerEvent;
@@ -31,18 +32,18 @@ public class LoginCMD implements CommandExecutor {
             }
             if (userconfig.getString("password").equals(PasswordHasher.hashPassword(strings[0]))) {
                 if (!userconfig.contains("twofactor") || !userconfig.getBoolean("twofactor")) {
-                    p.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] &a&lВы успешно вошли в игру"));
+                    p.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.get("login_successful_login")));
                     FreezerEvent.unfreezeplayer(p.getName());
                     MuterEvent.unmute(p.getName());
                     p.resetTitle();
                 } else {
                     User user = User.getUser(p.getUniqueId());
-                    user.sendLoginAccepted("[Бот] Это вы вошли в игру?");
-                    p.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] &a&lЭто вы вошли в игру?"));
-                    p.sendTitle(ChatColor.translateAlternateColorCodes('&', "&c&l") + "Потвердите вход", "через Телеграмм", 20, 1000000000, 0);
+                    user.sendLoginAccepted(AuthTGEM.messageTG.get("login_who_entered"));
+                    p.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.get("login_who_entered")));
+                    p.sendTitle(ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.get("login_title_tg_s1color")) + AuthTGEM.messageMC.get("login_title_tg_s1"),AuthTGEM.messageMC.get("login_title_tg_s2") , 20, 1000000000, 0);
                 }
             } else {
-                p.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] &c&lНеверный пароль"));
+                p.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.get("login_wrong_password")));
             }
             userconfig.set("playername", p.getName());
             try {
@@ -52,7 +53,7 @@ public class LoginCMD implements CommandExecutor {
             }
         } else {
             Player player = (Player) commandSender;
-            player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] &c&lКоманда введена неверно. Введите команду так: /login <пароль>"));
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.get("login_wrong_command")));
 
         }
         return true;

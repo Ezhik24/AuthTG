@@ -42,7 +42,6 @@ public class ChangepasswordCMD implements CommandExecutor {
         } else {
             player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageTG.get("changepassword_wrong_command")));
         }
-
         return true;
     }
 
