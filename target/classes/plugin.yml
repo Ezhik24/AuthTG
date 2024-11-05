@@ -16,7 +16,6 @@ commands:
     description: 'Добавить  в друзья'
   code:
     description: 'Код потверждения'
-    usage: '/code <код>'
   register:
     description: 'Регистрация'
     aliases:
@@ -30,12 +29,8 @@ commands:
     aliases:
       - 'cp'
   setpassword:
-    permission: 'minetelegram.setpassword'
     description: 'Установка пароля'
   tgbc:
     description: 'Telegramm Broadcast Command'
-    usage: '/tgbc <message>'
-    permission: 'minetelegram.tgbc'
   setspawn:
     description: 'Поставить точку спавна'
-    permission: 'minetelegram.setspawn'

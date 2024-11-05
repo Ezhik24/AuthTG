@@ -57,11 +57,12 @@ public class MessageTranslationMC extends LinkedHashMap<String, String> {
             this.put("setpassword_wrong_command", "{PREFIX} &c&lКоманда введена неверно. Введите команду так: /setpassword <ник> <старый пароль> <новый пароль>");
             this.put("setpassword_nopermission", "{PREFIX} &c&lУ вас нет прав для использования этой команды");
             this.put("setpassword_wrong_password","{PREFIX} &c&lПароли не совпадают");
+            this.put("setpassword_succesfly_chanpass","&f&l[&b&lMT&f&l] &a&lВы успешно изменили пароль игроку {PLAYER}");
             File newconfigfile = new File("plugins/Minetelegram/messages/messageMC_RU.yml");
             YamlConfiguration newmessageconfig = new YamlConfiguration();
             for (String key : this.keySet()) {
                 newmessageconfig.set(key, this.get(key));
-                this.replace(key, this.get(key).replace("{BR}", "\n")).replace("{PREFIX}","prefix");
+                this.replace(key, this.get(key).replace("{BR}", "\n").replace("{PREFIX}",  ""));
             };
             try {
                 newmessageconfig.save(newconfigfile);
@@ -75,7 +76,11 @@ public class MessageTranslationMC extends LinkedHashMap<String, String> {
             System.out.println("Error parsing config file: " + e);
         }
         for (String key : messageconfig.getKeys(false)) {
-            this.put(key, messageconfig.getString(key).replace("{BR}", "\n"));
+            this.put(key, messageconfig.getString(key).replace("{BR}", "\n").replace("{PREFIX}",""));
         }
+    }
+    public String getSetpasswordPlayerName(String[] strings) {
+        Player player = Bukkit.getPlayer(strings[0]);
+        return this.get("setpassword_succesfly_chanpass").replace("{PLAYER}",player.getName());
     }
 }

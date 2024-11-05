@@ -21,6 +21,8 @@ public final class AuthTGEM extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        messageTG = new MessageTranslationTG();
+        messageMC = new MessageTranslationMC();
         System.out.println(ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] Пожалуйста,подпишитесь на мой телеграмм канал https://t.me/ezhichek11"));
         System.out.println(ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] Please,subcribe for my telegram channel https://t.me/ezhichek11"));
         System.out.println(ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] &c&lПлагин включен!"));
@@ -42,8 +44,6 @@ public final class AuthTGEM extends JavaPlugin {
         getCommand("listfriends").setExecutor(new ListFriendsCMD());
         getCommand("tellfriends").setExecutor(new TellFriendsCMD());
         getCommand("setspawn").setExecutor(new SetSpawnCMD());
-        messageTG = new MessageTranslationTG();
-        messageMC = new MessageTranslationMC();
         bot = new BotTelegram();
         if (bot.getBotToken() == "changeme" && bot.getBotUsername() == "changeme") {
             System.out.println("Please set your bot token and username in config.yml");

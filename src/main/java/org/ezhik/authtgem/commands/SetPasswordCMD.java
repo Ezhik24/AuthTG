@@ -37,7 +37,7 @@ public class SetPasswordCMD implements CommandExecutor {
                         System.out.println("Error saving config file: " + e);
                     }
 
-                    commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] &a&lВы успешно изменили пароль игроку " + player.getName()));
+                    commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.getSetpasswordPlayerName(strings)));
                 } else {
                     commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.get("setpassword_wrong_password")));
                 }
@@ -47,5 +47,6 @@ public class SetPasswordCMD implements CommandExecutor {
             commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.get("setpassword_nopermission")));
         }
         return true;
+
     }
 }
