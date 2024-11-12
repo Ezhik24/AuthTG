@@ -66,7 +66,7 @@ public class MessageTranslationMC extends LinkedHashMap<String, String> {
             YamlConfiguration newmessageconfig = new YamlConfiguration();
             for (String key : this.keySet()) {
                 newmessageconfig.set(key, this.get(key));
-                this.replace(key, this.get(key).replace("{BR}", "\n").replace("{PREFIX}",       get("prefixMC")));
+                this.replace(key, this.get(key).replace("{BR}", "\n").replace("{PREFIX}",get("prefixMC")));
             };
             try {
                 newmessageconfig.save(newconfigfile);
