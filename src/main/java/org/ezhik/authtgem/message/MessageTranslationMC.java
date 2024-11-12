@@ -19,14 +19,14 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 public class MessageTranslationMC extends LinkedHashMap<String, String> {
-
     public  MessageTranslationMC() {
+
         File configfile = new File("plugins/Minetelegram/messages/messageMC_RU.yml");
         YamlConfiguration messageconfig = new YamlConfiguration();
         try {
             messageconfig.load(configfile);
         } catch (FileNotFoundException e) {
-            this.put("prefix", "&f&l[&b&lMT&f&l]");
+            this.put("prefixMC", "&f&l[&b&lMT&f&l]");
             this.put("addfriends_wrong_command", "{PREFIX} &c&lКоманда введена неверно. Введите команду так: /addfriend <ник>");
             this.put("addfriends_tg_noasign", "{PREFIX} &c&lПривяжите аккаунт к телеграмму");
             this.put("friend_tg_noasign", "{PREFIX} &c&lДанный игрок не привязывал аккаунт к телеграмму");
@@ -53,16 +53,20 @@ public class MessageTranslationMC extends LinkedHashMap<String, String> {
             this.put("register_wrong_command", "{PREFIX} &c&lКоманда введена неверно. Введите команду так: /register <пароль> <повтор пароля>");
             this.put("register_successful_register", "{PREFIX} &a&lВы успешно зарегистрировали аккаунт");
             this.put("register_wrong_passwords", "{PREFIX} &c&lПароли не совпадают");
-            this.put("register_already_register", "{PREFIX} &c&lВы уже зарегистрированы.Для сброса пароля обратитесь к Администратору");
-            this.put("setpassword_wrong_command", "{PREFIX} &c&lКоманда введена неверно. Введите команду так: /setpassword <ник> <старый пароль> <новый пароль>");
+            this.put("register_already_register", "{PREFIX} &c&lВы уже зарегистрированы. Для сброса пароля обратитесь к Администратору");
+            this.put("setpassword_wrong_command", "{PREFIX} &c&lКоманда введена неверно. Введите команду так: /setpassword <ник> <новый пароль> <повтор нового пароля>");
             this.put("setpassword_nopermission", "{PREFIX} &c&lУ вас нет прав для использования этой команды");
             this.put("setpassword_wrong_password","{PREFIX} &c&lПароли не совпадают");
-            this.put("setpassword_succesfly_chanpass","&f&l[&b&lMT&f&l] &a&lВы успешно изменили пароль игроку {PLAYER}");
+            this.put("setpassword_succesfly_chanpass","{PREFIX} &a&lВы успешно изменили пароль игроку {PLAYER}");
+            this.put("setspawn_succesfly_none", "{PREFIX} &a&lТочка спавна установлена");
+            this.put("setspawn_succesfly_location", "{PREFIX} &a&lТочка спавна установлена");
+            this.put("setspawn_nopermission", "{PREFIX} &c&lУ вас нет прав для использования этой команды");
+            this.put("tgbc_nopermission", "{PREFIX} &c&lУ вас нет прав для использования этой команды");
             File newconfigfile = new File("plugins/Minetelegram/messages/messageMC_RU.yml");
             YamlConfiguration newmessageconfig = new YamlConfiguration();
             for (String key : this.keySet()) {
                 newmessageconfig.set(key, this.get(key));
-                this.replace(key, this.get(key).replace("{BR}", "\n").replace("{PREFIX}",  ""));
+                this.replace(key, this.get(key).replace("{BR}", "\n").replace("{PREFIX}",       get("prefixMC")));
             };
             try {
                 newmessageconfig.save(newconfigfile);
@@ -76,7 +80,7 @@ public class MessageTranslationMC extends LinkedHashMap<String, String> {
             System.out.println("Error parsing config file: " + e);
         }
         for (String key : messageconfig.getKeys(false)) {
-            this.put(key, messageconfig.getString(key).replace("{BR}", "\n").replace("{PREFIX}",""));
+            this.put(key, messageconfig.getString(key).replace("{BR}", "\n").replace("{PREFIX}",get("prefixMC")));
         }
     }
     public String getSetpasswordPlayerName(String[] strings) {

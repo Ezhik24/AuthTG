@@ -20,7 +20,7 @@ public class MessageTranslationTG extends LinkedHashMap<String, String> {
             messageconfig.load(configfile);
 
         } catch (FileNotFoundException e) {
-            this.put("prefix", "Бот@");
+            this.put("prefixTG", "Бот@");
             this.put("start_message", "[Бот] Выполните следующие пункты: {BR} 1.Войдите в игру. {BR} 2.Авторизуйтесь. {BR} 3.Напишите свой никнейм.");
             this.put("tg_noasign_hashtag", "[Бот] Привяжите учётную запись к телеграму.");
             this.put("addfriends_yes", "Да");

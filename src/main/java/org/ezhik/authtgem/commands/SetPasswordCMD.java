@@ -18,7 +18,7 @@ public class SetPasswordCMD implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
         if (commandSender.hasPermission("minetelegram.setpassword")) {
-            Player player = Bukkit.getPlayer(strings[0]);
+             Player player = Bukkit.getPlayer(strings[0]);
             YamlConfiguration userconfig = new YamlConfiguration();
             File file = new File("plugins/Minetelegram/users/" + player.getUniqueId() + ".yml");
             if (strings.length == 3) {
