@@ -3,12 +3,10 @@ package org.ezhik.authtgem.message;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.ezhik.authtgem.User;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 public class MessageTranslationTG extends LinkedHashMap<String, String> {
@@ -20,7 +18,7 @@ public class MessageTranslationTG extends LinkedHashMap<String, String> {
             messageconfig.load(configfile);
 
         } catch (FileNotFoundException e) {
-            this.put("prefixTG", "Бот@");
+            this.put("prefix", "Бот@");
             this.put("start_message", "[Бот] Выполните следующие пункты: {BR} 1.Войдите в игру. {BR} 2.Авторизуйтесь. {BR} 3.Напишите свой никнейм.");
             this.put("tg_noasign_hashtag", "[Бот] Привяжите учётную запись к телеграму.");
             this.put("addfriends_yes", "Да");
