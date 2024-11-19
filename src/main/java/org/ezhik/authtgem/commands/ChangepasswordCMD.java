@@ -9,7 +9,6 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.ezhik.authtgem.AuthTGEM;
 import org.ezhik.authtgem.PasswordHasher;
-import sun.security.krb5.internal.rcache.AuthTimeWithHash;
 
 import java.io.File;
 import java.io.IOException;

@@ -119,7 +119,7 @@ public class User {
 
 
     public void sendMessage(String message) {
-        AuthTGEM.bot.sendMessage(this.chatid, "[" + AuthTGEM.messageTG.get("prefix") + this.playername + "] " + message);
+        AuthTGEM.bot.sendMessage(this.chatid, AuthTGEM.messageTG.getPlayerNameSM(this.player) + message);
     }
 
 
@@ -199,7 +199,7 @@ public class User {
     }
 
     public void kick(){
-        Handler.kick(this.player.getName(), "Владелец кикнул аккаунт через телеграмм");
+        Handler.kick(this.player.getName(), AuthTGEM.messageTG.get("kick_account_inTG"));
     }
 
     public void resetpassword() {
@@ -405,7 +405,7 @@ public class User {
         rowkeyb.add(colkeyb);
         playerKB.setKeyboard(rowkeyb);
         SendMessage sendMessage = new SendMessage();
-        sendMessage.setText("[Бот@" + this.playername + "] " + message);
+        sendMessage.setText(AuthTGEM.messageTG.getPlayerNameSMB(this.player) + message);
         sendMessage.setChatId(this.chatid);
         sendMessage.setReplyMarkup(playerKB);
         try {

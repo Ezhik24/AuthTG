@@ -65,6 +65,8 @@ public class MessageTranslationMC extends LinkedHashMap<String, String> {
             this.put("setspawn_succesfly_location", "&f&l[&b&lMT&f&l] &a&lТочка спавна установлена");
             this.put("setspawn_nopermission", "&f&l[&b&lMT&f&l] &c&lУ вас нет прав для использования этой команды");
             this.put("tgbc_nopermission", "&f&l[&b&lMT&f&l] &c&lУ вас нет прав для использования этой команды");
+            this.put("command_block","&f&l[&b&lMT&f&l] &c&lЭта команда доступна только для зарегистрированных пользователей!");
+            this.put("joinplayer_tgasign","&f&l[&b&lMT&f&l] &c&lПривяжите аккаунт к Телеграмму");
             File newconfigfile = new File("plugins/Minetelegram/messages/messageMC_RU.yml");
             YamlConfiguration newmessageconfig = new YamlConfiguration();
             for (String key : this.keySet()) {

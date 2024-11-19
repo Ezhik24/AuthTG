@@ -6,6 +6,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerCommandSendEvent;
+import org.ezhik.authtgem.AuthTGEM;
 
 public class BlockCommandEvent implements Listener {
     @EventHandler
@@ -14,7 +15,7 @@ public class BlockCommandEvent implements Listener {
         if(MuterEvent.isMute(player)) {
            if(!(event.getMessage().startsWith("/login") || event.getMessage().startsWith("/register") || event.getMessage().startsWith("/reg") || event.getMessage().startsWith("/l"))) {
                event.setCancelled(true);
-               player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] &c&lЭта команда доступна только для зарегистрированных пользователей!"));
+               player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.get("command_block")));
            }
         }
     }

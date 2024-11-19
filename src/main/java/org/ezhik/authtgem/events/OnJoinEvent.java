@@ -5,6 +5,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.ezhik.authtgem.AuthTGEM;
 import org.ezhik.authtgem.User;
 
 import java.io.File;
@@ -20,7 +21,7 @@ public class OnJoinEvent implements Listener {
             MuterEvent.mute(p.getName(), ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] &c&lАвторизуйтесь! Для авторизации введите команду: /login <пароль>"));
             p.sendTitle(ChatColor.translateAlternateColorCodes('&', "&a&lАвторизуйтесь!"), "для авторизации введите команду: /login <пароль>", 20, 10000000, 0);
         } else {
-            MuterEvent.mute(p.getName(), ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] &c&lАвторизуйтесь! Для авторизации введите команду: /register <пароль> <повтор пароля>"));
+            MuterEvent.mute(p.getName(), ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] &c&lЗарегистрируйтесь! Для авторизации введите команду: /register <пароль> <повтор пароля>"));
             p.sendTitle(ChatColor.translateAlternateColorCodes('&', "&c&lАвторизуйтесь!"), "для авторизации введите команду: /register <пароль> <повтор пароля>", 20, 10000000, 0);
         }
         User user = User.getUser(p.getUniqueId());
@@ -29,7 +30,7 @@ public class OnJoinEvent implements Listener {
                 u.sendMessageB(p.getName() + " вошёл в игру", p.getName());
             }
         } else {
-            p.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] &c&lПривяжите аккаунт к Телеграмму"));
+            p.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.get("joinplayer_tgasign")));
         }
     }
 }
