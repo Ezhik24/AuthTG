@@ -23,10 +23,10 @@ public final class AuthTGEM extends JavaPlugin {
     public void onEnable() {
         messageTG = new MessageTranslationTG();
         messageMC = new MessageTranslationMC();
-        System.out.println(ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] Пожалуйста,подпишитесь на мой телеграмм канал https://t.me/ezhichek11"));
-        System.out.println(ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] Please,subcribe for my telegram channel https://t.me/ezhichek11"));
-        System.out.println(ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] &c&lПлагин включен!"));
-        System.out.println(ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] &c&lPlugin enabled!"));
+        System.out.println("[AuthTG] Пожалуйста,подпишитесь на мой телеграмм канал https://t.me/ezhichek11");
+        System.out.println("[AuthTG] Please,subcribe for my telegram channel https://t.me/ezhichek11");
+        System.out.println("[AuthTG] Плагин включен!");
+        System.out.println("[AuthTG] Plugin enabled!");
         Bukkit.getServer().getPluginManager().registerEvents(new FreezerEvent(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new OnJoinEvent(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new MuterEvent(), this);
@@ -63,10 +63,10 @@ public final class AuthTGEM extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        System.out.println(ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] Пожалуйста,подпишитесь на мой телеграмм канал https://t.me/ezhichek11"));
-        System.out.println(ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] Please,subcribe for my telegram channel https://t.me/ezhichek11"));
-        System.out.println(ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] &c&lПлагин выключен!"));
-        System.out.println(ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] &c&lPlugin disabled!"));
+        System.out.println("[AuthTG] Пожалуйста,подпишитесь на мой телеграмм канал https://t.me/ezhichek11");
+        System.out.println("[AuthTG] Please,subcribe for my telegram channel https://t.me/ezhichek11");
+        System.out.println("[AuthTG] Плагин выключен!");
+        System.out.println("[AuthTG] Plugin disabled!");
     }
 
 
