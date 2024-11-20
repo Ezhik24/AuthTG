@@ -3,6 +3,7 @@ package org.ezhik.authtgem.message;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import org.ezhik.authtgem.User;
 
 import javax.ws.rs.core.Cookie;
@@ -55,15 +56,12 @@ public class MessageTranslationTG extends LinkedHashMap<String, String> {
         return this.get("addfriends_req").replace("{PLAYER}", sender.getName());
     }
     public String getFriend(CommandSender commandSender) {
-        User user = User.getUser(commandSender.getName());
-        return this.get("tellfriends_message_succes").replace("{PLAYER}", user.playername);
+        return this.get("tellfriends_message_succes").replace("{PLAYER}", commandSender.getName());
     }
     public String getPlayerNameSM(CommandSender commandSender) {
-        User user = User.getUser(commandSender.getName());
-        return this.get("sendMessage_prefix").replace("{PREFIX}", user.playername);
+        return this.get("sendMessage_prefix").replace("{PREFIX}", commandSender.getName());
     }
     public String getPlayerNameSMB(CommandSender commandSender) {
-        User user = User.getUser(commandSender.getName());
-        return this.get("sendMessageB_prefix").replace("{PREFIX}", user.playername);
+        return this.get("sendMessageB_prefix").replace("{PREFIX}", commandSender.getName());
     }
 }
