@@ -18,11 +18,11 @@ public class OnJoinEvent implements Listener {
         if (User.getSpawnLocation() != null) p.teleport(User.getSpawnLocation());
         FreezerEvent.freezeplayer(p.getName());
         if (file.exists()) {
-            MuterEvent.mute(p.getName(), ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] &c&lАвторизуйтесь! Для авторизации введите команду: /login <пароль>"));
-            p.sendTitle(ChatColor.translateAlternateColorCodes('&', "&a&lАвторизуйтесь!"), "для авторизации введите команду: /login <пароль>", 20, 10000000, 0);
+            MuterEvent.mute(p.getName(), ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.get("login_message")));
+            p.sendTitle(ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.get("login_title_login_s1")), AuthTGEM.messageMC.get("login_title_login_s2"), 20, 10000000, 0);
         } else {
-            MuterEvent.mute(p.getName(), ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] &c&lЗарегистрируйтесь! Для авторизации введите команду: /register <пароль> <повтор пароля>"));
-            p.sendTitle(ChatColor.translateAlternateColorCodes('&', "&c&lАвторизуйтесь!"), "для авторизации введите команду: /register <пароль> <повтор пароля>", 20, 10000000, 0);
+            MuterEvent.mute(p.getName(), ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.get("register_message")));
+            p.sendTitle(ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.get("register_title_s1")), AuthTGEM.messageMC.get("register_title_s2"), 20, 10000000, 0);
         }
         User user = User.getUser(p.getUniqueId());
         if (user != null) {

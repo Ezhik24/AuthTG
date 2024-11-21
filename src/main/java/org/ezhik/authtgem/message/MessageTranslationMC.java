@@ -34,6 +34,8 @@ public class MessageTranslationMC extends LinkedHashMap<String, String> {
             this.put("removefriend_tg_noasign","&f&l[&b&lMT&f&l] &c&lПривяжите аккаунт к телеграмму");
             this.put("listfriends_list", "&f&l[&b&lMT&f&l] &c&lСписок друзей:");
             this.put("listfriends_friend", "&a&l");
+            this.put("listfriends_online_friend", " &a&l[Online]");
+            this.put("listfriends_offline_friend", " &c&l[Offline]");
             this.put("tellfriends_wrong_command", "&f&l[&b&lMT&f&l] &c&lКоманда введена неверно. Введите команду так: /tellfriends <ник> <сообщение>");
             this.put("tellfriends_sendmessage_succes","&f&l[&b&lMT&f&l] &a&lСообщение отправлено");
             this.put("tellfriends_friends_notfound", "&f&l[&b&lMT&f&l] &c&lТакого игрока нет в друзьях");
@@ -53,10 +55,16 @@ public class MessageTranslationMC extends LinkedHashMap<String, String> {
             this.put("login_title_tg_s1color", "&c&l");
             this.put("login_title_tg_s1","Потвердите вход");
             this.put("login_title_tg_s2","через Телеграмм");
+            this.put("login_title_login_s1", "&a&lАвторизуйтесь!");
+            this.put("login_title_login_s2", "для авторизации введите команду: /login <пароль>");
+            this.put("login_message", "&f&l[&b&lMT&f&l] &c&lАвторизуйтесь! Для авторизации введите команду: /login <пароль>");
             this.put("register_wrong_command", "&f&l[&b&lMT&f&l] &c&lКоманда введена неверно. Введите команду так: /register <пароль> <повтор пароля>");
             this.put("register_successful_register", "&f&l[&b&lMT&f&l] &a&lВы успешно зарегистрировали аккаунт");
             this.put("register_wrong_passwords", "&f&l[&b&lMT&f&l] &c&lПароли не совпадают");
             this.put("register_already_register", "&f&l[&b&lMT&f&l] &c&lВы уже зарегистрированы. Для сброса пароля обратитесь к Администратору");
+            this.put("register_title_s1", "&c&lЗарегистрируйтесь!");
+            this.put("register_title_s2", "для регистрации введите команду: /register <пароль> <повтор пароля>");
+            this.put("register_message", "&f&l[&b&lMT&f&l] &c&lЗарегистрируйтесь! Для авторизации введите команду: /register <пароль> <повтор пароля>");
             this.put("setpassword_wrong_command", "&f&l[&b&lMT&f&l] &c&lКоманда введена неверно. Введите команду так: /setpassword <ник> <новый пароль> <повтор нового пароля>");
             this.put("setpassword_nopermission", "&f&l[&b&lMT&f&l] &c&lУ вас нет прав для использования этой команды");
             this.put("setpassword_wrong_password","&f&l[&b&lMT&f&l] &c&lПароли не совпадают");
@@ -88,6 +96,7 @@ public class MessageTranslationMC extends LinkedHashMap<String, String> {
             this.put(key, messageconfig.getString(key).replace("{BR}", "\n"));
         }
     }
+
     public String getSetpasswordPlayerName(String[] strings) {
         Player player = Bukkit.getPlayer(strings[0]);
         return this.get("setpassword_succesfly_chanpass").replace("{PLAYER}",player.getName());

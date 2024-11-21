@@ -69,6 +69,7 @@ public class User {
         }
         return code.toString();
     }
+
     public static void register(Message message, UUID uuid) {
         Player p = Bukkit.getPlayer(uuid);
         YamlConfiguration userconfig = new YamlConfiguration();
@@ -86,8 +87,6 @@ public class User {
         userconfig.set("lastname", message.getChat().getLastName());
         userconfig.set("active", false);
         userconfig.set("twofactor", true);
-
-
         try {
             userconfig.save(file);
         } catch (IOException e) {
@@ -116,14 +115,9 @@ public class User {
         return false;
     }
 
-
-
     public void sendMessage(String message) {
         AuthTGEM.bot.sendMessage(this.chatid, AuthTGEM.messageTG.getPlayerNameSM(this.chatid) + message);
     }
-
-
-
 
     public static List<User> getUserList(){
         List<User> users = new ArrayList<User>();
@@ -153,6 +147,7 @@ public class User {
         }
         return users;
     }
+
     public void sendLoginAccepted(String message) {
         InlineKeyboardMarkup keyb = new InlineKeyboardMarkup();
         List<InlineKeyboardButton> colkeyb = new ArrayList<>();
@@ -319,6 +314,7 @@ public class User {
         }
         return users;
     }
+
     public void addfriend(String friendname) {
         this.friends.add(friendname);
         YamlConfiguration userconf = new YamlConfiguration();
@@ -374,10 +370,10 @@ public class User {
     public static String getplayerstatus(String playername){
         User user = User.getUser(playername);
         if(user.player != null){
-            return ChatColor.translateAlternateColorCodes('&', " &a&l[Online]");
+            return ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.get("listfriends_online_friend"));
         }
-        else{
-            return ChatColor.translateAlternateColorCodes('&', " &c&l[Offline]");
+        else {
+            return ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.get("listfriends_offline_friend"));
         }
     }
     public String remFriend(String friendname) {
@@ -394,6 +390,7 @@ public class User {
             return ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] Вы удалили " + friendname + " из друзей");
         }
     }
+
     public void sendMessageB(String message, String friend) {
         InlineKeyboardMarkup playerKB = new InlineKeyboardMarkup();
         List<InlineKeyboardButton> colkeyb = new ArrayList<>();
@@ -414,6 +411,7 @@ public class User {
             System.out.println(e);
         }
     }
+
     public static void setSpawnLocation(Location spawnlocation) {
         File file = new File("plugins/Minetelegram/config.yml");
         YamlConfiguration config = new YamlConfiguration();

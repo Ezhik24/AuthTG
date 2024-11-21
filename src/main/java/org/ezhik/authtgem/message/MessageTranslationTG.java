@@ -52,21 +52,26 @@ public class MessageTranslationTG extends LinkedHashMap<String, String> {
             this.put(key, messageconfig.getString(key).replace("{BR}", "\n"));
         }
     }
+
     public String getAddFriendsReq(CommandSender sender) {
         return this.get("addfriends_req").replace("{PLAYER}", sender.getName());
     }
+
     public String getFriendPN(Player player) {
         User user = User.getUser(player.getName());
         return this.get("tellfriends_message_succes").replace("{PLAYER}", user.playername);
     }
+
     public String getPlayerNameSM(Long chatid) {
         User user = User.getCurrentUser(chatid);
         return this.get("sendMessage_prefix").replace("{PLAYER}", user.playername);
     }
+
     public String getPlayerNameSMB(Long chatid) {
         User user = User.getCurrentUser(chatid);
         return this.get("sendMessageB_prefix").replace("{PLAYER}",user.playername);
     }
+
     public String getPlayerNameFriend(Player player) {
         User user = User.getUser(player.getName());
         return  this.get("friends_join_game").replace("{PLAYER}", user.playername);
