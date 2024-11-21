@@ -119,7 +119,7 @@ public class User {
 
 
     public void sendMessage(String message) {
-        AuthTGEM.bot.sendMessage(this.chatid, AuthTGEM.messageTG.getPlayerNameSM(this.player) + message);
+        AuthTGEM.bot.sendMessage(this.chatid, AuthTGEM.messageTG.getPlayerNameSM(this.chatid) + message);
     }
 
 
@@ -405,7 +405,7 @@ public class User {
         rowkeyb.add(colkeyb);
         playerKB.setKeyboard(rowkeyb);
         SendMessage sendMessage = new SendMessage();
-        sendMessage.setText(AuthTGEM.messageTG.getPlayerNameSMB(this.player) + message);
+        sendMessage.setText(AuthTGEM.messageTG.getPlayerNameSMB(this.chatid) + message);
         sendMessage.setChatId(this.chatid);
         sendMessage.setReplyMarkup(playerKB);
         try {

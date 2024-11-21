@@ -6,7 +6,6 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.ezhik.authtgem.User;
 
-import javax.ws.rs.core.Cookie;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -21,8 +20,8 @@ public class MessageTranslationTG extends LinkedHashMap<String, String> {
             messageconfig.load(configfile);
 
         } catch (FileNotFoundException e) {
-            this.put("sendMessage_prefix", "[Бот@{PLAYER}]");
-            this.put("sendMessageB_prefix", "[Бот@{PLAYER}]");
+            this.put("sendMessage_prefix", "[Бот@" + "{PLAYER}" + "] ");
+            this.put("sendMessageB_prefix", "[Бот@" + "{PLAYER}" + "] ");
             this.put("start_message", "[Бот] Выполните следующие пункты: {BR} 1.Войдите в игру. {BR} 2.Авторизуйтесь. {BR} 3.Напишите свой никнейм.");
             this.put("tg_noasign_hashtag", "[Бот] Привяжите учётную запись к телеграму.");
             this.put("addfriends_yes", "Да");
@@ -32,6 +31,7 @@ public class MessageTranslationTG extends LinkedHashMap<String, String> {
             this.put("code_account_activated", "Ваш аккаунт успешно активирован!");
             this.put("login_who_entered","[Бот] Это вы вошли в игру?");
             this.put("kick_account_inTG", "Владелец кикнул аккаунт через телеграмм");
+            this.put("friends_join_game", "{PLAYER} вошёл в игру");
             File newconfigfile = new File("plugins/Minetelegram/messages/messageTG_RU.yml");
             YamlConfiguration newmessageconfig = new YamlConfiguration();
             for (String key : this.keySet()) {
@@ -55,13 +55,20 @@ public class MessageTranslationTG extends LinkedHashMap<String, String> {
     public String getAddFriendsReq(CommandSender sender) {
         return this.get("addfriends_req").replace("{PLAYER}", sender.getName());
     }
-    public String getFriend(CommandSender commandSender) {
-        return this.get("tellfriends_message_succes").replace("{PLAYER}", commandSender.getName());
+    public String getFriendPN(Player player) {
+        User user = User.getUser(player.getName());
+        return this.get("tellfriends_message_succes").replace("{PLAYER}", user.playername);
     }
-    public String getPlayerNameSM(CommandSender commandSender) {
-        return this.get("sendMessage_prefix").replace("{PREFIX}", commandSender.getName());
+    public String getPlayerNameSM(Long chatid) {
+        User user = User.getCurrentUser(chatid);
+        return this.get("sendMessage_prefix").replace("{PLAYER}", user.playername);
     }
-    public String getPlayerNameSMB(CommandSender commandSender) {
-        return this.get("sendMessageB_prefix").replace("{PREFIX}", commandSender.getName());
+    public String getPlayerNameSMB(Long chatid) {
+        User user = User.getCurrentUser(chatid);
+        return this.get("sendMessageB_prefix").replace("{PLAYER}",user.playername);
+    }
+    public String getPlayerNameFriend(Player player) {
+        User user = User.getUser(player.getName());
+        return  this.get("friends_join_game").replace("{PLAYER}", user.playername);
     }
 }

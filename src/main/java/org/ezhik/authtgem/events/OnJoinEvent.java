@@ -27,7 +27,7 @@ public class OnJoinEvent implements Listener {
         User user = User.getUser(p.getUniqueId());
         if (user != null) {
             for (User u : user.getUnicFriends()) {
-                u.sendMessageB(p.getName() + " вошёл в игру", p.getName());
+                u.sendMessageB(AuthTGEM.messageTG.getPlayerNameFriend(p.getPlayer()), p.getName());
             }
         } else {
             p.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.get("joinplayer_tgasign")));
