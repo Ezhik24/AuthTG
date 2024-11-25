@@ -387,7 +387,7 @@ public class User {
                 if (frienduser.player != null) player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] &a&l" + this.player.getName() + " удалил вас из друзей"));
                 frienduser.sendMessage(this.player.getName() + " удалил вас из друзей");
             }
-            return ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] Вы удалили " + friendname + " из друзей");
+            return ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.getFriendName(friendname));
         }
     }
 
@@ -396,7 +396,7 @@ public class User {
         List<InlineKeyboardButton> colkeyb = new ArrayList<>();
         List<List<InlineKeyboardButton>> rowkeyb = new ArrayList<>();
         InlineKeyboardButton acts = new InlineKeyboardButton();
-        acts.setText("Действия");
+        acts.setText(AuthTGEM.messageTG.get("friends_act"));
         acts.setCallbackData("chfr" + friend);
         colkeyb.add(acts);
         rowkeyb.add(colkeyb);

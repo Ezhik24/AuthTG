@@ -5,6 +5,7 @@ org/ezhik/authtgem/PasswordHasher.class
 org/ezhik/authtgem/commands/TellFriendsCMD.class
 org/ezhik/authtgem/commands/ChangepasswordCMD.class
 org/ezhik/authtgem/events/FreezerEvent.class
+org/ezhik/authtgem/events/BlockDropItemEvent.class
 org/ezhik/authtgem/commands/CodeCMD.class
 org/ezhik/authtgem/events/MuterEvent.class
 org/ezhik/authtgem/AuthTGEM.class

@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MuterEvent implements Listener {
-    public static Map<String, String> mutedplayers = new HashMap<>();
+    private static Map<String, String> mutedplayers = new HashMap<>();
 
     @EventHandler
     public void onPlayerChat(AsyncPlayerChatEvent event) {

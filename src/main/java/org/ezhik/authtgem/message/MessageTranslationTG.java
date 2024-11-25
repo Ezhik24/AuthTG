@@ -28,6 +28,7 @@ public class MessageTranslationTG extends LinkedHashMap<String, String> {
             this.put("addfriends_no", "Нет");
             this.put("addfriends_req", "Вы хотите добавить {PLAYER} в друзья?");
             this.put("tellfriends_message_succes", " сообщение от {PLAYER} :");
+            this.put("friends_act", "Действия");
             this.put("code_account_activated", "Ваш аккаунт успешно активирован!");
             this.put("login_who_entered","[Бот] Это вы вошли в игру?");
             this.put("kick_account_inTG", "Владелец кикнул аккаунт через телеграмм");

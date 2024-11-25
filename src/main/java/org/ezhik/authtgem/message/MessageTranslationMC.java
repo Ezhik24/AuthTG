@@ -31,6 +31,7 @@ public class MessageTranslationMC extends LinkedHashMap<String, String> {
             this.put("friends_already_added", "&f&l[&b&lMT&f&l] &c&lВы уже добавляли этого игрока в друзья");
             this.put("removefriend_wrong_command", "&f&l[&b&lMT&f&l] &c&lКоманда введена неверно. Введите команду так: /remfriend <ник>");
             this.put("removefriend_tg_noasign","&f&l[&b&lMT&f&l] &c&lПривяжите аккаунт к телеграмму");
+            this.put("removefriend_succes_remove", "&f&l[&b&lMT&f&l] &c&lВы удалили {PLAYER} из друзей");
             this.put("listfriends_list", "&f&l[&b&lMT&f&l] &c&lСписок друзей:");
             this.put("listfriends_friend", "&a&l");
             this.put("listfriends_online_friend", " &a&l[Online]");
@@ -99,5 +100,9 @@ public class MessageTranslationMC extends LinkedHashMap<String, String> {
     public String getSetpasswordPlayerName(String[] strings) {
         Player player = Bukkit.getPlayer(strings[0]);
         return this.get("setpassword_succesfly_chanpass").replace("{PLAYER}",player.getName());
+    }
+
+    public String getFriendName(String friendname) {
+        return this.get("removefriend_succes_remove").replace("{PLAYER}", friendname);
     }
 }
