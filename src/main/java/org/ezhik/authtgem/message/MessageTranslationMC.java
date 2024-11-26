@@ -1,21 +1,14 @@
 package org.ezhik.authtgem.message;
 
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.Configuration;
-import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.configuration.file.YamlConfigurationOptions;
-import org.bukkit.configuration.file.YamlConstructor;
-import org.bukkit.configuration.file.YamlRepresenter;
 import org.bukkit.entity.Player;
-import org.ezhik.authtgem.AuthTGEM;
-import org.yaml.snakeyaml.LoaderOptions;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 public class MessageTranslationMC extends LinkedHashMap<String, String> {
@@ -32,10 +25,12 @@ public class MessageTranslationMC extends LinkedHashMap<String, String> {
             this.put("removefriend_wrong_command", "&f&l[&b&lMT&f&l] &c&lКоманда введена неверно. Введите команду так: /remfriend <ник>");
             this.put("removefriend_tg_noasign","&f&l[&b&lMT&f&l] &c&lПривяжите аккаунт к телеграмму");
             this.put("removefriend_succes_remove", "&f&l[&b&lMT&f&l] &c&lВы удалили {PLAYER} из друзей");
+            this.put("removefriend_notfound_friend", "&f&l[&b&lMT&f&l] &c&lТакого игрока нет в друзьях");
+            this.put("removefriend_friend_succes", "&f&l[&b&lMT&f&l] &c&l{PLAYER} удалил вас из друзей");
             this.put("listfriends_list", "&f&l[&b&lMT&f&l] &c&lСписок друзей:");
             this.put("listfriends_friend", "&a&l");
-            this.put("listfriends_online_friend", " &a&l[Online]");
-            this.put("listfriends_offline_friend", " &c&l[Offline]");
+            this.put("listfriends_online_friend", " [Online]");
+            this.put("listfriends_offline_friend", " [Offline]");
             this.put("tellfriends_wrong_command", "&f&l[&b&lMT&f&l] &c&lКоманда введена неверно. Введите команду так: /tellfriends <ник> <сообщение>");
             this.put("tellfriends_sendmessage_succes","&f&l[&b&lMT&f&l] &a&lСообщение отправлено");
             this.put("tellfriends_friends_notfound", "&f&l[&b&lMT&f&l] &c&lТакого игрока нет в друзьях");
@@ -72,6 +67,8 @@ public class MessageTranslationMC extends LinkedHashMap<String, String> {
             this.put("setspawn_succesfly_none", "&f&l[&b&lMT&f&l] &a&lТочка спавна установлена");
             this.put("setspawn_succesfly_location", "&f&l[&b&lMT&f&l] &a&lТочка спавна установлена");
             this.put("setspawn_nopermission", "&f&l[&b&lMT&f&l] &c&lУ вас нет прав для использования этой команды");
+            this.put("code_deactivated_acc", "&f&l[&b&lMT&f&l] Выполните в игре команду: /code <код из телеграмма> что бы отвязать аккаунт.");
+            this.put("code_activated_acc", "&f&l[&b&lMT&f&l] &c&lВыполните команду /code (из телеграмма). Если это не вы, то проигнорируйте это сообщение.");
             this.put("tgbc_nopermission", "&f&l[&b&lMT&f&l] &c&lУ вас нет прав для использования этой команды");
             this.put("command_block","&f&l[&b&lMT&f&l] &c&lЭта команда доступна только для зарегистрированных пользователей!");
             this.put("joinplayer_tgasign","&f&l[&b&lMT&f&l] &c&lПривяжите аккаунт к Телеграмму");
@@ -102,7 +99,12 @@ public class MessageTranslationMC extends LinkedHashMap<String, String> {
         return this.get("setpassword_succesfly_chanpass").replace("{PLAYER}",player.getName());
     }
 
-    public String getFriendName(String friendname) {
+    public String getFriendNameRemove(String friendname) {
         return this.get("removefriend_succes_remove").replace("{PLAYER}", friendname);
+    }
+
+    public String getFriendRemovePN(CommandSender commandSender) {
+        Player player = (Player) commandSender;
+        return this.get("removefriend_friend_succes").replace("{PLAYER}", player.getName());
     }
 }

@@ -313,7 +313,7 @@ public class BotTelegram extends TelegramLongPollingBot {
         players.setKeyboard(keyboard);
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(chatID);
-        sendMessage.setText("Выберите игрока");
+        sendMessage.setText(AuthTGEM.messageTG.get("account_choose"));
         sendMessage.setReplyMarkup(players);
         try {
             this.execute(sendMessage);
@@ -332,7 +332,7 @@ public class BotTelegram extends TelegramLongPollingBot {
         List<List<InlineKeyboardButton>> friends = new ArrayList<>();
 
         if (user.friends.size() == 0) {
-            this.sendMessage(message.getChatId(), "У вас нет друзей");
+            this.sendMessage(message.getChatId(), AuthTGEM.messageTG.get("friends_list_notfriend"));
             this.deleteMessage(message);
             return;
         }
@@ -349,7 +349,7 @@ public class BotTelegram extends TelegramLongPollingBot {
         friendskeyb.setKeyboard(friends);
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(message.getChatId());
-        sendMessage.setText("Ваши друзья");
+        sendMessage.setText(AuthTGEM.messageTG.get("friends_list"));
         sendMessage.setReplyMarkup(friendskeyb);
         try {
             this.execute(sendMessage);
@@ -366,18 +366,18 @@ public class BotTelegram extends TelegramLongPollingBot {
         InlineKeyboardButton sendMCMessageButton = new InlineKeyboardButton();
         InlineKeyboardMarkup actionsKeyboard = new InlineKeyboardMarkup();
 
-        delFriendButton.setText("Удалить из друзей");
+        delFriendButton.setText(AuthTGEM.messageTG.get("friends_act_remfriend"));
         delFriendButton.setCallbackData("delfr" + friendname);
         List<InlineKeyboardButton> delfriendcolkeyb = new ArrayList<>();
         delfriendcolkeyb.add(delFriendButton);
         keyboard.add(delfriendcolkeyb);
-        sendMessageButton.setText("Отправитиь личное сообщение");
+        sendMessageButton.setText(AuthTGEM.messageTG.get("friends_act_tgmsg"));
         sendMessageButton.setCallbackData("sndmsg" + friendname);
         List<InlineKeyboardButton> sendmsgcolkeyb = new ArrayList<>();
         sendmsgcolkeyb.add(sendMessageButton);
         keyboard.add(sendmsgcolkeyb);
         if (User.getUser(friendname).player != null) {
-            sendMCMessageButton.setText("Отправить сообщение в Minecraft");
+            sendMCMessageButton.setText(AuthTGEM.messageTG.get("friends_act_minecraftmsg"));
             sendMCMessageButton.setCallbackData("sndmcmsg" + friendname);
             List<InlineKeyboardButton> sendmcmsgcolkeyb = new ArrayList<>();
             sendmcmsgcolkeyb.add(sendMCMessageButton);
@@ -386,7 +386,7 @@ public class BotTelegram extends TelegramLongPollingBot {
         actionsKeyboard.setKeyboard(keyboard);
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(message.getChatId());
-        sendMessage.setText("Действия с " + friendname);
+        sendMessage.setText(AuthTGEM.messageTG.getFriendNameTG(friendname));
         sendMessage.setReplyMarkup(actionsKeyboard);
         try {
             this.execute(sendMessage);

@@ -96,8 +96,8 @@ public class User {
         File oldfile = new File("plugins/Minetelegram/users/" + message.getChatId().toString() + ".yml");
         oldfile.delete();
         String code = generateConfirmationCode();
-        AuthTGEM.bot.sendMessage(message.getChatId(), "[Бот] В игре выполните команду /code " + code + " что бы привязать аккаунт.");
-        p.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] &c&lВыполните команду /code (из телеграмма). Если это не вы, то проигнорируйте это сообщение."));
+        AuthTGEM.bot.sendMessage(message.getChatId(), AuthTGEM.messageTG.getCodeActivated(code));
+        p.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.get("code_activated_acc")));
         CodeCMD.code.put(p.getUniqueId(), code);
 
     }
@@ -152,10 +152,10 @@ public class User {
         InlineKeyboardMarkup keyb = new InlineKeyboardMarkup();
         List<InlineKeyboardButton> colkeyb = new ArrayList<>();
         InlineKeyboardButton yesbtn = new InlineKeyboardButton();
-        yesbtn.setText("Да");
+        yesbtn.setText(AuthTGEM.messageTG.get("login_intg_yes"));
         yesbtn.setCallbackData("ys"+this.player.getName());
         InlineKeyboardButton nobtn = new InlineKeyboardButton();
-        nobtn.setText("Нет");
+        nobtn.setText(AuthTGEM.messageTG.get("login_intg_not"));
         nobtn.setCallbackData("no"+this.player.getName());
         colkeyb.add(yesbtn);
         colkeyb.add(nobtn);
@@ -214,7 +214,7 @@ public class User {
         } catch (IOException e) {
             System.out.println("Error saving config file: " + e);
         }
-        this.sendMessage(" Ваш пароль был изменен на " + password + ". \nОбязательно смените пароль,после захода на сервер!\nКоманда для смены пароля: /cp");
+        this.sendMessage(AuthTGEM.messageTG.getPassword(password));
 
     }
 
@@ -236,23 +236,23 @@ public class User {
         }
 
         if(state){
-            this.sendMessage("Двухфакторная авторизация успешно включена");
+            this.sendMessage(AuthTGEM.messageTG.get("auth_in_2step_on"));
         }
         else{
-            this.sendMessage("Двухфакторная авторизация успешно выключена");
+            this.sendMessage(AuthTGEM.messageTG.get("auth_in_2step_off"));
         }
     }
 
     public static void sendBroadcastMessage(String message) {
         for (User user : User.getUniclUsers()) {
-            AuthTGEM.bot.sendMessage(user.chatid, "[Бот]" + message);
+            AuthTGEM.bot.sendMessage(user.chatid, AuthTGEM.messageTG.get("sendMessageBroadCast") + message);
         }
     }
 
     public void unlink(){
         String code = generateConfirmationCode();
-        this.sendMessage("Выполните в игре команду: /code " + code + " что бы отвязать аккаунт.");
-        this.player.sendMessage( ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] Выполните в игре команду: /code <код из телеграмма> что бы отвязать аккаунт."));
+        this.sendMessage(AuthTGEM.messageTG.getCodeDeActivated(code));
+        this.player.sendMessage( ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.get("code_deactivated_acc")));
         CodeCMD.code.put(this.player.getUniqueId(), code);
 
     }
@@ -378,16 +378,16 @@ public class User {
     }
     public String remFriend(String friendname) {
         if (!this.friends.contains(friendname)){
-            return "Такого игрока нет в друзьях";
+            return ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.get("removefriend_notfound_friend"));
         }else{
             this.remFriendFromConf(friendname);
             User frienduser = User.getUser(friendname);
             if (frienduser != null) {
                 frienduser.remFriendFromConf(this.playername);
-                if (frienduser.player != null) player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] &a&l" + this.player.getName() + " удалил вас из друзей"));
-                frienduser.sendMessage(this.player.getName() + " удалил вас из друзей");
+                if (frienduser.player != null) frienduser.player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.getFriendRemovePN(player)));
+                frienduser.sendMessage(AuthTGEM.messageTG.getRemoveFriend(player));
             }
-            return ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.getFriendName(friendname));
+            return ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.getFriendNameRemove(friendname));
         }
     }
 

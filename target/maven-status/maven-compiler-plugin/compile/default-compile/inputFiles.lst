@@ -12,6 +12,7 @@
 /home/ezhiklife/AuthTG/src/main/java/org/ezhik/authtgem/commands/SetSpawnCMD.java
 /home/ezhiklife/AuthTG/src/main/java/org/ezhik/authtgem/PasswordHasher.java
 /home/ezhiklife/AuthTG/src/main/java/org/ezhik/authtgem/commands/ListFriendsCMD.java
+/home/ezhiklife/AuthTG/src/main/java/org/ezhik/authtgem/events/BlockDropItemEvent.java
 /home/ezhiklife/AuthTG/src/main/java/org/ezhik/authtgem/commands/CodeCMD.java
 /home/ezhiklife/AuthTG/src/main/java/org/ezhik/authtgem/commands/TellFriendsCMD.java
 /home/ezhiklife/AuthTG/src/main/java/org/ezhik/authtgem/User.java
