@@ -23,7 +23,7 @@ public class TellFriendsCMD implements CommandExecutor {
                     commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.get("tellfriends_friends_tgasign")));
                 } else {
                     Player player = (Player) commandSender;
-                    String message = String.join(" ", strings).replace(strings[0], AuthTGEM.messageTG.getFriendPN(player));
+                    String message = String.join(" ", strings).replace(strings[0], AuthTGEM.messageTG.getFriendPNTell(player));
                     friend.sendMessageB(message, commandSender.getName());
                     commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.get("tellfriends_sendmessage_succes")));
                 }

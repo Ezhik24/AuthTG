@@ -2,7 +2,6 @@ package org.ezhik.authtgem;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -96,7 +95,7 @@ public class BotTelegram extends TelegramLongPollingBot {
                         user.kick();
                         user.sendMessage(" Вы успешно кикнули свой аккаунт через телеграми!");
                     } else
-                        this.sendMessage(update.getMessage().getChatId(), "[Бот] Пользователь не зарегистрирован или он не в игре");
+                        this.sendMessage(update.getMessage().getChatId(), AuthTGEM.messageTG.get("kickme_player_notfound"));
                 }
 
                 if (update.getMessage().getText().toString().equals("/unlink")) {
@@ -109,7 +108,7 @@ public class BotTelegram extends TelegramLongPollingBot {
                     User user = User.getOnlineUser(update.getMessage().getChatId());
                     if (user != null) user.resetpassword();
                     else
-                        this.sendMessage(update.getMessage().getChatId(), "[Бот] Пользователь не зарегистрирован или он не в игре");
+                        this.sendMessage(update.getMessage().getChatId(), AuthTGEM.messageTG.get("resetpass_player_notfound"));
                 }
                 if (update.getMessage().getText().toString().equals("/tfoff")) {
                     User user = User.getOnlineUser(update.getMessage().getChatId());
@@ -239,7 +238,7 @@ public class BotTelegram extends TelegramLongPollingBot {
                     String friendname = update.getCallbackQuery().getData().toString().replace("addfrno", "");
                     User user2 = User.getUser(Bukkit.getPlayer(friendname).getUniqueId());
                     User user1 = User.getOnlineUser(update.getCallbackQuery().getMessage().getChatId());
-                    user2.player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] &c&lВы отклонили заявку в друзья "));
+                    user2.player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] &c&lЗаявка в друзья отклонена"));
                     user1.sendMessage("Заявка успешно отклонена");
                     this.deleteMessage(update.getCallbackQuery().getMessage());
                 }
@@ -252,13 +251,13 @@ public class BotTelegram extends TelegramLongPollingBot {
                 String friendname = update.getCallbackQuery().getData().toString().replace("delfr", "");
                 User user = User.getCurrentUser(update.getCallbackQuery().getMessage().getChatId());
                 this.deleteMessage(update.getCallbackQuery().getMessage());
-                this.sendMessage(update.getCallbackQuery().getMessage().getChatId(), "[Бот] " + user.remFriend(friendname));
+                this.sendMessage(update.getCallbackQuery().getMessage().getChatId(), AuthTGEM.messageTG.get("del_friends") + user.remFriend(friendname));
             }
             if (update.getCallbackQuery().getData().toString().startsWith("sndmsg")) {
                 String friendname = update.getCallbackQuery().getData().toString().replace("sndmsg", "");
                 this.deleteMessage(update.getCallbackQuery().getMessage());
                 User user = User.getCurrentUser(update.getCallbackQuery().getMessage().getChatId());
-                this.sendMessage(update.getCallbackQuery().getMessage().getChatId(), "[Бот@" + user.playername + "] Отправьте текст сообщения");
+                this.sendMessage(update.getCallbackQuery().getMessage().getChatId(), AuthTGEM.messageTG.getSendMsgFriendPN(user.chatid));
                 nextStep.put(update.getCallbackQuery().getMessage().getChatId().toString(), "sendmsg");
                 sendMessageData.put(update.getCallbackQuery().getMessage().getChatId().toString(), friendname);
             }
@@ -266,7 +265,7 @@ public class BotTelegram extends TelegramLongPollingBot {
                 String friendname = update.getCallbackQuery().getData().toString().replace("sndmcmsg", "");
                 this.deleteMessage(update.getCallbackQuery().getMessage());
                 User user = User.getCurrentUser(update.getCallbackQuery().getMessage().getChatId());
-                this.sendMessage(update.getCallbackQuery().getMessage().getChatId(), "[Бот@" + user.playername + "] Отправьте текст сообщения");
+                this.sendMessage(update.getCallbackQuery().getMessage().getChatId(), AuthTGEM.messageTG.getSendMCMsgFriendPN(user.chatid));
                 nextStep.put(update.getCallbackQuery().getMessage().getChatId().toString(), "sendmcmsg");
                 sendMessageData.put(update.getCallbackQuery().getMessage().getChatId().toString(), friendname);
             }
@@ -386,7 +385,7 @@ public class BotTelegram extends TelegramLongPollingBot {
         actionsKeyboard.setKeyboard(keyboard);
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(message.getChatId());
-        sendMessage.setText(AuthTGEM.messageTG.getFriendNameTG(friendname));
+        sendMessage.setText(AuthTGEM.messageTG.getPNtgAct(friendname));
         sendMessage.setReplyMarkup(actionsKeyboard);
         try {
             this.execute(sendMessage);

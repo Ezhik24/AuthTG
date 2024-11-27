@@ -49,6 +49,11 @@ public class MessageTranslationTG extends LinkedHashMap<String, String> {
             this.put("changepassword_intg", " Ваш пароль был изменен на {PASSWORD} . {BR} Обязательно смените пароль,после захода на сервер! {BR} Команда для смены пароля: /cp");
             this.put("auth_in_2step_on", "Двухфакторная авторизация успешно включена");
             this.put("auth_in_2step_off", "Двухфакторная авторизация успешно выключена");
+            this.put("sendmcmsg_friend", "[Бот@{PLAYER}] Отправьте текст сообщения");
+            this.put("sendmsg_friend", "[Бот@{PLAYER}] Отправьте текст сообщения");
+            this.put("del_friends", "[Бот] ");
+            this.put("kickme_player_notfound","[Бот] Пользователь не зарегистрирован или он не в игре");
+            this.put("resetpass_player_notfound","[Бот] Пользователь не зарегистрирован или он не в игре");
             File newconfigfile = new File("plugins/Minetelegram/messages/messageTG_RU.yml");
             YamlConfiguration newmessageconfig = new YamlConfiguration();
             for (String key : this.keySet()) {
@@ -74,7 +79,7 @@ public class MessageTranslationTG extends LinkedHashMap<String, String> {
         return this.get("addfriends_req").replace("{PLAYER}", sender.getName());
     }
 
-    public String getFriendPN(Player player) {
+    public String getFriendPNTell(Player player) {
         User user = User.getUser(player.getName());
         return this.get("tellfriends_message_succes").replace("{PLAYER}", user.playername);
     }
@@ -89,12 +94,12 @@ public class MessageTranslationTG extends LinkedHashMap<String, String> {
         return this.get("sendMessageB_prefix").replace("{PLAYER}",user.playername);
     }
 
-    public String getPlayerNameFriend(Player player) {
+    public String getPNFriendOnJoin(Player player) {
         User user = User.getUser(player.getName());
         return  this.get("friends_join_game").replace("{PLAYER}", user.playername);
     }
 
-    public String getFriendNameTG(String friendname) {
+    public String getPNtgAct(String friendname) {
         return this.get("friends_act_friend").replace("{PLAYER}", friendname);
     }
 
@@ -108,10 +113,20 @@ public class MessageTranslationTG extends LinkedHashMap<String, String> {
     }
 
     public String getCodeActivated(String code) {
-        return this.get("code_activated_acc").replace("{CODE}",code);
+        return this.get("code_activate_acc").replace("{CODE}",code);
     }
 
     public String getPassword(String password) {
         return this.get("changepassword_intg").replace("{PASSWORD}", password);
+    }
+
+    public String getSendMCMsgFriendPN(Long chatid) {
+        User user = User.getCurrentUser(chatid);
+        return this.get("sendmcmsg_friend").replace("{PLAYER}", user.playername);
+    }
+
+    public String getSendMsgFriendPN(Long chatid) {
+        User user = User.getCurrentUser(chatid);
+        return this.get("sendmsg_friend").replace("{PLAYER}", user.playername);
     }
 }

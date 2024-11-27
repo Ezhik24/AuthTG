@@ -25,7 +25,7 @@ public class MessageTranslationMC extends LinkedHashMap<String, String> {
             this.put("removefriend_wrong_command", "&f&l[&b&lMT&f&l] &c&lКоманда введена неверно. Введите команду так: /remfriend <ник>");
             this.put("removefriend_tg_noasign","&f&l[&b&lMT&f&l] &c&lПривяжите аккаунт к телеграмму");
             this.put("removefriend_succes_remove", "&f&l[&b&lMT&f&l] &c&lВы удалили {PLAYER} из друзей");
-            this.put("removefriend_notfound_friend", "&f&l[&b&lMT&f&l] &c&lТакого игрока нет в друзьях");
+            this.put("removefriend_notfound_friend", "Такого игрока нет в друзьях");
             this.put("removefriend_friend_succes", "&f&l[&b&lMT&f&l] &c&l{PLAYER} удалил вас из друзей");
             this.put("listfriends_list", "&f&l[&b&lMT&f&l] &c&lСписок друзей:");
             this.put("listfriends_friend", "&a&l");
@@ -33,7 +33,6 @@ public class MessageTranslationMC extends LinkedHashMap<String, String> {
             this.put("listfriends_offline_friend", " [Offline]");
             this.put("tellfriends_wrong_command", "&f&l[&b&lMT&f&l] &c&lКоманда введена неверно. Введите команду так: /tellfriends <ник> <сообщение>");
             this.put("tellfriends_sendmessage_succes","&f&l[&b&lMT&f&l] &a&lСообщение отправлено");
-            this.put("tellfriends_friends_notfound", "&f&l[&b&lMT&f&l] &c&lТакого игрока нет в друзьях");
             this.put("tellfriends_friends_tgasign","&f&l[&b&lMT&f&l] &c&lВаш друг отвязал телеграмм аккаунт");
             this.put("changepassword_success", "&f&l[&b&lMT&f&l] &a&lВы успешно изменили пароль");
             this.put("changepassword_oldpasswd_wrong", "&f&l[&b&lMT&f&l] &c&lНеверный старый пароль");
@@ -68,7 +67,7 @@ public class MessageTranslationMC extends LinkedHashMap<String, String> {
             this.put("setspawn_succesfly_location", "&f&l[&b&lMT&f&l] &a&lТочка спавна установлена");
             this.put("setspawn_nopermission", "&f&l[&b&lMT&f&l] &c&lУ вас нет прав для использования этой команды");
             this.put("code_deactivated_acc", "&f&l[&b&lMT&f&l] Выполните в игре команду: /code <код из телеграмма> что бы отвязать аккаунт.");
-            this.put("code_activated_acc", "&f&l[&b&lMT&f&l] &c&lВыполните команду /code (из телеграмма). Если это не вы, то проигнорируйте это сообщение.");
+            this.put("code_activate_acc", "&f&l[&b&lMT&f&l] &c&lВыполните команду /code (из телеграмма). Если это не вы, то проигнорируйте это сообщение.");
             this.put("tgbc_nopermission", "&f&l[&b&lMT&f&l] &c&lУ вас нет прав для использования этой команды");
             this.put("command_block","&f&l[&b&lMT&f&l] &c&lЭта команда доступна только для зарегистрированных пользователей!");
             this.put("joinplayer_tgasign","&f&l[&b&lMT&f&l] &c&lПривяжите аккаунт к Телеграмму");

@@ -97,7 +97,7 @@ public class User {
         oldfile.delete();
         String code = generateConfirmationCode();
         AuthTGEM.bot.sendMessage(message.getChatId(), AuthTGEM.messageTG.getCodeActivated(code));
-        p.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.get("code_activated_acc")));
+        p.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.get("code_activate_acc")));
         CodeCMD.code.put(p.getUniqueId(), code);
 
     }
