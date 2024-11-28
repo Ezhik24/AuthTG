@@ -54,6 +54,16 @@ public class MessageTranslationTG extends LinkedHashMap<String, String> {
             this.put("del_friends", "[Бот] ");
             this.put("kickme_player_notfound","[Бот] Пользователь не зарегистрирован или он не в игре");
             this.put("resetpass_player_notfound","[Бот] Пользователь не зарегистрирован или он не в игре");
+            this.put("tfon_player_notfound", "[Бот] Пользователь не зарегистрирован или он не в игре");
+            this.put("tfoff_player_notfound", "[Бот] Пользователь не зарегистрирован или он не в игре");
+            this.put("unlink_player_notfound", "[Бот] Зайди в игру и попробуй еще раз");
+            this.put("kickme_kick_succes", " Вы успешно кикнули свой аккаунт через телеграми!");
+            this.put("tg_noasign_chat", "[Бот] Привяжите учетную запись к Телеграмму");
+            this.put("tgasign_incorrect_password","[Бот] Неверный пароль, повторите попытку");
+            this.put("account_already_tgasign", "[Бот] Вы уже привязывали эту учетную запись");
+            this.put("account_already_tgasign_round", "[Бот] Эта учетная запись уже привязана к другой учетной записи Телегримма");
+            this.put("tgasign_check_password", "[Бот] Введите пароль от аккаунта");
+            this.put("bid_succes_rejected", "Заявка успешно отклонена");
             File newconfigfile = new File("plugins/Minetelegram/messages/messageTG_RU.yml");
             YamlConfiguration newmessageconfig = new YamlConfiguration();
             for (String key : this.keySet()) {

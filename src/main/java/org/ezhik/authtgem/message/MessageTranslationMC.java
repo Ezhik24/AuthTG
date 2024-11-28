@@ -5,6 +5,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.ezhik.authtgem.User;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -71,6 +72,10 @@ public class MessageTranslationMC extends LinkedHashMap<String, String> {
             this.put("tgbc_nopermission", "&f&l[&b&lMT&f&l] &c&lУ вас нет прав для использования этой команды");
             this.put("command_block","&f&l[&b&lMT&f&l] &c&lЭта команда доступна только для зарегистрированных пользователей!");
             this.put("joinplayer_tgasign","&f&l[&b&lMT&f&l] &c&lПривяжите аккаунт к Телеграмму");
+            this.put("hashtag_sendmsg_minecraft", "&f&l[&b&lMT&f&l] &a&lИгрок {PLAYER} передает сообщение из офлайна: ");
+            this.put("bid_rejected","&f&l[&b&lMT&f&l] &c&lЗаявка в друзья отклонена");
+            this.put("succes_login_account"," &f&l[&b&lMT&f&l] &a&lУспешный вход в аккаунт!");
+            this.put("rejected_login_account"," &f&l[&b&lMT&f&l] &c&lОтклонено Владельцем учетной записи из Телеграмма");
             File newconfigfile = new File("plugins/Minetelegram/messages/messageMC_RU.yml");
             YamlConfiguration newmessageconfig = new YamlConfiguration();
             for (String key : this.keySet()) {
@@ -105,5 +110,10 @@ public class MessageTranslationMC extends LinkedHashMap<String, String> {
     public String getFriendRemovePN(CommandSender commandSender) {
         Player player = (Player) commandSender;
         return this.get("removefriend_friend_succes").replace("{PLAYER}", player.getName());
+    }
+
+    public String getHashtagPN(Long chatid) {
+        User user = User.getCurrentUser(chatid);
+        return this.get("hashtag_sendmsg_minecraft").replace("{PLAYER}", user.playername);
     }
 }

@@ -76,7 +76,7 @@ public class BotTelegram extends TelegramLongPollingBot {
                     if (user.player != null) {
                         Handler.sendMCmessage(user.playername, message);
                     } else {
-                        Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] &a&lИгрок " + user.playername + " передает сообщение из офлайна: " + message));
+                        Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.getHashtagPN(user.chatid) + message));
 
                     }
 
@@ -93,7 +93,7 @@ public class BotTelegram extends TelegramLongPollingBot {
                     User user = User.getOnlineUser(update.getMessage().getChatId());
                     if (user != null) {
                         user.kick();
-                        user.sendMessage(" Вы успешно кикнули свой аккаунт через телеграми!");
+                        user.sendMessage(AuthTGEM.messageTG.get("kickme_kick_succes"));
                     } else
                         this.sendMessage(update.getMessage().getChatId(), AuthTGEM.messageTG.get("kickme_player_notfound"));
                 }
@@ -101,7 +101,7 @@ public class BotTelegram extends TelegramLongPollingBot {
                 if (update.getMessage().getText().toString().equals("/unlink")) {
                     User user = User.getOnlineUser(update.getMessage().getChatId());
                     if (user == null)
-                        this.sendMessage(update.getMessage().getChatId(), "[Бот] Зайди в игру и попробуй еще раз");
+                        this.sendMessage(update.getMessage().getChatId(), AuthTGEM.messageTG.get("unlink_player_notfound"));
                     else user.unlink();
                 }
                 if (update.getMessage().getText().toString().equals("/resetpassword")) {
@@ -114,13 +114,13 @@ public class BotTelegram extends TelegramLongPollingBot {
                     User user = User.getOnlineUser(update.getMessage().getChatId());
                     if (user != null) user.setTwofactor(false);
                     else
-                        this.sendMessage(update.getMessage().getChatId(), "[Бот] Пользователь не зарегистрирован или он не в игре");
+                        this.sendMessage(update.getMessage().getChatId(), AuthTGEM.messageTG.get("tfoff_player_notfound"));
                 }
                 if (update.getMessage().getText().toString().equals("/tfon")) {
                     User user = User.getOnlineUser(update.getMessage().getChatId());
                     if (user != null) user.setTwofactor(true);
                     else
-                        this.sendMessage(update.getMessage().getChatId(), "[Бот] Пользователь не зарегистрирован или он не в игре");
+                        this.sendMessage(update.getMessage().getChatId(), AuthTGEM.messageTG.get("tfon_player_notfound"));
                 }
 
                 if (update.getMessage().getText().toString().equals("/accounts")) {
@@ -135,7 +135,7 @@ public class BotTelegram extends TelegramLongPollingBot {
                 if (!nextStep.containsKey(update.getMessage().getChatId().toString()) && !update.getMessage().getText().toString().startsWith("#")) {
                     User user = User.getCurrentUser(update.getMessage().getChatId());
                     if (user == null) {
-                        this.sendMessage(update.getMessage().getChatId(), "[Бот] Привяжите учетную запись к Телеграмму");
+                        this.sendMessage(update.getMessage().getChatId(), AuthTGEM.messageTG.get("tg_noasign_chat"));
                     } else {
                         this.sendBroadcastMessage(update.getMessage().getText().toString(), user.playername);
                     }
@@ -158,7 +158,7 @@ public class BotTelegram extends TelegramLongPollingBot {
                             User.register(update.getMessage(), playerUUID.get(update.getMessage().getChatId().toString()));
                             nextStep.put(update.getMessage().getChatId().toString(), "none");
                         } else {
-                            this.sendMessage(update.getMessage().getChatId(), "[Бот] Неверный пароль, повторите попытку");
+                            this.sendMessage(update.getMessage().getChatId(), AuthTGEM.messageTG.get("tgasign_incorrect_password"));
                         }
                         this.deleteMessage(update.getMessage());
                     }
@@ -169,13 +169,13 @@ public class BotTelegram extends TelegramLongPollingBot {
                             User user = User.getUser(uuid);
                             if (user != null) {
                                 if (user.chatid.equals(update.getMessage().getChatId())) {
-                                    this.sendMessage(update.getMessage().getChatId(), "[Бот] Вы уже привязывали эту учетную запись");
+                                    this.sendMessage(update.getMessage().getChatId(), AuthTGEM.messageTG.get("account_already_tgasign"));
                                 } else {
-                                    this.sendMessage(update.getMessage().getChatId(), "[Бот] Эта учетная запись уже привязана к другой учетной записи Телегримма");
+                                    this.sendMessage(update.getMessage().getChatId(), AuthTGEM.messageTG.get("account_already_tgasign_round"));
                                 }
                             } else {
                                 playerUUID.put(update.getMessage().getChatId().toString(), uuid);
-                                this.sendMessage(update.getMessage().getChatId(), "[Бот] Введите пароль от аккаунта");
+                                this.sendMessage(update.getMessage().getChatId(), AuthTGEM.messageTG.get("tgasign_check_password"));
                                 nextStep.put(update.getMessage().getChatId().toString(), "askpassword");
                             }
                         }
@@ -209,11 +209,11 @@ public class BotTelegram extends TelegramLongPollingBot {
                 this.deleteMessage(update.getCallbackQuery().getMessage());
                 Player player = Bukkit.getPlayer(playername);
                 player.resetTitle();
-                player.sendMessage(ChatColor.translateAlternateColorCodes('&', " &f&l[&b&lMT&f&l] &a&lУспешный вход в аккаунт!"));
+                player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.get("succes_login_account")));
             }
             if (update.getCallbackQuery().getData().toString().startsWith("no")) {
                 String playername = update.getCallbackQuery().getData().toString().replace("no", "");
-                Handler.kick(playername, ChatColor.translateAlternateColorCodes('&', " &f&l[&b&lMT&f&l] &c&lОтклонено Владельцем учетной записи из Телеграмма"));
+                Handler.kick(playername, ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.get("rejected_login_account")));
                 this.deleteMessage(update.getCallbackQuery().getMessage());
             }
 
@@ -238,8 +238,8 @@ public class BotTelegram extends TelegramLongPollingBot {
                     String friendname = update.getCallbackQuery().getData().toString().replace("addfrno", "");
                     User user2 = User.getUser(Bukkit.getPlayer(friendname).getUniqueId());
                     User user1 = User.getOnlineUser(update.getCallbackQuery().getMessage().getChatId());
-                    user2.player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] &c&lЗаявка в друзья отклонена"));
-                    user1.sendMessage("Заявка успешно отклонена");
+                    user2.player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.get("bid_rejected")));
+                    user1.sendMessage(AuthTGEM.messageTG.get("bid_succes_rejected"));
                     this.deleteMessage(update.getCallbackQuery().getMessage());
                 }
             }
