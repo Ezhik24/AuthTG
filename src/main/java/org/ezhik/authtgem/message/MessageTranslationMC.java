@@ -76,6 +76,9 @@ public class MessageTranslationMC extends LinkedHashMap<String, String> {
             this.put("bid_rejected","&f&l[&b&lMT&f&l] &c&lЗаявка в друзья отклонена");
             this.put("succes_login_account"," &f&l[&b&lMT&f&l] &a&lУспешный вход в аккаунт!");
             this.put("rejected_login_account"," &f&l[&b&lMT&f&l] &c&lОтклонено Владельцем учетной записи из Телеграмма");
+            this.put("sendmcmsg_friend"," &f&l[&b&lMT&f&l] &a&lСообщение от пользователя {PLAYER}: ");
+            this.put("user1_added_friend","&f&l[&b&lMT&f&l] &a&lВам добавлен в друзья {PLAYER}");
+            this.put("user2_added_friend", "&f&l[&b&lMT&f&l] &a&lВам добавлен в друзья {PLAYER}");
             File newconfigfile = new File("plugins/Minetelegram/messages/messageMC_RU.yml");
             YamlConfiguration newmessageconfig = new YamlConfiguration();
             for (String key : this.keySet()) {
@@ -115,5 +118,20 @@ public class MessageTranslationMC extends LinkedHashMap<String, String> {
     public String getHashtagPN(Long chatid) {
         User user = User.getCurrentUser(chatid);
         return this.get("hashtag_sendmsg_minecraft").replace("{PLAYER}", user.playername);
+    }
+
+    public String getSendMCmsgPN(Long chatid) {
+        User user = User.getCurrentUser(chatid);
+        return this.get("sendmcmsg_friend").replace("{PLAYER}",user.playername);
+    }
+
+    public String getPNaddedUser1Friend(String friendname) {
+        User user = User.getUser(Bukkit.getPlayer(friendname).getUniqueId());
+        return this.get("user1_added_friend").replace("{PLAYER}",user.playername);
+    }
+
+    public String getPNaddedUser2Friend(Long chatid) {
+        User user = User.getOnlineUser(chatid);
+        return this.get("user2_added_friend").replace("{PLAYER}", user.playername);
     }
 }

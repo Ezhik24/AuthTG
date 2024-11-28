@@ -1,5 +1,6 @@
 package org.ezhik.authtgem.message;
 
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -64,6 +65,9 @@ public class MessageTranslationTG extends LinkedHashMap<String, String> {
             this.put("account_already_tgasign_round", "[Бот] Эта учетная запись уже привязана к другой учетной записи Телегримма");
             this.put("tgasign_check_password", "[Бот] Введите пароль от аккаунта");
             this.put("bid_succes_rejected", "Заявка успешно отклонена");
+            this.put("sendmsg_message","Сообщение от пользователя {PLAYER} : ");
+            this.put("addfriend_succesadd","Вам добавлен в друзья {PLAYER}");
+            this.put("acc_choose","[Бот] Выбран игрок {PLAYER}");
             File newconfigfile = new File("plugins/Minetelegram/messages/messageTG_RU.yml");
             YamlConfiguration newmessageconfig = new YamlConfiguration();
             for (String key : this.keySet()) {
@@ -138,5 +142,19 @@ public class MessageTranslationTG extends LinkedHashMap<String, String> {
     public String getSendMsgFriendPN(Long chatid) {
         User user = User.getCurrentUser(chatid);
         return this.get("sendmsg_friend").replace("{PLAYER}", user.playername);
+    }
+
+    public String getPNSendMSGmessage(Long chatid) {
+        User user = User.getCurrentUser(chatid);
+        return this.get("sendmsg_message").replace("{PLAYER}", user.playername);
+    }
+
+    public String getAddFriendPN(String friendname) {
+        User user = User.getUser(Bukkit.getPlayer(friendname).getUniqueId());
+        return this.get("addfriend_succesadd").replace("{PLAYER}", user.playername);
+    }
+
+    public String getAccChoosePN(String playername) {
+        return this.get("acc_choose").replace("{PLAYER}",playername);
     }
 }
