@@ -79,6 +79,8 @@ public class MessageTranslationMC extends LinkedHashMap<String, String> {
             this.put("sendmcmsg_friend"," &f&l[&b&lMT&f&l] &a&lСообщение от пользователя {PLAYER}: ");
             this.put("user1_added_friend","&f&l[&b&lMT&f&l] &a&lВам добавлен в друзья {PLAYER}");
             this.put("user2_added_friend", "&f&l[&b&lMT&f&l] &a&lВам добавлен в друзья {PLAYER}");
+            this.put("account_auth_nessery1","&c&lПривяжи аккаунт");
+            this.put("account_auth_nessery2", "/start в боте");
             File newconfigfile = new File("plugins/Minetelegram/messages/messageMC_RU.yml");
             YamlConfiguration newmessageconfig = new YamlConfiguration();
             for (String key : this.keySet()) {

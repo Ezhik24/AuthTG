@@ -27,6 +27,7 @@ public class BotTelegram extends TelegramLongPollingBot {
     private static Map<String, UUID> playerUUID = new HashMap<>();
     private Map<String, String> sendMessageData = new HashMap<>();
     public static Map<String, String> curentplayer = new HashMap<>();
+    public boolean authNecessarily = false;
 
     public BotTelegram() {
         YamlConfiguration config = new YamlConfiguration();
@@ -34,6 +35,7 @@ public class BotTelegram extends TelegramLongPollingBot {
         if (!file.exists()) {
             config.set("username", username);
             config.set("token", token);
+            config.set("authNecessarily", authNecessarily);
             try {
                 config.save(file);
             } catch (Exception e) {
@@ -49,6 +51,7 @@ public class BotTelegram extends TelegramLongPollingBot {
             }
             username = config.getString("username");
             token = config.getString("token");
+            authNecessarily = config.getBoolean("authNecessarily");
         }
 
 
@@ -77,10 +80,7 @@ public class BotTelegram extends TelegramLongPollingBot {
                         Handler.sendMCmessage(user.playername, message);
                     } else {
                         Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.getHashtagPN(user.chatid) + message));
-
                     }
-
-
                 }
                 this.deleteMessage(update.getMessage());
             }
@@ -110,13 +110,14 @@ public class BotTelegram extends TelegramLongPollingBot {
                     else
                         this.sendMessage(update.getMessage().getChatId(), AuthTGEM.messageTG.get("resetpass_player_notfound"));
                 }
-                if (update.getMessage().getText().toString().equals("/tfoff")) {
+                if (update.getMessage().getText().toString().equals("/tfoff") && !this.authNecessarily) {
                     User user = User.getOnlineUser(update.getMessage().getChatId());
                     if (user != null) user.setTwofactor(false);
                     else
                         this.sendMessage(update.getMessage().getChatId(), AuthTGEM.messageTG.get("tfoff_player_notfound"));
                 }
-                if (update.getMessage().getText().toString().equals("/tfon")) {
+                if (update.getMessage().getText().toString().equals("/tfon") && !this.authNecessarily) {
+
                     User user = User.getOnlineUser(update.getMessage().getChatId());
                     if (user != null) user.setTwofactor(true);
                     else

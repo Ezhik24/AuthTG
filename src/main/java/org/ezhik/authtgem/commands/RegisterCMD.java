@@ -8,10 +8,12 @@ import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.ezhik.authtgem.AuthTGEM;
+import org.ezhik.authtgem.BotTelegram;
 import org.ezhik.authtgem.PasswordHasher;
 import org.ezhik.authtgem.events.FreezerEvent;
 import org.ezhik.authtgem.events.MuterEvent;
 
+import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
 
@@ -43,12 +45,14 @@ public class RegisterCMD implements CommandExecutor {
                 } catch (IOException e) {
                     System.out.println("Error saving config file: " + e);
                 }
-                player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.get("register_successful_register")));
-                player.resetTitle();
-
-
-                FreezerEvent.unfreezeplayer(player.getName());
-                MuterEvent.unmute(player.getName());
+                if (AuthTGEM.bot.authNecessarily) {
+                    player.sendTitle(ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.get("account_auth_nessery1")), AuthTGEM.messageMC.get("account_auth_nessery2"), 0,10000000,0);
+                } else {
+                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.get("register_successful_register")));
+                    player.resetTitle();
+                    FreezerEvent.unfreezeplayer(player.getName());
+                    MuterEvent.unmute(player.getName());
+                }
             } else player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.get("register_wrong_passwords")));
         }
         else {

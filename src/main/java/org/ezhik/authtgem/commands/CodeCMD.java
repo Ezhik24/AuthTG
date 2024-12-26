@@ -9,6 +9,8 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.ezhik.authtgem.AuthTGEM;
 import org.ezhik.authtgem.User;
+import org.ezhik.authtgem.events.FreezerEvent;
+import org.ezhik.authtgem.events.MuterEvent;
 
 import java.io.File;
 import java.io.IOException;
@@ -28,6 +30,11 @@ public class CodeCMD implements CommandExecutor {
             YamlConfiguration userconf = new YamlConfiguration();
             File file = new File("plugins/Minetelegram/users/" + player.getUniqueId() + ".yml");
             if (strings[0].equals(code.get(player.getUniqueId()))) {
+                if (AuthTGEM.bot.authNecessarily) {
+                    FreezerEvent.unfreezeplayer(player.getName());
+                    MuterEvent.unmute(player.getName());
+                    player.resetTitle();
+                }
                 try {
                     userconf.load(file);
                 } catch (IOException e) {

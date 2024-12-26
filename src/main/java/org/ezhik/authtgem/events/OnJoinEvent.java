@@ -6,6 +6,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.ezhik.authtgem.AuthTGEM;
+import org.ezhik.authtgem.BotTelegram;
 import org.ezhik.authtgem.User;
 
 import java.io.File;

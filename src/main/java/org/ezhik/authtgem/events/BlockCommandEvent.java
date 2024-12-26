@@ -13,7 +13,7 @@ public class BlockCommandEvent implements Listener {
     public void onCommmand(PlayerCommandPreprocessEvent event) {
         Player player = event.getPlayer();
         if(MuterEvent.isMute(player)) {
-           if(!(event.getMessage().startsWith("/login") || event.getMessage().startsWith("/register") || event.getMessage().startsWith("/reg") || event.getMessage().startsWith("/l"))) {
+           if(!(event.getMessage().startsWith("/login") || event.getMessage().startsWith("/register") || event.getMessage().startsWith("/reg") || event.getMessage().startsWith("/l") || event.getMessage().startsWith("/code"))) {
                event.setCancelled(true);
                player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.get("command_block")));
            }
