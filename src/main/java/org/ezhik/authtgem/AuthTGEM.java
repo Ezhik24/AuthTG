@@ -29,6 +29,9 @@ public final class AuthTGEM extends JavaPlugin {
         Bukkit.getServer().getPluginManager().registerEvents(new MuterEvent(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new BlockCommandEvent(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new BlockDropItemEvent(), this);
+        Bukkit.getServer().getPluginManager().registerEvents(new BlockDamageEvent(), this);
+        Bukkit.getServer().getPluginManager().registerEvents(new BlockPlaceBEvent(), this);
+        Bukkit.getServer().getPluginManager().registerEvents(new BlockDropBEvent(), this);
         Handler handler = new Handler();
         handler.runTaskTimer(this,0,1);
         getCommand("code").setExecutor(new CodeCMD());
