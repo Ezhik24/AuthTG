@@ -7,8 +7,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent.Result;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
-import org.ezhik.authtgem.Handler;
-import org.telegram.telegrambots.meta.api.objects.Chat;
+import org.ezhik.authtgem.AuthTGEM;
 
 public class PlayerJoinAnotherEvent implements Listener {
     @EventHandler
@@ -16,7 +15,7 @@ public class PlayerJoinAnotherEvent implements Listener {
         Player player = Bukkit.getPlayer(event.getName());
         if (player != null) {
             if (player.isOnline()) {
-                event.disallow(Result.KICK_OTHER, ChatColor.translateAlternateColorCodes('&', "&c&lКто-то уже играет с этого никнейма..."));
+                event.disallow(Result.KICK_OTHER, ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.get("joinAnotherLocate")));
             }
         }
     }
