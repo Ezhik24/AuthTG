@@ -11,6 +11,8 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 
+import java.io.Console;
+
 public final class AuthTGEM extends JavaPlugin {
     public static BotTelegram bot;
     public static MessageTranslationTG messageTG;
@@ -32,6 +34,7 @@ public final class AuthTGEM extends JavaPlugin {
         Bukkit.getServer().getPluginManager().registerEvents(new BlockDamageEvent(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new BlockPlaceBEvent(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new BlockDropBEvent(), this);
+        Bukkit.getServer().getPluginManager().registerEvents(new PlayerJoinAnotherEvent(), this);
         Handler handler = new Handler();
         handler.runTaskTimer(this,0,1);
         getCommand("code").setExecutor(new CodeCMD());
