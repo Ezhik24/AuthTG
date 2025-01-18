@@ -34,3 +34,5 @@ commands:
     description: 'Telegramm Broadcast Command'
   setspawn:
     description: 'Поставить точку спавна'
+  mcbc:
+    description: 'Minecraft Broadcast Command'
