@@ -230,8 +230,8 @@ public class BotTelegram extends TelegramLongPollingBot {
                     User user2 = User.getUser(Bukkit.getPlayer(friendname).getUniqueId());
                     if (!user1.friends.contains(user2.playername)) user1.addfriend(user2.playername);
                     if (!user2.friends.contains(user1.playername)) user2.addfriend(user1.playername);
-                    user2.player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.getPNaddedUser1Friend(friendname)));
-                    user1.player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.getPNaddedUser2Friend(user2.chatid)));
+                    user1.player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.getPNaddedUser1Friend(friendname)));
+                    user2.player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.getPNaddedUser2Friend(user1.chatid)));
                     user1.sendMessage(AuthTGEM.messageTG.getAddFriendPN(friendname));
                     this.deleteMessage(update.getCallbackQuery().getMessage());
                 }

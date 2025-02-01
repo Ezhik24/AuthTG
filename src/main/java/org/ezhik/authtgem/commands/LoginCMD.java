@@ -38,9 +38,17 @@ public class LoginCMD implements CommandExecutor {
                     p.resetTitle();
                 } else {
                     User user = User.getUser(p.getUniqueId());
-                    user.sendLoginAccepted(AuthTGEM.messageTG.get("login_who_entered"));
-                    p.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.get("login_who_entered")));
-                    p.sendTitle(ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.get("login_title_tg_s1color")) + AuthTGEM.messageMC.get("login_title_tg_s1"),AuthTGEM.messageMC.get("login_title_tg_s2") , 20, 1000000000, 0);
+                    if (user != null) {
+                        user.sendLoginAccepted(AuthTGEM.messageTG.get("login_who_entered"));
+                        p.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.get("login_who_entered")));
+                        p.sendTitle(ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.get("login_title_tg_s1color")) + AuthTGEM.messageMC.get("login_title_tg_s1"), AuthTGEM.messageMC.get("login_title_tg_s2"), 20, 1000000000, 0);
+                    } else {
+                        userconfig.set("twofactor", false);
+                        p.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.get("login_successful_login")));
+                        FreezerEvent.unfreezeplayer(p.getName());
+                        MuterEvent.unmute(p.getName());
+                        p.resetTitle();
+                    }
                 }
             } else {
                 p.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.get("login_wrong_password")));
