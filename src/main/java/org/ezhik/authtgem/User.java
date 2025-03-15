@@ -120,27 +120,14 @@ public class User {
     }
 
     public static List<User> getUserList(){
-        List<User> users = new ArrayList<User>();
+        List<User> users = new ArrayList<>();
         File folder = new File("plugins/Minetelegram/users");
         File[] listOfFiles = folder.listFiles();
         for (File file : listOfFiles) {
-            System.out.println(file.getName());
             if (file.isFile()) {
                 UUID uuid = UUID.fromString(file.getName().replace(".yml", ""));
                 User user = new User(uuid);
                 if (user.active) {
-                    users.add(user);
-                }
-            }
-        }
-        return users;
-    }
-
-    public static List<User> getTFAUsers(){
-        List<User> users = User.getUserList();
-        for (User user : users){
-            if (user != null) {
-                if (user.twofactor) {
                     users.add(user);
                 }
             }
@@ -191,6 +178,16 @@ public class User {
         }
         return null;
 
+    }
+
+    public static User getUserJoin(UUID uuid) {
+        File file = new File("plugins/Minetelegram/users/" + uuid + ".yml");
+        if (file.isFile()) {
+            User user = new User(uuid);
+            return user;
+        } else {
+            return null;
+        }
     }
 
     public void kick(){

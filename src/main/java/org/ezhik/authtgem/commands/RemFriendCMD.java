@@ -15,15 +15,14 @@ public class RemFriendCMD implements CommandExecutor {
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
         if (strings.length == 0) {
             commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.get("removefriend_wrong_command")));
-        } else {
-            Player player = (Player) commandSender;
-            User user = User.getUser(player.getUniqueId());
-            if (user == null){
-                commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.get("removefriend_tg_noasign")));
-            }else{
-                commandSender.sendMessage(user.remFriend(strings[0]));
-            }
-
+            return false;
+        }
+        Player player = (Player) commandSender;
+        User user = User.getUser(player.getUniqueId());
+        if (user == null){
+            commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.get("removefriend_tg_noasign")));
+        }else{
+            commandSender.sendMessage(user.remFriend(strings[0]));
         }
         return true;
     }

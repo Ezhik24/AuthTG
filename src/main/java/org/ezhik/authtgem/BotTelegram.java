@@ -53,8 +53,6 @@ public class BotTelegram extends TelegramLongPollingBot {
             token = config.getString("token");
             authNecessarily = config.getBoolean("authNecessarily");
         }
-
-
     }
 
     @Override
@@ -146,15 +144,8 @@ public class BotTelegram extends TelegramLongPollingBot {
                     if (nextStep.get(update.getMessage().getChatId().toString()).equals("askpassword")) {
                         String password = update.getMessage().getText().toString().replace(" ", "").replace("\n", "");
                         String hash = PasswordHasher.hashPassword(password);
-                        YamlConfiguration userconfig = new YamlConfiguration();
                         File file = new File("plugins/Minetelegram/users/" + playerUUID.get(update.getMessage().getChatId().toString()) + ".yml");
-                        try {
-                            userconfig.load(file);
-                        } catch (IOException e) {
-                            System.out.println("Error loading config file: " + e);
-                        } catch (InvalidConfigurationException e) {
-                            System.out.println("Error parsing config file: " + e);
-                        }
+                        YamlConfiguration userconfig = YamlConfiguration.loadConfiguration(file);
                         if (hash.equals(userconfig.getString("password"))) {
                             User.register(update.getMessage(), playerUUID.get(update.getMessage().getChatId().toString()));
                             nextStep.put(update.getMessage().getChatId().toString(), "none");

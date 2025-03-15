@@ -19,50 +19,44 @@ import java.io.IOException;
 public class LoginCMD implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
-        if (strings.length == 1) {
-            Player p = (Player) commandSender;
-            YamlConfiguration userconfig = new YamlConfiguration();
-            File file = new File("plugins/Minetelegram/users/" + p.getUniqueId() + ".yml");
-            try {
-                userconfig.load(file);
-            } catch (IOException e) {
-                System.out.println("Error loading config file: " + e);
-            } catch (InvalidConfigurationException e) {
-                System.out.println("Error parsing config file: " + e);
-            }
-            if (userconfig.getString("password").equals(PasswordHasher.hashPassword(strings[0]))) {
-                if (!userconfig.contains("twofactor") || !userconfig.getBoolean("twofactor")) {
-                    p.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.get("login_successful_login")));
-                    FreezerEvent.unfreezeplayer(p.getName());
-                    MuterEvent.unmute(p.getName());
-                    p.resetTitle();
-                } else {
-                    User user = User.getUser(p.getUniqueId());
-                    if (user != null) {
-                        user.sendLoginAccepted(AuthTGEM.messageTG.get("login_who_entered"));
-                        p.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.get("login_who_entered")));
-                        p.sendTitle(ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.get("login_title_tg_s1color")) + AuthTGEM.messageMC.get("login_title_tg_s1"), AuthTGEM.messageMC.get("login_title_tg_s2"), 20, 1000000000, 0);
-                    } else {
-                        userconfig.set("twofactor", false);
-                        p.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.get("login_successful_login")));
-                        FreezerEvent.unfreezeplayer(p.getName());
-                        MuterEvent.unmute(p.getName());
-                        p.resetTitle();
-                    }
-                }
+        if (strings.length != 1) {
+            commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.get("login_wrong_command")));
+            return false;
+        }
+        Player p = (Player) commandSender;
+        File file = new File("plugins/Minetelegram/users/" + p.getUniqueId() + ".yml");
+        YamlConfiguration userconfig = YamlConfiguration.loadConfiguration(file);
+        if (!userconfig.getString("password").equals(PasswordHasher.hashPassword(strings[0]))) {
+            p.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.get("login_wrong_password")));
+            return false;
+        }
+        User user = User.getUser(p.getUniqueId());
+        if (AuthTGEM.bot.authNecessarily) {
+            if (userconfig.getBoolean("active")) {
+                user.sendLoginAccepted(AuthTGEM.messageTG.get("login_who_entered"));
+                p.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.get("login_who_entered")));
+                p.sendTitle(ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.get("login_title_tg_s1color")) + AuthTGEM.messageMC.get("login_title_tg_s1"), AuthTGEM.messageMC.get("login_title_tg_s2"), 20, 1000000000, 0);
             } else {
-                p.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.get("login_wrong_password")));
+                p.sendTitle(ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.get("account_auth_nessery1")), AuthTGEM.messageMC.get("account_auth_nessery2"), 0,10000000,0);
             }
-            userconfig.set("playername", p.getName());
-            try {
-                userconfig.save(file);
-            } catch (IOException e) {
-                System.out.println("Error saving config file: " + e);
+        }else {
+            if (user != null) {
+                user.sendLoginAccepted(AuthTGEM.messageTG.get("login_who_entered"));
+                p.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.get("login_who_entered")));
+                p.sendTitle(ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.get("login_title_tg_s1color")) + AuthTGEM.messageMC.get("login_title_tg_s1"), AuthTGEM.messageMC.get("login_title_tg_s2"), 20, 1000000000, 0);
+            } else {
+                userconfig.set("twofactor", false);
+                p.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.get("login_successful_login")));
+                FreezerEvent.unfreezeplayer(p.getName());
+                MuterEvent.unmute(p.getName());
+                p.resetTitle();
             }
-        } else {
-            Player player = (Player) commandSender;
-            player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.get("login_wrong_command")));
-
+        }
+        userconfig.set("playername", p.getName());
+        try {
+            userconfig.save(file);
+        } catch (IOException e) {
+            System.out.println("Error saving config file: " + e);
         }
         return true;
     }
