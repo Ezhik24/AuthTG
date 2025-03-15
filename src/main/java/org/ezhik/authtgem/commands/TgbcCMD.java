@@ -11,11 +11,12 @@ public class TgbcCMD implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
         if (commandSender.hasPermission("minetelegram.tgbc")) {
-            String text = String.join(" ", strings);
-            User.sendBroadcastMessage(text);
-        } else {
             commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.get("tgbc_nopermission")));
+            return false;
         }
+        String text = String.join(" ", strings);
+        User.sendBroadcastMessage(text);
+        commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&',AuthTGEM.messageMC.get("tgbc_success")));
         return true;
     }
 }

@@ -27,36 +27,30 @@ public class RegisterCMD implements CommandExecutor {
             return false;
         }
         Player player = (Player) commandSender;
-        YamlConfiguration userconfig = new YamlConfiguration();
         File file = new File("plugins/Minetelegram/users/" + player.getUniqueId() + ".yml");
-        if (!file.exists()) {
-            if (strings[0].equals(strings[1])) {
-                try {
-                    userconfig.load(file);
-                } catch (IOException e) {
-                    System.out.println("Error loading config file: " + e);
-                } catch (InvalidConfigurationException e) {
-                    System.out.println("Error parsing config file: " + e);
-                }
-                userconfig.set("password", PasswordHasher.hashPassword(strings[0]));
-                userconfig.set("playername", player.getName());
-                try {
-                    userconfig.save(file);
-                } catch (IOException e) {
-                    System.out.println("Error saving config file: " + e);
-                }
-                if (AuthTGEM.bot.authNecessarily) {
-                    player.sendTitle(ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.get("account_auth_nessery1")), AuthTGEM.messageMC.get("account_auth_nessery2"), 0,10000000,0);
-                } else {
-                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.get("register_successful_register")));
-                    player.resetTitle();
-                    FreezerEvent.unfreezeplayer(player.getName());
-                    MuterEvent.unmute(player.getName());
-                }
-            } else player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.get("register_wrong_passwords")));
-        }
-        else {
+        YamlConfiguration userconfig = YamlConfiguration.loadConfiguration(file);
+        if (file.exists()) {
             player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.get("register_already_register")));
+            return false;
+        }
+        if (!strings[0].equals(strings[1])) {
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.get("register_wrong_passwords")));
+            return false;
+        }
+        userconfig.set("password", PasswordHasher.hashPassword(strings[0]));
+        userconfig.set("playername", player.getName());
+        try {
+            userconfig.save(file);
+        } catch (IOException e) {
+            System.out.println("Error saving config file: " + e);
+        }
+        if (AuthTGEM.bot.authNecessarily) {
+            player.sendTitle(ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.get("account_auth_nessery1")), AuthTGEM.messageMC.get("account_auth_nessery2"), 0,10000000,0);
+        } else {
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.get("register_successful_register")));
+            player.resetTitle();
+            FreezerEvent.unfreezeplayer(player.getName());
+            MuterEvent.unmute(player.getName());
         }
         return true;
     }

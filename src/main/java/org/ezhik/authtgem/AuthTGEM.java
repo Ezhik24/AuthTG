@@ -23,7 +23,7 @@ public final class AuthTGEM extends JavaPlugin {
         messageTG = new MessageTranslationTG();
         messageMC = new MessageTranslationMC();
         System.out.println("[AuthTG] Пожалуйста,подпишитесь на мой телеграмм канал https://t.me/ezhichek11");
-        System.out.println("[AuthTG] Please,subcribe for my telegram channel https://t.me/ezhichek11");
+        System.out.println("[AuthTG] Please,subscribe for my telegram channel https://t.me/ezhichek11");
         System.out.println("[AuthTG] Плагин включен!");
         System.out.println("[AuthTG] Plugin enabled!");
         Bukkit.getServer().getPluginManager().registerEvents(new FreezerEvent(), this);
@@ -48,6 +48,7 @@ public final class AuthTGEM extends JavaPlugin {
         getCommand("listfriends").setExecutor(new ListFriendsCMD());
         getCommand("tellfriends").setExecutor(new TellFriendsCMD());
         getCommand("setspawn").setExecutor(new SetSpawnCMD());
+        getCommand("mcbc").setExecutor(new MCbcCMD());
         bot = new BotTelegram();
         if (bot.getBotToken() == "changeme" && bot.getBotUsername() == "changeme") {
             System.out.println("Please set your bot token and username in config.yml");

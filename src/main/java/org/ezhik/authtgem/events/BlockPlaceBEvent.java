@@ -7,7 +7,8 @@ import org.bukkit.event.block.BlockPlaceEvent;
 public class BlockPlaceBEvent implements Listener {
     @EventHandler
     public void onBlockPlace(BlockPlaceEvent event) {
-        if (FreezerEvent.isFreeze(event.getPlayer())) event.setCancelled(true);
+        if (FreezerEvent.isFreeze(event.getPlayer()))
+            event.setCancelled(true);
 
     }
 }
