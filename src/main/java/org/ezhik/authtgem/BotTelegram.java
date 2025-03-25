@@ -313,11 +313,6 @@ public class BotTelegram extends TelegramLongPollingBot {
         }
     }
 
-    private String dispPlayer(Long chatId) {
-        User user = User.getUser(curentplayer.get(chatId.toString()));
-        return user.player.getName();
-    }
-
     private void showFriendsList(Message message) {
         User user = User.getCurrentUser(message.getChatId());
         List<List<InlineKeyboardButton>> friends = new ArrayList<>();

@@ -27,20 +27,13 @@ public class CodeCMD implements CommandExecutor {
             commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.get("code_wrong_command")));
         } else {
             Player player = (Player) commandSender;
-            YamlConfiguration userconf = new YamlConfiguration();
             File file = new File("plugins/Minetelegram/users/" + player.getUniqueId() + ".yml");
+            YamlConfiguration userconf = YamlConfiguration.loadConfiguration(file);
             if (strings[0].equals(code.get(player.getUniqueId()))) {
                 if (AuthTGEM.bot.authNecessarily) {
                     FreezerEvent.unfreezeplayer(player.getName());
                     MuterEvent.unmute(player.getName());
                     player.resetTitle();
-                }
-                try {
-                    userconf.load(file);
-                } catch (IOException e) {
-                    System.out.println("Error loading config file: " + e);
-                } catch (InvalidConfigurationException e) {
-                    System.out.println("Error parsing config file: " + e);
                 }
                 if (userconf.getBoolean("active")) {
                     userconf.set("active", false);

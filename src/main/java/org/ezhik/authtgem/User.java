@@ -12,6 +12,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMa
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.ezhik.authtgem.commands.CodeCMD;
+import org.yaml.snakeyaml.Yaml;
 
 
 import java.io.File;
@@ -195,16 +196,9 @@ public class User {
     }
 
     public void resetpassword() {
-        YamlConfiguration userconf = new YamlConfiguration();
         File file = new File("plugins/Minetelegram/users/" + this.player.getUniqueId() + ".yml");
+        YamlConfiguration userconf = YamlConfiguration.loadConfiguration(file);
         String password = generateConfirmationCode();
-        try {
-            userconf.load(file);
-        } catch (IOException e) {
-            System.out.println("Error loading config file: " + e);
-        } catch (InvalidConfigurationException e) {
-            System.out.println("Error parsing config file: " + e);
-        }
         userconf.set("password", PasswordHasher.hashPassword(password));
         try {
             userconf.save(file);
@@ -216,22 +210,14 @@ public class User {
     }
 
     public void setTwofactor(boolean state) {
-        YamlConfiguration userconf = new YamlConfiguration();
         File file = new File("plugins/Minetelegram/users/" + this.player.getUniqueId() + ".yml");
-        try {
-            userconf.load(file);
-        } catch (IOException e) {
-            System.out.println("Error loading config file: " + e);
-        } catch (InvalidConfigurationException e) {
-            System.out.println("Error parsing config file: " + e);
-        }
+        YamlConfiguration userconf = YamlConfiguration.loadConfiguration(file);
         userconf.set("twofactor", state);
         try {
             userconf.save(file);
         } catch (IOException e) {
             System.out.println("Error saving config file: " + e);
         }
-
         if(state){
             this.sendMessage(AuthTGEM.messageTG.get("auth_in_2step_on"));
         }
@@ -314,15 +300,8 @@ public class User {
 
     public void addfriend(String friendname) {
         this.friends.add(friendname);
-        YamlConfiguration userconf = new YamlConfiguration();
         File file = new File("plugins/Minetelegram/users/" + this.player.getUniqueId() + ".yml");
-        try {
-            userconf.load(file);
-        } catch (IOException e) {
-            System.out.println("Error loading config file: " + e);
-        } catch (InvalidConfigurationException e) {
-            System.out.println("Error parsing config file: " + e);
-        }
+        YamlConfiguration userconf = YamlConfiguration.loadConfiguration(file);
         userconf.set("friends", this.friends);
         try {
             userconf.save(file);
@@ -411,14 +390,7 @@ public class User {
 
     public static void setSpawnLocation(Location spawnlocation) {
         File file = new File("plugins/Minetelegram/config.yml");
-        YamlConfiguration config = new YamlConfiguration();
-        try {
-            config.load(file);
-        } catch (IOException e) {
-            System.out.println("Error loading config file: " + e);
-        } catch (InvalidConfigurationException e) {
-            System.out.println("Error parsing config file: " + e);
-        }
+        YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
         config.set("spawn", spawnlocation);
         try {
             config.save(file);
@@ -427,16 +399,9 @@ public class User {
         }
     }
     public static Location getSpawnLocation() {
-        Location spawn = null;
+        Location spawn;
         File file = new File("plugins/Minetelegram/config.yml");
-        YamlConfiguration config = new YamlConfiguration();
-        try {
-            config.load(file);
-        } catch (IOException e) {
-            System.out.println("Error loading config file: " + e);
-        } catch (InvalidConfigurationException e) {
-            return spawn;
-        }
+        YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
         spawn = config.getLocation("spawn");
         return spawn;
     }
