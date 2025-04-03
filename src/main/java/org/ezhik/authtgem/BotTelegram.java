@@ -28,6 +28,7 @@ public class BotTelegram extends TelegramLongPollingBot {
     private Map<String, String> sendMessageData = new HashMap<>();
     public static Map<String, String> curentplayer = new HashMap<>();
     public boolean authNecessarily = false;
+    public boolean notRegAndLogin = false;
 
     public BotTelegram() {
         YamlConfiguration config = new YamlConfiguration();
@@ -36,6 +37,7 @@ public class BotTelegram extends TelegramLongPollingBot {
             config.set("username", username);
             config.set("token", token);
             config.set("authNecessarily", authNecessarily);
+            config.set("notRegAndLogin", notRegAndLogin);
             try {
                 config.save(file);
             } catch (Exception e) {
@@ -52,6 +54,7 @@ public class BotTelegram extends TelegramLongPollingBot {
             username = config.getString("username");
             token = config.getString("token");
             authNecessarily = config.getBoolean("authNecessarily");
+            notRegAndLogin = config.getBoolean("notRegAndLogin");
         }
     }
 
@@ -108,13 +111,13 @@ public class BotTelegram extends TelegramLongPollingBot {
                     else
                         this.sendMessage(update.getMessage().getChatId(), AuthTGEM.messageTG.get("resetpass_player_notfound"));
                 }
-                if (update.getMessage().getText().toString().equals("/tfoff") && !this.authNecessarily) {
+                if (update.getMessage().getText().toString().equals("/tfoff") && !this.authNecessarily && !this.notRegAndLogin) {
                     User user = User.getOnlineUser(update.getMessage().getChatId());
                     if (user != null) user.setTwofactor(false);
                     else
                         this.sendMessage(update.getMessage().getChatId(), AuthTGEM.messageTG.get("tfoff_player_notfound"));
                 }
-                if (update.getMessage().getText().toString().equals("/tfon") && !this.authNecessarily) {
+                if (update.getMessage().getText().toString().equals("/tfon") && !this.authNecessarily && !this.notRegAndLogin) {
 
                     User user = User.getOnlineUser(update.getMessage().getChatId());
                     if (user != null) user.setTwofactor(true);
@@ -141,7 +144,7 @@ public class BotTelegram extends TelegramLongPollingBot {
                     this.deleteMessage(update.getMessage());
                 }
                 if (nextStep.containsKey(update.getMessage().getChatId().toString())) {
-                    if (nextStep.get(update.getMessage().getChatId().toString()).equals("askpassword")) {
+                    if (nextStep.get(update.getMessage().getChatId().toString()).equals("askpassword") && !this.notRegAndLogin) {
                         String password = update.getMessage().getText().toString().replace(" ", "").replace("\n", "");
                         String hash = PasswordHasher.hashPassword(password);
                         File file = new File("plugins/Minetelegram/users/" + playerUUID.get(update.getMessage().getChatId().toString()) + ".yml");
@@ -166,9 +169,13 @@ public class BotTelegram extends TelegramLongPollingBot {
                                     this.sendMessage(update.getMessage().getChatId(), AuthTGEM.messageTG.get("account_already_tgasign_round"));
                                 }
                             } else {
-                                playerUUID.put(update.getMessage().getChatId().toString(), uuid);
-                                this.sendMessage(update.getMessage().getChatId(), AuthTGEM.messageTG.get("tgasign_check_password"));
-                                nextStep.put(update.getMessage().getChatId().toString(), "askpassword");
+                                if (!this.notRegAndLogin) {
+                                    playerUUID.put(update.getMessage().getChatId().toString(), uuid);
+                                    this.sendMessage(update.getMessage().getChatId(), AuthTGEM.messageTG.get("tgasign_check_password"));
+                                    nextStep.put(update.getMessage().getChatId().toString(), "askpassword");
+                                } else {
+                                    User.register(update.getMessage(), uuid);
+                                }
                             }
                         }
                     }

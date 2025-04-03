@@ -22,6 +22,10 @@ public class RegisterCMD implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
+        if (AuthTGEM.bot.notRegAndLogin) {
+            commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] &c&lЭта функция отключена."));
+            return false;
+        }
         if (strings.length < 2) {
             commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.get("register_wrong_command")));
             return false;

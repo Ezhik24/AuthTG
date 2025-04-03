@@ -18,7 +18,6 @@ import java.util.List;
 public class FriendCMD implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
-        System.out.println(command.tabComplete(commandSender,s,strings));
         Player player;
         User user;
         switch (strings[0]) {
