@@ -93,14 +93,12 @@ public class User {
         } catch (IOException e) {
             System.out.println("Error saving config file: " + e);
         }
-
         File oldfile = new File("plugins/Minetelegram/users/" + message.getChatId().toString() + ".yml");
         oldfile.delete();
         String code = generateConfirmationCode();
         AuthTGEM.bot.sendMessage(message.getChatId(), AuthTGEM.messageTG.getCodeActivated(code));
         p.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.get("code_activate_acc")));
         CodeCMD.code.put(p.getUniqueId(), code);
-
     }
 
     public static void starcmd(Message message) {
@@ -117,7 +115,7 @@ public class User {
     }
 
     public void sendMessage(String message) {
-        AuthTGEM.bot.sendMessage(this.chatid, AuthTGEM.messageTG.getPlayerNameSM(this.chatid) + message);
+        AuthTGEM.bot.sendMessage(this.chatid, AuthTGEM.messageTG.getPlayerNameSM(this.playername) + message);
     }
 
     public static List<User> getUserList(){
@@ -378,7 +376,7 @@ public class User {
         rowkeyb.add(colkeyb);
         playerKB.setKeyboard(rowkeyb);
         SendMessage sendMessage = new SendMessage();
-        sendMessage.setText(AuthTGEM.messageTG.getPlayerNameSMB(this.chatid) + message);
+        sendMessage.setText(AuthTGEM.messageTG.getPlayerNameSMB(this.playername) + message);
         sendMessage.setChatId(this.chatid);
         sendMessage.setReplyMarkup(playerKB);
         try {

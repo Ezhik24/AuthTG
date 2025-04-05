@@ -98,14 +98,12 @@ public class MessageTranslationTG extends LinkedHashMap<String, String> {
         return this.get("tellfriends_message_succes").replace("{PLAYER}", user.playername);
     }
 
-    public String getPlayerNameSM(Long chatid) {
-        User user = User.getCurrentUser(chatid);
-        return this.get("sendMessage_prefix").replace("{PLAYER}", user.playername);
+    public String getPlayerNameSM(String  playername) {
+        return this.get("sendMessage_prefix").replace("{PLAYER}", playername);
     }
 
-    public String getPlayerNameSMB(Long chatid) {
-        User user = User.getCurrentUser(chatid);
-        return this.get("sendMessageB_prefix").replace("{PLAYER}",user.playername);
+    public String getPlayerNameSMB(String playername) {
+        return this.get("sendMessageB_prefix").replace("{PLAYER}",playername);
     }
 
     public String getPNFriendOnJoin(Player player) {
@@ -139,9 +137,8 @@ public class MessageTranslationTG extends LinkedHashMap<String, String> {
         return this.get("sendmcmsg_friend").replace("{PLAYER}", user.playername);
     }
 
-    public String getSendMsgFriendPN(Long chatid) {
-        User user = User.getCurrentUser(chatid);
-        return this.get("sendmsg_friend").replace("{PLAYER}", user.playername);
+    public String getSendMsgFriendPN(String playername) {
+        return this.get("sendmsg_friend").replace("{PLAYER}", playername);
     }
 
     public String getPNSendMSGmessage(Long chatid) {

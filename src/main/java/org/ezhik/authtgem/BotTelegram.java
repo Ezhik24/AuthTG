@@ -256,7 +256,7 @@ public class BotTelegram extends TelegramLongPollingBot {
                 String friendname = update.getCallbackQuery().getData().toString().replace("sndmsg", "");
                 this.deleteMessage(update.getCallbackQuery().getMessage());
                 User user = User.getCurrentUser(update.getCallbackQuery().getMessage().getChatId());
-                this.sendMessage(update.getCallbackQuery().getMessage().getChatId(), AuthTGEM.messageTG.getSendMsgFriendPN(user.chatid));
+                this.sendMessage(update.getCallbackQuery().getMessage().getChatId(), AuthTGEM.messageTG.getSendMsgFriendPN(user.playername));
                 nextStep.put(update.getCallbackQuery().getMessage().getChatId().toString(), "sendmsg");
                 sendMessageData.put(update.getCallbackQuery().getMessage().getChatId().toString(), friendname);
             }

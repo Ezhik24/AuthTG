@@ -20,9 +20,14 @@ public class FriendCMD implements CommandExecutor {
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
         Player player;
         User user;
+        if (strings.length == 0) {
+            player = (Player) commandSender;
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&',"&f&l[&b&lMT&f&l] &c&lВведите любые аргументы: add | tell | rem | list"));
+            return false;
+        }
         switch (strings[0]) {
             case "tell":
-                if (strings.length == 0) {
+                if (strings.length == 1) {
                     commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.get("tellfriends_wrong_command")));
                     return false;
                 }
@@ -50,7 +55,7 @@ public class FriendCMD implements CommandExecutor {
                 }
                 return true;
             case "add":
-                if (strings.length == 0) {
+                if (strings.length == 1) {
                     commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.get("addfriends_wrong_command")));
                 } else {
                     Player player1 = (Player) commandSender;
@@ -75,7 +80,6 @@ public class FriendCMD implements CommandExecutor {
                             rowkeyb.add(colkeyb);
                             keyb.setKeyboard(rowkeyb);
                             SendMessage sendMessage = new SendMessage();
-
                             user = User.getUser(strings[1]);
                             if (user != null) {
                                 sendMessage.setChatId(user.chatid);
@@ -96,7 +100,7 @@ public class FriendCMD implements CommandExecutor {
                 }
                 return true;
             case "rem":
-                if (strings.length == 0) {
+                if (strings.length == 1) {
                     commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.get("removefriend_wrong_command")));
                     return false;
                 }

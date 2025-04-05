@@ -19,11 +19,11 @@ public class MessageTranslationMC extends LinkedHashMap<String, String> {
         try {
             messageconfig.load(configfile);
         } catch (FileNotFoundException e) {
-            this.put("addfriends_wrong_command", "&f&l[&b&lMT&f&l] &c&lКоманда введена неверно. Введите команду так: /addfriend <ник>");
+            this.put("addfriends_wrong_command", "&f&l[&b&lMT&f&l] &c&lКоманда введена неверно. Введите команду так: /friend add <ник>");
             this.put("addfriends_tg_noasign", "&f&l[&b&lMT&f&l] &c&lПривяжите аккаунт к телеграмму");
             this.put("friend_tg_noasign", "&f&l[&b&lMT&f&l] &c&lДанный игрок не привязывал аккаунт к телеграмму");
             this.put("friends_already_added", "&f&l[&b&lMT&f&l] &c&lВы уже добавляли этого игрока в друзья");
-            this.put("removefriend_wrong_command", "&f&l[&b&lMT&f&l] &c&lКоманда введена неверно. Введите команду так: /remfriend <ник>");
+            this.put("removefriend_wrong_command", "&f&l[&b&lMT&f&l] &c&lКоманда введена неверно. Введите команду так: /friend rem <ник>");
             this.put("removefriend_tg_noasign","&f&l[&b&lMT&f&l] &c&lПривяжите аккаунт к телеграмму");
             this.put("removefriend_succes_remove", "&f&l[&b&lMT&f&l] &c&lВы удалили {PLAYER} из друзей");
             this.put("removefriend_notfound_friend", "Такого игрока нет в друзьях");
@@ -32,7 +32,7 @@ public class MessageTranslationMC extends LinkedHashMap<String, String> {
             this.put("listfriends_friend", "&a&l");
             this.put("listfriends_online_friend", " [Online]");
             this.put("listfriends_offline_friend", " [Offline]");
-            this.put("tellfriends_wrong_command", "&f&l[&b&lMT&f&l] &c&lКоманда введена неверно. Введите команду так: /tellfriends <ник> <сообщение>");
+            this.put("tellfriends_wrong_command", "&f&l[&b&lMT&f&l] &c&lКоманда введена неверно. Введите команду так: /friends tell <ник> <сообщение>");
             this.put("tellfriends_sendmessage_succes","&f&l[&b&lMT&f&l] &a&lСообщение отправлено");
             this.put("tellfriends_friends_tgasign","&f&l[&b&lMT&f&l] &c&lВаш друг отвязал телеграмм аккаунт");
             this.put("changepassword_success", "&f&l[&b&lMT&f&l] &a&lВы успешно изменили пароль");

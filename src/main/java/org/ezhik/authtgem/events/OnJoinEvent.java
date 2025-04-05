@@ -26,12 +26,12 @@ public class OnJoinEvent implements Listener {
         if (AuthTGEM.bot.notRegAndLogin) {
             user = User.getUser(p.getUniqueId());
             if (user != null) {
-                MuterEvent.mute(p.getName(), ChatColor.translateAlternateColorCodes('&',"&f&l[&b&lMT&f&l] &a&lПотвердите вход через Телеграмм"));
-                p.sendTitle(ChatColor.translateAlternateColorCodes('&',"&f&l[&b&lMT&f&l] &a&lПльвердите вход"), "через Телеграмм");
+                MuterEvent.mute(p.getName(), ChatColor.translateAlternateColorCodes('&',"&f&l[&b&lMT&f&l] &a&lПотвердите вход через Телегамм"));
+                p.sendTitle(ChatColor.translateAlternateColorCodes('&',"&a&lПотвердите вход"), "через Телеграмм", 20, 10000000,0);
                 user.sendLoginAccepted("Это вы вошли в игру?");
             } else {
                 MuterEvent.mute(p.getName(), ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] &a&lПривяжите аккаунт. Введите в боте команду /start"));
-                p.sendTitle(ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] &c&lПривяжите аккаунт"), "Введите /start в боте");
+                p.sendTitle(ChatColor.translateAlternateColorCodes('&', "&c&lПривяжите аккаунт"), "Введите /start в боте",20,10000000,0);
             }
         } else {
             if (AuthTGEM.bot.authNecessarily) user = User.getUser(p.getUniqueId());
