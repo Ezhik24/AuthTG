@@ -112,6 +112,9 @@ public class FriendCMD implements CommandExecutor {
                     commandSender.sendMessage(user.remFriend(strings[1]));
                 }
                 return true;
+            default:
+                commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&',"&f&l[&b&lMT&f&l] Введите аргументы: add | rem | list | tell"));
+                break;
         }
         return true;
     }

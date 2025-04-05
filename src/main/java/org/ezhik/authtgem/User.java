@@ -311,15 +311,8 @@ public class User {
 
     public void remFriendFromConf(String friendname) {
         this.friends.remove(friendname);
-        YamlConfiguration userconf = new YamlConfiguration();
         File file = new File("plugins/Minetelegram/users/" + this.uuid + ".yml");
-        try {
-            userconf.load(file);
-        } catch (IOException e) {
-            System.out.println("Error loading config file: " + e);
-        } catch (InvalidConfigurationException e) {
-            System.out.println("Error parsing config file: " + e);
-        }
+        YamlConfiguration userconf = YamlConfiguration.loadConfiguration(file);
         userconf.set("friends", this.friends);
         try {
             userconf.save(file);
