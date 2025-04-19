@@ -29,6 +29,10 @@ public class BotTelegram extends TelegramLongPollingBot {
     public static Map<String, String> curentplayer = new HashMap<>();
     public boolean authNecessarily = false;
     public boolean notRegAndLogin = false;
+    public int minLenghtNickname = 3;
+    public int maxLenghtNickname = 15;
+    public int minLenghtPassword = 3;
+    public int maxLenghtPassword = 32;
 
     public BotTelegram() {
         YamlConfiguration config = new YamlConfiguration();
@@ -38,6 +42,10 @@ public class BotTelegram extends TelegramLongPollingBot {
             config.set("token", token);
             config.set("authNecessarily", authNecessarily);
             config.set("notRegAndLogin", notRegAndLogin);
+            config.set("minLenghtNickname", minLenghtNickname);
+            config.set("maxLenghtNickname", maxLenghtNickname);
+            config.set("minLenghtPassword", minLenghtPassword);
+            config.set("maxLenghtPassword", maxLenghtPassword);
             try {
                 config.save(file);
             } catch (Exception e) {
@@ -55,6 +63,10 @@ public class BotTelegram extends TelegramLongPollingBot {
             token = config.getString("token");
             authNecessarily = config.getBoolean("authNecessarily");
             notRegAndLogin = config.getBoolean("notRegAndLogin");
+            minLenghtNickname = config.getInt("minLenghtNickname");
+            maxLenghtNickname = config.getInt("maxLenghtNickname");
+            minLenghtPassword = config.getInt("minLenghtPassword");
+            maxLenghtPassword = config.getInt("maxLenghtPassword");
         }
     }
 
@@ -184,7 +196,7 @@ public class BotTelegram extends TelegramLongPollingBot {
                         this.deleteMessage(update.getMessage());
                         User senderuser = User.getCurrentUser(update.getMessage().getChatId());
                         User frienduser = User.getUser(sendMessageData.get(update.getMessage().getChatId().toString()));
-                        frienduser.sendMessageB(AuthTGEM.messageTG.getPNSendMSGmessage(senderuser.chatid) + update.getMessage().getText().toString(), senderuser.playername);
+                        frienduser.sendMessageB(AuthTGEM.messageTG.getPNSendMSGmessage(senderuser) + update.getMessage().getText().toString(), senderuser.playername);
                     }
                     if (nextStep.get(update.getMessage().getChatId().toString()).equals("sendmcmsg")) {
                         nextStep.put(update.getMessage().getChatId().toString(), "none");
@@ -306,8 +318,6 @@ public class BotTelegram extends TelegramLongPollingBot {
             colkeyb.add(playerbtn);
             keyboard.add(colkeyb);
         }
-
-
         players.setKeyboard(keyboard);
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(chatID);

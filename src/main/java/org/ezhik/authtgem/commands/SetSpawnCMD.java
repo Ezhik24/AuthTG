@@ -7,7 +7,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.ezhik.authtgem.AuthTGEM;
 import org.ezhik.authtgem.User;
-import org.telegram.telegrambots.meta.api.objects.Chat;
 
 public class SetSpawnCMD implements CommandExecutor {
     @Override

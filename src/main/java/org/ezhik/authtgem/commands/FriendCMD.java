@@ -22,7 +22,7 @@ public class FriendCMD implements CommandExecutor {
         User user;
         if (strings.length == 0) {
             player = (Player) commandSender;
-            player.sendMessage(ChatColor.translateAlternateColorCodes('&',"&f&l[&b&lMT&f&l] &c&lВведите любые аргументы: add | tell | rem | list"));
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&',AuthTGEM.messageMC.get("friend_lenght")));
             return false;
         }
         switch (strings[0]) {
@@ -85,7 +85,7 @@ public class FriendCMD implements CommandExecutor {
                                 sendMessage.setChatId(user.chatid);
                                 sendMessage.setText(AuthTGEM.messageTG.getAddFriendsReq(commandSender));
                                 sendMessage.setReplyMarkup(keyb);
-                                commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&',"&f&l[&b&lMT&f&l] &a&lЗаявка в друзья успешно отправлена"));
+                                commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&',AuthTGEM.messageMC.get("addfriend_request_success")));
                                 try {
                                     AuthTGEM.bot.execute(sendMessage);
                                 } catch (TelegramApiException e) {
@@ -113,7 +113,7 @@ public class FriendCMD implements CommandExecutor {
                 }
                 return true;
             default:
-                commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&',"&f&l[&b&lMT&f&l] Введите аргументы: add | rem | list | tell"));
+                commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&',AuthTGEM.messageMC.get("friend_lenght")));
                 break;
         }
         return true;

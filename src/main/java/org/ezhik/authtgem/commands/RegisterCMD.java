@@ -4,16 +4,13 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.ezhik.authtgem.AuthTGEM;
-import org.ezhik.authtgem.BotTelegram;
 import org.ezhik.authtgem.PasswordHasher;
 import org.ezhik.authtgem.events.FreezerEvent;
 import org.ezhik.authtgem.events.MuterEvent;
 
-import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
 
@@ -23,7 +20,7 @@ public class RegisterCMD implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
         if (AuthTGEM.bot.notRegAndLogin) {
-            commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] &c&lЭта функция отключена."));
+            commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.get("register_cancel")));
             return false;
         }
         if (strings.length < 2) {
@@ -35,6 +32,10 @@ public class RegisterCMD implements CommandExecutor {
         YamlConfiguration userconfig = YamlConfiguration.loadConfiguration(file);
         if (file.exists()) {
             player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.get("register_already_register")));
+            return false;
+        }
+        if (strings[0].length() < AuthTGEM.bot.minLenghtPassword || strings[0].length() > AuthTGEM.bot.maxLenghtPassword) {
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&',AuthTGEM.messageMC.get("register_LenghtPass")));
             return false;
         }
         if (!strings[0].equals(strings[1])) {

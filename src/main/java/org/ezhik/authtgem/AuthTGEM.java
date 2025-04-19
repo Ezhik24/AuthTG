@@ -1,7 +1,6 @@
 package org.ezhik.authtgem;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.ezhik.authtgem.commands.*;
 import org.ezhik.authtgem.events.*;
@@ -10,8 +9,6 @@ import org.ezhik.authtgem.message.MessageTranslationTG;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
-
-import java.io.Console;
 
 public final class AuthTGEM extends JavaPlugin {
     public static BotTelegram bot;

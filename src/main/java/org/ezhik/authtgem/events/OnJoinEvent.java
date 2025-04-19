@@ -1,18 +1,15 @@
 package org.ezhik.authtgem.events;
 
 import org.bukkit.ChatColor;
-import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.ezhik.authtgem.AuthTGEM;
-import org.ezhik.authtgem.BotTelegram;
 import org.ezhik.authtgem.User;
 
 import java.io.File;
-import java.io.IOException;
 
 public class OnJoinEvent implements Listener {
     @EventHandler
@@ -23,15 +20,18 @@ public class OnJoinEvent implements Listener {
         File file = new File("plugins/Minetelegram/users/" + p.getUniqueId() + ".yml");
         YamlConfiguration userconfig = YamlConfiguration.loadConfiguration(file);
         User user;
+        if (p.getName().length() < AuthTGEM.bot.minLenghtNickname || p.getName().length() > AuthTGEM.bot.maxLenghtNickname) {
+            p.kickPlayer(ChatColor.translateAlternateColorCodes('&',AuthTGEM.messageMC.get("join_LenghtPass")));
+        }
         if (AuthTGEM.bot.notRegAndLogin) {
             user = User.getUser(p.getUniqueId());
-            if (user != null) {
-                MuterEvent.mute(p.getName(), ChatColor.translateAlternateColorCodes('&',"&f&l[&b&lMT&f&l] &a&lПотвердите вход через Телегамм"));
-                p.sendTitle(ChatColor.translateAlternateColorCodes('&',"&a&lПотвердите вход"), "через Телеграмм", 20, 10000000,0);
-                user.sendLoginAccepted("Это вы вошли в игру?");
+            if (user != null) { 
+                MuterEvent.mute(p.getName(), ChatColor.translateAlternateColorCodes('&',AuthTGEM.messageMC.get("telegram_entered_conf")));
+                p.sendTitle(ChatColor.translateAlternateColorCodes('&',"login_title_tg_s1"), "login_title_tg_s2", 20, 10000000,0);
+                user.sendLoginAccepted(AuthTGEM.messageTG.get("login_who_entered"));
             } else {
-                MuterEvent.mute(p.getName(), ChatColor.translateAlternateColorCodes('&', "&f&l[&b&lMT&f&l] &a&lПривяжите аккаунт. Введите в боте команду /start"));
-                p.sendTitle(ChatColor.translateAlternateColorCodes('&', "&c&lПривяжите аккаунт"), "Введите /start в боте",20,10000000,0);
+                MuterEvent.mute(p.getName(), ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.get("account_notregandlogin_text")));
+                p.sendTitle(ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.get("account_notregandlogin_s1")), AuthTGEM.messageMC.get("account_notregandlogin_s2"),20,10000000,0);
             }
         } else {
             if (AuthTGEM.bot.authNecessarily) user = User.getUser(p.getUniqueId());
@@ -45,6 +45,7 @@ public class OnJoinEvent implements Listener {
             }
         }
         if (user != null) {
+            user.sendMessage(AuthTGEM.messageTG.getAccLogining(p.getName()));
             for (User u : user.getUnicFriends()) {
                 u.sendMessageB(AuthTGEM.messageTG.getPNFriendOnJoin(p.getPlayer()), p.getName());
             }

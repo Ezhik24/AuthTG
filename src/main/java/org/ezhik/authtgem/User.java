@@ -12,8 +12,6 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMa
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.ezhik.authtgem.commands.CodeCMD;
-import org.yaml.snakeyaml.Yaml;
-
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -235,7 +233,6 @@ public class User {
         this.sendMessage(AuthTGEM.messageTG.getCodeDeActivated(code));
         this.player.sendMessage( ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.get("code_deactivated_acc")));
         CodeCMD.code.put(this.player.getUniqueId(), code);
-
     }
 
     public static List<String> getPlayerNames(Long chatid) {
@@ -320,6 +317,7 @@ public class User {
             System.out.println("Error saving config file: " + e);
         }
     }
+
     public List<User> getUnicFriends() {
         List<User> users = new ArrayList<>();
         List<Long> chatIds = new ArrayList<>();
@@ -334,6 +332,7 @@ public class User {
         }
         return users;
     }
+
     public static String getplayerstatus(String playername){
         User user = User.getUser(playername);
         if(user.player != null){
@@ -343,6 +342,7 @@ public class User {
             return ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.get("listfriends_offline_friend"));
         }
     }
+
     public String remFriend(String friendname) {
         if (!this.friends.contains(friendname)){
             return ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.get("removefriend_notfound_friend"));
@@ -389,6 +389,7 @@ public class User {
             System.out.println("Error saving config file: " + e);
         }
     }
+
     public static Location getSpawnLocation() {
         Location spawn;
         File file = new File("plugins/Minetelegram/config.yml");
