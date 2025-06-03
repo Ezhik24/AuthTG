@@ -1,7 +1,6 @@
 package org.ezhik.authtgem;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.ezhik.authtgem.commands.*;
 import org.ezhik.authtgem.events.*;
@@ -10,8 +9,6 @@ import org.ezhik.authtgem.message.MessageTranslationTG;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
-
-import java.io.Console;
 
 public final class AuthTGEM extends JavaPlugin {
     public static BotTelegram bot;
@@ -43,12 +40,9 @@ public final class AuthTGEM extends JavaPlugin {
         getCommand("changepassword").setExecutor(new ChangepasswordCMD());
         getCommand("setpassword").setExecutor(new SetPasswordCMD());
         getCommand("tgbc").setExecutor(new TgbcCMD());
-        getCommand("addfriend").setExecutor(new AddFriendCMD());
-        getCommand("removefriend").setExecutor(new RemFriendCMD());
-        getCommand("listfriends").setExecutor(new ListFriendsCMD());
-        getCommand("tellfriends").setExecutor(new TellFriendsCMD());
         getCommand("setspawn").setExecutor(new SetSpawnCMD());
         getCommand("mcbc").setExecutor(new MCbcCMD());
+        getCommand("friend").setExecutor(new FriendCMD());
         bot = new BotTelegram();
         if (bot.getBotToken() == "changeme" && bot.getBotUsername() == "changeme") {
             System.out.println("Please set your bot token and username in config.yml");

@@ -4,7 +4,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.ezhik.authtgem.AuthTGEM;
@@ -25,49 +24,47 @@ public class CodeCMD implements CommandExecutor {
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
         if (strings.length == 0) {
             commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.get("code_wrong_command")));
+            return false;
+        }
+        Player player = (Player) commandSender;
+        File file = new File("plugins/Minetelegram/users/" + player.getUniqueId() + ".yml");
+        YamlConfiguration userconf = YamlConfiguration.loadConfiguration(file);
+        if (!strings[0].equals(code.get(player.getUniqueId()))) {
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.get("code_invalid")));
+            return false;
+        }
+        if (AuthTGEM.bot.authNecessarily) {
+            FreezerEvent.unfreezeplayer(player.getName());
+            MuterEvent.unmute(player.getName());
+            player.resetTitle();
+        }
+        if (userconf.getBoolean("active")) {
+            userconf.set("active", false);
+            userconf.set("twofactor", false);
+            code.remove(player.getUniqueId());
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.get("code_account_deactivated")));
+            try {
+                userconf.save(file);
+            } catch (IOException e) {
+                System.out.println("Error saving config file: " + e);
+            }
         } else {
-            Player player = (Player) commandSender;
-            YamlConfiguration userconf = new YamlConfiguration();
-            File file = new File("plugins/Minetelegram/users/" + player.getUniqueId() + ".yml");
-            if (strings[0].equals(code.get(player.getUniqueId()))) {
-                if (AuthTGEM.bot.authNecessarily) {
-                    FreezerEvent.unfreezeplayer(player.getName());
-                    MuterEvent.unmute(player.getName());
-                    player.resetTitle();
-                }
-                try {
-                    userconf.load(file);
-                } catch (IOException e) {
-                    System.out.println("Error loading config file: " + e);
-                } catch (InvalidConfigurationException e) {
-                    System.out.println("Error parsing config file: " + e);
-                }
-                if (userconf.getBoolean("active")) {
-                    userconf.set("active", false);
-                    userconf.set("twofactor", false);
-                    code.remove(player.getUniqueId());
-                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.get("code_account_deactivated")));
-                    try {
-                        userconf.save(file);
-                    } catch (IOException e) {
-                        System.out.println("Error saving config file: " + e);
-                    }
-                } else {
-                    userconf.set("active", true);
-                    code.remove(player.getUniqueId());
-                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.get("code_account_activated")));
-                    try {
-                        userconf.save(file);
-                    } catch (IOException e) {
-                        System.out.println("Error saving config file: " + e);
-                    }
-                    User user = User.getUser(player.getUniqueId());
-                    user.sendMessage(AuthTGEM.messageTG.get("code_account_activated"));
-
-                }
-
-
-            } else player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.get("code_invalid")));
+            userconf.set("active", true);
+            code.remove(player.getUniqueId());
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.get("code_account_activated")));
+            if (AuthTGEM.bot.notRegAndLogin) {
+                player.resetTitle();
+                MuterEvent.unmute(player.getName());
+                FreezerEvent.unfreezeplayer(player.getName());
+                userconf.set("playername", player.getName());
+            }
+            try {
+                userconf.save(file);
+            } catch (IOException e) {
+                System.out.println("Error saving config file: " + e);
+            }
+            User user = User.getUser(player.getUniqueId());
+            user.sendMessage(AuthTGEM.messageTG.get("code_account_activated"));
         }
         return true;
     }

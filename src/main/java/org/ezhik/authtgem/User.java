@@ -13,7 +13,6 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKe
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.ezhik.authtgem.commands.CodeCMD;
 
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -92,14 +91,12 @@ public class User {
         } catch (IOException e) {
             System.out.println("Error saving config file: " + e);
         }
-
         File oldfile = new File("plugins/Minetelegram/users/" + message.getChatId().toString() + ".yml");
         oldfile.delete();
         String code = generateConfirmationCode();
         AuthTGEM.bot.sendMessage(message.getChatId(), AuthTGEM.messageTG.getCodeActivated(code));
         p.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.get("code_activate_acc")));
         CodeCMD.code.put(p.getUniqueId(), code);
-
     }
 
     public static void starcmd(Message message) {
@@ -116,7 +113,7 @@ public class User {
     }
 
     public void sendMessage(String message) {
-        AuthTGEM.bot.sendMessage(this.chatid, AuthTGEM.messageTG.getPlayerNameSM(this.chatid) + message);
+        AuthTGEM.bot.sendMessage(this.chatid, AuthTGEM.messageTG.getPlayerNameSM(this.playername) + message);
     }
 
     public static List<User> getUserList(){
@@ -195,16 +192,9 @@ public class User {
     }
 
     public void resetpassword() {
-        YamlConfiguration userconf = new YamlConfiguration();
         File file = new File("plugins/Minetelegram/users/" + this.player.getUniqueId() + ".yml");
+        YamlConfiguration userconf = YamlConfiguration.loadConfiguration(file);
         String password = generateConfirmationCode();
-        try {
-            userconf.load(file);
-        } catch (IOException e) {
-            System.out.println("Error loading config file: " + e);
-        } catch (InvalidConfigurationException e) {
-            System.out.println("Error parsing config file: " + e);
-        }
         userconf.set("password", PasswordHasher.hashPassword(password));
         try {
             userconf.save(file);
@@ -216,22 +206,14 @@ public class User {
     }
 
     public void setTwofactor(boolean state) {
-        YamlConfiguration userconf = new YamlConfiguration();
         File file = new File("plugins/Minetelegram/users/" + this.player.getUniqueId() + ".yml");
-        try {
-            userconf.load(file);
-        } catch (IOException e) {
-            System.out.println("Error loading config file: " + e);
-        } catch (InvalidConfigurationException e) {
-            System.out.println("Error parsing config file: " + e);
-        }
+        YamlConfiguration userconf = YamlConfiguration.loadConfiguration(file);
         userconf.set("twofactor", state);
         try {
             userconf.save(file);
         } catch (IOException e) {
             System.out.println("Error saving config file: " + e);
         }
-
         if(state){
             this.sendMessage(AuthTGEM.messageTG.get("auth_in_2step_on"));
         }
@@ -251,7 +233,6 @@ public class User {
         this.sendMessage(AuthTGEM.messageTG.getCodeDeActivated(code));
         this.player.sendMessage( ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.get("code_deactivated_acc")));
         CodeCMD.code.put(this.player.getUniqueId(), code);
-
     }
 
     public static List<String> getPlayerNames(Long chatid) {
@@ -314,15 +295,8 @@ public class User {
 
     public void addfriend(String friendname) {
         this.friends.add(friendname);
-        YamlConfiguration userconf = new YamlConfiguration();
         File file = new File("plugins/Minetelegram/users/" + this.player.getUniqueId() + ".yml");
-        try {
-            userconf.load(file);
-        } catch (IOException e) {
-            System.out.println("Error loading config file: " + e);
-        } catch (InvalidConfigurationException e) {
-            System.out.println("Error parsing config file: " + e);
-        }
+        YamlConfiguration userconf = YamlConfiguration.loadConfiguration(file);
         userconf.set("friends", this.friends);
         try {
             userconf.save(file);
@@ -334,15 +308,8 @@ public class User {
 
     public void remFriendFromConf(String friendname) {
         this.friends.remove(friendname);
-        YamlConfiguration userconf = new YamlConfiguration();
         File file = new File("plugins/Minetelegram/users/" + this.uuid + ".yml");
-        try {
-            userconf.load(file);
-        } catch (IOException e) {
-            System.out.println("Error loading config file: " + e);
-        } catch (InvalidConfigurationException e) {
-            System.out.println("Error parsing config file: " + e);
-        }
+        YamlConfiguration userconf = YamlConfiguration.loadConfiguration(file);
         userconf.set("friends", this.friends);
         try {
             userconf.save(file);
@@ -350,6 +317,7 @@ public class User {
             System.out.println("Error saving config file: " + e);
         }
     }
+
     public List<User> getUnicFriends() {
         List<User> users = new ArrayList<>();
         List<Long> chatIds = new ArrayList<>();
@@ -364,6 +332,7 @@ public class User {
         }
         return users;
     }
+
     public static String getplayerstatus(String playername){
         User user = User.getUser(playername);
         if(user.player != null){
@@ -373,6 +342,7 @@ public class User {
             return ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.get("listfriends_offline_friend"));
         }
     }
+
     public String remFriend(String friendname) {
         if (!this.friends.contains(friendname)){
             return ChatColor.translateAlternateColorCodes('&', AuthTGEM.messageMC.get("removefriend_notfound_friend"));
@@ -399,7 +369,7 @@ public class User {
         rowkeyb.add(colkeyb);
         playerKB.setKeyboard(rowkeyb);
         SendMessage sendMessage = new SendMessage();
-        sendMessage.setText(AuthTGEM.messageTG.getPlayerNameSMB(this.chatid) + message);
+        sendMessage.setText(AuthTGEM.messageTG.getPlayerNameSMB(this.playername) + message);
         sendMessage.setChatId(this.chatid);
         sendMessage.setReplyMarkup(playerKB);
         try {
@@ -411,14 +381,7 @@ public class User {
 
     public static void setSpawnLocation(Location spawnlocation) {
         File file = new File("plugins/Minetelegram/config.yml");
-        YamlConfiguration config = new YamlConfiguration();
-        try {
-            config.load(file);
-        } catch (IOException e) {
-            System.out.println("Error loading config file: " + e);
-        } catch (InvalidConfigurationException e) {
-            System.out.println("Error parsing config file: " + e);
-        }
+        YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
         config.set("spawn", spawnlocation);
         try {
             config.save(file);
@@ -426,17 +389,11 @@ public class User {
             System.out.println("Error saving config file: " + e);
         }
     }
+
     public static Location getSpawnLocation() {
-        Location spawn = null;
+        Location spawn;
         File file = new File("plugins/Minetelegram/config.yml");
-        YamlConfiguration config = new YamlConfiguration();
-        try {
-            config.load(file);
-        } catch (IOException e) {
-            System.out.println("Error loading config file: " + e);
-        } catch (InvalidConfigurationException e) {
-            return spawn;
-        }
+        YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
         spawn = config.getLocation("spawn");
         return spawn;
     }

@@ -68,6 +68,7 @@ public class MessageTranslationTG extends LinkedHashMap<String, String> {
             this.put("sendmsg_message","Сообщение от пользователя {PLAYER} : ");
             this.put("addfriend_succesadd","Вам добавлен в друзья {PLAYER}");
             this.put("acc_choose","[Бот] Выбран игрок {PLAYER}");
+            this.put("acc_logining", "Ваш аккаунт {PLAYER} вошёл в игру! {BR} Если это не вы,то кикните аккаунт и смените пароль!");
             File newconfigfile = new File("plugins/Minetelegram/messages/messageTG_RU.yml");
             YamlConfiguration newmessageconfig = new YamlConfiguration();
             for (String key : this.keySet()) {
@@ -98,14 +99,12 @@ public class MessageTranslationTG extends LinkedHashMap<String, String> {
         return this.get("tellfriends_message_succes").replace("{PLAYER}", user.playername);
     }
 
-    public String getPlayerNameSM(Long chatid) {
-        User user = User.getCurrentUser(chatid);
-        return this.get("sendMessage_prefix").replace("{PLAYER}", user.playername);
+    public String getPlayerNameSM(String  playername) {
+        return this.get("sendMessage_prefix").replace("{PLAYER}", playername);
     }
 
-    public String getPlayerNameSMB(Long chatid) {
-        User user = User.getCurrentUser(chatid);
-        return this.get("sendMessageB_prefix").replace("{PLAYER}",user.playername);
+    public String getPlayerNameSMB(String playername) {
+        return this.get("sendMessageB_prefix").replace("{PLAYER}",playername);
     }
 
     public String getPNFriendOnJoin(Player player) {
@@ -139,13 +138,11 @@ public class MessageTranslationTG extends LinkedHashMap<String, String> {
         return this.get("sendmcmsg_friend").replace("{PLAYER}", user.playername);
     }
 
-    public String getSendMsgFriendPN(Long chatid) {
-        User user = User.getCurrentUser(chatid);
-        return this.get("sendmsg_friend").replace("{PLAYER}", user.playername);
+    public String getSendMsgFriendPN(String playername) {
+        return this.get("sendmsg_friend").replace("{PLAYER}", playername);
     }
 
-    public String getPNSendMSGmessage(Long chatid) {
-        User user = User.getCurrentUser(chatid);
+    public String getPNSendMSGmessage(User user) {
         return this.get("sendmsg_message").replace("{PLAYER}", user.playername);
     }
 
@@ -156,5 +153,9 @@ public class MessageTranslationTG extends LinkedHashMap<String, String> {
 
     public String getAccChoosePN(String playername) {
         return this.get("acc_choose").replace("{PLAYER}",playername);
+    }
+
+    public String getAccLogining(String playername) {
+        return this.get("acc_logining").replace("{PLAYER}", playername);
     }
 }

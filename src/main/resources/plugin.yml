@@ -6,14 +6,8 @@ Author: 'Ezhik24'
 website: 'https://t.me/ezhichek11'
 
 commands:
-  tellfriends:
-    description: 'Отправить сообщение друзьям в телеграмм'
-  listfriends:
-    description: 'Список друзей'
-  removefriend:
-    description: 'Удалить из друзей'
-  addfriend:
-    description: 'Добавить  в друзья'
+  friend:
+    description: 'Друзья'
   code:
     description: 'Код потверждения'
   register:

@@ -19,11 +19,11 @@ public class MessageTranslationMC extends LinkedHashMap<String, String> {
         try {
             messageconfig.load(configfile);
         } catch (FileNotFoundException e) {
-            this.put("addfriends_wrong_command", "&f&l[&b&lMT&f&l] &c&lКоманда введена неверно. Введите команду так: /addfriend <ник>");
+            this.put("addfriends_wrong_command", "&f&l[&b&lMT&f&l] &c&lКоманда введена неверно. Введите команду так: /friend add <ник>");
             this.put("addfriends_tg_noasign", "&f&l[&b&lMT&f&l] &c&lПривяжите аккаунт к телеграмму");
             this.put("friend_tg_noasign", "&f&l[&b&lMT&f&l] &c&lДанный игрок не привязывал аккаунт к телеграмму");
             this.put("friends_already_added", "&f&l[&b&lMT&f&l] &c&lВы уже добавляли этого игрока в друзья");
-            this.put("removefriend_wrong_command", "&f&l[&b&lMT&f&l] &c&lКоманда введена неверно. Введите команду так: /remfriend <ник>");
+            this.put("removefriend_wrong_command", "&f&l[&b&lMT&f&l] &c&lКоманда введена неверно. Введите команду так: /friend rem <ник>");
             this.put("removefriend_tg_noasign","&f&l[&b&lMT&f&l] &c&lПривяжите аккаунт к телеграмму");
             this.put("removefriend_succes_remove", "&f&l[&b&lMT&f&l] &c&lВы удалили {PLAYER} из друзей");
             this.put("removefriend_notfound_friend", "Такого игрока нет в друзьях");
@@ -32,7 +32,7 @@ public class MessageTranslationMC extends LinkedHashMap<String, String> {
             this.put("listfriends_friend", "&a&l");
             this.put("listfriends_online_friend", " [Online]");
             this.put("listfriends_offline_friend", " [Offline]");
-            this.put("tellfriends_wrong_command", "&f&l[&b&lMT&f&l] &c&lКоманда введена неверно. Введите команду так: /tellfriends <ник> <сообщение>");
+            this.put("tellfriends_wrong_command", "&f&l[&b&lMT&f&l] &c&lКоманда введена неверно. Введите команду так: /friends tell <ник> <сообщение>");
             this.put("tellfriends_sendmessage_succes","&f&l[&b&lMT&f&l] &a&lСообщение отправлено");
             this.put("tellfriends_friends_tgasign","&f&l[&b&lMT&f&l] &c&lВаш друг отвязал телеграмм аккаунт");
             this.put("changepassword_success", "&f&l[&b&lMT&f&l] &a&lВы успешно изменили пароль");
@@ -79,7 +79,7 @@ public class MessageTranslationMC extends LinkedHashMap<String, String> {
             this.put("sendmcmsg_friend"," &f&l[&b&lMT&f&l] &a&lСообщение от пользователя {PLAYER}: ");
             this.put("user1_added_friend","&f&l[&b&lMT&f&l] &a&lВам добавлен в друзья {PLAYER}");
             this.put("user2_added_friend", "&f&l[&b&lMT&f&l] &a&lВам добавлен в друзья {PLAYER}");
-            this.put("account_auth_nessery1","&c&lПривяжи аккаунт");
+            this.put("account_auth_nessery1","&c&lПривяжите аккаунт");
             this.put("account_auth_nessery2", "/start в боте");
             this.put("account_auth_nessery_message", "&f&l[&b&lMT&f&l] Привяжите аккаунт,выполнив /start в боте");
             this.put("joinAnotherLocate", "&c&lКто-то уже играет с этого никнейма...");
@@ -87,6 +87,16 @@ public class MessageTranslationMC extends LinkedHashMap<String, String> {
             this.put("mcbc_success","&f&l[&b&lMT&f&l] &a&lУспешно отправлено!");
             this.put("mcbc","&f&l[&b&lMT&f&l] &a&l");
             this.put("mcbc_nopermission", "&f&l[&b&lMT&f&l] &c&lУ вас нет прав для использования этой команды");
+            this.put("friend_lenght", "&f&l[&b&lMT&f&l] &c&lВведите любые аргументы: add | tell | rem | list");
+            this.put("addfriend_request_success","&f&l[&b&lMT&f&l] &a&lЗаявка в друзья успешно отправлена");
+            this.put("login_cancel","&f&l[&b&lMT&f&l] &c&lЭта функция отключена.");
+            this.put("register_cancel","&f&l[&b&lMT&f&l] &c&lЭта функция отключена.");
+            this.put("register_LenghtPass","&f&l[&b&lMT&f&l] &c&lПароль может быть от 3 до 32 символов");
+            this.put("join_LenghtPass","&cДлина никнейма некоректна. Длина никнейма должна быть в диапозоне от 3 до 15");
+            this.put("telegram_entered_conf","&f&l[&b&lMT&f&l] &a&lПотвердите вход через Телегамм");
+            this.put("account_notregandlogin_s1","&c&lПривяжите аккаунт");
+            this.put("account_notregandlogin_s2","Введите /start в боте");
+            this.put("account_notregandlogin_text","&f&l[&b&lMT&f&l] &a&lПривяжите аккаунт. Введите в боте команду /start");
             File newconfigfile = new File("plugins/Minetelegram/messages/messageMC_RU.yml");
             YamlConfiguration newmessageconfig = new YamlConfiguration();
             for (String key : this.keySet()) {
