@@ -1,32 +1,17 @@
-name: AuthTGEM
-version: '${project.version}'
-main: org.ezhik.authtgem.AuthTGEM
+name: AuthTG
+version: '2.0'
+main: org.ezhik.authTG.AuthTG
 api-version: '1.20'
-Author: 'Ezhik24'
-website: 'https://t.me/ezhichek11'
+authors: [ Ezhik24 ]
 
 commands:
-  friend:
-    description: 'Друзья'
-  code:
-    description: 'Код потверждения'
   register:
     description: 'Регистрация'
     aliases:
-      - 'reg'
+      - reg
   login:
-    description: 'Вход'
+    description: 'Login'
     aliases:
-      - 'l'
-  changepassword:
-    description: 'Смена пароля'
-    aliases:
-      - 'cp'
-  setpassword:
-    description: 'Установка пароля'
-  tgbc:
-    description: 'Telegramm Broadcast Command'
-  setspawn:
-    description: 'Поставить точку спавна'
-  mcbc:
-    description: 'Minecraft Broadcast Command'
+      - l
+  code:
+    description: 'Code'
