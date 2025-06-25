@@ -18,8 +18,8 @@ public final class AuthTG extends JavaPlugin {
     public void onEnable() {
         loader = new YAMLLoader();
         System.out.println("[AuthTG] Плагин запустился | Plugin started");
-        System.out.println("[AuthTG] Пожалуйста,подпишитесь на мой ТГ канал: https://t.me/ezhichek11");
-        System.out.println("[AuthTG] Please,subscribe for my tg channel: https://t.me/ezhichek11");
+        System.out.println("[AuthTG] Пожалуйста,подпишитесь на ТГ канал AuthTG: https://t.me/authtgspigot");
+        System.out.println("[AuthTG] Please,subscribe for my channel AuthTG: https://t.me/authtgspigot");
         Bukkit.getServer().getPluginManager().registerEvents(new FreezerEvent(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new OnJoinEvent(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new MuterEvent(), this);
@@ -34,6 +34,8 @@ public final class AuthTG extends JavaPlugin {
         getCommand("register").setExecutor(new RegisterCMD());
         getCommand("login").setExecutor(new LoginCMD());
         getCommand("code").setExecutor(new CodeCMD());
+        getCommand("mcbc").setExecutor(new MCbcCMD());
+        getCommand("tgbc").setExecutor(new TGbcCMD());
         bot = new BotTelegram();
         if (bot.getBotToken() == "changeme" && bot.getBotUsername() == "changeme") {
             System.out.println("Please set your bot token and username in botconf.yml");
@@ -52,7 +54,7 @@ public final class AuthTG extends JavaPlugin {
     @Override
     public void onDisable() {
         System.out.println("[AuthTG] Плагин выключен | Plugin disable");
-        System.out.println("[AuthTG] Пожалуйста,подпишитесь на мой ТГ канал: https://t.me/ezhichek11");
-        System.out.println("[AuthTG] Please,subscribe for my tg channel: https://t.me/ezhichek11");
+        System.out.println("[AuthTG] Пожалуйста,подпишитесь на ТГ канал AuthTG: https://t.me/authtgspigot");
+        System.out.println("[AuthTG] Please,subscribe for my channel AuthTG: https://t.me/authtgspigot");
     }
 }

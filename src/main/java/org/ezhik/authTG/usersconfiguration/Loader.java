@@ -1,6 +1,7 @@
 package org.ezhik.authTG.usersconfiguration;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 public interface Loader {
@@ -49,4 +50,6 @@ public interface Loader {
     List<UUID> getPlayerNames(Long chatid);
 
     void setPlayerNames(Long chatid, UUID uuid);
+
+    Set<Long> getChatID();
 }

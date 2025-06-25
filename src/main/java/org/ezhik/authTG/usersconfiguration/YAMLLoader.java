@@ -412,4 +412,9 @@ public class YAMLLoader implements Loader{
             playernames.get(chatid).add(uuid);
         }
     }
+
+    @Override
+    public Set<Long> getChatID() {
+        return this.currentuser.keySet();
+    }
 }

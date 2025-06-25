@@ -15,3 +15,7 @@ commands:
       - l
   code:
     description: 'Code'
+  mcbc:
+    description: 'MCBC'
+  tgbc:
+    description: 'TGBC'

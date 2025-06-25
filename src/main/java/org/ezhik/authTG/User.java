@@ -118,4 +118,10 @@ public class User {
         }
 
     }
+
+    public static void sendBroadcastMessage(String message) {
+        for (Long chatid : AuthTG.loader.getChatID()) {
+            AuthTG.bot.sendMessage(chatid, "[Бот] " + message);
+        }
+    }
 }
