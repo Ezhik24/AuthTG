@@ -19,3 +19,9 @@ commands:
     description: 'MCBC'
   tgbc:
     description: 'TGBC'
+  changepassword:
+    description: 'Change password'
+  setpassword:
+    description: 'Set password'
+  friend:
+    description: 'Friends'

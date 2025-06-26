@@ -12,28 +12,33 @@ import java.util.*;
 public class YAMLLoader implements Loader{
     public Map<Long,UUID> currentuser = new HashMap<>();
     public Map<Long,List<UUID>> playernames = new HashMap<>();
+    public Map<String,UUID> uuidbyplayername = new HashMap<>();
     public YAMLLoader() {
         File[] folder = new File("plugins/AuthTG/users/").listFiles();
-        for (File file : folder) {
-            YamlConfiguration config = new YamlConfiguration();
-            try {
-                config.load(file);
-                if (config.contains("chatid") && config.getBoolean("activetg")) {
-                    if (playernames.containsKey(config.getLong("chatid"))) {
-                        playernames.get(config.getLong("chatid")).add(UUID.fromString(file.getName().replace(".yml", "")));
-                    } else {
-                        List<UUID> list = new ArrayList<>();
-                        list.add(UUID.fromString(file.getName().replace(".yml", "")));
-                        playernames.put(config.getLong("chatid"), list);
+        if (folder != null) {
+            for (File file : folder) {
+                YamlConfiguration config = new YamlConfiguration();
+                try {
+                    config.load(file);
+                    if (config.contains("playername") && config.getBoolean("active")) {
+                        uuidbyplayername.put(config.getString("playername"),UUID.fromString(file.getName().replace(".yml", "")));
                     }
-                    this.currentuser.put(config.getLong("chatid"), UUID.fromString(file.getName().replace(".yml", "")));
+                    if (config.contains("chatid") && config.getBoolean("activetg")) {
+                        if (playernames.containsKey(config.getLong("chatid"))) {
+                            playernames.get(config.getLong("chatid")).add(UUID.fromString(file.getName().replace(".yml", "")));
+                        } else {
+                            List<UUID> list = new ArrayList<>();
+                            list.add(UUID.fromString(file.getName().replace(".yml", "")));
+                            playernames.put(config.getLong("chatid"), list);
+                        }
+                        this.currentuser.put(config.getLong("chatid"), UUID.fromString(file.getName().replace(".yml", "")));
+                    }
+                } catch (IOException e) {
+                    System.out.println("Error load file: " + e);
+                } catch (InvalidConfigurationException e) {
+                    System.out.println("Error load file: " + e);
                 }
-            } catch (IOException e) {
-                System.out.println("Error load file: " + e);
-            } catch (InvalidConfigurationException e) {
-                System.out.println("Error load file: " + e);
             }
-
         }
     }
 
@@ -51,6 +56,7 @@ public class YAMLLoader implements Loader{
             System.out.println("Error load file: " + e);
         }
         playerconf.set("playername", playername);
+        this.uuidbyplayername.put(playername, uuid);
         try {
             playerconf.save(file);
         } catch (IOException e) {
@@ -416,5 +422,45 @@ public class YAMLLoader implements Loader{
     @Override
     public Set<Long> getChatID() {
         return this.currentuser.keySet();
+    }
+
+    @Override
+    public void addFriend(UUID uuid, UUID friend) {
+        File file = new File("plugins/AuthTG/users/" + uuid + ".yml");
+        YamlConfiguration config = new YamlConfiguration();
+        try {
+            config.load(file);
+        } catch (IOException e) {
+            System.out.println("Error loading file " + e);
+        } catch (InvalidConfigurationException e) {
+            System.out.println("Error loading file " + e);
+        }
+        if (config.contains("friends")) {
+            List<UUID> list = (List<UUID>) config.getList("friends");
+            list.add(friend);
+            config.set("friends", list);
+        } else {
+            List<UUID> list = new ArrayList<>();
+            list.add(friend);
+            config.set("friends", list);
+        }
+        try {
+            config.save(file);
+        } catch (IOException e) {
+            System.out.println("Error saving file: " + e);
+        }
+    }
+
+    @Override
+    public void setUUIDbyPlayerName(String playername, UUID uuid) {
+        this.uuidbyplayername.put(playername, uuid);
+    }
+
+    @Override
+    public UUID getUUIDbyPlayerName(String playername) {
+        if (uuidbyplayername.containsKey(playername)) {
+            return uuidbyplayername.get(playername);
+        }
+        return null;
     }
 }

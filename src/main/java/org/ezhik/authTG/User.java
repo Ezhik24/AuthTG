@@ -63,6 +63,14 @@ public class User {
         else return null;
     }
 
+    public static User getUser(String playername) {
+        UUID uuid = AuthTG.loader.getUUIDbyPlayerName(playername);
+        if (uuid != null) {
+            User user = getUser(uuid);
+            return user;
+        } else return null;
+    }
+
     public static User getCurrentUser(Long chatid) {
         UUID uuid = AuthTG.loader.getCurrentUUID(chatid);
         if (uuid == null) {

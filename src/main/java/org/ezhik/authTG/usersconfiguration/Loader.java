@@ -52,4 +52,10 @@ public interface Loader {
     void setPlayerNames(Long chatid, UUID uuid);
 
     Set<Long> getChatID();
+
+    void addFriend(UUID uuid, UUID friend);
+
+    void setUUIDbyPlayerName(String playername, UUID uuid);
+
+    UUID getUUIDbyPlayerName(String playername);
 }

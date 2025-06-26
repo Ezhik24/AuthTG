@@ -2,10 +2,7 @@ package org.ezhik.authTG;
 
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.ezhik.authTG.calbackQuery.AccAccounts;
-import org.ezhik.authTG.calbackQuery.CallbackQueryHandler;
-import org.ezhik.authTG.calbackQuery.LoginAcceptedNo;
-import org.ezhik.authTG.calbackQuery.LoginAcceptedYes;
+import org.ezhik.authTG.calbackQuery.*;
 import org.ezhik.authTG.commandTG.*;
 import org.ezhik.authTG.nextStep.NextStepHandler;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
@@ -54,6 +51,8 @@ public class BotTelegram extends TelegramLongPollingBot {
         callbackQueryHandler.put("ys" , new LoginAcceptedYes());
         callbackQueryHandler.put("no", new LoginAcceptedNo());
         callbackQueryHandler.put("acc", new AccAccounts());
+        callbackQueryHandler.put("addfrys", new FriendYes());
+        callbackQueryHandler.put("addfrno", new FriendNo());
     }
     @Override
     public String getBotUsername() {
@@ -79,7 +78,7 @@ public class BotTelegram extends TelegramLongPollingBot {
         }
         if (update.hasCallbackQuery()) {
             String[] str = update.getCallbackQuery().getData().toString().split("_");
-            callbackQueryHandler.get(str[0]).execute(update, UUID.fromString(str[1]));
+            callbackQueryHandler.get(str[0]).execute(update);
         }
     }
 

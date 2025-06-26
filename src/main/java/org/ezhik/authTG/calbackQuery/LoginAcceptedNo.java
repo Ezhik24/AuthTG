@@ -10,8 +10,9 @@ import java.util.UUID;
 
 public class LoginAcceptedNo implements CallbackQueryHandler{
     @Override
-    public void execute(Update update, UUID uuid) {
-        User user = User.getUser(uuid);
+    public void execute(Update update) {
+        String[] str = update.getCallbackQuery().getData().toString().split("_");
+        User user = User.getUser(UUID.fromString(str[1]));
         Handler.kick(user.playername, "Владелец отклонил вход в учетную запись");
         AuthTG.bot.deleteMessage(update.getCallbackQuery().getMessage());
     }

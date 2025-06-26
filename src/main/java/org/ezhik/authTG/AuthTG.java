@@ -36,10 +36,13 @@ public final class AuthTG extends JavaPlugin {
         getCommand("code").setExecutor(new CodeCMD());
         getCommand("mcbc").setExecutor(new MCbcCMD());
         getCommand("tgbc").setExecutor(new TGbcCMD());
+        getCommand("changepassword").setExecutor(new ChangePasswordCMD());
+        getCommand("setpassword").setExecutor(new SetPasswordCMD());
+        getCommand("friend").setExecutor(new FriendCMD());
         bot = new BotTelegram();
         if (bot.getBotToken() == "changeme" && bot.getBotUsername() == "changeme") {
-            System.out.println("Please set your bot token and username in botconf.yml");
-            System.out.println("Пожалуйста, укажите ваш токен и имя в botconf.yml");
+            System.out.println("[AuthTG] Please set your bot token and username in botconf.yml");
+            System.out.println("[AuthTG] Пожалуйста, укажите ваш токен и имя в botconf.yml");
         } else {
             TelegramBotsApi botsApi;
             try {
