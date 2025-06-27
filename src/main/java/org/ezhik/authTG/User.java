@@ -28,7 +28,7 @@ public class User {
     public Player player;
     public  UUID uuid;
     public String playername;
-    public List<UUID> friends;
+    public List<String > friends;
 
     private User(UUID uuid) {
         this.uuid = uuid;
@@ -130,6 +130,27 @@ public class User {
     public static void sendBroadcastMessage(String message) {
         for (Long chatid : AuthTG.loader.getChatID()) {
             AuthTG.bot.sendMessage(chatid, "[Бот] " + message);
+        }
+    }
+
+    public void sendMessageFriend(String message, UUID friend) {
+        InlineKeyboardMarkup playerkeyb = new InlineKeyboardMarkup();
+        List<InlineKeyboardButton> colkeyb = new ArrayList<>();
+        List<List<InlineKeyboardButton>> keyboard = new ArrayList<>();
+        InlineKeyboardButton acts = new InlineKeyboardButton();
+        acts.setText("Действия");
+        acts.setCallbackData("chfr_" + friend);
+        colkeyb.add(acts);
+        keyboard.add(colkeyb);
+        playerkeyb.setKeyboard(keyboard);
+        SendMessage sendMessage = new SendMessage();
+        sendMessage.setText("[Бот@" + this.playername + "] " + message);
+        sendMessage.setChatId(this.chatid);
+        sendMessage.setReplyMarkup(playerkeyb);
+        try {
+            AuthTG.bot.execute(sendMessage);
+        } catch (TelegramApiException e) {
+            System.out.println("Error sending message: " + e);
         }
     }
 }

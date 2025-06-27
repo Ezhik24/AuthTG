@@ -1,6 +1,5 @@
 package org.ezhik.authTG;
 
-import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.ezhik.authTG.calbackQuery.*;
 import org.ezhik.authTG.commandTG.*;
@@ -22,6 +21,7 @@ public class BotTelegram extends TelegramLongPollingBot {
     private String username = "changeme";
     private String token = "changeme";
     private Map<String, CommandHandler> commandHandler = new HashMap<>();
+    private Map<String, UUID> userData = new HashMap<>();
     private Map<Long, NextStepHandler> nextStepHandler = new HashMap<>();
     private Map<String, CallbackQueryHandler> callbackQueryHandler = new HashMap<>();
 
@@ -34,7 +34,7 @@ public class BotTelegram extends TelegramLongPollingBot {
             try {
                 botconf.save(file);
             } catch (IOException e) {
-                System.out.println("Error saving file: " +e);
+                System.out.println("Error saving file: " + e);
             }
         } else {
             username = botconf.getString("username");
@@ -43,17 +43,21 @@ public class BotTelegram extends TelegramLongPollingBot {
         commandHandler.put("/resetpassword", new ResetPasswordCMDHandler());
         commandHandler.put("/start", new StartCMDHandler());
         commandHandler.put("/link", new StartCMDHandler());
-        commandHandler.put("/tfon" , new TFonCMDHandler());
+        commandHandler.put("/tfon", new TFonCMDHandler());
         commandHandler.put("/tfoff", new TFoffCMDHandler());
         commandHandler.put("/accounts", new AccountsCMDHandler());
         commandHandler.put("/unlink", new UnLinkCMDHandler());
         commandHandler.put("/kickme", new KickMeCMDHandler());
-        callbackQueryHandler.put("ys" , new LoginAcceptedYes());
+        callbackQueryHandler.put("ys", new LoginAcceptedYes());
         callbackQueryHandler.put("no", new LoginAcceptedNo());
         callbackQueryHandler.put("acc", new AccAccounts());
         callbackQueryHandler.put("addfrys", new FriendYes());
         callbackQueryHandler.put("addfrno", new FriendNo());
+        callbackQueryHandler.put("chfr", new ActsFriend());
+        callbackQueryHandler.put("delfr", new DelFriends());
+        callbackQueryHandler.put("sndtg", new SendMessageTG());
     }
+
     @Override
     public String getBotUsername() {
         return username;
@@ -72,7 +76,8 @@ public class BotTelegram extends TelegramLongPollingBot {
             if (command.startsWith("/")) {
                 if (commandHandler.containsKey(command)) commandHandler.get(command).execute(update);
             } else {
-                if (nextStepHandler.containsKey(update.getMessage().getChatId())) nextStepHandler.get(chatid).execute(update);
+                if (nextStepHandler.containsKey(update.getMessage().getChatId()))
+                    nextStepHandler.get(chatid).execute(update);
             }
             this.deleteMessage(update.getMessage());
         }
@@ -107,8 +112,22 @@ public class BotTelegram extends TelegramLongPollingBot {
     public void setNextStepHandler(Long chatid, NextStepHandler nextStepHandler) {
         this.nextStepHandler.put(chatid, nextStepHandler);
     }
+
     public void remNextStepHandler(Long chatid) {
         this.nextStepHandler.remove(chatid);
+    }
+
+    public void setUserData(String username, UUID data) {
+        this.userData.put(username, data);
+    }
+    public void remUserData(String username) {
+        this.userData.remove(username);
+    }
+    public UUID getUserData(String username) {
+        if (userData.containsKey(username)) {
+            return userData.get(username);
+        }
+        return null;
     }
 
 }

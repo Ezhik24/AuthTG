@@ -4,10 +4,12 @@ import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.ezhik.authTG.PasswordHasher;
 
+import java.awt.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.*;
+import java.util.List;
 
 public class YAMLLoader implements Loader{
     public Map<Long,UUID> currentuser = new HashMap<>();
@@ -182,7 +184,7 @@ public class YAMLLoader implements Loader{
     }
 
     @Override
-    public List<UUID> getListFriends(UUID uuid) {
+    public List<String> getListFriends(UUID uuid) {
         File file = new File("plugins/AuthTG/users/" + uuid + ".yml");
         YamlConfiguration config = new YamlConfiguration();
         try {
@@ -194,7 +196,7 @@ public class YAMLLoader implements Loader{
         } catch (InvalidConfigurationException e) {
             System.out.println("Error load file: " + e);
         }
-        return (List<UUID>) config.getList("friends");
+        return (List<String>) config.getList("friends");
     }
 
     @Override
@@ -425,7 +427,7 @@ public class YAMLLoader implements Loader{
     }
 
     @Override
-    public void addFriend(UUID uuid, UUID friend) {
+    public void addFriend(UUID uuid, String friend) {
         File file = new File("plugins/AuthTG/users/" + uuid + ".yml");
         YamlConfiguration config = new YamlConfiguration();
         try {
@@ -436,11 +438,11 @@ public class YAMLLoader implements Loader{
             System.out.println("Error loading file " + e);
         }
         if (config.contains("friends")) {
-            List<UUID> list = (List<UUID>) config.getList("friends");
+            List<String > list = (List<String>) config.getList("friends");
             list.add(friend);
             config.set("friends", list);
         } else {
-            List<UUID> list = new ArrayList<>();
+            List<String> list = new ArrayList<>();
             list.add(friend);
             config.set("friends", list);
         }
@@ -452,15 +454,35 @@ public class YAMLLoader implements Loader{
     }
 
     @Override
-    public void setUUIDbyPlayerName(String playername, UUID uuid) {
-        this.uuidbyplayername.put(playername, uuid);
-    }
-
-    @Override
     public UUID getUUIDbyPlayerName(String playername) {
         if (uuidbyplayername.containsKey(playername)) {
             return uuidbyplayername.get(playername);
         }
         return null;
+    }
+
+    @Override
+    public void removeFriend(UUID uuid, String friend) {
+        File file = new File("plugins/AuthTG/users/" + uuid + ".yml");
+        YamlConfiguration config = new YamlConfiguration();
+        try {
+            config.load(file);
+        } catch (IOException e) {
+            System.out.println("Error loading file " + e);
+        } catch (InvalidConfigurationException e) {
+            System.out.println("Error loading file " + e);
+        }
+        List<String> list = (List<String>) config.getList("friends");
+        list.remove(friend);
+        if (list.isEmpty()) {
+            config.set("friends", null);
+        } else {
+            config.set("friends", list);
+        }
+        try {
+            config.save(file);
+        } catch (IOException e) {
+            System.out.println("Error saving file: " + e);
+        }
     }
 }

@@ -11,6 +11,10 @@ import org.ezhik.authTG.AuthTG;
 public class SetPasswordCMD implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String label, String[] strings) {
+        if (!(commandSender instanceof Player)) {
+            System.out.println("[AuthTG] This command can only be used by players!");
+            return false;
+        }
         if (strings.length != 3) {
             commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&c&lAuthTG&f&l] &a&lИспользование: /setpassword <игрок> <пароль> <повтор пароль>"));
             return false;

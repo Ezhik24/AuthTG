@@ -21,7 +21,7 @@ public interface Loader {
 
     boolean getActiveTG(UUID uuid);
 
-    List<UUID> getListFriends(UUID uuid);
+    List<String> getListFriends(UUID uuid);
 
     String getUserName(UUID uuid);
 
@@ -53,9 +53,9 @@ public interface Loader {
 
     Set<Long> getChatID();
 
-    void addFriend(UUID uuid, UUID friend);
-
-    void setUUIDbyPlayerName(String playername, UUID uuid);
+    void addFriend(UUID uuid, String friend);
 
     UUID getUUIDbyPlayerName(String playername);
+
+    void removeFriend(UUID uuid, String friend);
 }

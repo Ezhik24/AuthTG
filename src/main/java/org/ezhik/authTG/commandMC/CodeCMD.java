@@ -16,6 +16,10 @@ public class CodeCMD implements CommandExecutor {
     public static Map<UUID, String> code = new HashMap<>();
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
+        if (!(commandSender instanceof Player)) {
+            System.out.println("[AuthTG] This command can only be used by players!");
+            return false;
+        }
         if (strings.length == 0) {
             commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&c&lAuthTG&f&l] &c&lКОманда введена неверно, введите: /code <код>"));
             return false;
