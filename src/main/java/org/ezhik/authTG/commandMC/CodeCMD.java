@@ -7,6 +7,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.ezhik.authTG.AuthTG;
 import org.ezhik.authTG.User;
+import org.ezhik.authTG.events.FreezerEvent;
+import org.ezhik.authTG.events.MuterEvent;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -29,6 +31,11 @@ public class CodeCMD implements CommandExecutor {
             player.sendMessage(ChatColor.translateAlternateColorCodes('&',"&f&l[&c&lAuthTG&f&l] &c&lКод неверный"));
             return false;
         }
+        if (AuthTG.globalConfig.authNecessarily) {
+            FreezerEvent.unfreezeplayer(player.getName());
+            MuterEvent.unmute(player.getName());
+            player.resetTitle();
+        }
         if (AuthTG.loader.getActiveTG(player.getUniqueId())) {
             AuthTG.loader.setActiveTG(player.getUniqueId(), false);
             AuthTG.loader.setTwofactor(player.getUniqueId(), false);
@@ -38,6 +45,13 @@ public class CodeCMD implements CommandExecutor {
             AuthTG.loader.setActiveTG(player.getUniqueId(), true);
             code.remove(player.getUniqueId());
             player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&c&lAuthTG&f&l] Ваш аккаунт успешно привязан"));
+            if (AuthTG.globalConfig.notRegAndLogin) {
+                player.resetTitle();
+                MuterEvent.unmute(player.getName());
+                FreezerEvent.unfreezeplayer(player.getName());
+                AuthTG.loader.setActive(player.getUniqueId(), true);
+                AuthTG.loader.setPlayerName(player.getUniqueId(), player.getName());
+            }
             User user = User.getUser(player.getUniqueId());
             user.sendMessage("Вы успешно привязали аккаунт");
         }

@@ -17,6 +17,10 @@ public class RegisterCMD implements CommandExecutor {
             System.out.println("[AuthTG] This command can only be used by players!");
             return false;
         }
+        if (AuthTG.globalConfig.notRegAndLogin) {
+            commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&c&lAuthTG&f&l] &c&lКоманда отключена"));
+            return false;
+        }
         if (strings.length < 2) {
             commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&c&lAuthTG&f&l] &c&lКоманда введена неверно,введите: /register <пароль> <повтор пароля>"));
             return false;
@@ -26,6 +30,10 @@ public class RegisterCMD implements CommandExecutor {
             player.sendMessage(ChatColor.translateAlternateColorCodes('&',"&f&l[&c&lAuthTG&f&l] &c&lВы уже зарегистрированы.Если Вы хотите сбросить аккаунт обратитесь к Администратору"));
             return false;
         }
+        if (strings[0].length() < AuthTG.globalConfig.minLenghtPassword || strings[0].length() > AuthTG.globalConfig.maxLenghtPassword) {
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&c&lAuthTG&f&l] &c&lДлина пароля должна быть от " + AuthTG.globalConfig.minLenghtPassword + " до " + AuthTG.globalConfig.maxLenghtPassword + " символов"));
+            return false;
+        }
         if (!strings[0].equals(strings[1])) {
             player.sendMessage(ChatColor.translateAlternateColorCodes('&',"&f&l[&c&lAuthTG&f&l] &c&lПароли не совпадают"));
             return false;
@@ -33,10 +41,16 @@ public class RegisterCMD implements CommandExecutor {
         AuthTG.loader.setPlayerName(player.getUniqueId(), player.getName());
         AuthTG.loader.setPasswordHash(player.getUniqueId(),strings[0]);
         AuthTG.loader.setActive(player.getUniqueId(), true);
-        player.sendMessage(ChatColor.translateAlternateColorCodes('&',"&f&l[&c&lAuthTG&f&l] &a&lВы успешно зарегистрировались"));
-        FreezerEvent.unfreezeplayer(player.getName());
-        MuterEvent.unmute(player.getName());
-        player.resetTitle();
+        if (AuthTG.globalConfig.authNecessarily) {
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&',"&f&l[&c&lAuthTG&f&l] &a&lПривяжите аккаунт к Телеграмму"));
+            MuterEvent.mute(player.getName(), ChatColor.translateAlternateColorCodes('&',"&f&l[&c&lAuthTG&f&l] &a&lПривяжите аккаунт к Телеграмму"));
+            player.sendTitle(ChatColor.translateAlternateColorCodes('&',"&c&lПривяжите аккаунт"), "через Телеграм", 0,1000000000,0);
+        } else {
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&c&lAuthTG&f&l] &a&lВы успешно зарегистрировались"));
+            FreezerEvent.unfreezeplayer(player.getName());
+            MuterEvent.unmute(player.getName());
+            player.resetTitle();
+        }
         return true;
     }
 }

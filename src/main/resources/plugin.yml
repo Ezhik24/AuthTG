@@ -25,3 +25,5 @@ commands:
     description: 'Set password'
   friend:
     description: 'Friends'
+  setspawn:
+    description: 'Set spawn'

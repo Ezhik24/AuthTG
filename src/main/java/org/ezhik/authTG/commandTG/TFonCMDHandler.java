@@ -7,12 +7,16 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 public class TFonCMDHandler implements CommandHandler {
     @Override
     public void execute(Update update) {
-        User user = User.getCurrentUser(update.getMessage().getChatId());
-        if (user != null) {
-            AuthTG.loader.setTwofactor(user.uuid, true);
-            user.sendMessage("Двухфакторная авторизация включена");
+        if (AuthTG.globalConfig.authNecessarily || AuthTG.globalConfig.notRegAndLogin) {
+            AuthTG.bot.deleteMessage(update.getMessage());
         } else {
-            AuthTG.bot.sendMessage(update.getMessage().getChatId(), "[Бот] Вы не привязали аккаунт!");
+            User user = User.getCurrentUser(update.getMessage().getChatId());
+            if (user != null) {
+                AuthTG.loader.setTwofactor(user.uuid, true);
+                user.sendMessage("Двухфакторная авторизация включена");
+            } else {
+                AuthTG.bot.sendMessage(update.getMessage().getChatId(), "[Бот] Вы не привязали аккаунт!");
+            }
         }
     }
 }

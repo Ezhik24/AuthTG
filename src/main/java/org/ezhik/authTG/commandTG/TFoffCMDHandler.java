@@ -8,12 +8,16 @@ public class TFoffCMDHandler implements CommandHandler{
 
     @Override
     public void execute(Update update) {
-        User user = User.getCurrentUser(update.getMessage().getChatId());
-        if (user != null) {
-            AuthTG.loader.setTwofactor(user.uuid, false);
-            user.sendMessage("Двухфакторная авторизация отключена");
+        if (AuthTG.globalConfig.authNecessarily || AuthTG.globalConfig.notRegAndLogin) {
+            AuthTG.bot.deleteMessage(update.getMessage());
         } else {
-            AuthTG.bot.sendMessage(update.getMessage().getChatId(), "[Бот] Вы не привязали аккаунт!");
+            User user = User.getCurrentUser(update.getMessage().getChatId());
+            if (user != null) {
+                AuthTG.loader.setTwofactor(user.uuid, false);
+                user.sendMessage("Двухфакторная авторизация отключена");
+            } else {
+                AuthTG.bot.sendMessage(update.getMessage().getChatId(), "[Бот] Вы не привязали аккаунт!");
+            }
         }
     }
 }

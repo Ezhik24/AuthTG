@@ -18,6 +18,10 @@ public class LoginCMD implements CommandExecutor {
             System.out.println("[AuthTG] This command can only be used by players!");
             return false;
         }
+        if (AuthTG.globalConfig.notRegAndLogin) {
+            commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&c&lAuthTG&f&l] &c&lКоманда отключена"));
+            return false;
+        }
         if (strings.length != 1) {
             commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&',"&f&l[&c&lAuthTG&f&l] &c&lКоманда введена неверна,введите: /login <пароль>"));
             return false;
@@ -28,16 +32,29 @@ public class LoginCMD implements CommandExecutor {
             return false;
         }
         User user = User.getUser(player.getUniqueId());
-        if (user.activetg && user.twofactor) {
-            user.sendLoginAccepted("[Бот@" + user.playername +  "] Это вы вошли в игру?");
-            MuterEvent.mute(player.getName(), ChatColor.translateAlternateColorCodes('&',"&f&l[&c&lAuthTG&f&l] &a&lПодтвердите вход через Телеграм"));
-            player.sendMessage(ChatColor.translateAlternateColorCodes('&',"&f&l[&c&lAuthTG&f&l] &a&lПодтвердите вход через Телеграмм"));
-            player.sendTitle(ChatColor.translateAlternateColorCodes('&',"&c&lПодтвердите вход"), "через Телеграм", 0,1000000000,0);
+        if (AuthTG.globalConfig.authNecessarily) {
+            if (user.activetg) {
+                user.sendLoginAccepted("[Бот@" + user.playername +  "] Это вы вошли в игру?");
+                MuterEvent.mute(player.getName(), ChatColor.translateAlternateColorCodes('&',"&f&l[&c&lAuthTG&f&l] &a&lПодтвердите вход через Телеграм"));
+                player.sendMessage(ChatColor.translateAlternateColorCodes('&',"&f&l[&c&lAuthTG&f&l] &a&lПодтвердите вход через Телеграмм"));
+                player.sendTitle(ChatColor.translateAlternateColorCodes('&',"&c&lПодтвердите вход"), "через Телеграм", 0,1000000000,0);
+            } else {
+                MuterEvent.mute(player.getName(), ChatColor.translateAlternateColorCodes('&',"&f&l[&c&lAuthTG&f&l] &a&lПривяжите аккаунт через Телеграм"));
+                player.sendMessage(ChatColor.translateAlternateColorCodes('&',"&f&l[&c&lAuthTG&f&l] &a&lПривяжите аккаунт через Телеграм"));
+                player.sendTitle(ChatColor.translateAlternateColorCodes('&',"&c&lПривяжите аккаунт"), "через Телеграм", 0,1000000000,0);
+            }
         } else {
-            player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&c&lAuthTG&f&l] &a&lУспешная авторизация"));
-            FreezerEvent.unfreezeplayer(player.getName());
-            MuterEvent.unmute(player.getName());
-            player.resetTitle();
+            if (user.activetg && user.twofactor) {
+                user.sendLoginAccepted("[Бот@" + user.playername + "] Это вы вошли в игру?");
+                MuterEvent.mute(player.getName(), ChatColor.translateAlternateColorCodes('&', "&f&l[&c&lAuthTG&f&l] &a&lПодтвердите вход через Телеграм"));
+                player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&c&lAuthTG&f&l] &a&lПодтвердите вход через Телеграмм"));
+                player.sendTitle(ChatColor.translateAlternateColorCodes('&', "&c&lПодтвердите вход"), "через Телеграм", 0, 1000000000, 0);
+            } else {
+                player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&c&lAuthTG&f&l] &a&lУспешная авторизация"));
+                FreezerEvent.unfreezeplayer(player.getName());
+                MuterEvent.unmute(player.getName());
+                player.resetTitle();
+            }
         }
         return true;
     }

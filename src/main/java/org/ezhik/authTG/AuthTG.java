@@ -3,6 +3,7 @@ package org.ezhik.authTG;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.ezhik.authTG.commandMC.*;
+import org.ezhik.authTG.configuration.GlobalConfig;
 import org.ezhik.authTG.events.*;
 import org.ezhik.authTG.usersconfiguration.Loader;
 import org.ezhik.authTG.usersconfiguration.YAMLLoader;
@@ -13,10 +14,12 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 public final class AuthTG extends JavaPlugin {
     public static Loader loader;
     public static BotTelegram bot;
+    public static GlobalConfig globalConfig;
 
     @Override
     public void onEnable() {
         loader = new YAMLLoader();
+        globalConfig = new GlobalConfig();
         System.out.println("[AuthTG] Плагин запустился | Plugin started");
         System.out.println("[AuthTG] Пожалуйста,подпишитесь на ТГ канал AuthTG: https://t.me/authtgspigot");
         System.out.println("[AuthTG] Please,subscribe for my channel AuthTG: https://t.me/authtgspigot");
@@ -39,6 +42,7 @@ public final class AuthTG extends JavaPlugin {
         getCommand("changepassword").setExecutor(new ChangePasswordCMD());
         getCommand("setpassword").setExecutor(new SetPasswordCMD());
         getCommand("friend").setExecutor(new FriendCMD());
+        getCommand("setspawn").setExecutor(new SetSpawnCMD());
         bot = new BotTelegram();
         if (bot.getBotToken() == "changeme" && bot.getBotUsername() == "changeme") {
             System.out.println("[AuthTG] Please set your bot token and username in botconf.yml");
