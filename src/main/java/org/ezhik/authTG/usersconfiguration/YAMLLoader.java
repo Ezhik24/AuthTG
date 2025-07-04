@@ -122,7 +122,7 @@ public class YAMLLoader implements Loader{
     }
 
     @Override
-    public boolean passwordWalid(UUID uuid, String password) {
+    public boolean passwordValid(UUID uuid, String password) {
         File file = new File("plugins/AuthTG/users/" + uuid + ".yml");
         YamlConfiguration config = new YamlConfiguration();
         try {

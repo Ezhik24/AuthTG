@@ -13,11 +13,21 @@ public class GlobalConfig {
     public int maxLenghtNickname = 15;
     public int minLenghtPassword = 3;
     public int maxLenghtPassword = 32;
+    public boolean useMySQL = false;
+    public String mySQLdatabase = "AuthTG";
+    public String mySQLUser = "root";
+    public String mySQLPassword = "password";
+    public String mySQLHost = "localhost";
 
     public GlobalConfig() {
         File file = new File("plugins/AuthTG/config.yml");
         YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
         if (!file.exists()) {
+            config.set("useMySQL", useMySQL);
+            config.set("MySQLdatabase", mySQLdatabase);
+            config.set("MySQLUser", mySQLUser);
+            config.set("MySQLPassword", mySQLPassword);
+            config.set("MySQLHost", mySQLHost);
             config.set("authNecessarily", authNecessarily);
             config.set("notRegAndLogin", notRegAndLogin);
             config.set("minLenghtNickname", minLenghtNickname);
@@ -36,6 +46,11 @@ public class GlobalConfig {
             maxLenghtNickname = config.getInt("maxLenghtNickname");
             minLenghtPassword = config.getInt("minLenghtPassword");
             maxLenghtPassword = config.getInt("maxLenghtPassword");
+            useMySQL = config.getBoolean("useMySQL");
+            mySQLdatabase = config.getString("MySQLdatabase");
+            mySQLUser = config.getString("MySQLUser");
+            mySQLPassword = config.getString("MySQLPassword");
+            mySQLHost = config.getString("MySQLHost");
         }
     }
 

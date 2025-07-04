@@ -2,7 +2,7 @@ name: AuthTG
 version: '2.0'
 main: org.ezhik.authTG.AuthTG
 api-version: '1.20'
-authors: [ Ezhik24 ]
+authors: [Ezhik24, ABBAfan]
 
 commands:
   register:
@@ -21,6 +21,8 @@ commands:
     description: 'TGBC'
   changepassword:
     description: 'Change password'
+    aliases:
+      - cp
   setpassword:
     description: 'Set password'
   friend:

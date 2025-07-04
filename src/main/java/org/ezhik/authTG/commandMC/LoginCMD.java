@@ -9,7 +9,6 @@ import org.ezhik.authTG.AuthTG;
 import org.ezhik.authTG.User;
 import org.ezhik.authTG.events.FreezerEvent;
 import org.ezhik.authTG.events.MuterEvent;
-import org.telegram.telegrambots.meta.api.objects.Chat;
 
 public class LoginCMD implements CommandExecutor {
     @Override
@@ -27,7 +26,7 @@ public class LoginCMD implements CommandExecutor {
             return false;
         }
         Player player = (Player) commandSender;
-        if (!AuthTG.loader.passwordWalid(player.getUniqueId(), strings[0])) {
+        if (!AuthTG.loader.passwordValid(player.getUniqueId(), strings[0])) {
             player.sendMessage(ChatColor.translateAlternateColorCodes('&',"&f&l[&c&lAuthTG&f&l] &c&lНеверный пароль"));
             return false;
         }

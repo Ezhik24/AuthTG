@@ -5,7 +5,10 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.ezhik.authTG.commandMC.*;
 import org.ezhik.authTG.configuration.GlobalConfig;
 import org.ezhik.authTG.events.*;
+import org.ezhik.authTG.migrates.MySQLMigrate;
+import org.ezhik.authTG.migrates.YAMLMigrate;
 import org.ezhik.authTG.usersconfiguration.Loader;
+import org.ezhik.authTG.usersconfiguration.MySQLLoader;
 import org.ezhik.authTG.usersconfiguration.YAMLLoader;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
@@ -16,9 +19,9 @@ public final class AuthTG extends JavaPlugin {
     public static BotTelegram bot;
     public static GlobalConfig globalConfig;
 
+
     @Override
     public void onEnable() {
-        loader = new YAMLLoader();
         globalConfig = new GlobalConfig();
         System.out.println("[AuthTG] Плагин запустился | Plugin started");
         System.out.println("[AuthTG] Пожалуйста,подпишитесь на ТГ канал AuthTG: https://t.me/authtgspigot");
@@ -34,6 +37,13 @@ public final class AuthTG extends JavaPlugin {
         Bukkit.getServer().getPluginManager().registerEvents(new PlayerJoinAnotherEvent(), this);
         Handler handler = new Handler();
         handler.runTaskTimer(this, 0, 1);
+        if (globalConfig.useMySQL) {
+            loader = new MySQLLoader(globalConfig.mySQLdatabase, globalConfig.mySQLUser, globalConfig.mySQLPassword, globalConfig.mySQLHost);
+            new MySQLMigrate(globalConfig.mySQLdatabase,globalConfig.mySQLHost, globalConfig.mySQLUser, globalConfig.mySQLPassword);
+        } else {
+            new YAMLMigrate(globalConfig.mySQLdatabase,globalConfig.mySQLHost, globalConfig.mySQLUser, globalConfig.mySQLPassword);
+            loader = new YAMLLoader();
+        }
         getCommand("register").setExecutor(new RegisterCMD());
         getCommand("login").setExecutor(new LoginCMD());
         getCommand("code").setExecutor(new CodeCMD());

@@ -20,7 +20,7 @@ public class ChangePasswordCMD implements CommandExecutor {
             player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&c&lAuthTG&f&l] &c&lИспользование: /changepassword <старый пароль> <новый пароль> <повтор нового пароля>"));
             return false;
         }
-        if (!AuthTG.loader.passwordWalid(player.getUniqueId(), strings[0])) {
+        if (!AuthTG.loader.passwordValid(player.getUniqueId(), strings[0])) {
             player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&c&lAuthTG&f&l] &c&lСтарый пароль не верный!"));
             return false;
         }

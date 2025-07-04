@@ -13,7 +13,7 @@ public interface Loader {
 
     boolean isActive(UUID uuid);
 
-    boolean passwordWalid(UUID uuid, String password);
+    boolean passwordValid(UUID uuid, String password);
 
     String getPlayerName(UUID uuid);
 

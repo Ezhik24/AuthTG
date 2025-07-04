@@ -15,9 +15,13 @@ public class UnLinkCMDHandler implements CommandHandler {
             User user = User.getCurrentUser(update.getMessage().getChatId());
             if (user != null) {
                 String code = User.generateConfirmationCode();
-                user.sendMessage("[Бот] Что бы отвязать аккаунт, введите /code " + code);
-                user.player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&c&lAuthTG&f&l] &c&lЧто бы отвязать аккаунт, введите /code <код из Телеграма>, если это не вы,то проигнорируйте это сообщение."));
-                CodeCMD.code.put(user.uuid, code);
+                if (user.player != null) {
+                    user.player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&c&lAuthTG&f&l] &c&lЧто бы отвязать аккаунт, введите /code <код из Телеграма>, если это не вы,то проигнорируйте это сообщение."));
+                    CodeCMD.code.put(user.uuid, code);
+                    user.sendMessage("[Бот] Что бы отвязать аккаунт, введите /code " + code);
+                } else {
+                    user.sendMessage("[Бот] Ваш аккаунт не в сети!");
+                }
             } else {
                 AuthTG.bot.sendMessage(update.getMessage().getChatId(), "[Бот] Вы не привязали аккаунт!");
             }
