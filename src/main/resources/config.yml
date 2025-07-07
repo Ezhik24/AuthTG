@@ -1,0 +1,18 @@
+# Приветствую! Это конфиг с настройками AuthTG
+# Hi! This is a config with AuthTG settings
+bot: # Настройки бота EN: Settings of bot
+  token: "changeme" # Токен бота EN: Bot token
+  username: "changeme" # Имя бота EN: Bot username
+mysql: # Настройки базы данных EN: Database settings
+  use: false # Использовать базу данных EN: Use database
+  host: "localhost" # Хост базы данных,УКАЗЫВАЙТЕ ТУТ ЖЕ ПОРТ,ЕСЛИ ИСПОЛЬЗУЕТСЯ EN: Host of database, ENTER HERE PORT IF YOU USE
+  db: "AuthTG" # Имя базы данных EN: Database name
+  user: "root" # Имя пользователя EN: Username
+  pass: "123" # Пароль EN: Password
+notRegAndLogin: false # Без /register и /login EN: Without /register and /login
+authNecessarily: false # Обязательная авторизация EN: Necessary authorization
+minLenghtNickname: 3 # Минимальная длина ника EN: Min length nickname
+maxLenghtNickname: 15 # Максимальная длина ника EN: Max length nickname
+minLenghtPassword: 3 # Минимальная длина пароля EN: Min length password
+maxLenghtPassword: 32 # Максимальная длина пароля EN: Max length password
+spawnLocation: null # Спавн EN: Spawn

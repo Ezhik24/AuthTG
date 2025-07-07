@@ -17,7 +17,7 @@ public class RegisterCMD implements CommandExecutor {
             System.out.println("[AuthTG] This command can only be used by players!");
             return false;
         }
-        if (AuthTG.globalConfig.notRegAndLogin) {
+        if (AuthTG.config.getBoolean("notRegAndLogin")) {
             commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&c&lAuthTG&f&l] &c&lКоманда отключена"));
             return false;
         }
@@ -30,8 +30,8 @@ public class RegisterCMD implements CommandExecutor {
             player.sendMessage(ChatColor.translateAlternateColorCodes('&',"&f&l[&c&lAuthTG&f&l] &c&lВы уже зарегистрированы.Если Вы хотите сбросить аккаунт обратитесь к Администратору"));
             return false;
         }
-        if (strings[0].length() < AuthTG.globalConfig.minLenghtPassword || strings[0].length() > AuthTG.globalConfig.maxLenghtPassword) {
-            player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&c&lAuthTG&f&l] &c&lДлина пароля должна быть от " + AuthTG.globalConfig.minLenghtPassword + " до " + AuthTG.globalConfig.maxLenghtPassword + " символов"));
+        if (strings[0].length() < AuthTG.config.getInt("minLenghtPassword") || strings[0].length() > AuthTG.config.getInt("maxLenghtPassword")) {
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&c&lAuthTG&f&l] &c&lДлина пароля должна быть от " + AuthTG.config.getInt("minLenghtPassword") + " до " + AuthTG.config.getInt("maxLenghtPassword")+ " символов"));
             return false;
         }
         if (!strings[0].equals(strings[1])) {
@@ -41,7 +41,7 @@ public class RegisterCMD implements CommandExecutor {
         AuthTG.loader.setPlayerName(player.getUniqueId(), player.getName());
         AuthTG.loader.setPasswordHash(player.getUniqueId(),strings[0]);
         AuthTG.loader.setActive(player.getUniqueId(), true);
-        if (AuthTG.globalConfig.authNecessarily) {
+        if (AuthTG.config.getBoolean("authNecessarily")) {
             player.sendMessage(ChatColor.translateAlternateColorCodes('&',"&f&l[&c&lAuthTG&f&l] &a&lПривяжите аккаунт к Телеграмму"));
             MuterEvent.mute(player.getName(), ChatColor.translateAlternateColorCodes('&',"&f&l[&c&lAuthTG&f&l] &a&lПривяжите аккаунт к Телеграмму"));
             player.sendTitle(ChatColor.translateAlternateColorCodes('&',"&c&lПривяжите аккаунт"), "через Телеграм", 0,1000000000,0);

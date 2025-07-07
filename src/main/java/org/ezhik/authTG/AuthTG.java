@@ -1,9 +1,10 @@
 package org.ezhik.authTG;
 
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.ezhik.authTG.commandMC.*;
-import org.ezhik.authTG.configuration.GlobalConfig;
 import org.ezhik.authTG.events.*;
 import org.ezhik.authTG.migrates.MySQLMigrate;
 import org.ezhik.authTG.migrates.YAMLMigrate;
@@ -14,15 +15,19 @@ import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
+import java.io.File;
+
 public final class AuthTG extends JavaPlugin {
     public static Loader loader;
     public static BotTelegram bot;
-    public static GlobalConfig globalConfig;
+    public static FileConfiguration config;
 
 
     @Override
     public void onEnable() {
-        globalConfig = new GlobalConfig();
+        if (!getDataFolder().exists()) getDataFolder().mkdir();
+        if (!new File(getDataFolder(), "config.yml").exists()) saveDefaultConfig();
+        config = getConfig();
         System.out.println("[AuthTG] Плагин запустился | Plugin started");
         System.out.println("[AuthTG] Пожалуйста,подпишитесь на ТГ канал AuthTG: https://t.me/authtgspigot");
         System.out.println("[AuthTG] Please,subscribe for my channel AuthTG: https://t.me/authtgspigot");
@@ -37,11 +42,13 @@ public final class AuthTG extends JavaPlugin {
         Bukkit.getServer().getPluginManager().registerEvents(new PlayerJoinAnotherEvent(), this);
         Handler handler = new Handler();
         handler.runTaskTimer(this, 0, 1);
-        if (globalConfig.useMySQL) {
-            loader = new MySQLLoader(globalConfig.mySQLdatabase, globalConfig.mySQLUser, globalConfig.mySQLPassword, globalConfig.mySQLHost);
-            new MySQLMigrate(globalConfig.mySQLdatabase,globalConfig.mySQLHost, globalConfig.mySQLUser, globalConfig.mySQLPassword);
+        if (getConfig().getConfigurationSection("mysql").getBoolean("use")) {
+            ConfigurationSection mysql = getConfig().getConfigurationSection("mysql");
+            loader = new MySQLLoader(mysql.getString("db"), mysql.getString("user"), mysql.getString("pass"), mysql.getString("host"));
+            new MySQLMigrate(mysql.getString("db"), mysql.getString("host"), mysql.getString("user"), mysql.getString("pass"));
         } else {
-            new YAMLMigrate(globalConfig.mySQLdatabase,globalConfig.mySQLHost, globalConfig.mySQLUser, globalConfig.mySQLPassword);
+            ConfigurationSection mysql = getConfig().getConfigurationSection("mysql");
+            if (!getConfig().getString("mysql.host").equals("localhost")) new YAMLMigrate(mysql.getString("db"), mysql.getString("host"), mysql.getString("user"),mysql.getString("pass"));
             loader = new YAMLLoader();
         }
         getCommand("register").setExecutor(new RegisterCMD());
@@ -53,17 +60,20 @@ public final class AuthTG extends JavaPlugin {
         getCommand("setpassword").setExecutor(new SetPasswordCMD());
         getCommand("friend").setExecutor(new FriendCMD());
         getCommand("setspawn").setExecutor(new SetSpawnCMD());
-        bot = new BotTelegram();
-        if (bot.getBotToken() == "changeme" && bot.getBotUsername() == "changeme") {
-            System.out.println("[AuthTG] Please set your bot token and username in botconf.yml");
-            System.out.println("[AuthTG] Пожалуйста, укажите ваш токен и имя в botconf.yml");
-        } else {
-            TelegramBotsApi botsApi;
-            try {
-                botsApi = new TelegramBotsApi(DefaultBotSession.class);
-                botsApi.registerBot(bot);
-            } catch (TelegramApiException e) {
-                throw new RuntimeException(e);
+        bot = new BotTelegram(getConfig().getString("bot.token"), getConfig().getString("bot.username"));
+        if (!bot.BOT_IS_STARTED) {
+            if (bot.getBotToken().equals("changeme") && bot.getBotUsername().equals("changeme")) {
+                System.out.println("[AuthTG] Please set your bot token and username in botconf.yml");
+                System.out.println("[AuthTG] Пожалуйста, укажите ваш токен и имя в botconf.yml");
+            } else {
+                TelegramBotsApi botsApi;
+                try {
+                    botsApi = new TelegramBotsApi(DefaultBotSession.class);
+                    botsApi.registerBot(bot);
+                    bot.BOT_IS_STARTED = true;
+                } catch (TelegramApiException e) {
+                    throw new RuntimeException(e);
+                }
             }
         }
     }

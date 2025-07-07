@@ -13,13 +13,13 @@ public class OnJoinEvent implements Listener {
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
         Player p = event.getPlayer();
-        if (AuthTG.globalConfig.getSpawnLocation() != null) p.teleport(AuthTG.globalConfig.getSpawnLocation());
+        if (AuthTG.config.getLocation("spawnLocation") != null) p.teleport(AuthTG.config.getLocation("spawnLocation"));
         FreezerEvent.freezeplayer(p.getName());
         User user = User.getUser(p.getUniqueId());
-        if (p.getName().length() < AuthTG.globalConfig.minLenghtNickname || p.getName().length() > AuthTG.globalConfig.maxLenghtNickname) {
-            Handler.kick(p.getName(), ChatColor.translateAlternateColorCodes('&',"&c&lНикнейм должен быть от " + AuthTG.globalConfig.minLenghtNickname + " до " + AuthTG.globalConfig.maxLenghtNickname + " символов"));
+        if (p.getName().length() < AuthTG.config.getInt("minLenghtNickname") || p.getName().length() > AuthTG.config.getInt("maxLenghtNickname")) {
+            Handler.kick(p.getName(), ChatColor.translateAlternateColorCodes('&',"&c&lНикнейм должен быть от " + AuthTG.config.getInt("minLenghtNickname") + " до " + AuthTG.config.getInt("maxLenghtNickname") + " символов"));
         }
-        if (AuthTG.globalConfig.notRegAndLogin) {
+        if (AuthTG.config.getBoolean("notRegAndLogin")) {
             if (user != null && user.activetg) {
                 MuterEvent.mute(p.getName(), ChatColor.translateAlternateColorCodes('&', "&f&l[&c&lAuthTG&f&l] &a&lПотвердите вход через Телеграм"));
                 p.sendTitle(ChatColor.translateAlternateColorCodes('&', "&c&lПотвердите вход"), "через Телеграм", 20, 10000000, 0);

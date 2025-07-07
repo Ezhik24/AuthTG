@@ -18,28 +18,17 @@ import java.util.Map;
 import java.util.UUID;
 
 public class BotTelegram extends TelegramLongPollingBot {
-    private String username = "changeme";
-    private String token = "changeme";
+    private String username;
+    private String token;
     private Map<String, CommandHandler> commandHandler = new HashMap<>();
     private Map<String, UUID> userData = new HashMap<>();
     private Map<Long, NextStepHandler> nextStepHandler = new HashMap<>();
     private Map<String, CallbackQueryHandler> callbackQueryHandler = new HashMap<>();
+    public boolean BOT_IS_STARTED = false;
 
-    public BotTelegram() {
-        File file = new File("plugins/AuthTG/botconf.yml");
-        YamlConfiguration botconf = YamlConfiguration.loadConfiguration(file);
-        if (!file.exists()) {
-            botconf.set("username", username);
-            botconf.set("token", token);
-            try {
-                botconf.save(file);
-            } catch (IOException e) {
-                System.out.println("Error saving file: " + e);
-            }
-        } else {
-            username = botconf.getString("username");
-            token = botconf.getString("token");
-        }
+    public BotTelegram(String token, String username) {
+        this.username = username;
+        this.token = token;
         commandHandler.put("/resetpassword", new ResetPasswordCMDHandler());
         commandHandler.put("/start", new StartCMDHandler());
         commandHandler.put("/link", new StartCMDHandler());

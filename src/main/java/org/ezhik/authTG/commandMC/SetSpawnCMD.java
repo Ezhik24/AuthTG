@@ -17,12 +17,12 @@ public class SetSpawnCMD implements CommandExecutor {
         }
         if (strings.length == 0) {
             Player player = (Player) commandSender;
-            AuthTG.globalConfig.setSpawnLocation(player.getLocation());
+            AuthTG.config.set("spawnLocation",  player.getLocation());
             commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&c&lAuthTG&f&l] &a&lВы установили спавн!"));
             return true;
         }
         if (strings[0].equals("none")) {
-            AuthTG.globalConfig.setSpawnLocation(null);
+            AuthTG.config.set("spawnLocation",  null);
             commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&c&lAuthTG&f&l] &a&lВы отключили спавн!"));
             return true;
         }

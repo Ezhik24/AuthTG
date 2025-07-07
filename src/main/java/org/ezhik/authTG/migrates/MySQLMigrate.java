@@ -10,7 +10,6 @@ import java.util.UUID;
 public class MySQLMigrate {
     Connection conn;
     Statement st = null;
-    ResultSet rs = null;
     public MySQLMigrate(String database, String host, String user, String password) {
         try {
             conn = DriverManager.getConnection(

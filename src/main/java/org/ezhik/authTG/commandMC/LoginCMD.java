@@ -17,7 +17,7 @@ public class LoginCMD implements CommandExecutor {
             System.out.println("[AuthTG] This command can only be used by players!");
             return false;
         }
-        if (AuthTG.globalConfig.notRegAndLogin) {
+        if (AuthTG.config.getBoolean("notRegAndLogin")) {
             commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&c&lAuthTG&f&l] &c&lКоманда отключена"));
             return false;
         }
@@ -31,7 +31,7 @@ public class LoginCMD implements CommandExecutor {
             return false;
         }
         User user = User.getUser(player.getUniqueId());
-        if (AuthTG.globalConfig.authNecessarily) {
+        if (AuthTG.config.getBoolean("authNecessarily")) {
             if (user.activetg) {
                 user.sendLoginAccepted("[Бот@" + user.playername +  "] Это вы вошли в игру?");
                 MuterEvent.mute(player.getName(), ChatColor.translateAlternateColorCodes('&',"&f&l[&c&lAuthTG&f&l] &a&lПодтвердите вход через Телеграм"));

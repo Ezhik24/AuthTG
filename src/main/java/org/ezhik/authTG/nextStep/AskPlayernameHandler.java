@@ -20,7 +20,7 @@ public class AskPlayernameHandler implements NextStepHandler {
                     AuthTG.bot.sendMessage(update.getMessage().getChatId(), "[Бот] Данный аккаунт привязан к другому пользователю");
                 }
             } else {
-                if (AuthTG.globalConfig.notRegAndLogin) {
+                if (AuthTG.config.getBoolean("notRegAndLogin")) {
                      User.register(update.getMessage(), player.getUniqueId());
                 } else {
                     AuthTG.bot.sendMessage(update.getMessage().getChatId(), "[Бот] Введите пароль от аккаунта");

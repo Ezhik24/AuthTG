@@ -31,7 +31,7 @@ public class CodeCMD implements CommandExecutor {
             player.sendMessage(ChatColor.translateAlternateColorCodes('&',"&f&l[&c&lAuthTG&f&l] &c&lКод неверный"));
             return false;
         }
-        if (AuthTG.globalConfig.authNecessarily) {
+        if (AuthTG.config.getBoolean("authNecessarily")) {
             FreezerEvent.unfreezeplayer(player.getName());
             MuterEvent.unmute(player.getName());
             player.resetTitle();
@@ -45,7 +45,7 @@ public class CodeCMD implements CommandExecutor {
             AuthTG.loader.setActiveTG(player.getUniqueId(), true);
             code.remove(player.getUniqueId());
             player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&c&lAuthTG&f&l] Ваш аккаунт успешно привязан"));
-            if (AuthTG.globalConfig.notRegAndLogin) {
+            if (AuthTG.config.getBoolean("notRegAndLogin")) {
                 player.resetTitle();
                 MuterEvent.unmute(player.getName());
                 FreezerEvent.unfreezeplayer(player.getName());
