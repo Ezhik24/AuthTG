@@ -24,7 +24,7 @@ public class FriendCMD implements CommandExecutor {
         User user;
         User friendUser;
         if (!(commandSender instanceof Player)) {
-            System.out.println("[AuthTG] This command can only be used by players!");
+            System.out.println(AuthTG.config.get("messages.console.notplayer"));
             return false;
         }
         if (strings.length == 0) {

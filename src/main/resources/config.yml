@@ -16,3 +16,8 @@ maxLenghtNickname: 15 # Максимальная длина ника EN: Max len
 minLenghtPassword: 3 # Минимальная длина пароля EN: Min length password
 maxLenghtPassword: 32 # Максимальная длина пароля EN: Max length password
 spawnLocation: null # Спавн EN: Spawn
+messages: # Сообщения EN: Messages
+  console: # Консольные сообщения EN: Console messages
+    mcbcsuccess: "[AuthTG] Message successfully sent!"
+    tgbcsuccess: "[AuthTG] Message successfully sent!"
+    notplayer: "[AuthTG] This command can only be used by players!"

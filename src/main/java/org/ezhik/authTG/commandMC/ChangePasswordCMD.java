@@ -11,11 +11,11 @@ public class ChangePasswordCMD implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
-        Player player = (Player) commandSender;
         if (!(commandSender instanceof Player)) {
-            System.out.println("[AuthTG] This command can only be used by players!");
+            System.out.println(AuthTG.config.get("messages.console.notplayer"));
             return false;
         }
+        Player player = (Player) commandSender;
         if (!(strings.length == 3)) {
             player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&c&lAuthTG&f&l] &c&lИспользование: /changepassword <старый пароль> <новый пароль> <повтор нового пароля>"));
             return false;

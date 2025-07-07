@@ -19,7 +19,7 @@ public class CodeCMD implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
         if (!(commandSender instanceof Player)) {
-            System.out.println("[AuthTG] This command can only be used by players!");
+            System.out.println(AuthTG.config.get("messages.console.notplayer"));
             return false;
         }
         if (strings.length == 0) {

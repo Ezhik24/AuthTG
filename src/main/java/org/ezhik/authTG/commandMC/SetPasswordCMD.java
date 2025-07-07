@@ -12,14 +12,14 @@ public class SetPasswordCMD implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String label, String[] strings) {
         if (!(commandSender instanceof Player)) {
-            System.out.println("[AuthTG] This command can only be used by players!");
+            System.out.println(AuthTG.config.get("messages.console.notplayer"));
             return false;
         }
         if (strings.length != 3) {
             commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&c&lAuthTG&f&l] &a&lИспользование: /setpassword <игрок> <пароль> <повтор пароль>"));
             return false;
         }
-        if (!commandSender.hasPermission("minetelegram.setpassword")) {
+        if (!commandSender.hasPermission("authtg.setpassword")) {
             commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&c&lAuthTG&f&l] &c&lУ вас нет прав!"));
             return false;
         }

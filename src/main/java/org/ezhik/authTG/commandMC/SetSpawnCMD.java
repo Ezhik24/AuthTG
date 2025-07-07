@@ -11,7 +11,11 @@ public class SetSpawnCMD implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
-        if (!commandSender.hasPermission("minetelegram.setspawn")) {
+        if (!(commandSender instanceof Player)) {
+            System.out.println(AuthTG.config.get("messages.console.notplayer"));
+            return false;
+        }
+        if (!commandSender.hasPermission("authtg.setspawn")) {
             commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&c&lAuthTG&f&l] &cУ вас недостаточно прав!"));
             return false;
         }
