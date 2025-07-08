@@ -12,10 +12,10 @@ public class SendMessageMCHandler implements NextStepHandler {
         User senderuser = User.getCurrentUser(update.getMessage().getChatId());
         User frienduser = User.getUser(AuthTG.bot.getUserData(update.getMessage().getChatId().toString()));
         if (frienduser == null) {
-            senderuser.sendMessage("Ваш друг не онлайн!");
+            senderuser.sendMessage(AuthTG.config.getString("messages.telegram.sendmsgmcerror"));
         } else {
-            frienduser.player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&c&lAuthTG&f&l] &a&lВаш друг &e&l" + senderuser.playername + " &a&lотправил вам сообщение: &f&l" + update.getMessage().getText()));
-            senderuser.sendMessage("Вы успешно отправили сообщение!");
+            frienduser.player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.sendmsgmc") + update.getMessage().getText()));
+            senderuser.sendMessage(AuthTG.config.getString("messages.telegram.sendmsgmcsuccess"));
         }
         AuthTG.bot.remUserData(update.getMessage().getChatId().toString());
     }
