@@ -19,7 +19,7 @@ public class FriendCMDHandler implements CommandHandler {
         User user = User.getCurrentUser(message.getChatId());
         List<List<InlineKeyboardButton>> friends = new ArrayList<>();
         if (user.friends.size() == 0) {
-            AuthTG.bot.sendMessage(message.getChatId(), "[Бот] У вас нет друзей!");
+            AuthTG.bot.sendMessage(message.getChatId(), AuthTG.config.getString("messages.telegram.notfriendsfound"));
             AuthTG.bot.deleteMessage(message);
             return;
         }
@@ -27,7 +27,7 @@ public class FriendCMDHandler implements CommandHandler {
             List<InlineKeyboardButton> colkeyb = new ArrayList<>();
             InlineKeyboardButton freeplayerbtn = new InlineKeyboardButton();
             User friend = User.getUser(friendname);
-            freeplayerbtn.setText(friendname + ((friend.player != null) ? " [Online]" : "   [Offline]"));
+            freeplayerbtn.setText(friendname + ((friend.player != null) ? AuthTG.config.getString("messages.telegram.friendonline") : AuthTG.config.getString("messages.telegram.friendoffline")));
             freeplayerbtn.setCallbackData("chfr_" + friend.uuid);
             colkeyb.add(freeplayerbtn);
             friends.add(colkeyb);
@@ -36,7 +36,7 @@ public class FriendCMDHandler implements CommandHandler {
         friendskeyb.setKeyboard(friends);
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(message.getChatId());
-        sendMessage.setText("[Бот@" + user.playername + "] Выберите друга");
+        sendMessage.setText(AuthTG.config.getString("messages.telegram.friendchange").replace("{PLAYER}", user.playername));
         sendMessage.setReplyMarkup(friendskeyb);
         try {
             AuthTG.bot.execute(sendMessage);

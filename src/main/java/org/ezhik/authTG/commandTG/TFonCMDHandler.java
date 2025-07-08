@@ -13,9 +13,9 @@ public class TFonCMDHandler implements CommandHandler {
             User user = User.getCurrentUser(update.getMessage().getChatId());
             if (user != null) {
                 AuthTG.loader.setTwofactor(user.uuid, true);
-                user.sendMessage("Двухфакторная авторизация включена");
+                user.sendMessage(AuthTG.config.getString("messages.telegram.tfonsuccess"));
             } else {
-                AuthTG.bot.sendMessage(update.getMessage().getChatId(), "[Бот] Вы не привязали аккаунт!");
+                AuthTG.bot.sendMessage(update.getMessage().getChatId(), AuthTG.config.getString("messages.telegram.tfonntactive"));
             }
         }
     }

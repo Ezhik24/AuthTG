@@ -14,9 +14,9 @@ public class TFoffCMDHandler implements CommandHandler{
             User user = User.getCurrentUser(update.getMessage().getChatId());
             if (user != null) {
                 AuthTG.loader.setTwofactor(user.uuid, false);
-                user.sendMessage("Двухфакторная авторизация отключена");
+                user.sendMessage(AuthTG.config.getString("messages.telegram.tfoffsuccess"));
             } else {
-                AuthTG.bot.sendMessage(update.getMessage().getChatId(), "[Бот] Вы не привязали аккаунт!");
+                AuthTG.bot.sendMessage(update.getMessage().getChatId(), AuthTG.config.getString("messages.telegram.tfoffntactive"));
             }
         }
     }

@@ -11,13 +11,13 @@ public class KickMeCMDHandler implements CommandHandler {
         User user = User.getCurrentUser(update.getMessage().getChatId());
         if (user != null) {
             if (user.player != null) {
-                Handler.kick(user.playername, "Вы были кикнуты через Телеграм!");
-                user.sendMessage("Вы успешно кикнули свой Аккаунт!");
+                Handler.kick(user.playername, AuthTG.config.getString("messages.telegram.kickmeplayer"));
+                user.sendMessage(AuthTG.config.getString("messages.telegram.kickmesuccess"));
             } else {
-                user.sendMessage("Вы не в игре!");
+                user.sendMessage(AuthTG.config.getString("messages.telegram.kickmeplnotonline"));
             }
         } else {
-            AuthTG.bot.sendMessage(update.getMessage().getChatId(),"[Бот] Вы не привязывали аккаунт!");
+            AuthTG.bot.sendMessage(update.getMessage().getChatId(),AuthTG.config.getString("messages.telegram.kickmenotactive"));
         }
     }
 }

@@ -31,7 +31,7 @@ public class AccountsCMDHandler implements CommandHandler{
             players.setKeyboard(keyboard);
             SendMessage sendMessage = new SendMessage();
             sendMessage.setChatId(update.getMessage().getChatId());
-            sendMessage.setText("[Бот] Выберите аккаунт");
+            sendMessage.setText(AuthTG.config.getString("message.telegram.accountschange"));
             sendMessage.setReplyMarkup(players);
             try {
                 AuthTG.bot.execute(sendMessage);
@@ -39,7 +39,7 @@ public class AccountsCMDHandler implements CommandHandler{
                 System.out.println("Error sending message: " + e);
             }
         } else {
-            AuthTG.bot.sendMessage(update.getMessage().getChatId(), "[Бот] У вас не привязан ни один аккаунт");
+            AuthTG.bot.sendMessage(update.getMessage().getChatId(), AuthTG.config.getString("message.telegram.accounschangenotfound"));
         }
 
     }
