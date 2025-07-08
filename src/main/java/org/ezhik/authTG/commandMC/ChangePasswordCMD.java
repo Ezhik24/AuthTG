@@ -17,19 +17,19 @@ public class ChangePasswordCMD implements CommandExecutor {
         }
         Player player = (Player) commandSender;
         if (!(strings.length == 3)) {
-            player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&c&lAuthTG&f&l] &c&lИспользование: /changepassword <старый пароль> <новый пароль> <повтор нового пароля>"));
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.cpusage")));
             return false;
         }
         if (!AuthTG.loader.passwordValid(player.getUniqueId(), strings[0])) {
-            player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&c&lAuthTG&f&l] &c&lСтарый пароль не верный!"));
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.cpoldpassnotvalid")));
             return false;
         }
         if (!strings[1].equals(strings[2])) {
-            player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&c&lAuthTG&f&l] &c&lНовые пароли не совпадают!"));
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.cpnotmatch")));
             return false;
         }
         AuthTG.loader.setPasswordHash(player.getUniqueId(), strings[1]);
-        player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&c&lAuthTG&f&l] &a&lПароль успешно изменен!"));
+        player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.cpsuccess")));
         return true;
     }
 }

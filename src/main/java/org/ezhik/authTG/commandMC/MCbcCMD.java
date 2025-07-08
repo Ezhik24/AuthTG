@@ -13,15 +13,15 @@ public class MCbcCMD implements CommandExecutor {
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
         if (commandSender instanceof Player) {
             if (!commandSender.hasPermission("authtg.mcbc")) {
-                commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&c&lAuthTG&f&l] &c&lУ вас недостаточно прав!"));
+                commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.mcbcnoperm")));
                 return false;
             }
             String text = String.join(" ", strings);
-            Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&c&lAuthTG&f&l] &a&l" + text));
-            commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&c&lAuthTG&f&l] &a&lСообщение успешно отправлено!"));
+            Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.mcbc") + text));
+            commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.mcbcsuccess")));
         } else {
             String text = String.join(" ", strings);
-            Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&c&lAuthTG&f&l] &a&l" + text));
+            Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.mcbc") + text));
             System.out.println(AuthTG.config.get("messages.console.mcbcsuccess"));
         }
         return true;

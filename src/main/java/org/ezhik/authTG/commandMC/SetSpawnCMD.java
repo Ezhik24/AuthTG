@@ -16,18 +16,18 @@ public class SetSpawnCMD implements CommandExecutor {
             return false;
         }
         if (!commandSender.hasPermission("authtg.setspawn")) {
-            commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&c&lAuthTG&f&l] &cУ вас недостаточно прав!"));
+            commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.setspawnnoperm")));
             return false;
         }
         if (strings.length == 0) {
             Player player = (Player) commandSender;
             AuthTG.config.set("spawnLocation",  player.getLocation());
-            commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&c&lAuthTG&f&l] &a&lВы установили спавн!"));
+            commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.setspawnsuccess")));
             return true;
         }
         if (strings[0].equals("none")) {
             AuthTG.config.set("spawnLocation",  null);
-            commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&c&lAuthTG&f&l] &a&lВы отключили спавн!"));
+            commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.setspawnnone")));
             return true;
         }
         return true;

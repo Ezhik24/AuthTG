@@ -13,12 +13,12 @@ public class TGbcCMD implements CommandExecutor {
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
         if (commandSender instanceof Player) {
             if (!commandSender.hasPermission("authtg.tgbc")) {
-                commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&c&lAuthTG&f&l] &c&lУ вас нет прав для использования этой команды!"));
+                commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.tgbcnoperm")));
                 return false;
             }
             String text = String.join(" ", strings);
             User.sendBroadcastMessage(text);
-            commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&c&lAuthTG&f&l] &a&lСообщение успешно отправлено!"));
+            commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.tgbcsuccess")));
         } else {
             String text = String.join(" ", strings);
             User.sendBroadcastMessage(text);

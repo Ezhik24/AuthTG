@@ -23,12 +23,12 @@ public class CodeCMD implements CommandExecutor {
             return false;
         }
         if (strings.length == 0) {
-            commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&c&lAuthTG&f&l] &c&lКОманда введена неверно, введите: /code <код>"));
+            commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.codeusage")));
             return false;
         }
         Player player = (Player) commandSender;
         if (!strings[0].equals(code.get(player.getUniqueId()))) {
-            player.sendMessage(ChatColor.translateAlternateColorCodes('&',"&f&l[&c&lAuthTG&f&l] &c&lКод неверный"));
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&',AuthTG.config.getString("messages.minecraft.codeuncorect")));
             return false;
         }
         if (AuthTG.config.getBoolean("authNecessarily")) {
@@ -40,11 +40,11 @@ public class CodeCMD implements CommandExecutor {
             AuthTG.loader.setActiveTG(player.getUniqueId(), false);
             AuthTG.loader.setTwofactor(player.getUniqueId(), false);
             code.remove(player.getUniqueId());
-            player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&c&lAuthTG&f&l] &c&lВы успешно отвязали аккаунт"));
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.codeunlink")));
         } else {
             AuthTG.loader.setActiveTG(player.getUniqueId(), true);
             code.remove(player.getUniqueId());
-            player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&c&lAuthTG&f&l] Ваш аккаунт успешно привязан"));
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.codelink")));
             if (AuthTG.config.getBoolean("notRegAndLogin")) {
                 player.resetTitle();
                 MuterEvent.unmute(player.getName());

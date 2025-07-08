@@ -18,35 +18,35 @@ public class RegisterCMD implements CommandExecutor {
             return false;
         }
         if (AuthTG.config.getBoolean("notRegAndLogin")) {
-            commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&c&lAuthTG&f&l] &c&lКоманда отключена"));
+            commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.registeroff")));
             return false;
         }
         if (strings.length < 2) {
-            commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&c&lAuthTG&f&l] &c&lКоманда введена неверно,введите: /register <пароль> <повтор пароля>"));
+            commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.registerusage")));
             return false;
         }
         Player player = (Player) commandSender;
         if (AuthTG.loader.isActive(player.getUniqueId())) {
-            player.sendMessage(ChatColor.translateAlternateColorCodes('&',"&f&l[&c&lAuthTG&f&l] &c&lВы уже зарегистрированы.Если Вы хотите сбросить аккаунт обратитесь к Администратору"));
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&',AuthTG.config.getString("messages.minecraft.alreadyreg")));
             return false;
         }
         if (strings[0].length() < AuthTG.config.getInt("minLenghtPassword") || strings[0].length() > AuthTG.config.getInt("maxLenghtPassword")) {
-            player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&c&lAuthTG&f&l] &c&lДлина пароля должна быть от " + AuthTG.config.getInt("minLenghtPassword") + " до " + AuthTG.config.getInt("maxLenghtPassword")+ " символов"));
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.registerlenght").replace("{MIN}", String.valueOf(AuthTG.config.getInt("minLenghtPassword"))).replace("{MAX}", String.valueOf(AuthTG.config.getInt("maxLenghtPassword")))));
             return false;
         }
         if (!strings[0].equals(strings[1])) {
-            player.sendMessage(ChatColor.translateAlternateColorCodes('&',"&f&l[&c&lAuthTG&f&l] &c&lПароли не совпадают"));
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&',AuthTG.config.getString("messages.minecraft.registernomatch")));
             return false;
         }
         AuthTG.loader.setPlayerName(player.getUniqueId(), player.getName());
         AuthTG.loader.setPasswordHash(player.getUniqueId(),strings[0]);
         AuthTG.loader.setActive(player.getUniqueId(), true);
         if (AuthTG.config.getBoolean("authNecessarily")) {
-            player.sendMessage(ChatColor.translateAlternateColorCodes('&',"&f&l[&c&lAuthTG&f&l] &a&lПривяжите аккаунт к Телеграмму"));
-            MuterEvent.mute(player.getName(), ChatColor.translateAlternateColorCodes('&',"&f&l[&c&lAuthTG&f&l] &a&lПривяжите аккаунт к Телеграмму"));
-            player.sendTitle(ChatColor.translateAlternateColorCodes('&',"&c&lПривяжите аккаунт"), "через Телеграм", 0,1000000000,0);
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&',AuthTG.config.getString("messages.minecraft.authtgactivetext")));
+            MuterEvent.mute(player.getName(), ChatColor.translateAlternateColorCodes('&',AuthTG.config.getString("messages.minecraft.authtgactivetext")));
+            player.sendTitle(ChatColor.translateAlternateColorCodes('&',AuthTG.config.getString("messages.minecraft.authtgactives1")), AuthTG.config.getString("messages.minecraft.authtgactives2"), 0,1000000000,0);
         } else {
-            player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&c&lAuthTG&f&l] &a&lВы успешно зарегистрировались"));
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.registersuccess")));
             FreezerEvent.unfreezeplayer(player.getName());
             MuterEvent.unmute(player.getName());
             player.resetTitle();

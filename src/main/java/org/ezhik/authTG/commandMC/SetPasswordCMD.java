@@ -16,24 +16,24 @@ public class SetPasswordCMD implements CommandExecutor {
             return false;
         }
         if (strings.length != 3) {
-            commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&c&lAuthTG&f&l] &a&lИспользование: /setpassword <игрок> <пароль> <повтор пароль>"));
+            commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.setpasswordusage")));
             return false;
         }
         if (!commandSender.hasPermission("authtg.setpassword")) {
-            commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&c&lAuthTG&f&l] &c&lУ вас нет прав!"));
+            commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.setpasswordnoperm")));
             return false;
         }
         Player player = Bukkit.getPlayer(strings[0]);
         if (player == null) {
-            commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&c&lAuthTG&f&l] &c&lИгрок не в сети!"));
+            commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.setpassplnotfound")));
             return false;
         }
         if (!strings[1].equals(strings[2])) {
-            commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&c&lAuthTG&f&l] &a&lПароли не совпадают!"));
+            commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.setpassnomatch")));
             return false;
         }
         AuthTG.loader.setPasswordHash(player.getUniqueId(), strings[1]);
-        commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&c&lAuthTG&f&l] &a&lВы успешно поставили пароль игроку: " + player.getName()));
+        commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.setpasssuccess").replace("{PLAYER}", player.getName())));
         return true;
     }
 }
