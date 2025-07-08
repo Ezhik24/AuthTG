@@ -21,3 +21,16 @@ messages: # Сообщения EN: Messages
     mcbcsuccess: "[AuthTG] Message successfully sent!"
     tgbcsuccess: "[AuthTG] Message successfully sent!"
     notplayer: "[AuthTG] This command can only be used by players!"
+  telegram: # Сообщения в телеграме EN: Telegram messages
+    prefix: "[Бот@{PLAYER}] "
+    msgfriend: "[Бот@{PLAYER}] "
+    msgfriendbutton: "Действия"
+    broadcast: "[Бот] "
+    nobutton: "Нет"
+    yesbutton: "Да"
+    codemsgactivated: "[Бот] Введите в чате Майнкрафта /code {CODE}"
+  minecraft: # Сообщения в майнкрафте EN: Minecraft messages
+    codemsgactivated: "&f&l[&c&lAuthTG&f&l] &a&lВведите /code <код из телеграма>. Если это не вы,то проигнорируйте это сообщение"
+    joinanother: "Кто-то уже играет с этого никнейма..."
+    joinblock: "&f&l[&c&lAuthTG&f&l] &c&lЭти команды доступны только для зарегистрированных пользователей"
+

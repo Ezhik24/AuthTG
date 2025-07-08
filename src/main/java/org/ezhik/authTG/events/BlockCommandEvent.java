@@ -5,6 +5,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
+import org.ezhik.authTG.AuthTG;
 
 public class BlockCommandEvent implements Listener {
     @EventHandler
@@ -13,7 +14,7 @@ public class BlockCommandEvent implements Listener {
         if(MuterEvent.isMute(player)) {
            if(!(event.getMessage().startsWith("/login") || event.getMessage().startsWith("/register") || event.getMessage().startsWith("/reg") || event.getMessage().startsWith("/l") || event.getMessage().startsWith("/code"))) {
                event.setCancelled(true);
-               player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&c&lAuthTG&f&l] &c&lЭти команды доступны только для зарегистрированных пользователей"));
+               player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.joinblock")));
            }
         }
     }

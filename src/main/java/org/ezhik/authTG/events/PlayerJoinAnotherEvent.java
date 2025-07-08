@@ -7,6 +7,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent.Result;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
+import org.ezhik.authTG.AuthTG;
 
 public class PlayerJoinAnotherEvent implements Listener {
     @EventHandler
@@ -14,7 +15,7 @@ public class PlayerJoinAnotherEvent implements Listener {
         Player player = Bukkit.getPlayer(event.getName());
         if (player != null) {
             if (player.isOnline()) {
-                event.disallow(Result.KICK_OTHER, ChatColor.translateAlternateColorCodes('&', "Кто-то уже играет с этого никнейма..."));
+                event.disallow(Result.KICK_OTHER, ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.joinanother")));
             }
         }
     }
