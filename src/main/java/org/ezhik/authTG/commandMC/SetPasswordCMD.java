@@ -29,7 +29,7 @@ public class SetPasswordCMD implements CommandExecutor {
             return false;
         }
         if (!strings[1].equals(strings[2])) {
-            commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.setpassnomatch")));
+            commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.setpassnotmatch")));
             return false;
         }
         AuthTG.loader.setPasswordHash(player.getUniqueId(), strings[1]);
