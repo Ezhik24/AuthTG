@@ -22,19 +22,19 @@ public class ActsFriend implements CallbackQueryHandler {
         InlineKeyboardButton sendMessageButton = new InlineKeyboardButton();
         InlineKeyboardButton sendMCMessageButton = new InlineKeyboardButton();
         InlineKeyboardMarkup actionsKeyboard = new InlineKeyboardMarkup();
-        delFriendButton.setText("Удалить из друзей");
+        delFriendButton.setText(AuthTG.config.getString("messages.telegram.actsdelfrbut"));
         String[] str = update.getCallbackQuery().getData().toString().split("_");
         delFriendButton.setCallbackData("delfr_" + str[1]);
         List<InlineKeyboardButton> delFriendCoolkeyb = new ArrayList<>();
         delFriendCoolkeyb.add(delFriendButton);
         keyboard.add(delFriendCoolkeyb);
-        sendMessageButton.setText("Отправить сообщение в ТГ");
+        sendMessageButton.setText(AuthTG.config.getString("messages.telegram.actssndtgbut"));
         sendMessageButton.setCallbackData("sndtg_" + str[1]);
         List<InlineKeyboardButton> sendMessageCoolkeyb = new ArrayList<>();
         sendMessageCoolkeyb.add(sendMessageButton);
         keyboard.add(sendMessageCoolkeyb);
         if (User.getUser(UUID.fromString(str[1])).player != null) {
-            sendMCMessageButton.setText("Отправить сообщение в МC");
+            sendMCMessageButton.setText(AuthTG.config.getString("messages.telegram.actssndmcbut"));
             sendMCMessageButton.setCallbackData("sndmc_" + str[1]);
             List<InlineKeyboardButton> sendMCMessageCoolkeyb = new ArrayList<>();
             sendMCMessageCoolkeyb.add(sendMCMessageButton);
@@ -43,7 +43,7 @@ public class ActsFriend implements CallbackQueryHandler {
         actionsKeyboard.setKeyboard(keyboard);
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(update.getCallbackQuery().getMessage().getChatId());
-        sendMessage.setText("[Бот@" + user.playername + "] Выберите действие с " + User.getUser(UUID.fromString(str[1])).playername);
+        sendMessage.setText(AuthTG.config.getString("messages.telegram.actssendmsg").replace("{PLAYER}", user.playername) + User.getUser(UUID.fromString(str[1])).playername);
         sendMessage.setReplyMarkup(actionsKeyboard);
         try {
             AuthTG.bot.execute(sendMessage);

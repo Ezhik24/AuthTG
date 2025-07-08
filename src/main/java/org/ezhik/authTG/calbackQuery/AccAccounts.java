@@ -14,7 +14,7 @@ public class AccAccounts implements CallbackQueryHandler{
         String[] str = update.getCallbackQuery().getData().toString().split("_");
         AuthTG.loader.setCurrentUUID(UUID.fromString(str[1]), update.getCallbackQuery().getMessage().getChatId());
         User user = User.getUser(UUID.fromString(str[1]));
-        AuthTG.bot.sendMessage(update.getCallbackQuery().getMessage().getChatId(), "[Бот] Вы успешно выбрали аккаунт: " + user.playername);
+        AuthTG.bot.sendMessage(update.getCallbackQuery().getMessage().getChatId(), AuthTG.config.getString("message.telegram.accaccounts").replace("{PLAYER}", user.playername));
         AuthTG.bot.deleteMessage(update.getCallbackQuery().getMessage());
     }
 }

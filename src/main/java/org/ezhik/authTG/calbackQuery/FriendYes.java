@@ -17,11 +17,9 @@ public class FriendYes implements CallbackQueryHandler {
         User friendUser = User.getCurrentUser(update.getCallbackQuery().getMessage().getChatId());
         AuthTG.loader.addFriend(playerUser.uuid, friendUser.playername);
         AuthTG.loader.addFriend(friendUser.uuid, playerUser.playername);
-        playerUser.sendMessage("Вам добавили в друзья " + friendUser.playername);
-        friendUser.sendMessage("Вы добавили в друзья " + playerUser.playername);
-        if (playerUser.player != null) {
-            playerUser.player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&c&lAuthTG&f&l] &a&lВы добавили в друзья " + friendUser.playername));
-        }
+        playerUser.sendMessage(AuthTG.config.getString("messages.telegram.addfriendyes").replace("{PLAYER}", friendUser.playername));
+        friendUser.sendMessage(AuthTG.config.getString("messages.telegram.addfriendyessuccess").replace("{PLAYER}", playerUser.playername));
+        if (playerUser.player != null) playerUser.player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.addfriendyes").replace("{PLAYER}", friendUser.playername)));
         AuthTG.bot.deleteMessage(update.getCallbackQuery().getMessage());
     }
 }

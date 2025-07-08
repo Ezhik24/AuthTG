@@ -15,10 +15,8 @@ public class FriendNo implements CallbackQueryHandler {
         String[] args = update.getCallbackQuery().getData().toString().split("_");
         User playerUser = User.getUser(UUID.fromString(args[1]));
         User friendUser = User.getCurrentUser(update.getCallbackQuery().getMessage().getChatId());
-        friendUser.sendMessage("Вы успешно отклонили запрос дружбы от " + playerUser.playername);
-        if (playerUser.player != null) {
-            playerUser.player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&c&lAuthTG&f&l] &c&lВам отказали в дружбе"));
-        }
+        friendUser.sendMessage(AuthTG.config.getString("messages.telegram.addfriendnosuccess").replace("{PLAYER}", playerUser.playername));
+        if (playerUser.player != null) playerUser.player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.addfriendno")));
         AuthTG.bot.deleteMessage(update.getCallbackQuery().getMessage());
     }
 }

@@ -22,6 +22,6 @@ public class LoginAcceptedYes implements CallbackQueryHandler{
         AuthTG.bot.deleteMessage(update.getCallbackQuery().getMessage());
         Player player = Bukkit.getPlayer(user.playername);
         player.resetTitle();
-        player.sendMessage(ChatColor.translateAlternateColorCodes('&',"&f&l[&c&lAuthTG&f&l] &a&lУспешная авторизация"));
+        player.sendMessage(ChatColor.translateAlternateColorCodes('&',AuthTG.config.getString("messages.minecraft.loginsuccess")));
     }
 }

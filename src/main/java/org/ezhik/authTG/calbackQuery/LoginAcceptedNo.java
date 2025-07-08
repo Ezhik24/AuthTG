@@ -13,7 +13,7 @@ public class LoginAcceptedNo implements CallbackQueryHandler{
     public void execute(Update update) {
         String[] str = update.getCallbackQuery().getData().toString().split("_");
         User user = User.getUser(UUID.fromString(str[1]));
-        Handler.kick(user.playername, "Владелец отклонил вход в учетную запись");
+        Handler.kick(user.playername, AuthTG.config.getString("messages.minecraft.loginnosuccess"));
         AuthTG.bot.deleteMessage(update.getCallbackQuery().getMessage());
     }
 }
