@@ -1,0 +1,60 @@
+package org.ezhik.authTG.commandMC;
+
+import org.bukkit.ChatColor;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import org.ezhik.authTG.AuthTG;
+import org.ezhik.authTG.User;
+import org.ezhik.authTG.events.FreezerEvent;
+import org.ezhik.authTG.events.MuterEvent;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
+public class CodeCMD implements CommandExecutor {
+    public static Map<UUID, String> code = new HashMap<>();
+    @Override
+    public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
+        if (!(commandSender instanceof Player)) {
+            System.out.println(AuthTG.config.get("messages.console.notplayer"));
+            return false;
+        }
+        if (strings.length == 0) {
+            commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.codeusage")));
+            return false;
+        }
+        Player player = (Player) commandSender;
+        if (!strings[0].equals(code.get(player.getUniqueId()))) {
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&',AuthTG.config.getString("messages.minecraft.codeuncorect")));
+            return false;
+        }
+        if (AuthTG.config.getBoolean("authNecessarily")) {
+            FreezerEvent.unfreezeplayer(player.getName());
+            MuterEvent.unmute(player.getName());
+            player.resetTitle();
+        }
+        if (AuthTG.loader.getActiveTG(player.getUniqueId())) {
+            AuthTG.loader.setActiveTG(player.getUniqueId(), false);
+            AuthTG.loader.setTwofactor(player.getUniqueId(), false);
+            code.remove(player.getUniqueId());
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.codeunlink")));
+        } else {
+            AuthTG.loader.setActiveTG(player.getUniqueId(), true);
+            code.remove(player.getUniqueId());
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.codelink")));
+            if (AuthTG.config.getBoolean("notRegAndLogin")) {
+                player.resetTitle();
+                MuterEvent.unmute(player.getName());
+                FreezerEvent.unfreezeplayer(player.getName());
+                AuthTG.loader.setActive(player.getUniqueId(), true);
+                AuthTG.loader.setPlayerName(player.getUniqueId(), player.getName());
+            }
+            User user = User.getUser(player.getUniqueId());
+            user.sendMessage(AuthTG.config.getString("messages.telegram.codelinkplayer"));
+        }
+        return true;
+    }
+}
