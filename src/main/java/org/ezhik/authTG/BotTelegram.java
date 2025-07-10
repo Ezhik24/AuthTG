@@ -1,5 +1,7 @@
 package org.ezhik.authTG;
 
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.ezhik.authTG.calbackQuery.*;
 import org.ezhik.authTG.commandTG.*;
@@ -64,10 +66,25 @@ public class BotTelegram extends TelegramLongPollingBot {
         if (update.hasMessage()) {
             Long chatid = update.getMessage().getChatId();
             String command = update.getMessage().getText().toString();
-            if (command.startsWith("/")) {
+            if (nextStepHandler.containsKey(update.getMessage().getChatId())) nextStepHandler.get(chatid).execute(update);
+            else if (command.startsWith("/")) {
                 if (commandHandler.containsKey(command)) commandHandler.get(command).execute(update);
+            } else if (command.startsWith("#")) {
+                User user = User.getUser(AuthTG.loader.getCurrentUUID(chatid));
+                String message = command.substring(1);
+                if (user.activetg) {
+                    if (user.player != null) Handler.sendMCmessage(user.playername, message);
+                    else Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&',AuthTG.config.getString("messages.telegram.chatminecraft").replace("{PLAYER}", user.playername).replace("{MESSAGE}", message)));
+                } else this.sendMessage(chatid, AuthTG.config.getString("messages.telegram.chatminecraftnotactive"));
             } else {
-                if (nextStepHandler.containsKey(update.getMessage().getChatId())) nextStepHandler.get(chatid).execute(update);
+                User user = User.getUser(AuthTG.loader.getCurrentUUID(chatid));
+                if (user.activetg) {
+                    for (Long s : AuthTG.loader.getChatID()) {
+                        this.sendMessage(s, AuthTG.config.getString("messages.telegram.chatmessage").replace("{PLAYER}", user.playername).replace("{MESSAGE}", update.getMessage().getText().toString()));
+                    }
+                } else {
+                    this.sendMessage(chatid, AuthTG.config.getString("messages.telegram.chatmsgusernotactive"));
+                }
             }
             this.deleteMessage(update.getMessage());
         }

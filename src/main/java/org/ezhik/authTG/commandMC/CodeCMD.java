@@ -53,7 +53,7 @@ public class CodeCMD implements CommandExecutor {
                 AuthTG.loader.setPlayerName(player.getUniqueId(), player.getName());
             }
             User user = User.getUser(player.getUniqueId());
-            user.sendMessage("Вы успешно привязали аккаунт");
+            user.sendMessage(AuthTG.config.getString("messages.telegram.codelinkplayer"));
         }
         return true;
     }

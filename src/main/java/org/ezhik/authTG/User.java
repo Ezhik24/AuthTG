@@ -98,7 +98,7 @@ public class User {
     }
 
     public void sendMessage(String message) {
-        AuthTG.bot.sendMessage(this.chatid, AuthTG.config.getString("messages.telegram.prefix") + message);
+        AuthTG.bot.sendMessage(this.chatid, AuthTG.config.getString("messages.telegram.prefix").replace("{PLAYER}", this.playername) + message);
     }
 
     public void sendLoginAccepted(String message) {
