@@ -58,4 +58,14 @@ public interface Loader {
     UUID getUUIDbyPlayerName(String playername);
 
     void removeFriend(UUID uuid, String friend);
+
+    void setAdmin(UUID uuid);
+
+    void removeAdmin(UUID uuid);
+
+    Set<String> getAdminList();
+
+    List<String> getCommands(UUID uuid);
+
+    boolean isAdmin(UUID uuid);
 }

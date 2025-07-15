@@ -43,13 +43,15 @@ public class OnJoinEvent implements Listener {
         if (user != null && user.activetg) {
             user.sendMessage(AuthTG.config.getString("messages.telegram.joinacc"));
             List<String> list = AuthTG.loader.getListFriends(user.uuid);
-            for (String s : list) {
-                User user1 = User.getUser(s);
-                if (user1.activetg) {
-                    user1.sendMessage(AuthTG.config.getString("messages.telegram.friendjoin"));
-                } else {
-                    AuthTG.loader.removeFriend(user.uuid, s);
-                    AuthTG.loader.removeFriend(user1.uuid, user.playername);
+            if (list != null) {
+                for (String s : list) {
+                    User user1 = User.getUser(s);
+                    if (user1.activetg) {
+                        user1.sendMessage(AuthTG.config.getString("messages.telegram.friendjoin"));
+                    } else {
+                        AuthTG.loader.removeFriend(user.uuid, s);
+                        AuthTG.loader.removeFriend(user1.uuid, user.playername);
+                    }
                 }
             }
         } else {

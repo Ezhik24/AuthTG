@@ -31,7 +31,7 @@ public class AccountsCMDHandler implements CommandHandler{
             players.setKeyboard(keyboard);
             SendMessage sendMessage = new SendMessage();
             sendMessage.setChatId(update.getMessage().getChatId());
-            sendMessage.setText(AuthTG.config.getString("message.telegram.accountschange"));
+            sendMessage.setText(AuthTG.config.getString("messages.telegram.accountschange"));
             sendMessage.setReplyMarkup(players);
             try {
                 AuthTG.bot.execute(sendMessage);

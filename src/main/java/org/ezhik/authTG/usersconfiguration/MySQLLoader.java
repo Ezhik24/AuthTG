@@ -39,6 +39,7 @@ public class MySQLLoader implements Loader {
                     + "firstname varchar(120),"
                     + "lastname varchar(120),"
                     + "currentUUID BOOLEAN NOT NULL DEFAULT false,"
+                    + "admin BOOLEAN NOT NULL DEFAULT false,"
                     + "PRIMARY KEY (priKey))"
             );
             st.executeUpdate(
@@ -46,6 +47,13 @@ public class MySQLLoader implements Loader {
                     + "priKey INT NOT NULL AUTO_INCREMENT,"
                     + "uuid varchar(36) NOT NULL,"
                     + "friend varchar(120) NOT NULL,"
+                    + "PRIMARY KEY (priKey))"
+            );
+            st.executeUpdate(
+                    "CREATE TABLE IF NOT EXISTS AuthTGCommands ("
+                    + "priKey INT NOT NULL AUTO_INCREMENT,"
+                    + "uuid varchar(36) NOT NULL,"
+                    + "command varchar(30) NOT NULL,"
                     + "PRIMARY KEY (priKey))"
             );
             conn.close();
@@ -556,5 +564,111 @@ public class MySQLLoader implements Loader {
         } catch (SQLException e) {
             System.out.println("SQLException: " + e.getMessage());
         }
+    }
+
+    @Override
+    public void setAdmin(UUID uuid) {
+        try {
+            conn = DriverManager.getConnection(
+                    "jdbc:mysql://" + this.host + "/" + this.database,
+                    this.username,
+                    this.password
+            );
+            st = conn.createStatement();
+            st.executeUpdate(
+                    "UPDATE AuthTGUsers SET admin = true WHERE uuid = '" + uuid.toString() + "'"
+            );
+            conn.close();
+        } catch (SQLException e) {
+            System.out.println("SQLException: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public void removeAdmin(UUID uuid) {
+        try {
+            conn = DriverManager.getConnection(
+                    "jdbc:mysql://" + this.host + "/" + this.database,
+                    this.username,
+                    this.password
+            );
+            st = conn.createStatement();
+            st.executeUpdate(
+                    "UPDATE AuthTGUsers SET admin = false WHERE uuid = '" + uuid.toString() + "'"
+            );
+            conn.close();
+        } catch (SQLException e) {
+            System.out.println("SQLException: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public Set<String> getAdminList() {
+        try {
+            conn = DriverManager.getConnection(
+                    "jdbc:mysql://" + this.host + "/" + this.database,
+                    this.username,
+                    this.password
+            );
+            st = conn.createStatement();
+            rs = st.executeQuery(
+                    "SELECT playername FROM AuthTGUsers WHERE admin = true"
+            );
+            Set<String> set = new HashSet<>();
+            while (rs.next()) {
+                set.add(rs.getString("playername"));
+            }
+            conn.close();
+            return set;
+        } catch (SQLException e) {
+            System.out.println("SQLException: " + e.getMessage());
+        }
+        return null;
+    }
+
+    @Override
+    public List<String> getCommands(UUID uuid) {
+        try {
+            conn = DriverManager.getConnection(
+                    "jdbc:mysql://" + this.host + "/" + this.database,
+                    this.username,
+                    this.password
+            );
+            st = conn.createStatement();
+            rs = st.executeQuery(
+                    "SELECT command FROM AuthTGCommands WHERE uuid = '" + uuid.toString() + "'"
+            );
+            List<String> list = new ArrayList<>();
+            while (rs.next()) {
+                list.add(rs.getString("command"));
+            }
+            conn.close();
+            return list;
+        } catch (SQLException e) {
+            System.out.println("SQLException: " + e.getMessage());
+        }
+        return null;
+    }
+
+    @Override
+    public boolean isAdmin(UUID uuid) {
+        try {
+            conn = DriverManager.getConnection(
+                    "jdbc:mysql://" + this.host + "/" + this.database,
+                    this.username,
+                    this.password
+            );
+            st = conn.createStatement();
+            rs = st.executeQuery(
+                    "SELECT admin FROM AuthTGUsers WHERE uuid = '" + uuid.toString() + "'"
+            );
+            if (rs.next()) {
+                return rs.getBoolean("admin");
+            }
+            conn.close();
+        } catch (SQLException e) {
+            System.out.println("SQLException: " + e.getMessage());
+        }
+        return false;
     }
 }

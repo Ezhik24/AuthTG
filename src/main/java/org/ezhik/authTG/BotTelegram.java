@@ -40,6 +40,7 @@ public class BotTelegram extends TelegramLongPollingBot {
         commandHandler.put("/unlink", new UnLinkCMDHandler());
         commandHandler.put("/kickme", new KickMeCMDHandler());
         commandHandler.put("/friends", new FriendCMDHandler());
+        commandHandler.put("/kick", new KickCMDHandler());
         callbackQueryHandler.put("ys", new LoginAcceptedYes());
         callbackQueryHandler.put("no", new LoginAcceptedNo());
         callbackQueryHandler.put("acc", new AccAccounts());
@@ -68,7 +69,8 @@ public class BotTelegram extends TelegramLongPollingBot {
             String command = update.getMessage().getText().toString();
             if (nextStepHandler.containsKey(update.getMessage().getChatId())) nextStepHandler.get(chatid).execute(update);
             else if (command.startsWith("/")) {
-                if (commandHandler.containsKey(command)) commandHandler.get(command).execute(update);
+                String[] str = command.split(" ");
+                if (commandHandler.containsKey(str[0])) commandHandler.get(str[0]).execute(update);
             } else if (command.startsWith("#")) {
                 User user = User.getUser(AuthTG.loader.getCurrentUUID(chatid));
                 String message = command.substring(1);

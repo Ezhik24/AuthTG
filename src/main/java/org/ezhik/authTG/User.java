@@ -29,6 +29,8 @@ public class User {
     public  UUID uuid;
     public String playername;
     public List<String > friends;
+    public boolean isadmin;
+    public List<String> commands;
 
     private User(UUID uuid) {
         this.uuid = uuid;
@@ -42,6 +44,8 @@ public class User {
         this.username = AuthTG.loader.getUserName(uuid);
         this.friends = AuthTG.loader.getListFriends(uuid);
         this.chatid = AuthTG.loader.getChatID(uuid);
+        this.isadmin = AuthTG.loader.isAdmin(uuid);
+        this.commands = AuthTG.loader.getCommands(uuid);
     }
 
     public static String generateConfirmationCode() {
