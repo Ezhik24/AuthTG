@@ -6,9 +6,9 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.ezhik.authTG.AuthTG;
-import org.ezhik.authTG.Handler;
+import org.ezhik.authTG.handlers.AuthHandler;
+import org.ezhik.authTG.handlers.Handler;
 import org.ezhik.authTG.User;
-import org.ezhik.authTG.usersconfiguration.Loader;
 
 import java.util.List;
 
@@ -22,6 +22,7 @@ public class OnJoinEvent implements Listener {
         if (p.getName().length() < AuthTG.config.getInt("minLenghtNickname") || p.getName().length() > AuthTG.config.getInt("maxLenghtNickname")) {
             Handler.kick(p.getName(), ChatColor.translateAlternateColorCodes('&',AuthTG.config.getString("messages.minecraft.nicknamelenght").replace("{MIN}", String.valueOf(AuthTG.config.getInt("minLenghtNickname"))).replace("{MAX}", String.valueOf(AuthTG.config.getInt("maxLenghtNickname")))));
         }
+        AuthHandler.setTimeout(p.getUniqueId(), AuthTG.config.getInt("kickTimeout"));
         if (AuthTG.config.getBoolean("notRegAndLogin")) {
             if (user != null && user.activetg) {
                 MuterEvent.mute(p.getName(), ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.joininaccounttext")));
@@ -47,7 +48,7 @@ public class OnJoinEvent implements Listener {
                 for (String s : list) {
                     User user1 = User.getUser(s);
                     if (user1.activetg) {
-                        user1.sendMessage(AuthTG.config.getString("messages.telegram.friendjoin"));
+                        user1.sendMessage(AuthTG.config.getString("messages.telegram.friendjoin").replace("{PLAYER}", user.playername));
                     } else {
                         AuthTG.loader.removeFriend(user.uuid, s);
                         AuthTG.loader.removeFriend(user1.uuid, user.playername);

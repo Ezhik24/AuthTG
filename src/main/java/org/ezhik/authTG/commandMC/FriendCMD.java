@@ -1,12 +1,10 @@
 package org.ezhik.authTG.commandMC;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.checkerframework.checker.units.qual.A;
 import org.ezhik.authTG.AuthTG;
 import org.ezhik.authTG.User;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -16,18 +14,17 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 public class FriendCMD implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
-        Player player;
-        User user;
         User friendUser;
         if (!(commandSender instanceof Player)) {
             System.out.println(AuthTG.config.get("messages.console.notplayer"));
             return false;
         }
+        Player player = (Player) commandSender;
+        User user = User.getUser(player.getUniqueId());
         if (strings.length == 0) {
             commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.friendusage")));
             return false;
@@ -37,8 +34,6 @@ public class FriendCMD implements CommandExecutor {
                 commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.friendaddusage")));
                 return false;
             }
-            player = (Player) commandSender;
-            user = User.getUser(player.getUniqueId());
             friendUser = User.getUser(strings[1]);
             if (player.getName().equals(strings[1])) {
                 commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.friendself")));
@@ -82,8 +77,6 @@ public class FriendCMD implements CommandExecutor {
             }
         }
         if (strings[0].equals("list")) {
-            player = (Player) commandSender;
-            user = User.getUser(player.getUniqueId());
             if (!user.activetg) {
                 player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.friendtellnotg")));
                 return false;
@@ -92,14 +85,11 @@ public class FriendCMD implements CommandExecutor {
                 player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.friendtellnofriends")));
                 return false;
             }
-            player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.friendtelllist")));
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.friendlist")));
             for (String fr : user.friends) {
                 friendUser = User.getUser(fr);
-                if (friendUser.player != null) {
-                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.friendtelllistonline").replace("{PLAYER}", fr)));
-                } else {
-                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.friendtelllistoffline").replace("{PLAYER}", fr)));
-                }
+                if (friendUser.player != null) player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.friendlistonline").replace("{PLAYER}", fr)));
+                else player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.friendlistoffline").replace("{PLAYER}", fr)));
             }
         }
         if (strings[0].equals("rem")) {
@@ -107,8 +97,6 @@ public class FriendCMD implements CommandExecutor {
                 commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.friendremusage")));
                 return false;
             }
-            player = (Player) commandSender;
-            user = User.getUser(player.getUniqueId());
             if (!user.activetg) {
                 player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.friendremnotg")));
                 return false;
@@ -132,8 +120,6 @@ public class FriendCMD implements CommandExecutor {
                 commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.friendtellusage")));
                 return false;
             }
-            player = (Player) commandSender;
-            user = User.getUser(player.getUniqueId());
             if (!user.activetg) {
                 commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.friendtellnotg")));
                 return false;

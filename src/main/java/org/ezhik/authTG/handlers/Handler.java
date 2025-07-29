@@ -1,4 +1,4 @@
-package org.ezhik.authTG;
+package org.ezhik.authTG.handlers;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;

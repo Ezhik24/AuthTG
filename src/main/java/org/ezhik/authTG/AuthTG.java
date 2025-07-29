@@ -6,6 +6,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.ezhik.authTG.commandMC.*;
 import org.ezhik.authTG.events.*;
+import org.ezhik.authTG.handlers.*;
 import org.ezhik.authTG.migrates.MySQLMigrate;
 import org.ezhik.authTG.migrates.YAMLMigrate;
 import org.ezhik.authTG.usersconfiguration.Loader;
@@ -41,6 +42,8 @@ public final class AuthTG extends JavaPlugin {
         Bukkit.getServer().getPluginManager().registerEvents(new BlockDropBEvent(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new PlayerJoinAnotherEvent(), this);
         Handler handler = new Handler();
+        AuthHandler authHandler = new AuthHandler();
+        authHandler.runTaskTimer(this, 0, 20);
         handler.runTaskTimer(this, 0, 1);
         if (getConfig().getConfigurationSection("mysql").getBoolean("use")) {
             ConfigurationSection mysql = getConfig().getConfigurationSection("mysql");

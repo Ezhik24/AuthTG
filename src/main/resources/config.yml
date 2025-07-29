@@ -15,6 +15,7 @@ minLenghtNickname: 3 # Минимальная длина ника EN: Min length
 maxLenghtNickname: 15 # Максимальная длина ника EN: Max length nickname
 minLenghtPassword: 3 # Минимальная длина пароля EN: Min length password
 maxLenghtPassword: 32 # Максимальная длина пароля EN: Max length password
+kickTimeout: 30 # Время в секундах, через которое игрок будет кикнут если не авторизовался EN: Time in seconds, after which the player will be kicked if not authorized
 spawnLocation: null # Спавн EN: Spawn
 messages: # Сообщения EN: Messages
   console: # Консольные сообщения EN: Console messages

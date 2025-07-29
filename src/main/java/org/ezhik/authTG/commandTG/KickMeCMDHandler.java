@@ -1,7 +1,7 @@
 package org.ezhik.authTG.commandTG;
 
 import org.ezhik.authTG.AuthTG;
-import org.ezhik.authTG.Handler;
+import org.ezhik.authTG.handlers.Handler;
 import org.ezhik.authTG.User;
 import org.telegram.telegrambots.meta.api.objects.Update;
 

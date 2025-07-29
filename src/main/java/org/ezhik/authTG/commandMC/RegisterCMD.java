@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 import org.ezhik.authTG.AuthTG;
 import org.ezhik.authTG.events.FreezerEvent;
 import org.ezhik.authTG.events.MuterEvent;
+import org.ezhik.authTG.handlers.AuthHandler;
 
 public class RegisterCMD implements CommandExecutor {
     @Override
@@ -50,6 +51,7 @@ public class RegisterCMD implements CommandExecutor {
             FreezerEvent.unfreezeplayer(player.getName());
             MuterEvent.unmute(player.getName());
             player.resetTitle();
+            AuthHandler.removeTimeout(player.getUniqueId());
         }
         return true;
     }
