@@ -74,7 +74,7 @@ public class BotTelegram extends TelegramLongPollingBot {
                 String message = command.substring(1);
                 if (user.activetg) {
                     if (user.player != null) Handler.sendMCmessage(user.playername, message);
-                    else Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&',AuthTG.config.getString("messages.telegram.chatminecraft").replace("{PLAYER}", user.playername).replace("{MESSAGE}", message)));
+                    else Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&',AuthTG.config.getString("messages.minecraft.chatminecraft").replace("{PLAYER}", user.playername).replace("{MESSAGE}", message)));
                 } else this.sendMessage(chatid, AuthTG.config.getString("messages.telegram.chatminecraftnotactive"));
             } else {
                 User user = User.getUser(AuthTG.loader.getCurrentUUID(chatid));

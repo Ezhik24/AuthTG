@@ -18,15 +18,19 @@ import java.util.List;
 public class FriendCMD implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
-        User friendUser;
         if (!(commandSender instanceof Player)) {
             System.out.println(AuthTG.config.get("messages.console.notplayer"));
             return false;
         }
+        User friendUser;
         Player player = (Player) commandSender;
         User user = User.getUser(player.getUniqueId());
         if (strings.length == 0) {
             commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.friendusage")));
+            return false;
+        }
+        if (!user.activetg) {
+            commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.friendnotg")));
             return false;
         }
         if (strings[0].equals("add")) {
@@ -37,10 +41,6 @@ public class FriendCMD implements CommandExecutor {
             friendUser = User.getUser(strings[1]);
             if (player.getName().equals(strings[1])) {
                 commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.friendself")));
-                return false;
-            }
-            if (!user.activetg) {
-                commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.friendnottg")));
                 return false;
             }
             if (friendUser == null) {
@@ -56,9 +56,9 @@ public class FriendCMD implements CommandExecutor {
             List<InlineKeyboardButton> colkeyb = new ArrayList<>();
             InlineKeyboardButton yesbtn = new InlineKeyboardButton();
             InlineKeyboardButton nobtn = new InlineKeyboardButton();
-            yesbtn.setText(AuthTG.config.getString("messages.minecraft.friendaddyes"));
+            yesbtn.setText(AuthTG.config.getString("messages.telegram.friendaddyes"));
             yesbtn.setCallbackData("addfrys_" + player.getUniqueId());
-            nobtn.setText(AuthTG.config.getString("messages.minecraft.friendaddno"));
+            nobtn.setText(AuthTG.config.getString("messages.telegram.friendaddno"));
             nobtn.setCallbackData("addfrno_" + player.getUniqueId());
             colkeyb.add(yesbtn);
             colkeyb.add(nobtn);
@@ -77,10 +77,6 @@ public class FriendCMD implements CommandExecutor {
             }
         }
         if (strings[0].equals("list")) {
-            if (!user.activetg) {
-                player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.friendtellnotg")));
-                return false;
-            }
             if (user.friends == null) {
                 player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.friendtellnofriends")));
                 return false;
@@ -95,10 +91,6 @@ public class FriendCMD implements CommandExecutor {
         if (strings[0].equals("rem")) {
             if (strings.length != 2) {
                 commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.friendremusage")));
-                return false;
-            }
-            if (!user.activetg) {
-                player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.friendremnotg")));
                 return false;
             }
             if (user.friends == null) {
@@ -118,10 +110,6 @@ public class FriendCMD implements CommandExecutor {
         if (strings[0].equals("tell")) {
             if (strings.length != 3) {
                 commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.friendtellusage")));
-                return false;
-            }
-            if (!user.activetg) {
-                commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.friendtellnotg")));
                 return false;
             }
             if (user.friends == null) {
