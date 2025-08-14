@@ -67,5 +67,9 @@ public interface Loader {
 
     List<String> getCommands(UUID uuid);
 
+    void addCommand(UUID uuid, String command);
+
+    void removeCommand(UUID uuid, String command);
+
     boolean isAdmin(UUID uuid);
 }

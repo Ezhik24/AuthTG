@@ -548,6 +548,54 @@ public class YAMLLoader implements Loader{
     }
 
     @Override
+    public void addCommand(UUID uuid, String command) {
+        File file = new File("plugins/AuthTG/users/" + uuid + ".yml");
+        YamlConfiguration config = new YamlConfiguration();
+        try {
+            config.load(file);
+        } catch (IOException e) {
+            System.out.println("Error loading file " + e);
+        } catch (InvalidConfigurationException e) {
+            System.out.println("Error loading file " + e);
+        }
+        if (!config.contains("commands")) {
+            List<String> list = new ArrayList<>();
+            list.add(command);
+            config.set("commands", list);
+        } else {
+            List<String> list = config.getStringList("commands");
+            list.add(command);
+            config.set("commands", list);
+        }
+        try {
+            config.save(file);
+        } catch (IOException e) {
+            System.out.println("Error saving file: " + e);
+        }
+    }
+
+    @Override
+    public void removeCommand(UUID uuid, String command) {
+        File file = new File("plugins/AuthTG/users/" + uuid + ".yml");
+        YamlConfiguration config = new YamlConfiguration();
+        try {
+            config.load(file);
+        } catch (IOException e) {
+            System.out.println("Error loading file " + e);
+        } catch (InvalidConfigurationException e) {
+            System.out.println("Error loading file " + e);
+        }
+        List<String> list = config.getStringList("commands");
+        list.remove(command);
+        config.set("commands", list);
+        try {
+            config.save(file);
+        } catch (IOException e) {
+            System.out.println("Error saving file: " + e);
+        }
+    }
+
+    @Override
     public boolean isAdmin(UUID uuid) {
         return adminlist.containsKey(getPlayerName(uuid));
     }

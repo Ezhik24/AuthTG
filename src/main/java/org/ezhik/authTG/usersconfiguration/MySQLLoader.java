@@ -651,6 +651,42 @@ public class MySQLLoader implements Loader {
     }
 
     @Override
+    public void addCommand(UUID uuid, String command) {
+        try {
+            conn = DriverManager.getConnection(
+                    "jdbc:mysql://" + this.host + "/" + this.database,
+                    this.username,
+                    this.password
+            );
+            st = conn.createStatement();
+            st.executeUpdate(
+                    "INSERT INTO AuthTGCommands(uuid, command) VALUES ('" + uuid.toString() + "', '" + command + "')"
+            );
+            conn.close();
+        } catch (SQLException e) {
+            System.out.println("SQLException: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public void removeCommand(UUID uuid, String command) {
+        try {
+            conn = DriverManager.getConnection(
+                    "jdbc:mysql://" + this.host + "/" + this.database,
+                    this.username,
+                    this.password
+            );
+            st = conn.createStatement();
+            st.executeUpdate(
+                    "DELETE FROM AuthTGCommands WHERE uuid = '" + uuid.toString() + "' AND command = '" + command + "'"
+            );
+            conn.close();
+        } catch (SQLException e) {
+            System.out.println("SQLException: " + e.getMessage());
+        }
+    }
+
+    @Override
     public boolean isAdmin(UUID uuid) {
         try {
             conn = DriverManager.getConnection(
