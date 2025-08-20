@@ -1,5 +1,6 @@
 package org.ezhik.authTG.usersconfiguration;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -72,4 +73,17 @@ public interface Loader {
     void removeCommand(UUID uuid, String command);
 
     boolean isAdmin(UUID uuid);
+
+    void setBanTime(UUID uuid, String dateBan, String reason, String time, String admin);
+
+    String getBanTime(UUID uuid);
+
+    String getBanReason(UUID uuid);
+
+    void deleteBan(UUID uuid);
+
+    boolean isBanned(UUID uuid);
+
+
+
 }

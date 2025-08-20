@@ -39,6 +39,7 @@ public class BotTelegram extends TelegramLongPollingBot {
         commandHandler.put("/kickme", new KickMeCMDHandler());
         commandHandler.put("/friends", new FriendCMDHandler());
         commandHandler.put("/kick", new KickCMDHandler());
+        commandHandler.put("/ban", new BanCMDHandler());
         callbackQueryHandler.put("ys", new LoginAcceptedYes());
         callbackQueryHandler.put("no", new LoginAcceptedNo());
         callbackQueryHandler.put("acc", new AccAccounts());

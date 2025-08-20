@@ -10,6 +10,10 @@ import org.ezhik.authTG.handlers.AuthHandler;
 import org.ezhik.authTG.handlers.Handler;
 import org.ezhik.authTG.User;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.List;
 
 public class OnJoinEvent implements Listener {
@@ -19,6 +23,12 @@ public class OnJoinEvent implements Listener {
         if (AuthTG.config.getLocation("spawnLocation") != null) p.teleport(AuthTG.config.getLocation("spawnLocation"));
         FreezerEvent.freezeplayer(p.getName());
         User user = User.getUser(p.getUniqueId());
+        LocalDateTime date = LocalDateTime.now();
+        if (AuthTG.loader.getBanTime(p.getUniqueId()) != null) {
+            LocalDateTime date1 = LocalDateTime.parse(AuthTG.loader.getBanTime(p.getUniqueId()), DateTimeFormatter.ofPattern("HH:mm:ss dd.MM.yyyy"));
+            if (date.isAfter(date1)) AuthTG.loader.deleteBan(p.getUniqueId());
+            else Handler.kick(p.getName(), ChatColor.translateAlternateColorCodes('&',  "Бан: " + AuthTG.loader.getBanReason(p.getUniqueId()) + " " + AuthTG.loader.getBanTime(p.getUniqueId())));
+        }
         if (p.getName().length() < AuthTG.config.getInt("minLenghtNickname") || p.getName().length() > AuthTG.config.getInt("maxLenghtNickname")) {
             Handler.kick(p.getName(), ChatColor.translateAlternateColorCodes('&',AuthTG.config.getString("messages.minecraft.nicknamelenght").replace("{MIN}", String.valueOf(AuthTG.config.getInt("minLenghtNickname"))).replace("{MAX}", String.valueOf(AuthTG.config.getInt("maxLenghtNickname")))));
         }

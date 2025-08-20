@@ -3,7 +3,13 @@ package org.ezhik.authTG.usersconfiguration;
 import org.ezhik.authTG.PasswordHasher;
 
 import java.sql.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.Date;
 
 public class MySQLLoader implements Loader {
     private String database;
@@ -54,6 +60,16 @@ public class MySQLLoader implements Loader {
                     + "priKey INT NOT NULL AUTO_INCREMENT,"
                     + "uuid varchar(36) NOT NULL,"
                     + "command varchar(30) NOT NULL,"
+                    + "PRIMARY KEY (priKey))"
+            );
+            st.executeUpdate(
+                    "CREATE TABLE IF NOT EXISTS AuthTGBans ("
+                    + "priKey INT NOT NULL AUTO_INCREMENT,"
+                    + "uuid varchar(36) NOT NULL,"
+                    + "timeBan varchar(64) NOT NULL,"
+                    + "reason varchar(120) NOT NULL,"
+                    + "time varchar(36) NOT NULL,"
+                    + "admin varchar(90) NOT NULL,"
                     + "PRIMARY KEY (priKey))"
             );
             conn.close();
@@ -702,6 +718,104 @@ public class MySQLLoader implements Loader {
                 return rs.getBoolean("admin");
             }
             conn.close();
+        } catch (SQLException e) {
+            System.out.println("SQLException: " + e.getMessage());
+        }
+        return false;
+    }
+
+    @Override
+    public void setBanTime(UUID uuid, String dateBan, String reason, String time, String admin) {
+        try {
+            conn = DriverManager.getConnection(
+                    "jdbc:mysql://" + this.host + "/" + this.database,
+                    this.username,
+                    this.password
+            );
+            st = conn.createStatement();
+            st.executeUpdate(
+                    "INSERT INTO AuthTGBans(uuid, timeBan, reason, time, admin) VALUES ('" + uuid.toString() + "', '" + dateBan + "', '" + reason + "', '" + time + "', '" + admin + "')"
+            );
+            conn.close();
+        } catch (SQLException e) {
+            System.out.println("SQLException: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public String getBanTime(UUID uuid) {
+        try {
+            conn = DriverManager.getConnection(
+                    "jdbc:mysql://" + this.host + "/" + this.database,
+                    this.username,
+                    this.password
+            );
+            st = conn.createStatement();
+            rs = st.executeQuery(
+                    "SELECT timeBan FROM AuthTGBans WHERE uuid = '" + uuid.toString() + "'"
+            );
+            if (rs.next()) {
+                return rs.getString("timeBan");
+            }
+        } catch (SQLException e) {
+            System.out.println("SQLException: " + e.getMessage());
+        }
+        return null;
+    }
+
+    @Override
+    public String getBanReason(UUID uuid) {
+        try {
+            conn = DriverManager.getConnection(
+                    "jdbc:mysql://" + this.host + "/" + this.database,
+                    this.username,
+                    this.password
+            );
+            st = conn.createStatement();
+            rs = st.executeQuery(
+                    "SELECT reason FROM AuthTGBans WHERE uuid = '" + uuid.toString() + "'"
+            );
+            if (rs.next()) {
+                return rs.getString("reason");
+            }
+        } catch (SQLException e) {
+            System.out.println("SQLException: " + e.getMessage());
+        }
+        return null;
+    }
+
+    @Override
+    public void deleteBan(UUID uuid) {
+        try {
+            conn = DriverManager.getConnection(
+                    "jdbc:mysql://" + this.host + "/" + this.database,
+                    this.username,
+                    this.password
+            );
+            st = conn.createStatement();
+            st.executeUpdate(
+                    "DELETE FROM AuthTGBans WHERE uuid = '" + uuid.toString() + "'"
+            );
+        } catch (SQLException e) {
+            System.out.println("SQLException: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public boolean isBanned(UUID uuid) {
+        try {
+            conn = DriverManager.getConnection(
+                    "jdbc:mysql://" + this.host + "/" + this.database,
+                    this.username,
+                    this.password
+            );
+            st = conn.createStatement();
+            rs = st.executeQuery(
+                    "SELECT uuid FROM AuthTGBans WHERE uuid = '" + uuid.toString() + "'"
+            );
+            if (rs.next()) {
+                return true;
+            }
         } catch (SQLException e) {
             System.out.println("SQLException: " + e.getMessage());
         }

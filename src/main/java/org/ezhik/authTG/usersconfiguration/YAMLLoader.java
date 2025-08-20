@@ -7,6 +7,11 @@ import org.ezhik.authTG.PasswordHasher;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.List;
 
@@ -598,5 +603,96 @@ public class YAMLLoader implements Loader{
     @Override
     public boolean isAdmin(UUID uuid) {
         return adminlist.containsKey(getPlayerName(uuid));
+    }
+
+    @Override
+    public void setBanTime(UUID uuid, String dateBan, String reason, String time, String admin) {
+        File file = new File("plugins/AuthTG/users/" + uuid + ".yml");
+        YamlConfiguration config = new YamlConfiguration();
+        try {
+            config.load(file);
+        } catch (IOException e) {
+            System.out.println("Error loading file " + e);
+        } catch (InvalidConfigurationException e) {
+            System.out.println("Error loading file " + e);
+        }
+        config.set("ban.timeBan", dateBan);
+        config.set("ban.reason", reason);
+        config.set("ban.time", time);
+        config.set("ban.admin", admin);
+        try {
+            config.save(file);
+        } catch (IOException e) {
+            System.out.println("Error saving file: " + e);
+        }
+    }
+
+    @Override
+    public String getBanTime(UUID uuid) {
+        File file = new File("plugins/AuthTG/users/" + uuid + ".yml");
+        YamlConfiguration config = new YamlConfiguration();
+        try {
+            config.load(file);
+        } catch (IOException e) {
+            return null;
+        } catch (InvalidConfigurationException e) {
+            return null;
+        }
+        if (config.contains("ban.timeBan")) {
+            return config.getString("ban.timeBan");
+
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public String getBanReason(UUID uuid) {
+        File file = new File("plugins/AuthTG/users/" + uuid + ".yml");
+        YamlConfiguration config = new YamlConfiguration();
+        try {
+            config.load(file);
+        } catch (IOException e) {
+            System.out.println("Error loading file " + e);
+        } catch (InvalidConfigurationException e) {
+            System.out.println("Error loading file " + e);
+        }
+        return config.getString("ban.reason");
+    }
+
+    @Override
+    public void deleteBan(UUID uuid) {
+        File file = new File("plugins/AuthTG/users/" + uuid + ".yml");
+        YamlConfiguration config = new YamlConfiguration();
+        try {
+            config.load(file);
+        } catch (IOException e) {
+            System.out.println("Error loading file " + e);
+        } catch (InvalidConfigurationException e) {
+            System.out.println("Error loading file " + e);
+        }
+        config.set("ban", null);
+        try {
+            config.save(file);
+        } catch (IOException e) {
+            System.out.println("Error saving file: " + e);
+        }
+    }
+
+    @Override
+    public boolean isBanned(UUID uuid) {
+        File file = new File("plugins/AuthTG/users/" + uuid + ".yml");
+        YamlConfiguration config = new YamlConfiguration();
+        try {
+            config.load(file);
+        } catch (IOException e) {
+            System.out.println("Error loading file " + e);
+        } catch (InvalidConfigurationException e) {
+            System.out.println("Error loading file " + e);
+        }
+        if (config.contains("ban")) {
+            return true;
+        }
+        return false;
     }
 }
