@@ -25,9 +25,13 @@ public class OnJoinEvent implements Listener {
         User user = User.getUser(p.getUniqueId());
         LocalDateTime date = LocalDateTime.now();
         if (AuthTG.loader.getBanTime(p.getUniqueId()) != null) {
+            if (AuthTG.loader.getBanTime(p.getUniqueId()).equals("0")) {
+                Handler.kick(p.getName(), ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.ban")).replace("{REASON}", AuthTG.loader.getBanReason(p.getUniqueId())).replace("{TIMEBAN}", "навсегда").replace("{TIME}",AuthTG.loader.getBanTimeAdmin(p.getUniqueId())).replace("{ADMIN}", AuthTG.loader.getBanAdmin(p.getUniqueId())).replace("{BR}", "\n"));
+                return;
+            }
             LocalDateTime date1 = LocalDateTime.parse(AuthTG.loader.getBanTime(p.getUniqueId()), DateTimeFormatter.ofPattern("HH:mm:ss dd.MM.yyyy"));
             if (date.isAfter(date1)) AuthTG.loader.deleteBan(p.getUniqueId());
-            else Handler.kick(p.getName(), ChatColor.translateAlternateColorCodes('&',  "Бан: " + AuthTG.loader.getBanReason(p.getUniqueId()) + " " + AuthTG.loader.getBanTime(p.getUniqueId())));
+            else Handler.kick(p.getName(), ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.ban")).replace("{REASON}", AuthTG.loader.getBanReason(p.getUniqueId())).replace("{TIMEBAN}", AuthTG.loader.getBanTime(p.getUniqueId())).replace("{TIME}",AuthTG.loader.getBanTimeAdmin(p.getUniqueId())).replace("{ADMIN}", AuthTG.loader.getBanAdmin(p.getUniqueId())).replace("{BR}", "\n"));
         }
         if (p.getName().length() < AuthTG.config.getInt("minLenghtNickname") || p.getName().length() > AuthTG.config.getInt("maxLenghtNickname")) {
             Handler.kick(p.getName(), ChatColor.translateAlternateColorCodes('&',AuthTG.config.getString("messages.minecraft.nicknamelenght").replace("{MIN}", String.valueOf(AuthTG.config.getInt("minLenghtNickname"))).replace("{MAX}", String.valueOf(AuthTG.config.getInt("maxLenghtNickname")))));

@@ -1,8 +1,11 @@
 package org.ezhik.authTG.usersconfiguration;
 
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import org.ezhik.authTG.PasswordHasher;
+import org.ezhik.authTG.events.MuterEvent;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -661,6 +664,34 @@ public class YAMLLoader implements Loader{
     }
 
     @Override
+    public String getBanAdmin(UUID uuid) {
+        File file = new File("plugins/AuthTG/users/" + uuid + ".yml");
+        YamlConfiguration config = new YamlConfiguration();
+        try {
+            config.load(file);
+        } catch (IOException e) {
+            System.out.println("Error loading file " + e);
+        } catch (InvalidConfigurationException e) {
+            System.out.println("Error loading file " + e);
+        }
+        return config.getString("ban.admin");
+    }
+
+    @Override
+    public String getBanTimeAdmin(UUID uuid) {
+        File file = new File("plugins/AuthTG/users/" + uuid + ".yml");
+        YamlConfiguration config = new YamlConfiguration();
+        try {
+            config.load(file);
+        } catch (IOException e) {
+            System.out.println("Error loading file " + e);
+        } catch (InvalidConfigurationException e) {
+            System.out.println("Error loading file " + e);
+        }
+        return config.getString("ban.time");
+    }
+
+    @Override
     public void deleteBan(UUID uuid) {
         File file = new File("plugins/AuthTG/users/" + uuid + ".yml");
         YamlConfiguration config = new YamlConfiguration();
@@ -694,5 +725,145 @@ public class YAMLLoader implements Loader{
             return true;
         }
         return false;
+    }
+
+    @Override
+    public void setMuteTime(UUID uuid, String dateMute, String reason, String time, String admin) {
+        File file = new File("plugins/AuthTG/users/" + uuid + ".yml");
+        YamlConfiguration config = new YamlConfiguration();
+        try {
+            config.load(file);
+        } catch (IOException e) {
+            System.out.println("Error loading file " + e);
+        } catch (InvalidConfigurationException e) {
+            System.out.println("Error loading file " + e);
+        }
+        config.set("mute.timeMute", dateMute);
+        config.set("mute.reason", reason);
+        config.set("mute.time", time);
+        config.set("mute.admin", admin);
+        List<Object> list = new ArrayList<>();
+        LocalDateTime parsedDate = LocalDateTime.parse(dateMute, DateTimeFormatter.ofPattern("HH:mm:ss dd.MM.yyyy"));
+        list.add(0, parsedDate);
+        list.add(1, reason);
+        MuterEvent.muteChat(config.getString("playername"), list);
+        try {
+            config.save(file);
+        } catch (IOException e) {
+            System.out.println("Error saving file: " + e);
+        }
+    }
+
+    @Override
+    public String getMuteTime(UUID uuid) {
+        File file = new File("plugins/AuthTG/users/" + uuid + ".yml");
+        YamlConfiguration config = new YamlConfiguration();
+        try {
+            config.load(file);
+        } catch (IOException e) {
+            System.out.println("Error loading file " + e);
+        } catch (InvalidConfigurationException e) {
+            System.out.println("Error loading file " + e);
+        }
+        return config.getString("mute.timeMute");
+    }
+
+    @Override
+    public String getMuteReason(UUID uuid) {
+        File file = new File("plugins/AuthTG/users/" + uuid + ".yml");
+        YamlConfiguration config = new YamlConfiguration();
+        try {
+            config.load(file);
+        } catch (IOException e) {
+            System.out.println("Error loading file " + e);
+        } catch (InvalidConfigurationException e) {
+            System.out.println("Error loading file " + e);
+        }
+        return config.getString("mute.reason");
+    }
+
+    @Override
+    public String getMuteAdmin(UUID uuid) {
+        File file = new File("plugins/AuthTG/users/" + uuid + ".yml");
+        YamlConfiguration config = new YamlConfiguration();
+        try {
+            config.load(file);
+        } catch (IOException e) {
+            System.out.println("Error loading file " + e);
+        } catch (InvalidConfigurationException e) {
+            System.out.println("Error loading file " + e);
+        }
+        return config.getString("mute.admin");
+    }
+
+    @Override
+    public String getMuteTimeAdmin(UUID uuid) {
+        File file = new File("plugins/AuthTG/users/" + uuid + ".yml");
+        YamlConfiguration config = new YamlConfiguration();
+        try {
+            config.load(file);
+        } catch (IOException e) {
+            System.out.println("Error loading file " + e);
+        } catch (InvalidConfigurationException e) {
+            System.out.println("Error loading file " + e);
+        }
+        return config.getString("mute.time");
+    }
+
+    @Override
+    public void deleteMute(UUID uuid) {
+        File file = new File("plugins/AuthTG/users/" + uuid + ".yml");
+        YamlConfiguration config = new YamlConfiguration();
+        try {
+            config.load(file);
+        } catch (IOException e) {
+            System.out.println("Error loading file " + e);
+        } catch (InvalidConfigurationException e) {
+            System.out.println("Error loading file " + e);
+        }
+        config.set("mute", null);
+        try {
+            config.save(file);
+        } catch (IOException e) {
+            System.out.println("Error saving file: " + e);
+        }
+    }
+
+    @Override
+    public boolean isMuted(UUID uuid) {
+        File file = new File("plugins/AuthTG/users/" + uuid + ".yml");
+        YamlConfiguration config = new YamlConfiguration();
+        try {
+            config.load(file);
+        } catch (IOException e) {
+            System.out.println("Error loading file " + e);
+        } catch (InvalidConfigurationException e) {
+            System.out.println("Error loading file " + e);
+        }
+        return config.contains("mute");
+    }
+
+    @Override
+    public Map<String, List<Object>> getMutedPlayers() {
+        Map<String, List<Object>> map = new HashMap<>();
+        File[] files = new File("plugins/AuthTG/users").listFiles();
+        for (File file : files) {
+            YamlConfiguration config = new YamlConfiguration();
+            try {
+                config.load(file);
+            } catch (IOException e) {
+                System.out.println("Error loading file " + e);
+            } catch (InvalidConfigurationException e) {
+                System.out.println("Error loading file " + e);
+            }
+            if (config.contains("mute")) {
+                List<Object> list = new ArrayList<>();
+                LocalDateTime parsedDate = LocalDateTime.parse(config.getString("mute.timeMute"), DateTimeFormatter.ofPattern("HH:mm:ss dd.MM.yyyy"));
+                list.add(0, parsedDate);
+                list.add(1, config.getString("mute.reason"));
+                map.put(config.getString("playername"), list);
+            }
+        }
+        return map;
     }
 }

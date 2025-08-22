@@ -32,7 +32,14 @@ public class MySQLMigrate {
                     String username = config.getString("username");
                     String firstname = config.getString("firstname");
                     String lastname = config.getString("lastname");
-                    st.executeUpdate("INSERT INTO AuthTGUsers (uuid, password, playername, active, activetg, chatid, twofactor, username, firstname, lastname) VALUES ('" + uuid + "', '" + passworduser + "', '" + playername + "', " + active + ", " + activetg + ", " + chatid + ", " + twofactor + ", '" + username + "', '" + firstname + "', '" + lastname + "')");
+                    boolean isAdmin = config.getBoolean("admin");
+                    st.executeUpdate("INSERT INTO AuthTGUsers (uuid, password, playername, active, activetg, chatid, twofactor, username, firstname, lastname, currentUUID, admin) VALUES ('" + uuid + "', '" + passworduser + "', '" + playername + "', " + active + ", " + activetg + ", " + chatid + ", " + twofactor + ", '" + username + "', '" + firstname + "', '" + lastname + "', true ," + isAdmin + ")");
+                    if (config.contains("ban")) {
+                        st.executeUpdate("INSERT INTO AuthTGBans (uuid, timeBan, reason, time, admin) VALUES ('" + uuid.toString()  + "', '" + config.getString("ban.timeBan") + "', '" + config.getString("ban.reason") + "', '" + config.getString("ban.time") + "', '" + config.getString("ban.admin") + "')");
+                    }
+                    if (config.contains("mute")) {
+                        st.executeUpdate("INSERT INTO AuthTGMutes (uuid, timeMute, reason, time, admin) VALUES ('" + uuid.toString() + "', '" + config.getString("mute.timeMute") + "', '" + config.getString("mute.reason") + "', '" + config.getString("mute.time") + "', '" + config.getString("mute.admin") + "')");
+                    }
                     List<String> friends = config.getStringList("friends");
                     for (String friend : friends) {
                         st.executeUpdate("INSERT INTO AuthTGUsers (uuid, friends) VALUES ('" + uuid.toString() + "', '" + friend + "')");

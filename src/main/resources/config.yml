@@ -159,3 +159,5 @@ messages: # Сообщения EN: Messages
     friendtellnotfriend: "&f&l[&c&lAuthTG&f&l] &c&lУ вас нет друзей с именем &f&l{PLAYER}&c&l!"
     friendtelllenght: "&f&l[&c&lAuthTG&f&l] &c&lВы не ввели сообщение!"
     friendtell: "&f&l[&c&lAuthTG&f&l] &c&lВы отправили сообщение игроку &f&l{PLAYER}"
+    mute: "&fВы были замучены {BR} &cПричина: {REASON} {BR} &fДо: {TIMEMUTE} {BR} &cАдминистратор: {ADMIN} {BR} &7Время мута: {TIME}"
+    ban: "&fВы были забанены {BR} &cПричина: {REASON} {BR} &fДо: {TIMEBAN} {BR} &cАдминистратор: {ADMIN} {BR} &7Время бана: {TIME}"

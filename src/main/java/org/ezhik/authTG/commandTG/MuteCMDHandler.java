@@ -1,0 +1,102 @@
+package org.ezhik.authTG.commandTG;
+
+import org.bukkit.ChatColor;
+import org.ezhik.authTG.AuthTG;
+import org.ezhik.authTG.User;
+import org.ezhik.authTG.events.MuterEvent;
+import org.telegram.telegrambots.meta.api.objects.Update;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
+public class MuteCMDHandler implements CommandHandler {
+
+    @Override
+    public void execute(Update update) {
+        User user = User.getCurrentUser(update.getMessage().getFrom().getId());
+        if (!user.activetg) {
+            AuthTG.bot.sendMessage(update.getMessage().getChatId(), "Вы не авторизованы!");
+            return;
+        }
+        if (user.isadmin || user.commands != null && user.commands.contains("mute")) {
+            String[] args = update.getMessage().getText().split(" ");
+            if (args.length < 2) {
+                user.sendMessage("Введите: <никнейм> <время> <причина>");
+            } else {
+                if (args.length < 3) {
+                    user.sendMessage("Использование: /mute <никнейм> <время> <причина>");
+                    return;
+                }
+                User target = User.getUser(args[1]);
+                if (target == null) {
+                    user.sendMessage("Пользователь не найден!");
+                    return;
+                }
+                if (AuthTG.loader.isMuted(target.uuid)) {
+                    user.sendMessage("Пользователь уже замучен!");
+                    return;
+                }
+                if (args[2].equals("0")) {
+                    user.sendMessage("Вы не можете замутить пользователя на 0!");
+                    return;
+                }
+                String reason = String.join(" ", args).substring(args[0].length() + args[1].length() + args[2].length() + 3);
+                if (reason.length() > 120) {
+                    user.sendMessage("Причина слишком длинная!");
+                    return;
+                }
+                if (args[2].contains("d")) {
+                    LocalDateTime date = LocalDateTime.now().plusDays(Integer.parseInt(args[2].replace("d", "")));
+                    LocalDateTime timedate = LocalDateTime.now();
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss dd.MM.yyyy");
+                    String formattedDate = date.format(formatter);
+                    String time = timedate.format(formatter);
+                    AuthTG.loader.setMuteTime(target.uuid, formattedDate, reason, time, user.playername);
+                    user.sendMessage("Вы успешно замутили " + target.playername + " на " + args[2] + "!");
+                    String message = ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.mute")).replace("{TIMEMUTE}", AuthTG.loader.getMuteTime(target.uuid)).replace("{REASON}", AuthTG.loader.getMuteReason(target.uuid)).replace("{TIME}", AuthTG.loader.getMuteTimeAdmin(target.uuid)).replace("{ADMIN}", AuthTG.loader.getMuteAdmin(target.uuid)).replace("{BR}", "\n");
+                    if (target.player != null) target.player.sendMessage(message);
+                } else if (args[2].contains("h")) {
+                    LocalDateTime date = LocalDateTime.now().plusHours(Integer.parseInt(args[2].replace("h", "")));
+                    LocalDateTime timedate = LocalDateTime.now();
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss dd.MM.yyyy");
+                    String formattedDate = date.format(formatter);
+                    String time = timedate.format(formatter);
+                    AuthTG.loader.setMuteTime(target.uuid, formattedDate, reason, time, user.playername);
+                    user.sendMessage("Вы успешно замутили " + target.playername + " на " + args[2] + "!");
+                    String message = ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.mute")).replace("{TIMEMUTE}", AuthTG.loader.getMuteTime(target.uuid)).replace("{REASON}", AuthTG.loader.getMuteReason(target.uuid)).replace("{TIME}", AuthTG.loader.getMuteTimeAdmin(target.uuid)).replace("{ADMIN}", AuthTG.loader.getMuteAdmin(target.uuid)).replace("{BR}", "\n");
+                    if (target.player != null) target.player.sendMessage(message);
+                } else if (args[2].contains("m")) {
+                    LocalDateTime date = LocalDateTime.now().plusMinutes(Integer.parseInt(args[2].replace("m", "")));
+                    LocalDateTime timedate = LocalDateTime.now();
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss dd.MM.yyyy");
+                    String formattedDate = date.format(formatter);
+                    String time = timedate.format(formatter);
+                    AuthTG.loader.setMuteTime(target.uuid, formattedDate, reason, time, user.playername);
+                    String message = ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.mute")).replace("{TIMEMUTE}", AuthTG.loader.getMuteTime(target.uuid)).replace("{REASON}", AuthTG.loader.getMuteReason(target.uuid)).replace("{TIME}", AuthTG.loader.getMuteTimeAdmin(target.uuid)).replace("{ADMIN}", AuthTG.loader.getMuteAdmin(target.uuid)).replace("{BR}", "\n");
+                    if (target.player != null) target.player.sendMessage(message);
+                    user.sendMessage("Вы успешно замутили " + target.playername + " на " + args[2] + "!");
+                } else if (args[2].contains("s")) {
+                    LocalDateTime date = LocalDateTime.now().plusSeconds(Integer.parseInt(args[2].replace("s", "")));
+                    LocalDateTime timedate = LocalDateTime.now();
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss dd.MM.yyyy");
+                    String formattedDate = date.format(formatter);
+                    String time = timedate.format(formatter);
+                    AuthTG.loader.setMuteTime(target.uuid, formattedDate, reason, time, user.playername);
+                    user.sendMessage("Вы успешно замутили " + target.playername + " на " + args[2] + "!");
+                    String message = ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.mute")).replace("{TIMEMUTE}", AuthTG.loader.getMuteTime(target.uuid)).replace("{REASON}", AuthTG.loader.getMuteReason(target.uuid)).replace("{TIME}", AuthTG.loader.getMuteTimeAdmin(target.uuid)).replace("{ADMIN}", AuthTG.loader.getMuteAdmin(target.uuid)).replace("{BR}", "\n");
+                    if (target.player != null) target.player.sendMessage(message);
+                } else if (args[2].equals("-s")) {
+                    LocalDateTime timedate = LocalDateTime.now();
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss dd.MM.yyyy");
+                    String time = timedate.format(formatter);
+                    AuthTG.loader.setMuteTime(target.uuid, "0", reason, time, user.playername);
+                    user.sendMessage("Вы успешно замутили " + target.playername + " на навсегда!");
+                    String message = ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.mute")).replace("{TIMEMUTE}", "навсегда").replace("{REASON}", AuthTG.loader.getMuteReason(target.uuid)).replace("{TIME}", AuthTG.loader.getMuteTimeAdmin(target.uuid)).replace("{ADMIN}", AuthTG.loader.getMuteAdmin(target.uuid)).replace("{BR}", "\n");
+                    if (target.player != null) target.player.sendMessage(message);
+                } else {
+                    user.sendMessage("Неверный формат времени, используете: d,h,m,s или -s)!");
+                }
+            }
+        } else user.sendMessage("У вас нет прав на использование этой команды!");
+    }
+}

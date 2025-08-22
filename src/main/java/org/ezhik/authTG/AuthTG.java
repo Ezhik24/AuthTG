@@ -63,6 +63,7 @@ public final class AuthTG extends JavaPlugin {
         getCommand("setpassword").setExecutor(new SetPasswordCMD());
         getCommand("friend").setExecutor(new FriendCMD());
         getCommand("setspawn").setExecutor(new SetSpawnCMD());
+        MuterEvent.setMutedPlayers(loader.getMutedPlayers());
         bot = new BotTelegram(getConfig().getString("bot.token"), getConfig().getString("bot.username"));
         if (!bot.BOT_IS_STARTED) {
             if (bot.getBotToken().equals("changeme") && bot.getBotUsername().equals("changeme")) {

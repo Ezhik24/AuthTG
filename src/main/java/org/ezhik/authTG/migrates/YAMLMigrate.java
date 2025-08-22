@@ -55,6 +55,36 @@ public class YAMLMigrate {
                 }
             }
             st.executeUpdate("DROP TABLE AuthTGFriends");
+            rs = st.executeQuery("SELECT * FROM AuthTGBans");
+            while (rs.next()) {
+                File file = new File("plugins/AuthTG/bans/" + UUID.fromString(rs.getString("uuid")) + ".yml");
+                YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
+                config.set("ban.timeBan", rs.getString("timeBan"));
+                config.set("ban.reason", rs.getString("reason"));
+                config.set("ban.time", rs.getString("time"));
+                config.set("ban.admin", rs.getString("admin"));
+                try {
+                    config.save(file);
+                } catch (IOException e) {
+                    System.out.println("Error saving file: " + e.getMessage());
+                }
+            }
+            st.executeUpdate("DROP TABLE AuthTGBans");
+            rs = st.executeQuery("SELECT * FROM AuthTGMutes");
+            while (rs.next()) {
+                File file = new File("plugins/AuthTG/mutes/" + UUID.fromString(rs.getString("uuid")) + ".yml");
+                YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
+                config.set("mute.timeMute", rs.getString("timeMute"));
+                config.set("mute.reason", rs.getString("reason"));
+                config.set("mute.time", rs.getString("time"));
+                config.set("mute.admin", rs.getString("admin"));
+                try {
+                    config.save(file);
+                } catch (IOException e) {
+                    System.out.println("Error saving file: " + e.getMessage());
+                }
+            }
+            st.executeUpdate("DROP TABLE AuthTGMutes");
         } catch (SQLException e) {
             System.out.println("SQL Exception: " + e.getMessage());
         }
