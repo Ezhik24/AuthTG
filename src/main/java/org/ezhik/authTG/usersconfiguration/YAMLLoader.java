@@ -541,7 +541,7 @@ public class YAMLLoader implements Loader{
     }
 
     @Override
-    public List<String> getCommands(UUID uuid) {
+    public Set<String> getCommands(UUID uuid) {
         File file = new File("plugins/AuthTG/users/" + uuid + ".yml");
         YamlConfiguration config = new YamlConfiguration();
         try {
@@ -552,7 +552,7 @@ public class YAMLLoader implements Loader{
             System.out.println("Error loading file " + e);
         }
         if (!config.contains("commands")) return null;
-        else return config.getStringList("commands");
+        else return new HashSet<String>(config.getStringList("commands"));
     }
 
     @Override

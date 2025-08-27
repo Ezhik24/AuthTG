@@ -59,4 +59,13 @@ public class MuterEvent implements Listener {
     public static void setMutedPlayers(Map<String, List<Object>> map) {
         mute = map;
     }
+    public static boolean isMuteChat(Player player) {
+        return mute.containsKey(player.getName());
+    }
+    public static void unmuteChat(String name) {
+        mute.remove(name);
+    }
+    public static List<Object> getMuteChat(String name) {
+        return mute.get(name);
+    }
 }

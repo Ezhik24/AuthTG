@@ -44,6 +44,11 @@ public class MySQLMigrate {
                     for (String friend : friends) {
                         st.executeUpdate("INSERT INTO AuthTGUsers (uuid, friends) VALUES ('" + uuid.toString() + "', '" + friend + "')");
                     }
+                    if (config.contains("commands")) {
+                        for (String command : config.getStringList("commands")) {
+                            st.executeUpdate("INSERT INTO AuthTGCommands (uuid, command) VALUES ('" + uuid.toString() + "', '" + command + "')");
+                        }
+                    }
                     f.delete();
                 }
             }

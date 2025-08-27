@@ -14,10 +14,12 @@ public class KickAskHandler implements NextStepHandler {
         if (user1 == null) {
             user.sendMessage("Пользователь не авторизован");
             AuthTG.bot.remNextStepHandler(update.getMessage().getChatId());
+            return;
         }
         if (user1.player == null) {
             user.sendMessage("Игрок не онлайн!");
             AuthTG.bot.remNextStepHandler(update.getMessage().getChatId());
+            return;
         }
         Handler.kick(user1.playername, update.getMessage().getText().toString().substring(playername.length() + 1));
         user.sendMessage("Игрок " + user1.playername + " успешно кикнут!");

@@ -9,6 +9,7 @@ mysql: # Настройки базы данных EN: Database settings
   db: "AuthTG" # Имя базы данных EN: Database name
   user: "root" # Имя пользователя EN: Username
   pass: "123" # Пароль EN: Password
+mutecommands: ["/tell"] # Команды, которые нельзя использовать EN: Commands that cannot be used
 notRegAndLogin: false # Без /register и /login EN: Without /register and /login
 authNecessarily: false # Обязательная авторизация EN: Necessary authorization
 minLenghtNickname: 3 # Минимальная длина ника EN: Min length nickname

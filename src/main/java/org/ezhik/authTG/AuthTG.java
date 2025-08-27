@@ -9,6 +9,7 @@ import org.ezhik.authTG.events.*;
 import org.ezhik.authTG.handlers.*;
 import org.ezhik.authTG.migrates.MySQLMigrate;
 import org.ezhik.authTG.migrates.YAMLMigrate;
+import org.ezhik.authTG.tabcompleter.*;
 import org.ezhik.authTG.usersconfiguration.Loader;
 import org.ezhik.authTG.usersconfiguration.MySQLLoader;
 import org.ezhik.authTG.usersconfiguration.YAMLLoader;
@@ -26,12 +27,15 @@ public final class AuthTG extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        // Load config plugin
         if (!getDataFolder().exists()) getDataFolder().mkdir();
         if (!new File(getDataFolder(), "config.yml").exists()) saveDefaultConfig();
         config = getConfig();
+        // Logs
         System.out.println("[AuthTG] Плагин запустился | Plugin started");
         System.out.println("[AuthTG] Пожалуйста,подпишитесь на ТГ канал AuthTG: https://t.me/authtgspigot");
         System.out.println("[AuthTG] Please,subscribe for my channel AuthTG: https://t.me/authtgspigot");
+        // Register Events
         Bukkit.getServer().getPluginManager().registerEvents(new FreezerEvent(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new OnJoinEvent(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new MuterEvent(), this);
@@ -41,10 +45,12 @@ public final class AuthTG extends JavaPlugin {
         Bukkit.getServer().getPluginManager().registerEvents(new BlockPlaceBEvent(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new BlockDropBEvent(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new PlayerJoinAnotherEvent(), this);
+        // Load Handlers
         Handler handler = new Handler();
         AuthHandler authHandler = new AuthHandler();
         authHandler.runTaskTimer(this, 0, 20);
         handler.runTaskTimer(this, 0, 1);
+        // Load UserConfiguration
         if (getConfig().getConfigurationSection("mysql").getBoolean("use")) {
             ConfigurationSection mysql = getConfig().getConfigurationSection("mysql");
             loader = new MySQLLoader(mysql.getString("db"), mysql.getString("user"), mysql.getString("pass"), mysql.getString("host"));
@@ -54,6 +60,7 @@ public final class AuthTG extends JavaPlugin {
             if (!getConfig().getString("mysql.host").equals("localhost")) new YAMLMigrate(mysql.getString("db"), mysql.getString("host"), mysql.getString("user"),mysql.getString("pass"));
             loader = new YAMLLoader();
         }
+        // Register commands
         getCommand("register").setExecutor(new RegisterCMD());
         getCommand("login").setExecutor(new LoginCMD());
         getCommand("code").setExecutor(new CodeCMD());
@@ -63,7 +70,13 @@ public final class AuthTG extends JavaPlugin {
         getCommand("setpassword").setExecutor(new SetPasswordCMD());
         getCommand("friend").setExecutor(new FriendCMD());
         getCommand("setspawn").setExecutor(new SetSpawnCMD());
+        getCommand("admin").setExecutor(new AdminCMD());
+        // Register TabCompleter
+        getCommand("admin").setTabCompleter(new AdminTabCompleter());
+        getCommand("friend").setTabCompleter(new FriendTabCompleter());
+        // Load MutedPlayers
         MuterEvent.setMutedPlayers(loader.getMutedPlayers());
+        // Load Bot
         bot = new BotTelegram(getConfig().getString("bot.token"), getConfig().getString("bot.username"));
         if (!bot.BOT_IS_STARTED) {
             if (bot.getBotToken().equals("changeme") && bot.getBotUsername().equals("changeme")) {
@@ -84,6 +97,7 @@ public final class AuthTG extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        // Logs
         System.out.println("[AuthTG] Плагин выключен | Plugin disable");
         System.out.println("[AuthTG] Пожалуйста,подпишитесь на ТГ канал AuthTG: https://t.me/authtgspigot");
         System.out.println("[AuthTG] Please,subscribe for my channel AuthTG: https://t.me/authtgspigot");

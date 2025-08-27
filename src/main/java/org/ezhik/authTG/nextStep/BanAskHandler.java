@@ -17,30 +17,31 @@ public class BanAskHandler implements NextStepHandler {
         User user1 = User.getUser(playername);
         User user = User.getCurrentUser(update.getMessage().getChatId());
         String[] args = update.getMessage().getText().split(" ");
-        if (args.length < 2) {
+        if (args.length < 3) {
             user.sendMessage("Неверный формат команды");
             AuthTG.bot.remNextStepHandler(update.getMessage().getChatId());
+            return;
         }
         if (user1 == null) {
             user.sendMessage("Пользователь не авторизован");
             AuthTG.bot.remNextStepHandler(update.getMessage().getChatId());
+            return;
         }
         if (AuthTG.loader.isBanned(user1.uuid)) {
             user.sendMessage("Пользователь уже забанен");
             AuthTG.bot.remNextStepHandler(update.getMessage().getChatId());
+            return;
         }
         if (args[1].equals("0")) {
             user.sendMessage("Вы не можете забанить пользователя на 0");
             AuthTG.bot.remNextStepHandler(update.getMessage().getChatId());
+            return;
         }
         String reason = String.join(" ", args).substring(args[0].length() + args[1].length() + 2);
         if (reason.length() > 120) {
             user.sendMessage("Слишком длинная причина");
             AuthTG.bot.remNextStepHandler(update.getMessage().getChatId());
-        }
-        if (user1 == null) {
-            user.sendMessage("Пользователь не авторизован");
-            AuthTG.bot.remNextStepHandler(update.getMessage().getChatId());
+            return;
         }
         if (args[1].contains("d")) {
             LocalDateTime date = LocalDateTime.now();
@@ -83,11 +84,13 @@ public class BanAskHandler implements NextStepHandler {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss dd.MM.yyyy");
             String formattedDate = date.format(formatter);
             AuthTG.loader.setBanTime(user1.uuid, "0", reason, formattedDate, user.playername);
-            AuthTG.bot.remNextStepHandler(update.getMessage().getChatId());
             user.sendMessage("Вы забанили " + user1.playername + " на навсегда");
             if (user1.player != null) Handler.kick(user1.playername, ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.ban")).replace("{ADMIN}", user.playername).replace("{REASON}", reason).replace("{TIMEBAN}", "навсегда").replace("{TIME}", formattedDate).replace("{BR}", "\n"));
         } else {
             user.sendMessage("Неверный формат времени (Используйте d, h, m, s)");
+            AuthTG.bot.remNextStepHandler(update.getMessage().getChatId());
+            return;
         }
+        AuthTG.bot.remNextStepHandler(update.getMessage().getChatId());
     }
 }

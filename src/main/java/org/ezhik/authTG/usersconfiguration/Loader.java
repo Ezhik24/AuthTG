@@ -63,7 +63,7 @@ public interface Loader {
 
     Set<String> getAdminList();
 
-    List<String> getCommands(UUID uuid);
+    Set<String> getCommands(UUID uuid);
 
     void addCommand(UUID uuid, String command);
 

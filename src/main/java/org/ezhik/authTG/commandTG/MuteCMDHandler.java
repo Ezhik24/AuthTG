@@ -4,6 +4,7 @@ import org.bukkit.ChatColor;
 import org.ezhik.authTG.AuthTG;
 import org.ezhik.authTG.User;
 import org.ezhik.authTG.events.MuterEvent;
+import org.ezhik.authTG.nextStep.MuteAskHandler;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.time.LocalDateTime;
@@ -22,6 +23,7 @@ public class MuteCMDHandler implements CommandHandler {
             String[] args = update.getMessage().getText().split(" ");
             if (args.length < 2) {
                 user.sendMessage("Введите: <никнейм> <время> <причина>");
+                AuthTG.bot.setNextStepHandler(update.getMessage().getChatId(), new MuteAskHandler());
             } else {
                 if (args.length < 3) {
                     user.sendMessage("Использование: /mute <никнейм> <время> <причина>");

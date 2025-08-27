@@ -24,8 +24,8 @@ public class BanCMDHandler implements CommandHandler {
                 user.sendMessage("Напишите: <никнейм> <время> <причина> или <никнейм> <причина>");
                 AuthTG.bot.setNextStepHandler(update.getMessage().getChatId(), new BanAskHandler());
             } else {
-                if (args.length < 3) {
-                    user.sendMessage("Использование: /ban <никнейм> <время> <причина> или <никнейм> <причина>");
+                if (args.length < 4) {
+                    user.sendMessage("Использование: /ban <никнейм> <время> <причина>");
                     return;
                 }
                 User user1 = User.getUser(args[1]);

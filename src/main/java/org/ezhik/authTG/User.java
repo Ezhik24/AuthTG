@@ -12,10 +12,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKe
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.security.MessageDigest;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 
 public class User {
     public Long chatid;
@@ -30,7 +27,7 @@ public class User {
     public String playername;
     public List<String > friends;
     public boolean isadmin;
-    public List<String> commands;
+    public Set<String> commands;
 
     private User(UUID uuid) {
         this.uuid = uuid;

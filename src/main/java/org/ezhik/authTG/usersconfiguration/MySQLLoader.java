@@ -654,7 +654,7 @@ public class MySQLLoader implements Loader {
     }
 
     @Override
-    public List<String> getCommands(UUID uuid) {
+    public Set<String> getCommands(UUID uuid) {
         try {
             conn = DriverManager.getConnection(
                     "jdbc:mysql://" + this.host + "/" + this.database,
@@ -665,7 +665,7 @@ public class MySQLLoader implements Loader {
             rs = st.executeQuery(
                     "SELECT command FROM AuthTGCommands WHERE uuid = '" + uuid.toString() + "'"
             );
-            List<String> list = new ArrayList<>();
+            Set<String> list = new HashSet<>();
             while (rs.next()) {
                 list.add(rs.getString("command"));
             }

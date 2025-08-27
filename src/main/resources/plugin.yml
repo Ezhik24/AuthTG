@@ -29,3 +29,5 @@ commands:
     description: 'Friends'
   setspawn:
     description: 'Set spawn'
+  admin:
+    description: 'Admin'
