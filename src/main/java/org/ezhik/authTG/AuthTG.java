@@ -71,9 +71,11 @@ public final class AuthTG extends JavaPlugin {
         getCommand("friend").setExecutor(new FriendCMD());
         getCommand("setspawn").setExecutor(new SetSpawnCMD());
         getCommand("admin").setExecutor(new AdminCMD());
+        getCommand("command").setExecutor(new CommandCMD());
         // Register TabCompleter
         getCommand("admin").setTabCompleter(new AdminTabCompleter());
         getCommand("friend").setTabCompleter(new FriendTabCompleter());
+        getCommand("command").setTabCompleter(new CommandTabCompleter());
         // Load MutedPlayers
         MuterEvent.setMutedPlayers(loader.getMutedPlayers());
         // Load Bot

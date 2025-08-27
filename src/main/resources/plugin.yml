@@ -6,7 +6,7 @@ authors: [Ezhik24, ABBAfan]
 
 commands:
   register:
-    description: 'Регистрация'
+    description: 'Register'
     aliases:
       - reg
   login:
@@ -30,4 +30,6 @@ commands:
   setspawn:
     description: 'Set spawn'
   admin:
-    description: 'Admin'
+    description: 'AdminCMD'
+  command:
+    description: 'CommandCMD'
