@@ -41,6 +41,7 @@ public class BotTelegram extends TelegramLongPollingBot {
         commandHandler.put("/kick", new KickCMDHandler());
         commandHandler.put("/ban", new BanCMDHandler());
         commandHandler.put("/mute", new MuteCMDHandler());
+        commandHandler.put("/command", new CommandCMDHandler());
         callbackQueryHandler.put("ys", new LoginAcceptedYes());
         callbackQueryHandler.put("no", new LoginAcceptedNo());
         callbackQueryHandler.put("acc", new AccAccounts());
@@ -50,6 +51,8 @@ public class BotTelegram extends TelegramLongPollingBot {
         callbackQueryHandler.put("delfr", new DelFriends());
         callbackQueryHandler.put("sndtg", new SendMessageTG());
         callbackQueryHandler.put("sndmc", new SendMessageMC());
+        callbackQueryHandler.put("cmdfirst", new CMDFirstStep());
+        callbackQueryHandler.put("cmdsecond", new CMDSecondStep());
     }
 
     @Override
