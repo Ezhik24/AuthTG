@@ -7,12 +7,9 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.ezhik.authTG.commandMC.*;
 import org.ezhik.authTG.events.*;
 import org.ezhik.authTG.handlers.*;
-import org.ezhik.authTG.migrates.MySQLMigrate;
-import org.ezhik.authTG.migrates.YAMLMigrate;
+import org.ezhik.authTG.migrates.*;
 import org.ezhik.authTG.tabcompleter.*;
-import org.ezhik.authTG.usersconfiguration.Loader;
-import org.ezhik.authTG.usersconfiguration.MySQLLoader;
-import org.ezhik.authTG.usersconfiguration.YAMLLoader;
+import org.ezhik.authTG.usersconfiguration.*;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
@@ -23,7 +20,6 @@ public final class AuthTG extends JavaPlugin {
     public static Loader loader;
     public static BotTelegram bot;
     public static FileConfiguration config;
-
 
     @Override
     public void onEnable() {
@@ -72,6 +68,8 @@ public final class AuthTG extends JavaPlugin {
         getCommand("setspawn").setExecutor(new SetSpawnCMD());
         getCommand("admin").setExecutor(new AdminCMD());
         getCommand("command").setExecutor(new CommandCMD());
+        getCommand("kick").setExecutor(new KickCMD());
+        getCommand("mute").setExecutor(new MuteCMD());
         // Register TabCompleter
         getCommand("admin").setTabCompleter(new AdminTabCompleter());
         getCommand("friend").setTabCompleter(new FriendTabCompleter());

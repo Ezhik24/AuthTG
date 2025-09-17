@@ -33,3 +33,7 @@ commands:
     description: 'AdminCMD'
   command:
     description: 'CommandCMD'
+  kick:
+    description: 'Kick player'
+  mute:
+    description: 'Mute player'
