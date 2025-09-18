@@ -36,12 +36,7 @@ public class MuteCMD implements CommandExecutor {
                 player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&c&lAuthTG&f&l] &cИгрок не найден."));
                 return false;
             }
-            Player target = null;
-            if (Bukkit.getPlayer(targetuuid) != null) {
-                target = Bukkit.getPlayer(targetuuid);
-            } else {
-                target = Bukkit.getOfflinePlayer(targetuuid).getPlayer();
-            }
+            Player target = Bukkit.getPlayer(targetuuid);
             if (AuthTG.loader.isMuted(targetuuid)) {
                 player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&c&lAuthTG&f&l] &cИгрок уже замучен."));
                 return false;
@@ -63,7 +58,7 @@ public class MuteCMD implements CommandExecutor {
                 AuthTG.loader.setMuteTime(targetuuid, formattedDate, reason, time, player.getName());
                 player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.successmute").replace("{PLAYER}", strings[0])));
                 String message = ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.mute")).replace("{TIMEMUTE}", AuthTG.loader.getMuteTime(targetuuid)).replace("{REASON}", AuthTG.loader.getMuteReason(targetuuid)).replace("{TIME}", AuthTG.loader.getMuteTimeAdmin(targetuuid)).replace("{ADMIN}", AuthTG.loader.getMuteAdmin(targetuuid)).replace("{BR}", "\n");
-                if (target.isOnline()) target.sendMessage(message);
+                if (target != null) target.sendMessage(message);
             }
             else if (strings[1].contains("h")) {
                 LocalDateTime date = LocalDateTime.now().plusHours(Integer.parseInt(strings[1].replace("h", "")));
@@ -74,7 +69,7 @@ public class MuteCMD implements CommandExecutor {
                 AuthTG.loader.setMuteTime(targetuuid, formattedDate, reason, time, player.getName());
                 player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.successmute").replace("{PLAYER}", strings[0])));
                 String message = ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.mute")).replace("{TIMEMUTE}", AuthTG.loader.getMuteTime(targetuuid)).replace("{REASON}", AuthTG.loader.getMuteReason(targetuuid)).replace("{TIME}", AuthTG.loader.getMuteTimeAdmin(targetuuid)).replace("{ADMIN}", AuthTG.loader.getMuteAdmin(targetuuid)).replace("{BR}", "\n");
-                if (target.isOnline()) target.sendMessage(message);
+                if (target != null) target.sendMessage(message);
             }
             else if (strings[1].contains("m")) {
                 LocalDateTime date = LocalDateTime.now().plusMinutes(Integer.parseInt(strings[1].replace("m", "")));
@@ -85,7 +80,7 @@ public class MuteCMD implements CommandExecutor {
                 AuthTG.loader.setMuteTime(targetuuid, formattedDate, reason, time, player.getName());
                 player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.successmute").replace("{PLAYER}", strings[0])));
                 String message = ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.mute")).replace("{TIMEMUTE}", AuthTG.loader.getMuteTime(targetuuid)).replace("{REASON}", AuthTG.loader.getMuteReason(targetuuid)).replace("{TIME}", AuthTG.loader.getMuteTimeAdmin(targetuuid)).replace("{ADMIN}", AuthTG.loader.getMuteAdmin(targetuuid)).replace("{BR}", "\n");
-                if (target.isOnline()) target.sendMessage(message);
+                if (target != null) target.sendMessage(message);
             }
             else if (strings[1].contains("s")) {
                 LocalDateTime date = LocalDateTime.now().plusSeconds(Integer.parseInt(strings[1].replace("s", "")));
@@ -96,7 +91,7 @@ public class MuteCMD implements CommandExecutor {
                 AuthTG.loader.setMuteTime(targetuuid, formattedDate, reason, time, player.getName());
                 player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.successmute").replace("{PLAYER}", strings[0])));
                 String message = ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.mute")).replace("{TIMEMUTE}", AuthTG.loader.getMuteTime(targetuuid)).replace("{REASON}", AuthTG.loader.getMuteReason(targetuuid)).replace("{TIME}", AuthTG.loader.getMuteTimeAdmin(targetuuid)).replace("{ADMIN}", AuthTG.loader.getMuteAdmin(targetuuid)).replace("{BR}", "\n");
-                if (target.isOnline()) target.sendMessage(message);
+                if (target != null) target.sendMessage(message);
             }
             else if (strings[1].contains("-s")) {
                 LocalDateTime timedate = LocalDateTime.now();
@@ -105,7 +100,7 @@ public class MuteCMD implements CommandExecutor {
                 AuthTG.loader.setMuteTime(targetuuid, "0", reason, time, player.getName());
                 player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.successmute").replace("{PLAYER}", strings[0])));
                 String message = ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.mute")).replace("{TIMEMUTE}", "навсегда").replace("{REASON}", AuthTG.loader.getMuteReason(targetuuid)).replace("{TIME}", AuthTG.loader.getMuteTimeAdmin(targetuuid)).replace("{ADMIN}", AuthTG.loader.getMuteAdmin(targetuuid)).replace("{BR}", "\n");
-                if (target.isOnline()) target.sendMessage(message);
+                if (target != null) target.sendMessage(message);
             }
             else {
                 player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&c&lAuthTG&f&l] &Неверный формат времени, используете: d,h,m,s или -s!"));
@@ -127,12 +122,7 @@ public class MuteCMD implements CommandExecutor {
                 console.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&c&lAuthTG&f&l] &cИгрок не найден."));
                 return false;
             }
-            Player target = null;
-            if (Bukkit.getPlayer(targetuuid) != null) {
-                target = Bukkit.getPlayer(targetuuid);
-            } else {
-                target = Bukkit.getOfflinePlayer(targetuuid).getPlayer();
-            }
+            Player target = Bukkit.getPlayer(targetuuid);
             if (AuthTG.loader.isMuted(targetuuid)) {
                 console.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&c&lAuthTG&f&l] &cИгрок уже замучен."));
                 return false;
@@ -154,7 +144,7 @@ public class MuteCMD implements CommandExecutor {
                 AuthTG.loader.setMuteTime(targetuuid, formattedDate, reason, time, "CONSOLE");
                 console.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.successmute").replace("{PLAYER}", strings[0])));
                 String message = ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.mute")).replace("{TIMEMUTE}", AuthTG.loader.getMuteTime(targetuuid)).replace("{REASON}", AuthTG.loader.getMuteReason(targetuuid)).replace("{TIME}", AuthTG.loader.getMuteTimeAdmin(targetuuid)).replace("{ADMIN}", AuthTG.loader.getMuteAdmin(targetuuid)).replace("{BR}", "\n");
-                if (target.isOnline()) target.sendMessage(message);
+                if (target != null) target.sendMessage(message);
             }
             else if (strings[1].contains("h")) {
                 LocalDateTime date = LocalDateTime.now().plusHours(Integer.parseInt(strings[1].replace("h", "")));
@@ -165,7 +155,7 @@ public class MuteCMD implements CommandExecutor {
                 AuthTG.loader.setMuteTime(targetuuid, formattedDate, reason, time, "CONSOLE");
                 console.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.successmute").replace("{PLAYER}", strings[0])));
                 String message = ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.mute")).replace("{TIMEMUTE}", AuthTG.loader.getMuteTime(targetuuid)).replace("{REASON}", AuthTG.loader.getMuteReason(targetuuid)).replace("{TIME}", AuthTG.loader.getMuteTimeAdmin(targetuuid)).replace("{ADMIN}", AuthTG.loader.getMuteAdmin(targetuuid)).replace("{BR}", "\n");
-                if (target.isOnline()) target.sendMessage(message);
+                if (target != null) target.sendMessage(message);
             }
             else if (strings[1].contains("m")) {
                 LocalDateTime date = LocalDateTime.now().plusMinutes(Integer.parseInt(strings[1].replace("m", "")));
@@ -176,7 +166,7 @@ public class MuteCMD implements CommandExecutor {
                 AuthTG.loader.setMuteTime(targetuuid, formattedDate, reason, time, "CONSOLE");
                 console.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.successmute").replace("{PLAYER}", strings[0])));
                 String message = ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.mute")).replace("{TIMEMUTE}", AuthTG.loader.getMuteTime(targetuuid)).replace("{REASON}", AuthTG.loader.getMuteReason(targetuuid)).replace("{TIME}", AuthTG.loader.getMuteTimeAdmin(targetuuid)).replace("{ADMIN}", AuthTG.loader.getMuteAdmin(targetuuid)).replace("{BR}", "\n");
-                if (target.isOnline()) target.sendMessage(message);
+                if (target != null) target.sendMessage(message);
             }
             else if (strings[1].contains("s")) {
                 LocalDateTime date = LocalDateTime.now().plusSeconds(Integer.parseInt(strings[1].replace("s", "")));
@@ -187,7 +177,7 @@ public class MuteCMD implements CommandExecutor {
                 AuthTG.loader.setMuteTime(targetuuid, formattedDate, reason, time, "CONSOLE");
                 console.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.successmute").replace("{PLAYER}", strings[0])));
                 String message = ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.mute")).replace("{TIMEMUTE}", AuthTG.loader.getMuteTime(targetuuid)).replace("{REASON}", AuthTG.loader.getMuteReason(targetuuid)).replace("{TIME}", AuthTG.loader.getMuteTimeAdmin(targetuuid)).replace("{ADMIN}", AuthTG.loader.getMuteAdmin(targetuuid)).replace("{BR}", "\n");
-                if (target.isOnline()) target.sendMessage(message);
+                if (target != null) target.sendMessage(message);
             }
             else if (strings[1].contains("-s")) {
                 LocalDateTime timedate = LocalDateTime.now();
@@ -196,7 +186,7 @@ public class MuteCMD implements CommandExecutor {
                 AuthTG.loader.setMuteTime(targetuuid, "0", reason, time, "CONSOLE");
                 console.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.successmute").replace("{PLAYER}", strings[0])));
                 String message = ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.mute")).replace("{TIMEMUTE}", "навсегда").replace("{REASON}", AuthTG.loader.getMuteReason(targetuuid)).replace("{TIME}", AuthTG.loader.getMuteTimeAdmin(targetuuid)).replace("{ADMIN}", AuthTG.loader.getMuteAdmin(targetuuid)).replace("{BR}", "\n");
-                if (target.isOnline()) target.sendMessage(message);
+                if (target != null) target.sendMessage(message);
             }
             else {
                 console.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&c&lAuthTG&f&l] &Неверный формат времени, используете: d,h,m,s или -s!"));
