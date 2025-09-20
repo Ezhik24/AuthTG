@@ -21,33 +21,33 @@ public class BanCMD implements CommandExecutor {
         if (commandSender instanceof Player) {
             Player player = (Player) commandSender;
             if (!player.hasPermission("authtg.ban")) {
-                player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&c&lAuthTG&f&l] &cУ вас нет прав."));
+                player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.bannoperm")));
                 return false;
             }
             if (strings.length == 0) {
-                player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&c&lAuthTG&f&l] &cКоманда введена неверно. Введите /ban <игрок> <время> <причина>"));
+                player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.banusage")));
                 return false;
             }
             if (strings.length < 3) {
-                player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&c&lAuthTG&f&l] &cКоманда введена неверно. Введите /ban <игрок> <время> <причина>"));
+                player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.banusage")));
                 return false;
             }
             String reason = String.join(" ", strings).substring(strings[0].length() + strings[1].length() + 2);
             UUID targetuuid = AuthTG.loader.getUUIDbyPlayerName(strings[0]);
             if (targetuuid == null) {
-                player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&c&lAuthTG&f&l] &cИгрок не найден."));
+                player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.banplayernotfound")));
                 return false;
             }
             if (AuthTG.loader.isBanned(targetuuid)) {
-                player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&c&lAuthTG&f&l] &cИгрок уже забанен."));
+                player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.banalreadybanned")));
                 return false;
             }
             if (reason.isEmpty()) {
-                player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&c&lAuthTG&f&l] &cКоманда введена неверно. Введите /ban <игрок> <время> <причина>"));
+                player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.banusage")));
                 return false;
             }
             if (reason.length() > 120) {
-                player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&c&lAuthTG&f&l] &cПричина слишком длинная."));
+                player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.banreasonlong")));
                 return false;
             }
             Player target = Bukkit.getPlayer(targetuuid);
@@ -58,7 +58,7 @@ public class BanCMD implements CommandExecutor {
                 String formattedDate = date.format(formatter);
                 String time = timedate.format(formatter);
                 AuthTG.loader.setBanTime(targetuuid, formattedDate, reason, time, player.getName());
-                player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&c&lAuthTG&f&l] &aИгрок " + strings[0] + " успешно забанен"));
+                player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.bansuccess").replace("{PLAYER}", strings[0])));
                 String message = ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.ban")).replace("{ADMIN}", player.getName()).replace("{REASON}", reason).replace("{TIMEBAN}", formattedDate).replace("{TIME}", time).replace("{BR}", "\n");
                 if (target != null) Handler.kick(target.getName(), message);
             }
@@ -69,7 +69,7 @@ public class BanCMD implements CommandExecutor {
                 String formattedDate = date.format(formatter);
                 String time = timedate.format(formatter);
                 AuthTG.loader.setBanTime(targetuuid, formattedDate, reason, time, player.getName());
-                player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&c&lAuthTG&f&l] &aИгрок " + strings[0] + " успешно забанен"));
+                player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.bansuccess").replace("{PLAYER}", strings[0])));
                 String message = ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.ban")).replace("{ADMIN}", player.getName()).replace("{REASON}", reason).replace("{TIMEBAN}", formattedDate).replace("{TIME}", time).replace("{BR}", "\n");
                 if (target != null) Handler.kick(target.getName(), message);
             }
@@ -80,7 +80,7 @@ public class BanCMD implements CommandExecutor {
                 String formattedDate = date.format(formatter);
                 String time = timedate.format(formatter);
                 AuthTG.loader.setBanTime(targetuuid, formattedDate, reason, time, player.getName());
-                player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&c&lAuthTG&f&l] &aИгрок " + strings[0] + " успешно забанен"));
+                player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.bansuccess").replace("{PLAYER}", strings[0])));
                 String message = ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.ban")).replace("{ADMIN}", player.getName()).replace("{REASON}", reason).replace("{TIMEBAN}", formattedDate).replace("{TIME}", time).replace("{BR}", "\n");
                 if (target != null) Handler.kick(target.getName(), message);
             }
@@ -91,7 +91,7 @@ public class BanCMD implements CommandExecutor {
                 String formattedDate = date.format(formatter);
                 String time = timedate.format(formatter);
                 AuthTG.loader.setBanTime(targetuuid, formattedDate, reason, time, player.getName());
-                player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&c&lAuthTG&f&l] &aИгрок " + strings[0] + " успешно забанен"));
+                player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.bansuccess").replace("{PLAYER}", strings[0])));
                 String message = ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.ban")).replace("{ADMIN}", player.getName()).replace("{REASON}", reason).replace("{TIMEBAN}", formattedDate).replace("{TIME}", time).replace("{BR}", "\n");
                 if (target != null) Handler.kick(target.getName(), message);
             }
@@ -104,35 +104,35 @@ public class BanCMD implements CommandExecutor {
                 if (target != null) Handler.kick(target.getName(), message);
             }
             else {
-                player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cНеверный формат времени, используете: d,h,m,s или -s!"));
+                player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.bannotimeformat")));
             }
             return true;
         } else {
             ConsoleCommandSender console = Bukkit.getConsoleSender();
             if (strings.length == 0) {
-                console.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&c&lAuthTG&f&l] &cКоманда введена неверно. Введите /ban <игрок> <время> <причина>"));
+                console.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.banusage")));
                 return false;
             }
             if (strings.length < 3) {
-                console.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&c&lAuthTG&f&l] &cКоманда введена неверно. Введите /ban <игрок> <время> <причина>"));
+                console.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.banusage")));
                 return false;
             }
             String reason = String.join(" ", strings).substring(strings[0].length() + strings[1].length() + 2);
             UUID targetuuid = AuthTG.loader.getUUIDbyPlayerName(strings[0]);
             if (targetuuid == null) {
-                console.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&c&lAuthTG&f&l] &cИгрок не найден."));
+                console.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.banplayernotfound")));
                 return false;
             }
             if (AuthTG.loader.isBanned(targetuuid)) {
-                console.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&c&lAuthTG&f&l] &cИгрок уже забанен."));
+                console.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.banalreadybanned")));
                 return false;
             }
             if (reason.isEmpty()) {
-                console.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&c&lAuthTG&f&l] &cКоманда введена неверно. Введите /ban <игрок> <время> <причина>"));
+                console.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.banusage")));
                 return false;
             }
             if (reason.length() > 120) {
-                console.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&c&lAuthTG&f&l] &cПричина слишком длинная."));
+                console.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.banreasonlong")));
                 return false;
             }
             Player target = Bukkit.getPlayer(targetuuid);
@@ -143,7 +143,7 @@ public class BanCMD implements CommandExecutor {
                 String formattedDate = date.format(formatter);
                 String time = timedate.format(formatter);
                 AuthTG.loader.setBanTime(targetuuid, formattedDate, reason, time, "CONSOLE");
-                console.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&c&lAuthTG&f&l] &aИгрок " + strings[0] + " успешно забанен"));
+                console.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.bansuccess").replace("{PLAYER}", strings[0])));
                 String message = ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.ban")).replace("{ADMIN}", "CONSOLE").replace("{REASON}", reason).replace("{TIMEBAN}", formattedDate).replace("{TIME}", time).replace("{BR}", "\n");
                 if (target != null) Handler.kick(target.getName(), message);
             }
@@ -154,7 +154,7 @@ public class BanCMD implements CommandExecutor {
                 String formattedDate = date.format(formatter);
                 String time = timedate.format(formatter);
                 AuthTG.loader.setBanTime(targetuuid, formattedDate, reason, time, "CONSOLE");
-                console.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&c&lAuthTG&f&l] &aИгрок " + strings[0] + " успешно забанен"));
+                console.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.bansuccess").replace("{PLAYER}", strings[0])));
                 String message = ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.ban")).replace("{ADMIN}", "CONSOLE").replace("{REASON}", reason).replace("{TIMEBAN}", formattedDate).replace("{TIME}", time).replace("{BR}", "\n");
                 if (target != null) Handler.kick(target.getName(), message);
             }
@@ -165,7 +165,7 @@ public class BanCMD implements CommandExecutor {
                 String formattedDate = date.format(formatter);
                 String time = timedate.format(formatter);
                 AuthTG.loader.setBanTime(targetuuid, formattedDate, reason, time, "CONSOLE");
-                console.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&c&lAuthTG&f&l] &aИгрок " + strings[0] + " успешно забанен"));
+                console.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.bansuccess").replace("{PLAYER}", strings[0])));
                 String message = ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.ban")).replace("{ADMIN}", "CONSOLE").replace("{REASON}", reason).replace("{TIMEBAN}", formattedDate).replace("{TIME}", time).replace("{BR}", "\n");
                 if (target != null) Handler.kick(target.getName(), message);
             }
@@ -176,7 +176,7 @@ public class BanCMD implements CommandExecutor {
                 String formattedDate = date.format(formatter);
                 String time = timedate.format(formatter);
                 AuthTG.loader.setBanTime(targetuuid, formattedDate, reason, time, "CONSOLE");
-                console.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&c&lAuthTG&f&l] &aИгрок " + strings[0] + " успешно забанен"));
+                console.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.bansuccess").replace("{PLAYER}", strings[0])));
                 String message = ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.ban")).replace("{ADMIN}", "CONSOLE").replace("{REASON}", reason).replace("{TIMEBAN}", formattedDate).replace("{TIME}", time).replace("{BR}", "\n");
                 if (target != null) Handler.kick(target.getName(), message);
             }
@@ -189,7 +189,7 @@ public class BanCMD implements CommandExecutor {
                 if (target != null) Handler.kick(target.getName(), message);
             }
             else {
-                console.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cНеверный формат времени, используете: d,h,m,s или -s!"));
+                console.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.bannotimeformat")));
             }
         }
         return true;
