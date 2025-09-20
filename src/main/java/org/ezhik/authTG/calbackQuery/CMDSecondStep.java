@@ -19,23 +19,23 @@ public class CMDSecondStep implements CallbackQueryHandler{
             if (list.get(0).equals("add")) {
                 if (target.commands != null && !target.commands.contains("ban")) {
                     AuthTG.loader.addCommand(target.uuid, "ban");
-                    user.sendMessage("Вы успешно выдали право банить пользователю " + target.playername);
-                    if (target.activetg) target.sendMessage("Вам было выдано право банить");
+                    user.sendMessage(AuthTG.config.getString("messages.telegram.cmdsecondadd").replace("{PLAYER}", target.playername).replace("{PERMISSION}", AuthTG.config.getString("messages.telegram.cmdsecondban")));
+                    if (target.activetg) target.sendMessage(AuthTG.config.getString("messages.telegram.cmdsecondaddplayer").replace("{PERMISSION}", AuthTG.config.getString("messages.telegram.cmdsecondban")));
                     if (target.player != null)
-                        target.player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&c&l[AuthTG] &cВам было выдано право банить"));
+                        target.player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.cmdsecondaddplayer").replace("{PERMISSION}", AuthTG.config.getString("messages.minecraft.cmdsecondban"))));
                 } else {
-                    user.sendMessage("У пользователя " + target.playername + " уже есть право банить");
+                    user.sendMessage(AuthTG.config.getString("messages.telegram.cmdsecondexcadd").replace("{PLAYER}", target.playername).replace("{PERMISSION}", AuthTG.config.getString("messages.telegram.cmdsecondmute")));
                 }
             }
             if (list.get(0).equals("rem")) {
                 if (target.commands != null && target.commands.contains("ban")) {
                     AuthTG.loader.removeCommand(target.uuid, "ban");
-                    user.sendMessage("Вы успешно забрали право банить пользователю " + target.playername);
-                    if (target.activetg) target.sendMessage("У вас было забрали право банить");
+                    user.sendMessage(AuthTG.config.getString("messages.telegram.cmdsecondrem").replace("{PLAYER}", target.playername).replace("{PERMISSION}", AuthTG.config.getString("messages.telegram.cmdsecondban")));
+                    if (target.activetg) target.sendMessage(AuthTG.config.getString("messages.telegram.cmdsecondremplayer").replace("{PERMISSION}", AuthTG.config.getString("messages.telegram.cmdsecondban")));
                     if (target.player != null)
-                        target.player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&c&l[AuthTG] &cУ вас забрали право банить"));
+                        target.player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.cmdsecondremplayer").replace("{PERMISSION}", AuthTG.config.getString("messages.minecraft.cmdsecondban"))));
                 } else {
-                    user.sendMessage("У пользователя " + target.playername + " нет право банить");
+                    user.sendMessage(AuthTG.config.getString("messages.telegram.cmdsecondexcrem").replace("{PLAYER}", target.playername).replace("{PERMISSION}", AuthTG.config.getString("messages.telegram.cmdsecondmute")));
                 }
             }
         }
@@ -43,23 +43,23 @@ public class CMDSecondStep implements CallbackQueryHandler{
             if (list.get(0).equals("add")) {
                 if (target.commands != null && !target.commands.contains("kick")) {
                     AuthTG.loader.addCommand(target.uuid, "kick");
-                    user.sendMessage("Вы успешно выдали право кика пользователю " + target.playername);
-                    if (target.activetg) target.sendMessage("Вам было выдано право кика");
+                    user.sendMessage(AuthTG.config.getString("messages.telegram.cmdsecondadd").replace("{PLAYER}", target.playername).replace("{PERMISSION}", AuthTG.config.getString("messages.telegram.cmdsecondkick")));;
+                    if (target.activetg) target.sendMessage(AuthTG.config.getString("messages.telegram.cmdsecondaddplayer").replace("{PERMISSION}", AuthTG.config.getString("messages.telegram.cmdsecondkick")));
                     if (target.player != null)
-                        target.player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&c&l[AuthTG] &cВам было выдано право кика"));
+                        target.player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.cmdsecondaddplayer").replace("{PERMISSION}", AuthTG.config.getString("messages.minecraft.cmdsecondkick"))));
                 } else {
-                    user.sendMessage("У пользователя " + target.playername + " уже есть право кика");
+                    user.sendMessage(AuthTG.config.getString("messages.telegram.cmdsecondexcadd").replace("{PLAYER}", target.playername).replace("{PERMISSION}", AuthTG.config.getString("messages.telegram.cmdsecondmute")));
                 }
             }
             if (list.get(0).equals("rem")) {
                 if (target.commands != null && target.commands.contains("kick")) {
                     AuthTG.loader.removeCommand(target.uuid, "kick");
-                    user.sendMessage("Вы успешно забрали право кика пользователю " + target.playername);
-                    if (target.activetg) target.sendMessage("У вас было забрали право кика");
+                    user.sendMessage(AuthTG.config.getString("messages.telegram.cmdsecondrem").replace("{PLAYER}", target.playername).replace("{PERMISSION}", AuthTG.config.getString("messages.telegram.cmdsecondkick")));
+                    if (target.activetg) target.sendMessage(AuthTG.config.getString("messages.telegram.cmdsecondremplayer").replace("{PERMISSION}", AuthTG.config.getString("messages.telegram.cmdsecondkick")));
                     if (target.player != null)
-                        target.player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&c&l[AuthTG] &cУ вас забрали право кика"));
+                        target.player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.cmdsecondremplayer").replace("{PERMISSION}", AuthTG.config.getString("messages.minecraft.cmdsecondkick"))));
                 } else {
-                    user.sendMessage("У пользователя " + target.playername + " нет право кика");
+                    user.sendMessage(AuthTG.config.getString("messages.telegram.cmdsecondexcrem").replace("{PLAYER}", target.playername).replace("{PERMISSION}", AuthTG.config.getString("messages.telegram.cmdsecondmute")));
                 }
             }
         }
@@ -67,23 +67,23 @@ public class CMDSecondStep implements CallbackQueryHandler{
             if (list.get(0).equals("add")) {
                 if (target.commands != null && !target.commands.contains("mute")) {
                     AuthTG.loader.addCommand(target.uuid, "mute");
-                    user.sendMessage("Вы успешно выдали право мута пользователю " + target.playername);
-                    if (target.activetg) target.sendMessage("Вам было выдано право мута");
+                    user.sendMessage(AuthTG.config.getString("messages.telegram.cmdsecondadd").replace("{PLAYER}", target.playername).replace("{PERMISSION}", AuthTG.config.getString("messages.telegram.cmdsecondmute")));
+                    if (target.activetg) target.sendMessage(AuthTG.config.getString("messages.telegram.cmdsecondaddplayer").replace("{PERMISSION}", AuthTG.config.getString("messages.telegram.cmdsecondmute")));
                     if (target.player != null)
-                        target.player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&c&l[AuthTG] &cВам было выдано право мута"));
+                        target.player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.cmdsecondaddplayer").replace("{PERMISSION}", AuthTG.config.getString("messages.minecraft.cmdsecondmute"))));
                 } else {
-                    user.sendMessage("У пользователя " + target.playername + " уже есть право мута");
+                    user.sendMessage(AuthTG.config.getString("messages.telegram.cmdsecondexcadd").replace("{PLAYER}", target.playername).replace("{PERMISSION}", AuthTG.config.getString("messages.telegram.cmdsecondmute")));
                 }
             }
             if (list.get(0).equals("rem")) {
                 if (target.commands != null && target.commands.contains("mute")) {
                     AuthTG.loader.removeCommand(target.uuid, "mute");
-                    user.sendMessage("Вы успешно забрали право мута пользователю " + target.playername);
-                    if (target.activetg) target.sendMessage("У вас было забрали право мута");
+                    user.sendMessage(AuthTG.config.getString("messages.telegram.cmdsecondrem").replace("{PLAYER}", target.playername).replace("{PERMISSION}", AuthTG.config.getString("messages.telegram.cmdsecondmute")));
+                    if (target.activetg) target.sendMessage(AuthTG.config.getString("messages.telegram.cmdsecondremplayer").replace("{PERMISSION}", AuthTG.config.getString("messages.telegram.cmdsecondmute")));
                     if (target.player != null)
-                        target.player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&c&l[AuthTG] &cУ вас забрали право мута"));
+                        target.player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.cmdsecondremplayer").replace("{PERMISSION}", AuthTG.config.getString("messages.minecraft.cmdsecondmute"))));
                 } else {
-                    user.sendMessage("У пользователя " + target.playername + " нет право мута");
+                    user.sendMessage(AuthTG.config.getString("messages.telegram.cmdsecondexcrem").replace("{PLAYER}", target.playername).replace("{PERMISSION}", AuthTG.config.getString("messages.telegram.cmdsecondmute")));
                 }
             }
         }

@@ -18,12 +18,23 @@ minLenghtPassword: 3 # Минимальная длина пароля EN: Min le
 maxLenghtPassword: 32 # Максимальная длина пароля EN: Max length password
 kickTimeout: 30 # Время в секундах, через которое игрок будет кикнут если не авторизовался EN: Time in seconds, after which the player will be kicked if not authorized
 spawnLocation: null # Спавн EN: Spawn
+activeChatinTG: true # Должен ли работать чат в телеграме EN: Must chat in Telegram
 messages: # Сообщения EN: Messages
   console: # Консольные сообщения EN: Console messages
     mcbcsuccess: "[AuthTG] Message successfully sent!"
     tgbcsuccess: "[AuthTG] Message successfully sent!"
     notplayer: "[AuthTG] This command can only be used by players!"
   telegram: # Сообщения в телеграме EN: Telegram messages
+    cmdsecondexcadd: "У пользователя {PLAYER} уже есть право {PERMISSION}"
+    cmdsecondexcrem: "У пользователя {PLAYER} нет права {PERMISSION}"
+    cmdfirstnick: "Напишите никнейм пользователя:"
+    cmdsecondadd: "Вы успешно выдали право {PERMISSION} пользователю {PLAYER}"
+    cmdsecondrem: "Вы успешно удалили право {PERMISSION} пользователю {PLAYER}"
+    cmdsecondban: "Бан"
+    cmdsecondkick: "Кик"
+    cmdsecondmute: "Мут"
+    cmdsecondremplayer: "У вас забрали право {PERMISSION}"
+    cmdsecondaddplayer: "Вам было выдано право {PERMISSION}"
     prefix: "[Бот@{PLAYER}] "
     msgfriend: "[Бот@{PLAYER}] "
     msgfriendbutton: "Действия"
@@ -85,6 +96,11 @@ messages: # Сообщения EN: Messages
     friendaddyes: "Да"
     friendaddno: "Нет"
   minecraft: # Сообщения в майнкрафте EN: Minecraft messages
+    cmdsecondaddplayer: "&c&l[AuthTG] &cВам было выдано право {PERMISSION}"
+    cmdsecondremplayer: "&c&l[AuthTG] &cУ вас забрали право {PERMISSION}"
+    cmdsecondban: "&eБан"
+    cmdsecondkick: "&eКик"
+    cmdsecondmute: "&eМут"
     chatminecraft: "&f&l[&c&lAuthTG&f&l] &c{PLAYER} &fотправил сообщение из оффлайна: &a{MESSAGE}"
     codemsgdeactivated: "&f&l[&c&lAuthTG&f&l] &c&lЧтобы отвязать аккаунт, введите /code <код из Телеграма>, если это не вы,то проигнорируйте это сообщение."
     codemsgactivated: "&f&l[&c&lAuthTG&f&l] &a&lВведите /code <код из телеграма>. Если это не вы,то проигнорируйте это сообщение"

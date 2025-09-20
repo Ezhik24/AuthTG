@@ -15,6 +15,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
 import java.io.File;
+import java.util.logging.Level;
 
 public final class AuthTG extends JavaPlugin {
     public static Loader loader;
@@ -70,6 +71,7 @@ public final class AuthTG extends JavaPlugin {
         getCommand("command").setExecutor(new CommandCMD());
         getCommand("kick").setExecutor(new KickCMD());
         getCommand("mute").setExecutor(new MuteCMD());
+        getCommand("ban").setExecutor(new BanCMD());
         // Register TabCompleter
         getCommand("admin").setTabCompleter(new AdminTabCompleter());
         getCommand("friend").setTabCompleter(new FriendTabCompleter());

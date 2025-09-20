@@ -82,13 +82,15 @@ public class BotTelegram extends TelegramLongPollingBot {
                     else Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&',AuthTG.config.getString("messages.minecraft.chatminecraft").replace("{PLAYER}", user.playername).replace("{MESSAGE}", message)));
                 } else this.sendMessage(chatid, AuthTG.config.getString("messages.telegram.chatminecraftnotactive"));
             } else {
-                User user = User.getUser(AuthTG.loader.getCurrentUUID(chatid));
-                if (user.activetg) {
-                    for (Long s : AuthTG.loader.getChatID()) {
-                        this.sendMessage(s, AuthTG.config.getString("messages.telegram.chatmessage").replace("{PLAYER}", user.playername).replace("{MESSAGE}", update.getMessage().getText().toString()));
+                if (AuthTG.config.getBoolean("activeChatinTG")) {
+                    User user = User.getUser(AuthTG.loader.getCurrentUUID(chatid));
+                    if (user.activetg) {
+                        for (Long s : AuthTG.loader.getChatID()) {
+                            this.sendMessage(s, AuthTG.config.getString("messages.telegram.chatmessage").replace("{PLAYER}", user.playername).replace("{MESSAGE}", update.getMessage().getText().toString()));
+                        }
+                    } else {
+                        this.sendMessage(chatid, AuthTG.config.getString("messages.telegram.chatmsgusernotactive"));
                     }
-                } else {
-                    this.sendMessage(chatid, AuthTG.config.getString("messages.telegram.chatmsgusernotactive"));
                 }
             }
             this.deleteMessage(update.getMessage());
