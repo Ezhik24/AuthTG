@@ -9,6 +9,7 @@ import org.ezhik.authTG.AuthTG;
 import org.ezhik.authTG.User;
 import org.ezhik.authTG.events.FreezerEvent;
 import org.ezhik.authTG.events.MuterEvent;
+import org.ezhik.authTG.handlers.AuthHandler;
 
 public class LoginCMD implements CommandExecutor {
     @Override
@@ -53,6 +54,7 @@ public class LoginCMD implements CommandExecutor {
                 FreezerEvent.unfreezeplayer(player.getName());
                 MuterEvent.unmute(player.getName());
                 player.resetTitle();
+                AuthHandler.removeTimeout(player.getUniqueId());
             }
         }
         return true;

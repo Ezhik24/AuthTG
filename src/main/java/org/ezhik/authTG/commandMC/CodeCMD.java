@@ -9,6 +9,7 @@ import org.ezhik.authTG.AuthTG;
 import org.ezhik.authTG.User;
 import org.ezhik.authTG.events.FreezerEvent;
 import org.ezhik.authTG.events.MuterEvent;
+import org.ezhik.authTG.handlers.AuthHandler;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -35,6 +36,7 @@ public class CodeCMD implements CommandExecutor {
             FreezerEvent.unfreezeplayer(player.getName());
             MuterEvent.unmute(player.getName());
             player.resetTitle();
+            AuthHandler.removeTimeout(player.getUniqueId());
         }
         if (AuthTG.loader.getActiveTG(player.getUniqueId())) {
             AuthTG.loader.setActiveTG(player.getUniqueId(), false);

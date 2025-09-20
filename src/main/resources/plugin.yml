@@ -3,10 +3,9 @@ version: '2.0'
 main: org.ezhik.authTG.AuthTG
 api-version: '1.20'
 authors: [Ezhik24, ABBAfan]
-
 commands:
   register:
-    description: 'Регистрация'
+    description: 'Register'
     aliases:
       - reg
   login:
@@ -29,3 +28,17 @@ commands:
     description: 'Friends'
   setspawn:
     description: 'Set spawn'
+  admin:
+    description: 'AdminCMD'
+  command:
+    description: 'CommandCMD'
+  kick:
+    description: 'Kick player'
+  mute:
+    description: 'Mute player'
+  ban:
+    description: 'Ban player'
+  unban:
+    description: 'Unban player'
+  unmute:
+    description: 'Unmute player'

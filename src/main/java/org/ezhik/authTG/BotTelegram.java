@@ -2,9 +2,9 @@ package org.ezhik.authTG;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.ezhik.authTG.calbackQuery.*;
 import org.ezhik.authTG.commandTG.*;
+import org.ezhik.authTG.handlers.Handler;
 import org.ezhik.authTG.nextStep.NextStepHandler;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -13,8 +13,6 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -40,6 +38,10 @@ public class BotTelegram extends TelegramLongPollingBot {
         commandHandler.put("/unlink", new UnLinkCMDHandler());
         commandHandler.put("/kickme", new KickMeCMDHandler());
         commandHandler.put("/friends", new FriendCMDHandler());
+        commandHandler.put("/kick", new KickCMDHandler());
+        commandHandler.put("/ban", new BanCMDHandler());
+        commandHandler.put("/mute", new MuteCMDHandler());
+        commandHandler.put("/command", new CommandCMDHandler());
         callbackQueryHandler.put("ys", new LoginAcceptedYes());
         callbackQueryHandler.put("no", new LoginAcceptedNo());
         callbackQueryHandler.put("acc", new AccAccounts());
@@ -49,6 +51,8 @@ public class BotTelegram extends TelegramLongPollingBot {
         callbackQueryHandler.put("delfr", new DelFriends());
         callbackQueryHandler.put("sndtg", new SendMessageTG());
         callbackQueryHandler.put("sndmc", new SendMessageMC());
+        callbackQueryHandler.put("cmdfirst", new CMDFirstStep());
+        callbackQueryHandler.put("cmdsecond", new CMDSecondStep());
     }
 
     @Override
@@ -68,22 +72,25 @@ public class BotTelegram extends TelegramLongPollingBot {
             String command = update.getMessage().getText().toString();
             if (nextStepHandler.containsKey(update.getMessage().getChatId())) nextStepHandler.get(chatid).execute(update);
             else if (command.startsWith("/")) {
-                if (commandHandler.containsKey(command)) commandHandler.get(command).execute(update);
+                String[] str = command.split(" ");
+                if (commandHandler.containsKey(str[0])) commandHandler.get(str[0]).execute(update);
             } else if (command.startsWith("#")) {
                 User user = User.getUser(AuthTG.loader.getCurrentUUID(chatid));
                 String message = command.substring(1);
                 if (user.activetg) {
                     if (user.player != null) Handler.sendMCmessage(user.playername, message);
-                    else Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&',AuthTG.config.getString("messages.telegram.chatminecraft").replace("{PLAYER}", user.playername).replace("{MESSAGE}", message)));
+                    else Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&',AuthTG.config.getString("messages.minecraft.chatminecraft").replace("{PLAYER}", user.playername).replace("{MESSAGE}", message)));
                 } else this.sendMessage(chatid, AuthTG.config.getString("messages.telegram.chatminecraftnotactive"));
             } else {
-                User user = User.getUser(AuthTG.loader.getCurrentUUID(chatid));
-                if (user.activetg) {
-                    for (Long s : AuthTG.loader.getChatID()) {
-                        this.sendMessage(s, AuthTG.config.getString("messages.telegram.chatmessage").replace("{PLAYER}", user.playername).replace("{MESSAGE}", update.getMessage().getText().toString()));
+                if (AuthTG.config.getBoolean("activeChatinTG")) {
+                    User user = User.getUser(AuthTG.loader.getCurrentUUID(chatid));
+                    if (user.activetg) {
+                        for (Long s : AuthTG.loader.getChatID()) {
+                            this.sendMessage(s, AuthTG.config.getString("messages.telegram.chatmessage").replace("{PLAYER}", user.playername).replace("{MESSAGE}", update.getMessage().getText().toString()));
+                        }
+                    } else {
+                        this.sendMessage(chatid, AuthTG.config.getString("messages.telegram.chatmsgusernotactive"));
                     }
-                } else {
-                    this.sendMessage(chatid, AuthTG.config.getString("messages.telegram.chatmsgusernotactive"));
                 }
             }
             this.deleteMessage(update.getMessage());

@@ -34,6 +34,7 @@ public class YAMLMigrate {
                 if (!rs.getString("username").equals("null")) config.set("username", rs.getString("username"));
                 config.set("twofactor", rs.getBoolean("twofactor"));
                 config.set("activetg", rs.getBoolean("activetg"));
+                config.set("admin", rs.getBoolean("admin"));
                 try {
                     config.save(file);
                 } catch (IOException e) {
@@ -55,6 +56,56 @@ public class YAMLMigrate {
                 }
             }
             st.executeUpdate("DROP TABLE AuthTGFriends");
+            rs = st.executeQuery("SELECT * FROM AuthTGBans");
+            while (rs.next()) {
+                File file = new File("plugins/AuthTG/bans/" + UUID.fromString(rs.getString("uuid")) + ".yml");
+                YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
+                config.set("ban.timeBan", rs.getString("timeBan"));
+                config.set("ban.reason", rs.getString("reason"));
+                config.set("ban.time", rs.getString("time"));
+                config.set("ban.admin", rs.getString("admin"));
+                try {
+                    config.save(file);
+                } catch (IOException e) {
+                    System.out.println("Error saving file: " + e.getMessage());
+                }
+            }
+            st.executeUpdate("DROP TABLE AuthTGBans");
+            rs = st.executeQuery("SELECT * FROM AuthTGMutes");
+            while (rs.next()) {
+                File file = new File("plugins/AuthTG/mutes/" + UUID.fromString(rs.getString("uuid")) + ".yml");
+                YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
+                config.set("mute.timeMute", rs.getString("timeMute"));
+                config.set("mute.reason", rs.getString("reason"));
+                config.set("mute.time", rs.getString("time"));
+                config.set("mute.admin", rs.getString("admin"));
+                try {
+                    config.save(file);
+                } catch (IOException e) {
+                    System.out.println("Error saving file: " + e.getMessage());
+                }
+            }
+            st.executeUpdate("DROP TABLE AuthTGMutes");
+            rs = st.executeQuery("SELECT * FROM AuthTGCommands");
+            while (rs.next()) {
+                File file = new File("plugins/AuthTG/commands/" + UUID.fromString(rs.getString("uuid")) + ".yml");
+                YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
+                if (!config.contains("commands")) {
+                    List<String> commands = new ArrayList<>();
+                    commands.add(rs.getString("command"));
+                    config.set("commands", commands);
+                } else {
+                    List<String> commands = config.getStringList("commands");
+                    commands.add(rs.getString("command"));
+                    config.set("commands", commands);
+                }
+                try {
+                    config.save(file);
+                } catch (IOException e) {
+                    System.out.println("Error saving file: " + e.getMessage());
+                }
+            }
+            st.executeUpdate("DROP TABLE AuthTGCommands");
         } catch (SQLException e) {
             System.out.println("SQL Exception: " + e.getMessage());
         }

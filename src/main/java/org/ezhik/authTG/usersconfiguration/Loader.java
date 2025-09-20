@@ -1,8 +1,6 @@
 package org.ezhik.authTG.usersconfiguration;
 
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 public interface Loader {
     void setPlayerName(UUID uuid, String playername);
@@ -58,4 +56,49 @@ public interface Loader {
     UUID getUUIDbyPlayerName(String playername);
 
     void removeFriend(UUID uuid, String friend);
+
+    void setAdmin(UUID uuid);
+
+    void removeAdmin(UUID uuid);
+
+    Set<String> getAdminList();
+
+    Set<String> getCommands(UUID uuid);
+
+    void addCommand(UUID uuid, String command);
+
+    void removeCommand(UUID uuid, String command);
+
+    boolean isAdmin(UUID uuid);
+
+    void setBanTime(UUID uuid, String dateBan, String reason, String time, String admin);
+
+    String getBanTime(UUID uuid);
+
+    String getBanReason(UUID uuid);
+
+    String getBanAdmin(UUID uuid);
+
+    String getBanTimeAdmin(UUID uuid);
+
+    void deleteBan(UUID uuid);
+
+    boolean isBanned(UUID uuid);
+
+    void setMuteTime(UUID uuid, String dateMute, String reason, String time, String admin);
+
+    String getMuteTime(UUID uuid);
+
+    String getMuteReason(UUID uuid);
+
+    String getMuteAdmin(UUID uuid);
+
+    String getMuteTimeAdmin(UUID uuid);
+
+    void deleteMute(UUID uuid);
+
+    boolean isMuted(UUID uuid);
+
+    Map<String, List<Object>> getMutedPlayers();
+
 }

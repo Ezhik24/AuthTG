@@ -1,9 +1,16 @@
 package org.ezhik.authTG.usersconfiguration;
 
 import org.ezhik.authTG.PasswordHasher;
+import org.ezhik.authTG.events.MuterEvent;
 
 import java.sql.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.Date;
 
 public class MySQLLoader implements Loader {
     private String database;
@@ -39,6 +46,7 @@ public class MySQLLoader implements Loader {
                     + "firstname varchar(120),"
                     + "lastname varchar(120),"
                     + "currentUUID BOOLEAN NOT NULL DEFAULT false,"
+                    + "admin BOOLEAN NOT NULL DEFAULT false,"
                     + "PRIMARY KEY (priKey))"
             );
             st.executeUpdate(
@@ -46,6 +54,33 @@ public class MySQLLoader implements Loader {
                     + "priKey INT NOT NULL AUTO_INCREMENT,"
                     + "uuid varchar(36) NOT NULL,"
                     + "friend varchar(120) NOT NULL,"
+                    + "PRIMARY KEY (priKey))"
+            );
+            st.executeUpdate(
+                    "CREATE TABLE IF NOT EXISTS AuthTGCommands ("
+                    + "priKey INT NOT NULL AUTO_INCREMENT,"
+                    + "uuid varchar(36) NOT NULL,"
+                    + "command varchar(30) NOT NULL,"
+                    + "PRIMARY KEY (priKey))"
+            );
+            st.executeUpdate(
+                    "CREATE TABLE IF NOT EXISTS AuthTGBans ("
+                    + "priKey INT NOT NULL AUTO_INCREMENT,"
+                    + "uuid varchar(36) NOT NULL,"
+                    + "timeBan varchar(64) NOT NULL,"
+                    + "reason varchar(120) NOT NULL,"
+                    + "time varchar(36) NOT NULL,"
+                    + "admin varchar(90) NOT NULL,"
+                    + "PRIMARY KEY (priKey))"
+            );
+            st.executeUpdate(
+                    "CREATE TABLE IF NOT EXISTS AuthTGMutes ("
+                    + "priKey INT NOT NULL AUTO_INCREMENT,"
+                    + "uuid varchar(36) NOT NULL,"
+                    + "timeMute varchar(64) NOT NULL,"
+                    + "reason varchar(120) NOT NULL,"
+                    + "time varchar(36) NOT NULL,"
+                    + "admin varchar(90) NOT NULL,"
                     + "PRIMARY KEY (priKey))"
             );
             conn.close();
@@ -556,5 +591,467 @@ public class MySQLLoader implements Loader {
         } catch (SQLException e) {
             System.out.println("SQLException: " + e.getMessage());
         }
+    }
+
+    @Override
+    public void setAdmin(UUID uuid) {
+        try {
+            conn = DriverManager.getConnection(
+                    "jdbc:mysql://" + this.host + "/" + this.database,
+                    this.username,
+                    this.password
+            );
+            st = conn.createStatement();
+            st.executeUpdate(
+                    "UPDATE AuthTGUsers SET admin = true WHERE uuid = '" + uuid.toString() + "'"
+            );
+            conn.close();
+        } catch (SQLException e) {
+            System.out.println("SQLException: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public void removeAdmin(UUID uuid) {
+        try {
+            conn = DriverManager.getConnection(
+                    "jdbc:mysql://" + this.host + "/" + this.database,
+                    this.username,
+                    this.password
+            );
+            st = conn.createStatement();
+            st.executeUpdate(
+                    "UPDATE AuthTGUsers SET admin = false WHERE uuid = '" + uuid.toString() + "'"
+            );
+            conn.close();
+        } catch (SQLException e) {
+            System.out.println("SQLException: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public Set<String> getAdminList() {
+        try {
+            conn = DriverManager.getConnection(
+                    "jdbc:mysql://" + this.host + "/" + this.database,
+                    this.username,
+                    this.password
+            );
+            st = conn.createStatement();
+            rs = st.executeQuery(
+                    "SELECT playername FROM AuthTGUsers WHERE admin = true"
+            );
+            Set<String> set = new HashSet<>();
+            while (rs.next()) {
+                set.add(rs.getString("playername"));
+            }
+            conn.close();
+            return set;
+        } catch (SQLException e) {
+            System.out.println("SQLException: " + e.getMessage());
+        }
+        return null;
+    }
+
+    @Override
+    public Set<String> getCommands(UUID uuid) {
+        try {
+            conn = DriverManager.getConnection(
+                    "jdbc:mysql://" + this.host + "/" + this.database,
+                    this.username,
+                    this.password
+            );
+            st = conn.createStatement();
+            rs = st.executeQuery(
+                    "SELECT command FROM AuthTGCommands WHERE uuid = '" + uuid.toString() + "'"
+            );
+            Set<String> list = new HashSet<>();
+            while (rs.next()) {
+                list.add(rs.getString("command"));
+            }
+            conn.close();
+            return list;
+        } catch (SQLException e) {
+            System.out.println("SQLException: " + e.getMessage());
+        }
+        return null;
+    }
+
+    @Override
+    public void addCommand(UUID uuid, String command) {
+        try {
+            conn = DriverManager.getConnection(
+                    "jdbc:mysql://" + this.host + "/" + this.database,
+                    this.username,
+                    this.password
+            );
+            st = conn.createStatement();
+            st.executeUpdate(
+                    "INSERT INTO AuthTGCommands(uuid, command) VALUES ('" + uuid.toString() + "', '" + command + "')"
+            );
+            conn.close();
+        } catch (SQLException e) {
+            System.out.println("SQLException: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public void removeCommand(UUID uuid, String command) {
+        try {
+            conn = DriverManager.getConnection(
+                    "jdbc:mysql://" + this.host + "/" + this.database,
+                    this.username,
+                    this.password
+            );
+            st = conn.createStatement();
+            st.executeUpdate(
+                    "DELETE FROM AuthTGCommands WHERE uuid = '" + uuid.toString() + "' AND command = '" + command + "'"
+            );
+            conn.close();
+        } catch (SQLException e) {
+            System.out.println("SQLException: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public boolean isAdmin(UUID uuid) {
+        try {
+            conn = DriverManager.getConnection(
+                    "jdbc:mysql://" + this.host + "/" + this.database,
+                    this.username,
+                    this.password
+            );
+            st = conn.createStatement();
+            rs = st.executeQuery(
+                    "SELECT admin FROM AuthTGUsers WHERE uuid = '" + uuid.toString() + "'"
+            );
+            if (rs.next()) {
+                return rs.getBoolean("admin");
+            }
+            conn.close();
+        } catch (SQLException e) {
+            System.out.println("SQLException: " + e.getMessage());
+        }
+        return false;
+    }
+
+    @Override
+    public void setBanTime(UUID uuid, String dateBan, String reason, String time, String admin) {
+        try {
+            conn = DriverManager.getConnection(
+                    "jdbc:mysql://" + this.host + "/" + this.database,
+                    this.username,
+                    this.password
+            );
+            st = conn.createStatement();
+            st.executeUpdate(
+                    "INSERT INTO AuthTGBans(uuid, timeBan, reason, time, admin) VALUES ('" + uuid.toString() + "', '" + dateBan + "', '" + reason + "', '" + time + "', '" + admin + "')"
+            );
+            conn.close();
+        } catch (SQLException e) {
+            System.out.println("SQLException: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public String getBanTime(UUID uuid) {
+        try {
+            conn = DriverManager.getConnection(
+                    "jdbc:mysql://" + this.host + "/" + this.database,
+                    this.username,
+                    this.password
+            );
+            st = conn.createStatement();
+            rs = st.executeQuery(
+                    "SELECT timeBan FROM AuthTGBans WHERE uuid = '" + uuid.toString() + "'"
+            );
+            if (rs.next()) {
+                return rs.getString("timeBan");
+            }
+        } catch (SQLException e) {
+            System.out.println("SQLException: " + e.getMessage());
+        }
+        return null;
+    }
+
+    @Override
+    public String getBanReason(UUID uuid) {
+        try {
+            conn = DriverManager.getConnection(
+                    "jdbc:mysql://" + this.host + "/" + this.database,
+                    this.username,
+                    this.password
+            );
+            st = conn.createStatement();
+            rs = st.executeQuery(
+                    "SELECT reason FROM AuthTGBans WHERE uuid = '" + uuid.toString() + "'"
+            );
+            if (rs.next()) {
+                return rs.getString("reason");
+            }
+        } catch (SQLException e) {
+            System.out.println("SQLException: " + e.getMessage());
+        }
+        return null;
+    }
+
+    @Override
+    public String getBanAdmin(UUID uuid) {
+        try {
+            conn = DriverManager.getConnection(
+                    "jdbc:mysql://" + this.host + "/" + this.database,
+                    this.username,
+                    this.password
+            );
+            st = conn.createStatement();
+            rs = st.executeQuery(
+                    "SELECT admin FROM AuthTGBans WHERE uuid = '" + uuid.toString() + "'"
+            );
+            if (rs.next()) {
+                return rs.getString("admin");
+            }
+        } catch (SQLException e) {
+            System.out.println("SQLException: " + e.getMessage());
+        }
+        return null;
+    }
+
+    @Override
+    public String getBanTimeAdmin(UUID uuid) {
+        try {
+            conn = DriverManager.getConnection(
+                    "jdbc:mysql://" + this.host + "/" + this.database,
+                    this.username,
+                    this.password
+            );
+            st = conn.createStatement();
+            rs = st.executeQuery(
+                    "SELECT time FROM AuthTGBans WHERE uuid = '" + uuid.toString() + "'"
+            );
+            if (rs.next()) {
+                return rs.getString("time");
+            }
+        } catch (SQLException e) {
+            System.out.println("SQLException: " + e.getMessage());
+        }
+        return null;
+    }
+
+    @Override
+    public void deleteBan(UUID uuid) {
+        try {
+            conn = DriverManager.getConnection(
+                    "jdbc:mysql://" + this.host + "/" + this.database,
+                    this.username,
+                    this.password
+            );
+            st = conn.createStatement();
+            st.executeUpdate(
+                    "DELETE FROM AuthTGBans WHERE uuid = '" + uuid.toString() + "'"
+            );
+        } catch (SQLException e) {
+            System.out.println("SQLException: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public boolean isBanned(UUID uuid) {
+        try {
+            conn = DriverManager.getConnection(
+                    "jdbc:mysql://" + this.host + "/" + this.database,
+                    this.username,
+                    this.password
+            );
+            st = conn.createStatement();
+            rs = st.executeQuery(
+                    "SELECT uuid FROM AuthTGBans WHERE uuid = '" + uuid.toString() + "'"
+            );
+            if (rs.next()) {
+                return true;
+            }
+        } catch (SQLException e) {
+            System.out.println("SQLException: " + e.getMessage());
+        }
+        return false;
+    }
+
+    @Override
+    public void setMuteTime(UUID uuid, String dateMute, String reason, String time, String admin) {
+        try {
+            conn = DriverManager.getConnection(
+                    "jdbc:mysql://" + this.host + "/" + this.database,
+                    this.username,
+                    this.password
+            );
+            st = conn.createStatement();
+            st.executeUpdate(
+                    "INSERT INTO AuthTGMutes(uuid, timeMute, reason, time, admin) VALUES ('" + uuid.toString() + "', '" + dateMute + "', '" + reason + "', '" + time + "', '" + admin + "')"
+            );
+            rs = st.executeQuery(
+                    "SELECT playername FROM AuthTGUsers WHERE uuid = '" + uuid.toString() + "'"
+            );
+            if (rs.next()) {
+                List<Object> list = new ArrayList<>();
+                LocalDateTime parsedDate = LocalDateTime.parse(dateMute, DateTimeFormatter.ofPattern("HH:mm:ss dd.MM.yyyy"));
+                list.add(0, parsedDate);
+                list.add(1, reason);
+                MuterEvent.muteChat(rs.getString("playername"), list);
+            }
+            conn.close();
+        } catch (SQLException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public String getMuteTime(UUID uuid) {
+        try {
+            conn = DriverManager.getConnection(
+                    "jdbc:mysql://" + this.host + "/" + this.database,
+                    this.username,
+                    this.password
+            );
+            st = conn.createStatement();
+            rs = st.executeQuery(
+                    "SELECT timeMute FROM AuthTGMutes WHERE uuid = '" + uuid.toString() + "'"
+            );
+            if (rs.next()) {
+                return rs.getString("timeMute");
+            }
+        } catch (SQLException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+        return null;
+    }
+
+    @Override
+    public String getMuteReason(UUID uuid) {
+        try {
+            conn = DriverManager.getConnection(
+                    "jdbc:mysql://" + this.host + "/" + this.database,
+                    this.username,
+                    this.password
+            );
+            st = conn.createStatement();
+            rs = st.executeQuery(
+                    "SELECT reason FROM AuthTGMutes WHERE uuid = '" + uuid.toString() + "'"
+            );
+            if (rs.next()) {
+                return rs.getString("reason");
+            }
+        } catch (SQLException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+        return null;
+    }
+
+    @Override
+    public String getMuteAdmin(UUID uuid) {
+        try {
+            conn = DriverManager.getConnection(
+                    "jdbc:mysql://" + this.host + "/" + this.database,
+                    this.username,
+                    this.password
+            );
+            st = conn.createStatement();
+            rs = st.executeQuery(
+                    "SELECT admin FROM AuthTGMutes WHERE uuid = '" + uuid.toString() + "'"
+            );
+            if (rs.next()) {
+                return rs.getString("admin");
+            }
+        } catch (SQLException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+        return null;
+    }
+
+    @Override
+    public String getMuteTimeAdmin(UUID uuid) {
+        try {
+            conn = DriverManager.getConnection(
+                    "jdbc:mysql://" + this.host + "/" + this.database,
+                    this.username,
+                    this.password
+            );
+            st = conn.createStatement();
+            rs = st.executeQuery(
+                    "SELECT time FROM AuthTGMutes WHERE uuid = '" + uuid.toString() + "'"
+            );
+            if (rs.next()) {
+                return rs.getString("time");
+            }
+        } catch (SQLException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+        return null;
+    }
+
+    @Override
+    public void deleteMute(UUID uuid) {
+        try {
+            conn = DriverManager.getConnection(
+                    "jdbc:mysql://" + this.host + "/" + this.database,
+                    this.username,
+                    this.password
+            );
+            st = conn.createStatement();
+            st.executeUpdate(
+                    "DELETE FROM AuthTGMutes WHERE uuid = '" + uuid.toString() + "'"
+            );
+            conn.close();
+        } catch (SQLException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public boolean isMuted(UUID uuid) {
+        try {
+            conn = DriverManager.getConnection(
+                    "jdbc:mysql://" + this.host + "/" + this.database,
+                    this.username,
+                    this.password
+            );
+            st = conn.createStatement();
+            rs = st.executeQuery(
+                    "SELECT timeMute FROM AuthTGMutes WHERE uuid = '" + uuid.toString() + "'"
+            );
+            if (rs.next()) {
+                if (rs.getString("timeMute") != null) {
+                    return true;
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+        return false;
+    }
+
+    @Override
+    public Map<String, List<Object>> getMutedPlayers() {
+        Map<String, List<Object>> map = new HashMap<>();
+        try {
+            conn = DriverManager.getConnection(
+                    "jdbc:mysql://" + this.host + "/" + this.database,
+                    this.username,
+                    this.password
+            );
+            st = conn.createStatement();
+            rs = st.executeQuery(
+                    "SELECT * FROM AuthTGMutes"
+            );
+            while (rs.next()) {
+                List<Object> list = new ArrayList<>();
+                LocalDateTime parsedDate = LocalDateTime.parse(rs.getString("timeMute"), DateTimeFormatter.ofPattern("HH:mm:ss dd.MM.yyyy"));
+                list.add(0, parsedDate);
+                list.add(1, rs.getString("reason"));
+                String playername = getPlayerName(UUID.fromString(rs.getString("uuid")));
+                map.put(playername, list);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error: " + e.getMessage());;
+        }
+        return map;
     }
 }
