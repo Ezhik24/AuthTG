@@ -20,16 +20,16 @@ public class CommandCMDHandler implements CommandHandler {
     public void execute(Update update) {
         User user = User.getCurrentUser(update.getMessage().getChatId());
         if (user == null) {
-            AuthTG.bot.sendMessage(update.getMessage().getChatId(), "[Бот] Вы не авторизованы!");
+            AuthTG.bot.sendMessage(update.getMessage().getChatId(), AuthTG.config.getString("messages.telegram.cmdnull"));
             return;
         }
         if (!user.activetg) {
-            AuthTG.bot.sendMessage(update.getMessage().getChatId(), "[Бот] Вы не привязали аккаунт!");
+            AuthTG.bot.sendMessage(update.getMessage().getChatId(), AuthTG.config.getString("messages.telegram.cmdnotactive"));
             return;
         }
         commands.remove(update.getMessage().getChatId());
         if (!user.isadmin) {
-            user.sendMessage("Вы не являетесь администратором!");
+            user.sendMessage(AuthTG.config.getString("messages.telegram.cmdnotadmin"));
             return;
         }
         String[] args = update.getMessage().getText().split(" ");
@@ -37,13 +37,13 @@ public class CommandCMDHandler implements CommandHandler {
             List<List<InlineKeyboardButton>> commands = new ArrayList<>();
             List<InlineKeyboardButton> buttons = new ArrayList<>();
             InlineKeyboardButton buttonadd = new InlineKeyboardButton();
-            buttonadd.setText("Добавить");
+            buttonadd.setText(AuthTG.config.getString("messages.telegram.cmdaddcommand"));
             buttonadd.setCallbackData("cmdfirst_add");
             InlineKeyboardButton buttonrem = new InlineKeyboardButton();
-            buttonrem.setText("Удалить");
+            buttonrem.setText(AuthTG.config.getString("messages.telegram.cmdremcommand"));
             buttonrem.setCallbackData("cmdfirst_rem");
             InlineKeyboardButton buttonlist = new InlineKeyboardButton();
-            buttonlist.setText("Список");
+            buttonlist.setText(AuthTG.config.getString("messages.telegram.cmdlistcommand"));
             buttonlist.setCallbackData("cmdfirst_list");
             buttons.add(buttonadd);
             buttons.add(buttonrem);
@@ -53,7 +53,7 @@ public class CommandCMDHandler implements CommandHandler {
             inlineKeyboardMarkup.setKeyboard(commands);
             SendMessage sendMessage = new SendMessage();
             sendMessage.setChatId(update.getMessage().getChatId());
-            sendMessage.setText("[Бот] Выберите действие:");
+            sendMessage.setText(AuthTG.config.getString("messages.telegram.cmdfirst"));
             sendMessage.setReplyMarkup(inlineKeyboardMarkup);
             try {
                 AuthTG.bot.execute(sendMessage);
@@ -63,61 +63,62 @@ public class CommandCMDHandler implements CommandHandler {
         } else {
             if (args[1].equals("add")) {
                 if (args.length != 4) {
-                    user.sendMessage("Введите /command add <никнейм> <ban | kick | mute>!");
+                    user.sendMessage(AuthTG.config.getString("messages.telegram.cmdaddusage"));
                     return;
                 }
                 User target = User.getUser(args[2]);
                 if (target == null) {
-                    user.sendMessage(" Пользователь не найден!");
+                    user.sendMessage(AuthTG.config.getString("messages.telegram.cmdusernotfound"));
                     return;
                 }
                 if (args[3].equals("ban") || args[3].equals("mute") || args[3].equals("kick")) {
                     if (target.commands != null && target.commands.contains(args[3])) {
-                        user.sendMessage(" Пользователь уже имеет право на это действие!");
+                        user.sendMessage(AuthTG.config.getString("messages.telegram.cmdalreadyhas"));
                         return;
                     }
                     AuthTG.loader.addCommand(target.uuid, args[3]);
-                    user.sendMessage(" Вы успешно добавили право " + args[3] + " пользователю " + target.username + "!");
-                    if (target.activetg) target.sendMessage(" Вы получили право " + args[3] + "!");
-                    if (target.player != null) target.player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&c&l[AuthTG] &cВы получили право " + args[3] + "!"));
-                } else user.sendMessage("Введите /command add <никнейм> <ban | kick | mute>!");
+                    user.sendMessage(AuthTG.config.getString("messages.telegram.cmdaddsuccess").replace("{PERMISSION}", args[3]).replace("{PLAYER}", target.playername));
+                    if (target.activetg) target.sendMessage(AuthTG.config.getString("messages.telegram.cmdadded").replace("{COMMAND}", args[3]));
+                    if (target.player != null) target.player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.telegram.cmdadded").replace("{COMMAND}", args[3])));
+                } else user.sendMessage(AuthTG.config.getString("messages.telegram.cmdaddusage"));
             } else if (args[1].equals("rem")) {
                 if (args.length != 4) {
-                    user.sendMessage("Введите /command rem <никнейм> <ban | kick | mute>!");
+                    user.sendMessage(AuthTG.config.getString("messages.telegram.cmdremusage"));
                     return;
                 }
                 User target = User.getUser(args[2]);
                 if (target == null) {
-                    user.sendMessage("Пользователь не найден!");
+                    user.sendMessage(AuthTG.config.getString("messages.telegram.cmdusernotfound"));
                     return;
                 }
                 if (args[3].equals("ban") || args[3].equals("mute") || args[3].equals("kick")) {
                     if (target.commands != null && !target.commands.contains(args[3])) {
-                        user.sendMessage("Пользователь не имеет право на это действие!");
+                        user.sendMessage(AuthTG.config.getString("messages.telegram.cmdnoperm"));
                         return;
                     }
                     AuthTG.loader.removeCommand(target.uuid, args[3]);
-                    if (target.activetg) target.sendMessage(" Вы потеряли право " + args[3] + "!");
-                    if (target.player != null) target.player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&c&l[AuthTG] &cВы потеряли право " + args[3] + "!"));
-                    user.sendMessage(" Вы успешно удалили право " + args[3] + " у пользователя " + target.username + "!");
-                } else user.sendMessage(" Введите /command rem <никнейм> <ban | kick | mute>!");
+                    if (target.activetg) target.sendMessage(AuthTG.config.getString("messages.telegram.cmdrem").replace("{COMMAND}", args[3]));
+                    if (target.player != null) target.player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.telegram.cmdrem").replace("{COMMAND}", args[3])));
+                    user.sendMessage(AuthTG.config.getString("messages.telegram.cmdremsuccess").replace("{PERMISSION}", args[3]).replace("{PLAYER}", target.playername));
+                } else user.sendMessage(AuthTG.config.getString("messages.telegram.cmdremusage"));
             } else if (args[1].equals("list")) {
                 if (args.length != 3) {
-                    user.sendMessage(" Введите /command list <никнейм>!");
+                    user.sendMessage(AuthTG.config.getString("messages.telegram.cmdlistusage"));
                     return;
                 }
                 User target = User.getUser(args[2]);
                 if (target == null) {
-                    user.sendMessage(" Пользователь не найден!");
+                    user.sendMessage(AuthTG.config.getString("messages.telegram.cmdusernotfound"));
                     return;
                 }
                 if (target.commands != null && target.commands.isEmpty()) {
-                    user.sendMessage(" Пользователь не имеет прав!");
+                    user.sendMessage(AuthTG.config.getString("messages.telegram.cmdlistempty"));
                     return;
                 }
-                user.sendMessage(" Пользователь " + target.username + " имеет права: " + target.commands.toString().replace("[", "").replace("]", "") + "!");
+                String commands = target.commands.toString().replace("[", "").replace("]", "");
+                user.sendMessage(AuthTG.config.getString("messages.telegram.cmdlist").replace("{PLAYER}", target.playername).replace("{COMMANDS}", commands));
             } else {
-                user.sendMessage(" Введите /command <add | rem | list>!");
+                user.sendMessage(AuthTG.config.getString("messages.telegram.cmdusage"));
             }
         }
     }
