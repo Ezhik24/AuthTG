@@ -28,15 +28,14 @@ public class MuterEvent implements Listener {
             if (LocalDateTime.now().isAfter((LocalDateTime) list.get(0))) {
                 mute.remove(event.getPlayer().getName());
                 AuthTG.loader.deleteMute(event.getPlayer().getUniqueId());
-            } else {
+                return;
+            }
+            if (AuthTG.loader.isMuted(event.getPlayer().getUniqueId())) {
                 if (list.get(0).toString().equals("0")) {
-                    String message = ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.mute")).replace("{TIMEMUTE}", "навсегда").replace("{REASON}", list.get(1).toString()).replace("{TIME}", AuthTG.loader.getMuteTimeAdmin(event.getPlayer().getUniqueId())).replace("{ADMIN}", AuthTG.loader.getMuteAdmin(event.getPlayer().getUniqueId())).replace("{BR}", "\n");
+                    String message = ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.mute")).replace("{TIMEMUTE}", "навсегда").replace("{REASON}", AuthTG.loader.getMuteReason(event.getPlayer().getUniqueId())).replace("{TIME}", AuthTG.loader.getMuteTimeAdmin(event.getPlayer().getUniqueId())).replace("{ADMIN}", AuthTG.loader.getMuteAdmin(event.getPlayer().getUniqueId())).replace("{BR}", "\n");
                     event.getPlayer().sendMessage(message);
                 } else {
-                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss dd.MM.yyyy");
-                    LocalDateTime localDateTime = (LocalDateTime) list.get(0);
-                    String formatteddate = localDateTime.format(formatter);
-                    String message = ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.mute")).replace("{TIMEMUTE}", formatteddate).replace("{REASON}", list.get(1).toString()).replace("{TIME}", AuthTG.loader.getMuteTimeAdmin(event.getPlayer().getUniqueId())).replace("{ADMIN}", AuthTG.loader.getMuteAdmin(event.getPlayer().getUniqueId())).replace("{BR}", "\n");
+                    String message = ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.mute")).replace("{TIMEMUTE}", AuthTG.loader.getMuteTime(event.getPlayer().getUniqueId())).replace("{REASON}", AuthTG.loader.getMuteReason(event.getPlayer().getUniqueId())).replace("{TIME}", AuthTG.loader.getMuteTimeAdmin(event.getPlayer().getUniqueId())).replace("{ADMIN}", AuthTG.loader.getMuteAdmin(event.getPlayer().getUniqueId())).replace("{BR}", "\n");
                     event.getPlayer().sendMessage(message);
                 }
                 event.setCancelled(true);

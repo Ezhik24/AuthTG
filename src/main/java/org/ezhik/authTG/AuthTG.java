@@ -72,6 +72,8 @@ public final class AuthTG extends JavaPlugin {
         getCommand("kick").setExecutor(new KickCMD());
         getCommand("mute").setExecutor(new MuteCMD());
         getCommand("ban").setExecutor(new BanCMD());
+        getCommand("unban").setExecutor(new UnBanCMD());
+        getCommand("unmute").setExecutor(new UnMuteCMD());
         // Register TabCompleter
         getCommand("admin").setTabCompleter(new AdminTabCompleter());
         getCommand("friend").setTabCompleter(new FriendTabCompleter());
