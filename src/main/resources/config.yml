@@ -110,6 +110,13 @@ messages: # Сообщения EN: Messages
     bannoactivetg: "[Бот] Вы не авторизованы"
     ban: "Напишите: <никнейм> <время> <причина> или <никнейм> <причина>"
     banformat: "Неверный формат команды!"
+    kickusernotfound: "Пользователь не авторизован"
+    kickusernotonline: "Игрок не в сети"
+    kickusage: "Команда введена не полностью, введите: /kick <никнейм> <причина>"
+    kick: "Введите никнейм и причину"
+    kicknotactive: "[Бот] Вы не привязывали аккаунт"
+    kickuser: "Игрок {PLAYER} успешно кикнут!"
+    mutenoperm: "У вас нет прав"
   minecraft: # Сообщения в майнкрафте EN: Minecraft messages
     kickusage: "&c&l[AuthTG] &cИспользование: /kick <ник> <причина>"
     kicknoperm: "&c&l[AuthTG] &cУ вас нет прав для выполнения этой команды!"

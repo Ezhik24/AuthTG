@@ -11,32 +11,32 @@ public class KickCMDHandler implements CommandHandler {
     public void execute(Update update) {
         User user = User.getCurrentUser(update.getMessage().getChatId());
         if (!user.activetg) {
-            AuthTG.bot.sendMessage(update.getMessage().getChatId(), "[Бот] Вы не привязывали аккаунт");
+            AuthTG.bot.sendMessage(update.getMessage().getChatId(), AuthTG.config.getString("messages.telegram.kicknotactive"));
             return;
         }
         if (user.isadmin || user.commands != null && user.commands.contains("kick")) {
             String[] args = update.getMessage().getText().toString().split(" ");
             if (args.length < 2) {
-                user.sendMessage("Введите никнейм и причину");
+                user.sendMessage(AuthTG.config.getString("messages.telegram.kick"));
                 AuthTG.bot.setNextStepHandler(update.getMessage().getChatId(), new KickAskHandler());
             } else {
                 if (args.length < 3) {
-                    user.sendMessage("Команда введена не полностью, введите: /kick <никнейм> <причина>");
+                    user.sendMessage(AuthTG.config.getString("messages.telegram.kickusage"));
                     return;
                 }
                 String message = String.join(" ", args).substring(args[0].length() + 1).substring(args[1].length() + 1);
                 User user1 = User.getUser(args[1]);
                 if (user1 == null) {
-                    user.sendMessage("Игрок не авторизован");
+                    user.sendMessage(AuthTG.config.getString("messages.telegram.kickusernotfound"));
                     return;
                 }
                 if (user1.player == null) {
-                    user.sendMessage("Игрок не онлайн");
+                    user.sendMessage(AuthTG.config.getString("messages.telegram.kickusernotonline"));
                     return;
                 }
                 Handler.kick(user1.playername, message);
-                user.sendMessage("Игрок " + user1.playername + " был успешно кикнут");
+                user.sendMessage(AuthTG.config.getString("messages.telegram.kickuser").replace("{PLAYER}", user1.playername));
             }
-        } else user.sendMessage("У вас нет прав");
+        } else user.sendMessage(AuthTG.config.getString("messages.telegram.mutenoperm"));
     }
 }
