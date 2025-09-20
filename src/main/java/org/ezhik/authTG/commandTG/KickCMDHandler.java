@@ -37,6 +37,6 @@ public class KickCMDHandler implements CommandHandler {
                 Handler.kick(user1.playername, message);
                 user.sendMessage(AuthTG.config.getString("messages.telegram.kickuser").replace("{PLAYER}", user1.playername));
             }
-        } else user.sendMessage(AuthTG.config.getString("messages.telegram.mutenoperm"));
+        } else user.sendMessage(AuthTG.config.getString("messages.telegram.kicknoperm"));
     }
 }
