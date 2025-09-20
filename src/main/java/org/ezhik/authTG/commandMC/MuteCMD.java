@@ -19,34 +19,34 @@ public class MuteCMD implements CommandExecutor {
         if (commandSender instanceof Player) {
             Player player = (Player) commandSender;
             if (!player.hasPermission("authtg.mute")) {
-                player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&c&lAuthTG&f&l] &cУ вас недостаточно прав."));
+                player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.mutenoperm")));
                 return false;
             }
             if (strings.length == 0) {
-                player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&c&lAuthTG&f&l] &cКоманда введена неверно. Введите /mute <игрок> <время> <причина>"));
+                player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.muteusage")));
                 return false;
             }
             if (strings.length < 3) {
-                player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&c&lAuthTG&f&l] &cКоманда введена неверно. Введите /mute <игрок> <время> <причина>"));
+                player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.muteusage")));
                 return false;
             }
             String reason = String.join(" ", strings).substring(strings[0].length() + strings[1].length() + 2);
             UUID targetuuid = AuthTG.loader.getUUIDbyPlayerName(strings[0]);
             if (targetuuid == null) {
-                player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&c&lAuthTG&f&l] &cИгрок не найден."));
+                player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.muteplnotfound")));
                 return false;
             }
             Player target = Bukkit.getPlayer(targetuuid);
             if (AuthTG.loader.isMuted(targetuuid)) {
-                player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&c&lAuthTG&f&l] &cИгрок уже замучен."));
+                player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.muteplmuted")));
                 return false;
             }
             if (reason.isEmpty()) {
-                player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&c&lAuthTG&f&l] &cКоманда введена неверно. Введите /mute <игрок> <время> <причина>"));
+                player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.muteusage")));
                 return false;
             }
             if (reason.length() > 120) {
-                player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&c&lAuthTG&f&l] &cПричина не может быть длиннее 120 символов."));
+                player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.mutetoolong")));
                 return false;
             }
             if (strings[1].contains("d")) {
@@ -103,36 +103,36 @@ public class MuteCMD implements CommandExecutor {
                 if (target != null) target.sendMessage(message);
             }
             else {
-                player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&c&lAuthTG&f&l] &Неверный формат времени, используете: d,h,m,s или -s!"));
+                player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.mutetimeformat")));
             }
             return true;
         } else {
             ConsoleCommandSender console = Bukkit.getConsoleSender();
             if (strings.length == 0) {
-                console.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&c&lAuthTG&f&l] &cКоманда введена неверно. Введите /mute <игрок> <время> <причина>"));
+                console.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.muteusage")));
                 return false;
             }
             if (strings.length < 3) {
-                console.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&c&lAuthTG&f&l] &cКоманда введена неверно. Введите /mute <игрок> <время> <причина>"));
+                console.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.muteusage")));
                 return false;
             }
             String reason = String.join(" ", strings).substring(strings[0].length() + strings[1].length() + 2);
             UUID targetuuid = AuthTG.loader.getUUIDbyPlayerName(strings[0]);
             if (targetuuid == null) {
-                console.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&c&lAuthTG&f&l] &cИгрок не найден."));
+                console.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.muteplnotfound")));
                 return false;
             }
             Player target = Bukkit.getPlayer(targetuuid);
             if (AuthTG.loader.isMuted(targetuuid)) {
-                console.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&c&lAuthTG&f&l] &cИгрок уже замучен."));
+                console.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.muteplmuted")));
                 return false;
             }
             if (reason.isEmpty()) {
-                console.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&c&lAuthTG&f&l] &cКоманда введена неверно. Введите /mute <игрок> <время> <причина>"));
+                console.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.muteusage")));
                 return false;
             }
             if (reason.length() > 120) {
-                console.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&c&lAuthTG&f&l] &cПричина не может быть длиннее 120 символов."));
+                console.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.mutetoolong")));
                 return false;
             }
             if (strings[1].contains("d")) {
@@ -189,7 +189,7 @@ public class MuteCMD implements CommandExecutor {
                 if (target != null) target.sendMessage(message);
             }
             else {
-                console.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f&l[&c&lAuthTG&f&l] &Неверный формат времени, используете: d,h,m,s или -s!"));
+                console.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.mutetimeformat")));
             }
         }
         return true;
