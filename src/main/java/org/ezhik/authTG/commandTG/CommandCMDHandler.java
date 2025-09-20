@@ -88,12 +88,12 @@ public class CommandCMDHandler implements CommandHandler {
                 }
                 User target = User.getUser(args[2]);
                 if (target == null) {
-                    user.sendMessage(" Пользователь не найден!");
+                    user.sendMessage("Пользователь не найден!");
                     return;
                 }
                 if (args[3].equals("ban") || args[3].equals("mute") || args[3].equals("kick")) {
                     if (target.commands != null && !target.commands.contains(args[3])) {
-                        user.sendMessage(" Пользователь не имеет право на это действие!");
+                        user.sendMessage("Пользователь не имеет право на это действие!");
                         return;
                     }
                     AuthTG.loader.removeCommand(target.uuid, args[3]);
