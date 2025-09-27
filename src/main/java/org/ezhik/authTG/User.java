@@ -1,6 +1,5 @@
 package org.ezhik.authTG;
 
-import org.apache.http.auth.AUTH;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -11,7 +10,6 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMa
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-import java.security.MessageDigest;
 import java.util.*;
 
 public class User {
@@ -44,7 +42,7 @@ public class User {
         this.isadmin = AuthTG.loader.isAdmin(uuid);
         this.commands = AuthTG.loader.getCommands(uuid);
     }
-
+    // Generate a random confirmation code
     public static String generateConfirmationCode() {
         Random random = new Random();
         String characters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";

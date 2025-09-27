@@ -19,6 +19,18 @@ maxLenghtPassword: 32 # Максимальная длина пароля EN: Max
 kickTimeout: 30 # Время в секундах, через которое игрок будет кикнут если не авторизовался EN: Time in seconds, after which the player will be kicked if not authorized
 spawnLocation: null # Спавн EN: Spawn
 activeChatinTG: true # Должен ли работать чат в телеграме EN: Must chat in Telegram
+placeholders: # Подстановки для placeholders EN: Placeholders
+  none: "NONE"
+  activetg:
+    true: "Да"
+    false: "Нет"
+  twofactor:
+    true: "Включено"
+    false: "Выключено"
+  status:
+    admin: "Администратор"
+    moderator: "Модератор"
+    user: "Пользователь"
 messages: # Сообщения EN: Messages
   console: # Консольные сообщения EN: Console messages
     mcbcsuccess: "[AuthTG] Message successfully sent!"

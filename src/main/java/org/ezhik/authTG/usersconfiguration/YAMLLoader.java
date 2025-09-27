@@ -847,21 +847,23 @@ public class YAMLLoader implements Loader{
     public Map<String, List<Object>> getMutedPlayers() {
         Map<String, List<Object>> map = new HashMap<>();
         File[] files = new File("plugins/AuthTG/users").listFiles();
-        for (File file : files) {
-            YamlConfiguration config = new YamlConfiguration();
-            try {
-                config.load(file);
-            } catch (IOException e) {
-                System.out.println("Error loading file " + e);
-            } catch (InvalidConfigurationException e) {
-                System.out.println("Error loading file " + e);
-            }
-            if (config.contains("mute")) {
-                List<Object> list = new ArrayList<>();
-                LocalDateTime parsedDate = LocalDateTime.parse(config.getString("mute.timeMute"), DateTimeFormatter.ofPattern("HH:mm:ss dd.MM.yyyy"));
-                list.add(0, parsedDate);
-                list.add(1, config.getString("mute.reason"));
-                map.put(config.getString("playername"), list);
+        if (files != null) {
+            for (File file : files) {
+                YamlConfiguration config = new YamlConfiguration();
+                try {
+                    config.load(file);
+                } catch (IOException e) {
+                    System.out.println("Error loading file " + e);
+                } catch (InvalidConfigurationException e) {
+                    System.out.println("Error loading file " + e);
+                }
+                if (config.contains("mute")) {
+                    List<Object> list = new ArrayList<>();
+                    LocalDateTime parsedDate = LocalDateTime.parse(config.getString("mute.timeMute"), DateTimeFormatter.ofPattern("HH:mm:ss dd.MM.yyyy"));
+                    list.add(0, parsedDate);
+                    list.add(1, config.getString("mute.reason"));
+                    map.put(config.getString("playername"), list);
+                }
             }
         }
         return map;
