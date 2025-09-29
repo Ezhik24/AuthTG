@@ -1,5 +1,9 @@
 package org.ezhik.authTG;
 
+import org.bstats.MetricsBase;
+import org.bstats.bukkit.Metrics;
+import org.bstats.charts.SimplePie;
+import org.bstats.charts.SingleLineChart;
 import org.bukkit.Bukkit;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.configuration.ConfigurationSection;
@@ -16,6 +20,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
 import java.io.File;
+import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -49,6 +54,15 @@ public final class AuthTG extends JavaPlugin {
         if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
             new PlaceholderAPI().register();
         }
+        // Load Metrics
+        Metrics metrics = new Metrics(this, 27268);
+        metrics.addCustomChart(new SingleLineChart("players", new Callable<Integer>() {
+            @Override
+            public Integer call() {
+                return Bukkit.getOnlinePlayers().size();
+            }
+        }));
+        metrics.addCustomChart(new SingleLineChart("servers", () -> 1));
         // Load Handlers
         Handler handler = new Handler();
         AuthHandler authHandler = new AuthHandler();
