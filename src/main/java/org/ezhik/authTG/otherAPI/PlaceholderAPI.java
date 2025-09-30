@@ -1,7 +1,8 @@
-package org.ezhik.authTG;
+package org.ezhik.authTG.otherAPI;
 
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.OfflinePlayer;
+import org.ezhik.authTG.AuthTG;
 import org.jetbrains.annotations.NotNull;
 
 public class PlaceholderAPI extends PlaceholderExpansion {

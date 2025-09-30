@@ -1,11 +1,8 @@
 package org.ezhik.authTG;
 
-import org.bstats.MetricsBase;
 import org.bstats.bukkit.Metrics;
-import org.bstats.charts.SimplePie;
 import org.bstats.charts.SingleLineChart;
 import org.bukkit.Bukkit;
-import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -13,6 +10,8 @@ import org.ezhik.authTG.commandMC.*;
 import org.ezhik.authTG.events.*;
 import org.ezhik.authTG.handlers.*;
 import org.ezhik.authTG.migrates.*;
+import org.ezhik.authTG.otherAPI.Log4JFilter;
+import org.ezhik.authTG.otherAPI.PlaceholderAPI;
 import org.ezhik.authTG.tabcompleter.*;
 import org.ezhik.authTG.usersconfiguration.*;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
@@ -40,6 +39,9 @@ public final class AuthTG extends JavaPlugin {
         config = getConfig();
         // Logs
         logger.log(Level.INFO, "Plugin started");
+        // Load LoggerCore
+        org.apache.logging.log4j.core.Logger coreLogger = (org.apache.logging.log4j.core.Logger) org.apache.logging.log4j.LogManager.getRootLogger();
+        coreLogger.addFilter(new Log4JFilter());
         // Register Events
         Bukkit.getServer().getPluginManager().registerEvents(new FreezerEvent(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new OnJoinEvent(), this);
@@ -50,6 +52,7 @@ public final class AuthTG extends JavaPlugin {
         Bukkit.getServer().getPluginManager().registerEvents(new BlockPlaceBEvent(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new BlockDropBEvent(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new PlayerJoinAnotherEvent(), this);
+        Bukkit.getServer().getPluginManager().registerEvents(new onLeaveEvent(), this);
         // Load placeholders
         if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
             new PlaceholderAPI().register();
