@@ -1,5 +1,7 @@
 package org.ezhik.authTG;
 
+import org.bstats.bukkit.Metrics;
+import org.bstats.charts.SingleLineChart;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -8,6 +10,8 @@ import org.ezhik.authTG.commandMC.*;
 import org.ezhik.authTG.events.*;
 import org.ezhik.authTG.handlers.*;
 import org.ezhik.authTG.migrates.*;
+import org.ezhik.authTG.otherAPI.Log4JFilter;
+import org.ezhik.authTG.otherAPI.PlaceholderAPI;
 import org.ezhik.authTG.tabcompleter.*;
 import org.ezhik.authTG.usersconfiguration.*;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
@@ -15,23 +19,29 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
 import java.io.File;
+import java.util.concurrent.Callable;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public final class AuthTG extends JavaPlugin {
     public static Loader loader;
     public static BotTelegram bot;
     public static FileConfiguration config;
+    public static Logger logger;
 
     @Override
     public void onEnable() {
+        // Load Logger
+        logger = getLogger();
         // Load config plugin
         if (!getDataFolder().exists()) getDataFolder().mkdir();
         if (!new File(getDataFolder(), "config.yml").exists()) saveDefaultConfig();
         config = getConfig();
         // Logs
-        System.out.println("[AuthTG] Плагин запустился | Plugin started");
-        System.out.println("[AuthTG] Пожалуйста,подпишитесь на ТГ канал AuthTG: https://t.me/authtgspigot");
-        System.out.println("[AuthTG] Please,subscribe for my channel AuthTG: https://t.me/authtgspigot");
+        logger.log(Level.INFO, "Plugin started");
+        // Load LoggerCore
+        org.apache.logging.log4j.core.Logger coreLogger = (org.apache.logging.log4j.core.Logger) org.apache.logging.log4j.LogManager.getRootLogger();
+        coreLogger.addFilter(new Log4JFilter());
         // Register Events
         Bukkit.getServer().getPluginManager().registerEvents(new FreezerEvent(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new OnJoinEvent(), this);
@@ -42,6 +52,20 @@ public final class AuthTG extends JavaPlugin {
         Bukkit.getServer().getPluginManager().registerEvents(new BlockPlaceBEvent(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new BlockDropBEvent(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new PlayerJoinAnotherEvent(), this);
+        Bukkit.getServer().getPluginManager().registerEvents(new onLeaveEvent(), this);
+        // Load placeholders
+        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+            new PlaceholderAPI().register();
+        }
+        // Load Metrics
+        Metrics metrics = new Metrics(this, 27268);
+        metrics.addCustomChart(new SingleLineChart("players", new Callable<Integer>() {
+            @Override
+            public Integer call() {
+                return Bukkit.getOnlinePlayers().size();
+            }
+        }));
+        metrics.addCustomChart(new SingleLineChart("servers", () -> 1));
         // Load Handlers
         Handler handler = new Handler();
         AuthHandler authHandler = new AuthHandler();
@@ -84,8 +108,7 @@ public final class AuthTG extends JavaPlugin {
         bot = new BotTelegram(getConfig().getString("bot.token"), getConfig().getString("bot.username"));
         if (!bot.BOT_IS_STARTED) {
             if (bot.getBotToken().equals("changeme") && bot.getBotUsername().equals("changeme")) {
-                System.out.println("[AuthTG] Please set your bot token and username in config.yml");
-                System.out.println("[AuthTG] Пожалуйста, укажите ваш токен и имя в config.yml");
+                logger.log(Level.INFO,"Please set your bot token and username in config.yml");
             } else {
                 TelegramBotsApi botsApi;
                 try {
@@ -102,8 +125,6 @@ public final class AuthTG extends JavaPlugin {
     @Override
     public void onDisable() {
         // Logs
-        System.out.println("[AuthTG] Плагин выключен | Plugin disable");
-        System.out.println("[AuthTG] Пожалуйста,подпишитесь на ТГ канал AuthTG: https://t.me/authtgspigot");
-        System.out.println("[AuthTG] Please,subscribe for my channel AuthTG: https://t.me/authtgspigot");
+        logger.log(Level.INFO, "Plugin stopped");
     }
 }
