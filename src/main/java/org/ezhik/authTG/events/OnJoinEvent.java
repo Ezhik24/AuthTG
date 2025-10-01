@@ -23,23 +23,6 @@ public class OnJoinEvent implements Listener {
         if (AuthTG.config.getLocation("spawnLocation") != null) p.teleport(AuthTG.config.getLocation("spawnLocation"));
         FreezerEvent.freezeplayer(p.getName());
         User user = User.getUser(p.getUniqueId());
-        if (user != null && user.activetg) {
-            user.sendMessage(AuthTG.config.getString("messages.telegram.joinacc"));
-            List<String> list = AuthTG.loader.getListFriends(user.uuid);
-            if (list != null) {
-                for (String s : list) {
-                    User user1 = User.getUser(s);
-                    if (user1.activetg) {
-                        user1.sendMessage(AuthTG.config.getString("messages.telegram.friendjoin").replace("{PLAYER}", user.playername));
-                    } else {
-                        AuthTG.loader.removeFriend(user.uuid, s);
-                        AuthTG.loader.removeFriend(user1.uuid, user.playername);
-                    }
-                }
-            }
-        } else {
-            p.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.accnotactivetg")));
-        }
         LocalDateTime date = LocalDateTime.now();
         if (AuthTG.loader.getBanTime(p.getUniqueId()) != null) {
             if (AuthTG.loader.getBanTime(p.getUniqueId()).equals("0")) {

@@ -1,5 +1,6 @@
 package org.ezhik.authTG;
 
+import org.apache.logging.log4j.LogManager;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SingleLineChart;
 import org.bukkit.Bukkit;
@@ -40,7 +41,7 @@ public final class AuthTG extends JavaPlugin {
         // Logs
         logger.log(Level.INFO, "Plugin started");
         // Load LoggerCore
-        org.apache.logging.log4j.core.Logger coreLogger = (org.apache.logging.log4j.core.Logger) org.apache.logging.log4j.LogManager.getRootLogger();
+        org.apache.logging.log4j.core.Logger coreLogger = (org.apache.logging.log4j.core.Logger) LogManager.getRootLogger();
         coreLogger.addFilter(new Log4JFilter());
         // Register Events
         Bukkit.getServer().getPluginManager().registerEvents(new FreezerEvent(), this);

@@ -10,7 +10,11 @@ public class AdminTabCompleter implements TabCompleter {
     @Override
     public List<String> onTabComplete(CommandSender commandSender, Command command, String s, String[] strings) {
         if (strings.length == 1) {
-            return List.of("add", "rem", "list");
+            if (commandSender.hasPermission("authTG.admin")) {
+                return List.of("add", "rem", "list");
+            } else {
+                return null;
+            }
         }
         return null;
     }

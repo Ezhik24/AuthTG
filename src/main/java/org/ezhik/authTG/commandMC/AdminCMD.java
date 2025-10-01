@@ -11,7 +11,7 @@ import org.ezhik.authTG.User;
 public class AdminCMD implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
-        if (!commandSender.hasPermission("authtg.setadmin")) {
+        if (!commandSender.hasPermission("authtg.admin")) {
             commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.adminnoperm")));
             return false;
         }
