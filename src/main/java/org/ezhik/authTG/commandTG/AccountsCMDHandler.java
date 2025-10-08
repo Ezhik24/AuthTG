@@ -39,7 +39,7 @@ public class AccountsCMDHandler implements CommandHandler{
                 System.out.println("Error sending message: " + e);
             }
         } else {
-            AuthTG.bot.sendMessage(update.getMessage().getChatId(), AuthTG.config.getString("message.telegram.accounschangenotfound"));
+            AuthTG.bot.sendMessage(update.getMessage().getChatId(), AuthTG.config.getString("messages.telegram.accounschangenotfound"));
         }
 
     }

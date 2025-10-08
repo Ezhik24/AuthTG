@@ -12,8 +12,6 @@ public class AdminTabCompleter implements TabCompleter {
         if (strings.length == 1) {
             if (commandSender.hasPermission("authTG.admin")) {
                 return List.of("add", "rem", "list");
-            } else {
-                return null;
             }
         }
         return null;

@@ -546,7 +546,9 @@ public class YAMLLoader implements Loader{
         YamlConfiguration config = new YamlConfiguration();
         try {
             config.load(file);
-        } catch (IOException e) {
+        } catch (FileNotFoundException e) {
+            return null;
+        }catch (IOException e) {
             System.out.println("Error loading file " + e);
         } catch (InvalidConfigurationException e) {
             System.out.println("Error loading file " + e);
@@ -716,7 +718,9 @@ public class YAMLLoader implements Loader{
         YamlConfiguration config = new YamlConfiguration();
         try {
             config.load(file);
-        } catch (IOException e) {
+        }  catch (FileNotFoundException e) {
+            return false;
+        }catch (IOException e) {
             System.out.println("Error loading file " + e);
         } catch (InvalidConfigurationException e) {
             System.out.println("Error loading file " + e);

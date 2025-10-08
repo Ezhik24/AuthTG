@@ -18,7 +18,7 @@ public class FriendCMDHandler implements CommandHandler {
         Message message = update.getMessage();
         User user = User.getCurrentUser(message.getChatId());
         List<List<InlineKeyboardButton>> friends = new ArrayList<>();
-        if (user.friends.size() == 0) {
+        if (user.friends != null && user.friends.isEmpty()) {
             AuthTG.bot.sendMessage(message.getChatId(), AuthTG.config.getString("messages.telegram.notfriendsfound"));
             AuthTG.bot.deleteMessage(message);
             return;

@@ -70,8 +70,9 @@ public class BotTelegram extends TelegramLongPollingBot {
         if (update.hasMessage()) {
             Long chatid = update.getMessage().getChatId();
             String command = update.getMessage().getText().toString();
-            if (nextStepHandler.containsKey(update.getMessage().getChatId())) nextStepHandler.get(chatid).execute(update);
+            if (nextStepHandler.containsKey(update.getMessage().getChatId()) && !command.startsWith("/")) nextStepHandler.get(chatid).execute(update);
             else if (command.startsWith("/")) {
+                if (nextStepHandler.containsKey(chatid)) nextStepHandler.remove(chatid);
                 String[] str = command.split(" ");
                 if (commandHandler.containsKey(str[0])) commandHandler.get(str[0]).execute(update);
             } else if (command.startsWith("#")) {
