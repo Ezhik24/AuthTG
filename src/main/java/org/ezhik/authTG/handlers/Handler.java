@@ -10,6 +10,7 @@ import java.util.Map;
 public class Handler extends BukkitRunnable {
     private static Map<String, String> kickplayers = new HashMap<>();
     private static Map<String, String> minecrfatmsg = new HashMap<>();
+    private static Map<String, String> dispatcCommand = new HashMap<>();
     @Override
     public void run() {
         if (kickplayers.size() != 0) {
@@ -34,7 +35,12 @@ public class Handler extends BukkitRunnable {
                 }
             }
         }
-
+        if (dispatcCommand.size() != 0) {
+            for(String name : dispatcCommand.keySet()) {
+                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), dispatcCommand.get(name));
+                dispatcCommand.remove(name);
+            }
+        }
     }
 
     public static void kick(String name,String reason) {
@@ -42,6 +48,9 @@ public class Handler extends BukkitRunnable {
     }
     public static void sendMCmessage(String name,String message) {
         minecrfatmsg.put(name, message);
+    }
+    public static void dispatchCommand(String name, String command) {
+        dispatcCommand.put(name, command);
     }
 
 }

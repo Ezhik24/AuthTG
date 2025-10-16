@@ -6,6 +6,8 @@ import org.bstats.charts.SingleLineChart;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.ezhik.authTG.commandMC.*;
 import org.ezhik.authTG.events.*;
@@ -20,6 +22,8 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -29,14 +33,21 @@ public final class AuthTG extends JavaPlugin {
     public static BotTelegram bot;
     public static FileConfiguration config;
     public static Logger logger;
+    private static Plugin instance;
 
     @Override
     public void onEnable() {
+        // Init
+        instance = this;
         // Load Logger
         logger = getLogger();
         // Load config plugin
         if (!getDataFolder().exists()) getDataFolder().mkdir();
         if (!new File(getDataFolder(), "config.yml").exists()) saveDefaultConfig();
+        // Load temp-config and regeneration config.yml
+        saveResource("temp-config.yml", false);
+        setupConfiguration();
+        // Load config
         config = getConfig();
         // Logs
         logger.log(Level.INFO, "Plugin started");
@@ -127,5 +138,28 @@ public final class AuthTG extends JavaPlugin {
     public void onDisable() {
         // Logs
         logger.log(Level.INFO, "Plugin stopped");
+    }
+
+    public static Plugin getInstance() {
+        return instance;
+    }
+
+    private void setupConfiguration() {
+        File file = new File(getDataFolder(), "temp-config.yml");
+        YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
+        File fileGlobal = new File(getDataFolder(), "config.yml");
+        YamlConfiguration configGlobal = YamlConfiguration.loadConfiguration(fileGlobal);
+        Set<String> set = config.getKeys(false);
+        for (String s : set) {
+            if (configGlobal.getString(s) == null) {
+                configGlobal.set(s, config.get(s));
+            }
+        }
+        file.delete();
+        try {
+            configGlobal.save(fileGlobal);
+        } catch (IOException e) {
+            logger.log(Level.SEVERE, "Can't save config.yml");
+        }
     }
 }
