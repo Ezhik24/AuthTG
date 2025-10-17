@@ -2,6 +2,7 @@ package org.ezhik.authTG;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.configuration.ConfigurationSection;
 import org.ezhik.authTG.calbackQuery.*;
 import org.ezhik.authTG.commandTG.*;
 import org.ezhik.authTG.handlers.Handler;
@@ -55,6 +56,10 @@ public class BotTelegram extends TelegramLongPollingBot {
         callbackQueryHandler.put("sndmc", new SendMessageMC());
         callbackQueryHandler.put("cmdfirst", new CMDFirstStep());
         callbackQueryHandler.put("cmdsecond", new CMDSecondStep());
+        ConfigurationSection section = AuthTG.config.getConfigurationSection("macro");
+        for (String key : section.getKeys(false)) {
+            commandHandler.put("/" + key, new MacroCMDHandler(section.getString(key + ".mccmd"), section.getString(key + ".nsmsg")));
+        }
     }
 
     @Override
