@@ -10,9 +10,10 @@ mysql: # Настройки базы данных EN: Database settings
   user: "root" # Имя пользователя EN: Username
   pass: "123" # Пароль EN: Password
 macro:
-  testcmd:
-    mccmd: "whitelist [arg1] [arg2]"
-    nsmsg: "test"
+  # Example | Пример
+  # testcmd: - Команда,которая будет в тг EN: Command that will be in tg
+    # mccmd: "whitelist [arg1] [arg2]" - Команда,которая будет вызываться в боте (если есть аргументы к команде,прописывайте их [arg1] и т.д.) EN: Command that will be called in the bot (if there are arguments to the command, write them [arg1] and so on.)
+    # nsmsg: "test" - Сообщение,которое будет написано если введена обычная команда без аргументов (В этом сообщении обычно указывается: "Введите аргументы для команды") EN: Message that will be written if the normal command is entered without arguments (In this message it is usually specified: "Enter the arguments for the command")
 mutecommands: ["/tell"] # Команды, которые нельзя использовать EN: Commands that cannot be used
 notRegAndLogin: false # Без /register и /login EN: Without /register and /login
 authNecessarily: false # Обязательная авторизация EN: Necessary authorization
