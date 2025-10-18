@@ -171,4 +171,19 @@ public final class AuthTG extends JavaPlugin {
             return null;
         }
     }
+
+    public static String getPlaceholderMessage(String placeholder, String path) {
+        if (placeholder.equals("none")) {
+            return config.getString("placeholders." + path);
+        } else if (placeholder.equals("activetg")) {
+            return config.getString("placeholders." + placeholder + "." + path);
+        } else if (placeholder.equals("twofactor")) {
+            return config.getString("placeholders." + placeholder + "." + path);
+        } else if (placeholder.equals("status")) {
+            return config.getString("placeholders." + placeholder + "." + path);
+        } else {
+            logger.log(Level.SEVERE, "Placeholder path not found, please contact the developer");
+            return null;
+        }
+    }
 }
