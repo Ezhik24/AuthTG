@@ -92,23 +92,23 @@ public class User {
         AuthTG.loader.setCurrentUUID(uuid, message.getChatId());
         AuthTG.loader.setPlayerNames(message.getChatId(), uuid);
         String code = generateConfirmationCode();
-        AuthTG.bot.sendMessage(message.getChatId(), AuthTG.config.getString("messages.telegram.codemsgactivated").replace("{CODE}", code));
-        player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.codemsgactivated")));
+        AuthTG.bot.sendMessage(message.getChatId(), AuthTG.getMessage("codemsgactivated", "TG").replace("{CODE}", code));
+        player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("codemsgactivated", "MC")));
         CodeCMD.code.put(uuid, code);
     }
 
     public void sendMessage(String message) {
-        AuthTG.bot.sendMessage(this.chatid, AuthTG.config.getString("messages.telegram.prefix").replace("{PLAYER}", this.playername) + message);
+        AuthTG.bot.sendMessage(this.chatid, AuthTG.getMessage("prefix", "TG").replace("{PLAYER}", this.playername) + message);
     }
 
     public void sendLoginAccepted(String message) {
         InlineKeyboardMarkup keyb = new InlineKeyboardMarkup();
         List<InlineKeyboardButton> colkeyb = new ArrayList<>();
         InlineKeyboardButton yesbtn = new InlineKeyboardButton();
-        yesbtn.setText(AuthTG.config.getString("messages.telegram.yesbutton"));
+        yesbtn.setText(AuthTG.getMessage("yesbutton", "TG"));
         yesbtn.setCallbackData("ys_" + this.uuid);
         InlineKeyboardButton nobtn = new InlineKeyboardButton();
-        nobtn.setText(AuthTG.config.getString("messages.telegram.nobutton"));
+        nobtn.setText(AuthTG.getMessage("nobutton", "TG"));
         nobtn.setCallbackData("no_" + this.uuid);
         colkeyb.add(yesbtn);
         colkeyb.add(nobtn);
@@ -129,7 +129,7 @@ public class User {
 
     public static void sendBroadcastMessage(String message) {
         for (Long chatid : AuthTG.loader.getChatID()) {
-            AuthTG.bot.sendMessage(chatid, AuthTG.config.getString("messages.telegram.broadcast") + message);
+            AuthTG.bot.sendMessage(chatid, AuthTG.getMessage("broadcast", "TG") + message);
         }
     }
 
@@ -138,13 +138,13 @@ public class User {
         List<InlineKeyboardButton> colkeyb = new ArrayList<>();
         List<List<InlineKeyboardButton>> keyboard = new ArrayList<>();
         InlineKeyboardButton acts = new InlineKeyboardButton();
-        acts.setText(AuthTG.config.getString("messages.telegram.msgfriendbutton"));
+        acts.setText(AuthTG.getMessage("msgfriendbutton", "TG"));
         acts.setCallbackData("chfr_" + friend);
         colkeyb.add(acts);
         keyboard.add(colkeyb);
         playerkeyb.setKeyboard(keyboard);
         SendMessage sendMessage = new SendMessage();
-        sendMessage.setText(AuthTG.config.getString("messages.telegram.msgfriend").replace("{PLAYER}", this.playername) + message);
+        sendMessage.setText(AuthTG.getMessage("msgfriend", "TG").replace("{PLAYER}", this.playername) + message);
         sendMessage.setChatId(this.chatid);
         sendMessage.setReplyMarkup(playerkeyb);
         try {

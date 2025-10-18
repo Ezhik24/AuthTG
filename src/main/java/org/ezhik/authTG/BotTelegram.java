@@ -88,17 +88,17 @@ public class BotTelegram extends TelegramLongPollingBot {
                 String message = command.substring(1);
                 if (user.activetg) {
                     if (user.player != null) Handler.sendMCmessage(user.playername, message);
-                    else Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&',AuthTG.config.getString("messages.minecraft.chatminecraft").replace("{PLAYER}", user.playername).replace("{MESSAGE}", message)));
-                } else this.sendMessage(chatid, AuthTG.config.getString("messages.telegram.chatminecraftnotactive"));
+                    else Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&',AuthTG.getMessage("chatminecraft", "MC").replace("{PLAYER}", user.playername).replace("{MESSAGE}", message)));
+                } else this.sendMessage(chatid, AuthTG.getMessage("chatminecraftnotactive", "TG"));
             } else {
                 if (AuthTG.config.getBoolean("activeChatinTG")) {
                     User user = User.getUser(AuthTG.loader.getCurrentUUID(chatid));
                     if (user.activetg) {
                         for (Long s : AuthTG.loader.getChatID()) {
-                            this.sendMessage(s, AuthTG.config.getString("messages.telegram.chatmessage").replace("{PLAYER}", user.playername).replace("{MESSAGE}", update.getMessage().getText().toString()));
+                            this.sendMessage(s, AuthTG.getMessage("chatmessage", "TG").replace("{PLAYER}", user.playername).replace("{MESSAGE}", update.getMessage().getText().toString()));
                         }
                     } else {
-                        this.sendMessage(chatid, AuthTG.config.getString("messages.telegram.chatmsgusernotactive"));
+                        this.sendMessage(chatid, AuthTG.getMessage("chatmsgusernotactive", "TG"));
                     }
                 }
             }
