@@ -148,7 +148,7 @@ public final class AuthTG extends JavaPlugin {
         YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
         File fileGlobal = new File(getDataFolder(), "config.yml");
         YamlConfiguration configGlobal = YamlConfiguration.loadConfiguration(fileGlobal);
-        Set<String> set = config.getKeys(false);
+        Set<String> set = config.getKeys(true);
         for (String s : set) {
             if (configGlobal.getString(s) == null) {
                 configGlobal.set(s, config.get(s));
