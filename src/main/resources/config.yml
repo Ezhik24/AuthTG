@@ -188,6 +188,7 @@ messages: # Сообщения EN: Messages
     cmdnull: "[Бот] Вы не авторизованы!"
     mutesuccess: "Вы успешно замутили {PLAYER}"
   minecraft: # Сообщения в майнкрафте EN: Minecraft messages
+    kicktimeout: "Время на авторизацию истекло!"
     unbannoperm: "&c&l[AuthTG] &cУ вас нет прав!"
     unbanusage: "&c&l[AuthTG] &cВы не указали ник!"
     unbannotfound: "&c&l[AuthTG] &cИгрок не найден!"

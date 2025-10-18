@@ -3,6 +3,7 @@ package org.ezhik.authTG.handlers;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.ezhik.authTG.AuthTG;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,7 +20,7 @@ public class AuthHandler extends BukkitRunnable {
                     if (entry.getValue() > 0) {
                         entry.setValue(entry.getValue() - 1);
                     } else {
-                        player.kickPlayer("Время на авторизацию истекло");
+                        player.kickPlayer(AuthTG.getMessage("kicktimeout", "MC"));
                         timeoutMap.remove(entry.getKey());
                     }
                 } else {

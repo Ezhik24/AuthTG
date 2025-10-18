@@ -1,6 +1,7 @@
 package org.ezhik.authTG.migrates;
 
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.ezhik.authTG.AuthTG;
 
 import java.io.File;
 import java.io.IOException;
@@ -8,6 +9,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.logging.Level;
 
 public class YAMLMigrate {
     Connection conn;
@@ -38,7 +40,7 @@ public class YAMLMigrate {
                 try {
                     config.save(file);
                 } catch (IOException e) {
-                    System.out.println("Error saving file: " + e.getMessage());
+                    AuthTG.logger.log(Level.SEVERE , "Error saving file: " + e.getMessage());
                 }
             }
             st.executeUpdate("DROP TABLE AuthTGUsers");
@@ -52,7 +54,7 @@ public class YAMLMigrate {
                 try {
                     config.save(file);
                 } catch (IOException e) {
-                    System.out.println("Error saving file: " + e.getMessage());
+                    AuthTG.logger.log(Level.SEVERE , "Error saving file: " + e.getMessage());
                 }
             }
             st.executeUpdate("DROP TABLE AuthTGFriends");
@@ -67,7 +69,7 @@ public class YAMLMigrate {
                 try {
                     config.save(file);
                 } catch (IOException e) {
-                    System.out.println("Error saving file: " + e.getMessage());
+                    AuthTG.logger.log(Level.SEVERE , "Error saving file: " + e.getMessage());
                 }
             }
             st.executeUpdate("DROP TABLE AuthTGBans");
@@ -82,7 +84,7 @@ public class YAMLMigrate {
                 try {
                     config.save(file);
                 } catch (IOException e) {
-                    System.out.println("Error saving file: " + e.getMessage());
+                    AuthTG.logger.log(Level.SEVERE , "Error saving file: " + e.getMessage());
                 }
             }
             st.executeUpdate("DROP TABLE AuthTGMutes");
@@ -102,12 +104,13 @@ public class YAMLMigrate {
                 try {
                     config.save(file);
                 } catch (IOException e) {
-                    System.out.println("Error saving file: " + e.getMessage());
+                    AuthTG.logger.log(Level.SEVERE , "Error saving file: " + e.getMessage());
+
                 }
             }
             st.executeUpdate("DROP TABLE AuthTGCommands");
         } catch (SQLException e) {
-            System.out.println("SQL Exception: " + e.getMessage());
+            AuthTG.logger.log(Level.SEVERE ,"SQL Exception: " + e.getMessage());
         }
     }
 }

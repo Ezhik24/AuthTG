@@ -1,11 +1,13 @@
 package org.ezhik.authTG.migrates;
 
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.ezhik.authTG.AuthTG;
 
 import java.io.File;
 import java.sql.*;
 import java.util.List;
 import java.util.UUID;
+import java.util.logging.Level;
 
 public class MySQLMigrate {
     Connection conn;
@@ -53,7 +55,7 @@ public class MySQLMigrate {
                 }
             }
         } catch (SQLException e) {
-            System.out.println("SQL Exception: " + e.getMessage());
+            AuthTG.logger.log(Level.SEVERE,"SQL Exception: " + e.getMessage());
         }
     }
 }
