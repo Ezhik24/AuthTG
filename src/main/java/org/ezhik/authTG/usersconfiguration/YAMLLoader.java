@@ -2,6 +2,7 @@ package org.ezhik.authTG.usersconfiguration;
 
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.ezhik.authTG.AuthTG;
 import org.ezhik.authTG.PasswordHasher;
 import org.ezhik.authTG.events.MuterEvent;
 
@@ -12,6 +13,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.List;
+import java.util.logging.Level;
 
 public class YAMLLoader implements Loader{
     public Map<Long,UUID> currentuser = new HashMap<>();
@@ -42,9 +44,9 @@ public class YAMLLoader implements Loader{
                         adminlist.put(config.getString("playername"), UUID.fromString(file.getName().replace(".yml", "")));
                     }
                 } catch (IOException e) {
-                    System.out.println("Error load file: " + e);
+                    AuthTG.logger.log(Level.SEVERE, "Error load file: " + e);
                 } catch (InvalidConfigurationException e) {
-                    System.out.println("Error load file: " + e);
+                    AuthTG.logger.log(Level.SEVERE, "Error load file: " + e);
                 }
             }
         }
@@ -59,16 +61,16 @@ public class YAMLLoader implements Loader{
         } catch (FileNotFoundException e) {
             playerconf.set("active", false);
         } catch (IOException e) {
-            System.out.println("Error load file: " + e);
+            AuthTG.logger.log(Level.SEVERE, "Error load file: " + e);
         } catch (InvalidConfigurationException e) {
-            System.out.println("Error load file: " + e);
+            AuthTG.logger.log(Level.SEVERE, "Error load file: " + e);
         }
         playerconf.set("playername", playername);
         this.uuidbyplayername.put(playername, uuid);
         try {
             playerconf.save(file);
         } catch (IOException e) {
-            System.out.println("Error saving file: " + e);
+            AuthTG.logger.log(Level.SEVERE, "Error saving file: " + e);;;
         }
     }
 
@@ -79,15 +81,15 @@ public class YAMLLoader implements Loader{
         try {
             playerconf.load(file);
         } catch (IOException e) {
-            System.out.println("Error load file: " + e);
+            AuthTG.logger.log(Level.SEVERE, "Error load file: " + e);
         } catch (InvalidConfigurationException e) {
-            System.out.println("Error load file: " + e);
+            AuthTG.logger.log(Level.SEVERE, "Error load file: " + e);
         }
         playerconf.set("password", PasswordHasher.hashPassword(password));
         try {
             playerconf.save(file);
         } catch (IOException e) {
-            System.out.println("Error saving file: " +e);
+            AuthTG.logger.log(Level.SEVERE, "Error saving file: " + e);;;;
         }
 
     }
@@ -99,15 +101,15 @@ public class YAMLLoader implements Loader{
         try {
             playerconf.load(file);
         } catch (IOException e) {
-            System.out.println("Error load file: " + e);
+            AuthTG.logger.log(Level.SEVERE, "Error load file: " + e);
         } catch (InvalidConfigurationException e) {
-            System.out.println("Error load file: " + e);
+            AuthTG.logger.log(Level.SEVERE, "Error load file: " + e);
         }
         playerconf.set("active", active);
         try {
             playerconf.save(file);
         } catch (IOException e) {
-            System.out.println("Error saving file: " + e);
+            AuthTG.logger.log(Level.SEVERE, "Error saving file: " + e);;;
         }
     }
 
@@ -120,9 +122,9 @@ public class YAMLLoader implements Loader{
         } catch (FileNotFoundException e) {
             return false;
         } catch (IOException e) {
-            System.out.println("Error load file: " + e);
+            AuthTG.logger.log(Level.SEVERE, "Error load file: " + e);
         } catch (InvalidConfigurationException e) {
-            System.out.println("Error load file: " + e);
+            AuthTG.logger.log(Level.SEVERE, "Error load file: " + e);
         }
         return config.getBoolean("active");
     }
@@ -134,9 +136,9 @@ public class YAMLLoader implements Loader{
         try {
             config.load(file);
         } catch (IOException e) {
-            System.out.println("Error load file: " + e);
+            AuthTG.logger.log(Level.SEVERE, "Error load file: " + e);
         } catch (InvalidConfigurationException e) {
-            System.out.println("Error load file: " + e);
+            AuthTG.logger.log(Level.SEVERE, "Error load file: " + e);
         }
         return config.getString("password").equals(PasswordHasher.hashPassword(password));
     }
@@ -150,9 +152,9 @@ public class YAMLLoader implements Loader{
         } catch (FileNotFoundException e) {
             return "";
         } catch (IOException e) {
-            System.out.println("Error load file: " + e);
+            AuthTG.logger.log(Level.SEVERE, "Error load file: " + e);
         } catch (InvalidConfigurationException e) {
-            System.out.println("Error load file: " + e);
+            AuthTG.logger.log(Level.SEVERE, "Error load file: " + e);
         }
         return config.getString("playername");
     }
@@ -166,9 +168,9 @@ public class YAMLLoader implements Loader{
         }  catch (FileNotFoundException e) {
             return false;
         } catch (IOException e) {
-            System.out.println("Error load file: " + e);
+            AuthTG.logger.log(Level.SEVERE, "Error load file: " + e);
         } catch (InvalidConfigurationException e) {
-            System.out.println("Error load file: " + e);
+            AuthTG.logger.log(Level.SEVERE, "Error load file: " + e);
         }
         return config.getBoolean("twofactor");
     }
@@ -182,9 +184,9 @@ public class YAMLLoader implements Loader{
         }  catch (FileNotFoundException e) {
             return false;
         }catch (IOException e) {
-            System.out.println("Error load file: " + e);
+            AuthTG.logger.log(Level.SEVERE, "Error load file: " + e);
         } catch (InvalidConfigurationException e) {
-            System.out.println("Error load file: " + e);
+            AuthTG.logger.log(Level.SEVERE, "Error load file: " + e);
         }
         return config.getBoolean("activetg");
     }
@@ -198,9 +200,9 @@ public class YAMLLoader implements Loader{
         }  catch (FileNotFoundException e) {
             return null;
         }catch (IOException e) {
-            System.out.println("Error load file: " + e);
+            AuthTG.logger.log(Level.SEVERE, "Error load file: " + e);
         } catch (InvalidConfigurationException e) {
-            System.out.println("Error load file: " + e);
+            AuthTG.logger.log(Level.SEVERE, "Error load file: " + e);
         }
         return (List<String>) config.getList("friends");
     }
@@ -214,9 +216,9 @@ public class YAMLLoader implements Loader{
         }  catch (FileNotFoundException e) {
             return null;
         }catch (IOException e) {
-            System.out.println("Error load file: " + e);
+            AuthTG.logger.log(Level.SEVERE, "Error load file: " + e);
         } catch (InvalidConfigurationException e) {
-            System.out.println("Error load file: " + e);
+            AuthTG.logger.log(Level.SEVERE, "Error load file: " + e);
         }
         return config.getString("username");
     }
@@ -230,9 +232,9 @@ public class YAMLLoader implements Loader{
         }  catch (FileNotFoundException e) {
             return null;
         }catch (IOException e) {
-            System.out.println("Error load file: " + e);
+            AuthTG.logger.log(Level.SEVERE, "Error load file: " + e);
         } catch (InvalidConfigurationException e) {
-            System.out.println("Error load file: " + e);
+            AuthTG.logger.log(Level.SEVERE, "Error load file: " + e);
         }
         return config.getString("firstname");
     }
@@ -246,9 +248,9 @@ public class YAMLLoader implements Loader{
         }  catch (FileNotFoundException e) {
             return null;
         }catch (IOException e) {
-            System.out.println("Error load file: " + e);
+            AuthTG.logger.log(Level.SEVERE, "Error load file: " + e);
         } catch (InvalidConfigurationException e) {
-            System.out.println("Error load file: " + e);
+            AuthTG.logger.log(Level.SEVERE, "Error load file: " + e);
         }
         return config.getString("lastname");
     }
@@ -262,9 +264,9 @@ public class YAMLLoader implements Loader{
         } catch (FileNotFoundException e) {
             return -1L;
         } catch (IOException e) {
-            System.out.println("Error load file: " + e);
+            AuthTG.logger.log(Level.SEVERE, "Error load file: " + e);
         } catch (InvalidConfigurationException e) {
-            System.out.println("Error load file: " + e);
+            AuthTG.logger.log(Level.SEVERE, "Error load file: " + e);
         }
         if (config.contains("chatid")) {
             return config.getLong("chatid");
@@ -293,15 +295,15 @@ public class YAMLLoader implements Loader{
         try {
             config.load(file);
         } catch (IOException e) {
-            System.out.println("Error loading file " + e);
+            AuthTG.logger.log(Level.SEVERE, "Error loading file: " + e);
         } catch (InvalidConfigurationException e) {
-            System.out.println("Error loading file " + e);
+            AuthTG.logger.log(Level.SEVERE, "Error loading file: " + e);
         }
         config.set("chatid", chatid);
         try {
             config.save(file);
         } catch (IOException e) {
-            System.out.println("Error saving file: " + e);
+            AuthTG.logger.log(Level.SEVERE, "Error saving file: " + e);
         }
     }
 
@@ -312,15 +314,15 @@ public class YAMLLoader implements Loader{
         try {
             config.load(file);
         } catch (IOException e) {
-            System.out.println("Error loading file " + e);
+            AuthTG.logger.log(Level.SEVERE, "Error loading file: " + e);
         } catch (InvalidConfigurationException e) {
-            System.out.println("Error loading file " + e);
+            AuthTG.logger.log(Level.SEVERE, "Error loading file: " + e);
         }
         config.set("username", username);
         try {
             config.save(file);
         } catch (IOException e) {
-            System.out.println("Error saving file: " + e);
+            AuthTG.logger.log(Level.SEVERE, "Error saving file: " + e);
         }
     }
 
@@ -331,15 +333,15 @@ public class YAMLLoader implements Loader{
         try {
             config.load(file);
         } catch (IOException e) {
-            System.out.println("Error loading file " + e);
+            AuthTG.logger.log(Level.SEVERE, "Error loading file: " + e);
         } catch (InvalidConfigurationException e) {
-            System.out.println("Error loading file " + e);
+            AuthTG.logger.log(Level.SEVERE, "Error loading file: " + e);
         }
         config.set("lastname", lastname);
         try {
             config.save(file);
         } catch (IOException e) {
-            System.out.println("Error saving file: " + e);
+            AuthTG.logger.log(Level.SEVERE, "Error saving file: " + e);
         }
     }
 
@@ -350,15 +352,15 @@ public class YAMLLoader implements Loader{
         try {
             config.load(file);
         } catch (IOException e) {
-            System.out.println("Error loading file " + e);
+            AuthTG.logger.log(Level.SEVERE, "Error loading file: " + e);
         } catch (InvalidConfigurationException e) {
-            System.out.println("Error loading file " + e);
+            AuthTG.logger.log(Level.SEVERE, "Error loading file: " + e);
         }
         config.set("firstname", firstname);
         try {
             config.save(file);
         } catch (IOException e) {
-            System.out.println("Error saving file: " + e);
+            AuthTG.logger.log(Level.SEVERE, "Error saving file: " + e);
         }
     }
 
@@ -369,15 +371,15 @@ public class YAMLLoader implements Loader{
         try {
             config.load(file);
         } catch (IOException e) {
-            System.out.println("Error loading file " + e);
+            AuthTG.logger.log(Level.SEVERE, "Error loading file: " + e);
         } catch (InvalidConfigurationException e) {
-            System.out.println("Error loading file " + e);
+            AuthTG.logger.log(Level.SEVERE, "Error loading file: " + e);
         }
         config.set("twofactor", state);
         try {
             config.save(file);
         } catch (IOException e) {
-            System.out.println("Error saving file: " + e);
+            AuthTG.logger.log(Level.SEVERE, "Error saving file: " + e);
         }
     }
 
@@ -388,9 +390,9 @@ public class YAMLLoader implements Loader{
         try {
             config.load(file);
         } catch (IOException e) {
-            System.out.println("Error loading file " + e);
+            AuthTG.logger.log(Level.SEVERE, "Error loading file: " + e);
         } catch (InvalidConfigurationException e) {
-            System.out.println("Error loading file " + e);
+            AuthTG.logger.log(Level.SEVERE, "Error loading file: " + e);
         }
         if (!state) {
             for (Long chatid : currentuser.keySet()) {
@@ -408,7 +410,7 @@ public class YAMLLoader implements Loader{
         try {
             config.save(file);
         } catch (IOException e) {
-            System.out.println("Error saving file: " + e);
+            AuthTG.logger.log(Level.SEVERE, "Error saving file: " + e);
         }
     }
 
@@ -439,9 +441,9 @@ public class YAMLLoader implements Loader{
         try {
             config.load(file);
         } catch (IOException e) {
-            System.out.println("Error loading file " + e);
+            AuthTG.logger.log(Level.SEVERE, "Error loading file: " + e);
         } catch (InvalidConfigurationException e) {
-            System.out.println("Error loading file " + e);
+            AuthTG.logger.log(Level.SEVERE, "Error loading file: " + e);
         }
         if (config.contains("friends")) {
             List<String > list = (List<String>) config.getList("friends");
@@ -455,7 +457,7 @@ public class YAMLLoader implements Loader{
         try {
             config.save(file);
         } catch (IOException e) {
-            System.out.println("Error saving file: " + e);
+            AuthTG.logger.log(Level.SEVERE, "Error saving file: " + e);;
         }
     }
 
@@ -474,9 +476,9 @@ public class YAMLLoader implements Loader{
         try {
             config.load(file);
         } catch (IOException e) {
-            System.out.println("Error loading file " + e);
+            AuthTG.logger.log(Level.SEVERE, "Error loading file: " + e);
         } catch (InvalidConfigurationException e) {
-            System.out.println("Error loading file " + e);
+            AuthTG.logger.log(Level.SEVERE, "Error loading file: " + e);
         }
         List<String> list = (List<String>) config.getList("friends");
         list.remove(friend);
@@ -488,7 +490,7 @@ public class YAMLLoader implements Loader{
         try {
             config.save(file);
         } catch (IOException e) {
-            System.out.println("Error saving file: " + e);
+            AuthTG.logger.log(Level.SEVERE, "Error saving file: " + e);;
         }
     }
 
@@ -506,9 +508,9 @@ public class YAMLLoader implements Loader{
             config.set("commands", list);
             config.save(file);
         } catch (IOException e) {
-            System.out.println("Error loading file " + e);
+            AuthTG.logger.log(Level.SEVERE, "Error loading file: " + e);
         } catch (InvalidConfigurationException e) {
-            System.out.println("Error loading file " + e);
+            AuthTG.logger.log(Level.SEVERE, "Error loading file: " + e);
         }
         if (!adminlist.containsKey(config.getString("playername"))) adminlist.put(config.getString("playername"), uuid);
     }
@@ -523,9 +525,9 @@ public class YAMLLoader implements Loader{
             config.set("commands", null);
             config.save(file);
         } catch (IOException e) {
-            System.out.println("Error loading file " + e);
+            AuthTG.logger.log(Level.SEVERE, "Error loading file: " + e);
         } catch (InvalidConfigurationException e) {
-            System.out.println("Error loading file " + e);
+            AuthTG.logger.log(Level.SEVERE, "Error loading file: " + e);
         }
         if (adminlist.containsKey(config.getString("playername"))) adminlist.remove(config.getString("playername"));
     }
@@ -544,9 +546,9 @@ public class YAMLLoader implements Loader{
         } catch (FileNotFoundException e) {
             return null;
         }catch (IOException e) {
-            System.out.println("Error loading file " + e);
+            AuthTG.logger.log(Level.SEVERE, "Error loading file: " + e);
         } catch (InvalidConfigurationException e) {
-            System.out.println("Error loading file " + e);
+            AuthTG.logger.log(Level.SEVERE, "Error loading file: " + e);
         }
         if (!config.contains("commands")) return null;
         else return new HashSet<String>(config.getStringList("commands"));
@@ -559,9 +561,9 @@ public class YAMLLoader implements Loader{
         try {
             config.load(file);
         } catch (IOException e) {
-            System.out.println("Error loading file " + e);
+            AuthTG.logger.log(Level.SEVERE, "Error loading file: " + e);
         } catch (InvalidConfigurationException e) {
-            System.out.println("Error loading file " + e);
+            AuthTG.logger.log(Level.SEVERE, "Error loading file: " + e);
         }
         if (!config.contains("commands")) {
             List<String> list = new ArrayList<>();
@@ -575,7 +577,7 @@ public class YAMLLoader implements Loader{
         try {
             config.save(file);
         } catch (IOException e) {
-            System.out.println("Error saving file: " + e);
+            AuthTG.logger.log(Level.SEVERE, "Error saving file: " + e);;
         }
     }
 
@@ -586,9 +588,9 @@ public class YAMLLoader implements Loader{
         try {
             config.load(file);
         } catch (IOException e) {
-            System.out.println("Error loading file " + e);
+            AuthTG.logger.log(Level.SEVERE, "Error loading file: " + e);
         } catch (InvalidConfigurationException e) {
-            System.out.println("Error loading file " + e);
+            AuthTG.logger.log(Level.SEVERE, "Error loading file: " + e);
         }
         List<String> list = config.getStringList("commands");
         list.remove(command);
@@ -596,7 +598,7 @@ public class YAMLLoader implements Loader{
         try {
             config.save(file);
         } catch (IOException e) {
-            System.out.println("Error saving file: " + e);
+            AuthTG.logger.log(Level.SEVERE, "Error saving file: " + e);;
         }
     }
 
@@ -612,9 +614,9 @@ public class YAMLLoader implements Loader{
         try {
             config.load(file);
         } catch (IOException e) {
-            System.out.println("Error loading file " + e);
+            AuthTG.logger.log(Level.SEVERE, "Error loading file: " + e);
         } catch (InvalidConfigurationException e) {
-            System.out.println("Error loading file " + e);
+            AuthTG.logger.log(Level.SEVERE, "Error loading file: " + e);
         }
         config.set("ban.timeBan", dateBan);
         config.set("ban.reason", reason);
@@ -623,7 +625,7 @@ public class YAMLLoader implements Loader{
         try {
             config.save(file);
         } catch (IOException e) {
-            System.out.println("Error saving file: " + e);
+            AuthTG.logger.log(Level.SEVERE, "Error saving file: " + e);;
         }
     }
 
@@ -653,9 +655,9 @@ public class YAMLLoader implements Loader{
         try {
             config.load(file);
         } catch (IOException e) {
-            System.out.println("Error loading file " + e);
+            AuthTG.logger.log(Level.SEVERE, "Error loading file: " + e);
         } catch (InvalidConfigurationException e) {
-            System.out.println("Error loading file " + e);
+            AuthTG.logger.log(Level.SEVERE, "Error loading file: " + e);
         }
         return config.getString("ban.reason");
     }
@@ -667,9 +669,9 @@ public class YAMLLoader implements Loader{
         try {
             config.load(file);
         } catch (IOException e) {
-            System.out.println("Error loading file " + e);
+            AuthTG.logger.log(Level.SEVERE, "Error loading file: " + e);
         } catch (InvalidConfigurationException e) {
-            System.out.println("Error loading file " + e);
+            AuthTG.logger.log(Level.SEVERE, "Error loading file: " + e);
         }
         return config.getString("ban.admin");
     }
@@ -681,9 +683,9 @@ public class YAMLLoader implements Loader{
         try {
             config.load(file);
         } catch (IOException e) {
-            System.out.println("Error loading file " + e);
+            AuthTG.logger.log(Level.SEVERE, "Error loading file: " + e);
         } catch (InvalidConfigurationException e) {
-            System.out.println("Error loading file " + e);
+            AuthTG.logger.log(Level.SEVERE, "Error loading file: " + e);
         }
         return config.getString("ban.time");
     }
@@ -695,15 +697,15 @@ public class YAMLLoader implements Loader{
         try {
             config.load(file);
         } catch (IOException e) {
-            System.out.println("Error loading file " + e);
+            AuthTG.logger.log(Level.SEVERE, "Error loading file: " + e);
         } catch (InvalidConfigurationException e) {
-            System.out.println("Error loading file " + e);
+            AuthTG.logger.log(Level.SEVERE, "Error loading file: " + e);
         }
         config.set("ban", null);
         try {
             config.save(file);
         } catch (IOException e) {
-            System.out.println("Error saving file: " + e);
+            AuthTG.logger.log(Level.SEVERE, "Error saving file: " + e);;
         }
     }
 
@@ -716,9 +718,9 @@ public class YAMLLoader implements Loader{
         }  catch (FileNotFoundException e) {
             return false;
         }catch (IOException e) {
-            System.out.println("Error loading file " + e);
+            AuthTG.logger.log(Level.SEVERE, "Error loading file: " + e);
         } catch (InvalidConfigurationException e) {
-            System.out.println("Error loading file " + e);
+            AuthTG.logger.log(Level.SEVERE, "Error loading file: " + e);
         }
         if (config.contains("ban")) {
             return true;
@@ -733,9 +735,9 @@ public class YAMLLoader implements Loader{
         try {
             config.load(file);
         } catch (IOException e) {
-            System.out.println("Error loading file " + e);
+            AuthTG.logger.log(Level.SEVERE, "Error loading file: " + e);
         } catch (InvalidConfigurationException e) {
-            System.out.println("Error loading file " + e);
+            AuthTG.logger.log(Level.SEVERE, "Error loading file: " + e);
         }
         config.set("mute.timeMute", dateMute);
         config.set("mute.reason", reason);
@@ -749,7 +751,7 @@ public class YAMLLoader implements Loader{
         try {
             config.save(file);
         } catch (IOException e) {
-            System.out.println("Error saving file: " + e);
+            AuthTG.logger.log(Level.SEVERE, "Error saving file: " + e);;
         }
     }
 
@@ -760,9 +762,9 @@ public class YAMLLoader implements Loader{
         try {
             config.load(file);
         } catch (IOException e) {
-            System.out.println("Error loading file " + e);
+            AuthTG.logger.log(Level.SEVERE, "Error loading file: " + e);
         } catch (InvalidConfigurationException e) {
-            System.out.println("Error loading file " + e);
+            AuthTG.logger.log(Level.SEVERE, "Error loading file: " + e);
         }
         return config.getString("mute.timeMute");
     }
@@ -774,9 +776,9 @@ public class YAMLLoader implements Loader{
         try {
             config.load(file);
         } catch (IOException e) {
-            System.out.println("Error loading file " + e);
+            AuthTG.logger.log(Level.SEVERE, "Error loading file: " + e);
         } catch (InvalidConfigurationException e) {
-            System.out.println("Error loading file " + e);
+            AuthTG.logger.log(Level.SEVERE, "Error loading file: " + e);
         }
         return config.getString("mute.reason");
     }
@@ -788,9 +790,9 @@ public class YAMLLoader implements Loader{
         try {
             config.load(file);
         } catch (IOException e) {
-            System.out.println("Error loading file " + e);
+            AuthTG.logger.log(Level.SEVERE, "Error loading file: " + e);
         } catch (InvalidConfigurationException e) {
-            System.out.println("Error loading file " + e);
+            AuthTG.logger.log(Level.SEVERE, "Error loading file: " + e);
         }
         return config.getString("mute.admin");
     }
@@ -802,9 +804,9 @@ public class YAMLLoader implements Loader{
         try {
             config.load(file);
         } catch (IOException e) {
-            System.out.println("Error loading file " + e);
+            AuthTG.logger.log(Level.SEVERE, "Error loading file: " + e);
         } catch (InvalidConfigurationException e) {
-            System.out.println("Error loading file " + e);
+            AuthTG.logger.log(Level.SEVERE, "Error loading file: " + e);
         }
         return config.getString("mute.time");
     }
@@ -816,15 +818,15 @@ public class YAMLLoader implements Loader{
         try {
             config.load(file);
         } catch (IOException e) {
-            System.out.println("Error loading file " + e);
+            AuthTG.logger.log(Level.SEVERE, "Error loading file: " + e);
         } catch (InvalidConfigurationException e) {
-            System.out.println("Error loading file " + e);
+            AuthTG.logger.log(Level.SEVERE, "Error loading file: " + e);
         }
         config.set("mute", null);
         try {
             config.save(file);
         } catch (IOException e) {
-            System.out.println("Error saving file: " + e);
+            AuthTG.logger.log(Level.SEVERE, "Error saving file: " + e);;
         }
     }
 
@@ -835,9 +837,9 @@ public class YAMLLoader implements Loader{
         try {
             config.load(file);
         } catch (IOException e) {
-            System.out.println("Error loading file " + e);
+            AuthTG.logger.log(Level.SEVERE, "Error loading file: " + e);
         } catch (InvalidConfigurationException e) {
-            System.out.println("Error loading file " + e);
+            AuthTG.logger.log(Level.SEVERE, "Error loading file: " + e);
         }
         return config.contains("mute");
     }
@@ -852,9 +854,9 @@ public class YAMLLoader implements Loader{
                 try {
                     config.load(file);
                 } catch (IOException e) {
-                    System.out.println("Error loading file " + e);
+                    AuthTG.logger.log(Level.SEVERE, "Error loading file: " + e);
                 } catch (InvalidConfigurationException e) {
-                    System.out.println("Error loading file " + e);
+                    AuthTG.logger.log(Level.SEVERE, "Error loading file: " + e);
                 }
                 if (config.contains("mute")) {
                     List<Object> list = new ArrayList<>();
