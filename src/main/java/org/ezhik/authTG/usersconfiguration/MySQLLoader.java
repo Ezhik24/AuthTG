@@ -1,5 +1,6 @@
 package org.ezhik.authTG.usersconfiguration;
 
+import org.ezhik.authTG.AuthTG;
 import org.ezhik.authTG.PasswordHasher;
 import org.ezhik.authTG.events.MuterEvent;
 
@@ -7,6 +8,7 @@ import java.sql.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.logging.Level;
 
 public class MySQLLoader implements Loader {
     private String database;
@@ -81,9 +83,7 @@ public class MySQLLoader implements Loader {
             );
             conn.close();
         } catch (SQLException e) {
-            System.out.println("SQLException: " + e.getMessage());
-            System.out.println("SQLState: " + e.getSQLState());
-            System.out.println("VendorError: " + e.getErrorCode());
+            AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
         }
     }
     @Override
@@ -98,9 +98,7 @@ public class MySQLLoader implements Loader {
             st.executeUpdate("INSERT INTO AuthTGUsers(uuid, playername, currentUUID) VALUES ('" + uuid.toString() + "', '" + playername + "', false) ");
             conn.close();
         } catch (SQLException e) {
-            System.out.println("SQLException: " + e.getMessage());
-            System.out.println("SQLState: " + e.getSQLState());
-            System.out.println("VendorError: " + e.getErrorCode());
+            AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
         }
     }
 
@@ -117,9 +115,7 @@ public class MySQLLoader implements Loader {
             st.executeUpdate("UPDATE AuthTGUsers SET password = '" + hash + "' WHERE uuid = '" + uuid.toString() + "'");
             conn.close();
         } catch (SQLException e) {
-            System.out.println("SQLException: " + e.getMessage());
-            System.out.println("SQLState: " + e.getSQLState());
-            System.out.println("VendorError: " + e.getErrorCode());
+            AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
         }
     }
 
@@ -135,9 +131,7 @@ public class MySQLLoader implements Loader {
             st.executeUpdate("UPDATE AuthTGUsers SET active = " + active + " WHERE uuid = '" + uuid.toString() + "'");
             conn.close();
         } catch (SQLException e) {
-            System.out.println("SQLException: " + e.getMessage());
-            System.out.println("SQLState: " + e.getSQLState());
-            System.out.println("VendorError: " + e.getErrorCode());
+            AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
         }
     }
 
@@ -156,7 +150,7 @@ public class MySQLLoader implements Loader {
             }
             conn.close();
         } catch (SQLException e) {
-            System.out.println("SQLException: " + e.getMessage());
+            AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
         }
         return false;
     }
@@ -176,7 +170,7 @@ public class MySQLLoader implements Loader {
             }
             conn.close();
         } catch (SQLException e) {
-            System.out.println("SQLException: " + e.getMessage());
+            AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
         }
         return false;
     }
@@ -196,7 +190,7 @@ public class MySQLLoader implements Loader {
             }
             conn.close();
         } catch (SQLException e) {
-            System.out.println("SQLException: " + e.getMessage());
+            AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
         }
         return "";
     }
@@ -216,7 +210,7 @@ public class MySQLLoader implements Loader {
             }
             conn.close();
         } catch (SQLException e) {
-            System.out.println("SQLException: " + e.getMessage());
+            AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
         }
         return false;
     }
@@ -236,7 +230,7 @@ public class MySQLLoader implements Loader {
             }
             conn.close();
         } catch (SQLException e) {
-            System.out.println("SQLException: " + e.getMessage());
+            AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
         }
         return false;
     }
@@ -260,7 +254,7 @@ public class MySQLLoader implements Loader {
             conn.close();
             return list;
         } catch (SQLException e) {
-            System.out.println("SQLException: " + e.getMessage());
+            AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
         }
         return null;
     }
@@ -280,7 +274,7 @@ public class MySQLLoader implements Loader {
             }
             conn.close();
         } catch (SQLException e) {
-            System.out.println("SQLException: " + e.getMessage());
+            AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
         }
         return null;
     }
@@ -300,7 +294,7 @@ public class MySQLLoader implements Loader {
             }
             conn.close();
         } catch (SQLException e) {
-            System.out.println("SQLException: " + e.getMessage());
+            AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
         }
         return null;
     }
@@ -320,7 +314,7 @@ public class MySQLLoader implements Loader {
             }
             conn.close();
         } catch (SQLException e) {
-            System.out.println("SQLException: " + e.getMessage());
+            AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
         }
         return null;
     }
@@ -340,7 +334,7 @@ public class MySQLLoader implements Loader {
             }
             conn.close();
         } catch (SQLException e) {
-            System.out.println("SQLException: " + e.getMessage());
+            AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
         }
         return 0L;
     }
@@ -365,7 +359,7 @@ public class MySQLLoader implements Loader {
             }
             conn.close();
         } catch (SQLException e) {
-            System.out.println("SQLException: " + e.getMessage());
+            AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
         }
         return null;
     }
@@ -384,7 +378,7 @@ public class MySQLLoader implements Loader {
             st.executeUpdate("UPDATE AuthTGUsers SET currentUUID = true WHERE uuid = '" + uuid.toString() + "'");
             conn.close();
         } catch (SQLException e) {
-            System.out.println("SQLException: " + e.getMessage());
+            AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
         }
     }
 
@@ -400,7 +394,7 @@ public class MySQLLoader implements Loader {
             st.executeUpdate("UPDATE AuthTGUsers SET chatid = " + chatid + " WHERE uuid = '" + uuid.toString() + "'");
             conn.close();
         } catch (SQLException e) {
-            System.out.println("SQLException: " + e.getMessage());
+            AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
         }
     }
 
@@ -416,7 +410,7 @@ public class MySQLLoader implements Loader {
             st.executeUpdate("UPDATE AuthTGUsers SET username = '" + username + "' WHERE uuid = '" + uuid.toString() + "'");
             conn.close();
         } catch (SQLException e) {
-            System.out.println("SQLException: " + e.getMessage());
+            AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
         }
     }
 
@@ -432,7 +426,7 @@ public class MySQLLoader implements Loader {
             st.executeUpdate("UPDATE AuthTGUsers SET lastname = '" + lastname + "' WHERE uuid = '" + uuid.toString() + "'");
             conn.close();
         } catch (SQLException e) {
-            System.out.println("SQLException: " + e.getMessage());
+            AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
         }
     }
 
@@ -448,7 +442,7 @@ public class MySQLLoader implements Loader {
             st.executeUpdate("UPDATE AuthTGUsers SET firstname = '" + firstname + "' WHERE uuid = '" + uuid.toString() + "'");
             conn.close();
         } catch (SQLException e) {
-            System.out.println("SQLException: " + e.getMessage());
+            AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
         }
     }
 
@@ -464,7 +458,7 @@ public class MySQLLoader implements Loader {
             st.executeUpdate("UPDATE AuthTGUsers SET twofactor = " + state + " WHERE uuid = '" + uuid.toString() + "'");
             conn.close();
         } catch (SQLException e) {
-            System.out.println("SQLException: " + e.getMessage());
+            AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
         }
     }
 
@@ -480,7 +474,7 @@ public class MySQLLoader implements Loader {
             st.executeUpdate("UPDATE AuthTGUsers SET activeTG = " + state + " WHERE uuid = '" + uuid.toString() + "'");
             conn.close();
         } catch (SQLException e) {
-            System.out.println("SQLException: " + e.getMessage());
+            AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
         }
     }
 
@@ -505,7 +499,7 @@ public class MySQLLoader implements Loader {
             conn.close();
             return list;
         } catch (SQLException e) {
-            System.out.println("SQLException: " + e.getMessage());
+            AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
         }
         return null;
     }
@@ -532,7 +526,7 @@ public class MySQLLoader implements Loader {
             conn.close();
             return set;
         } catch (SQLException e) {
-            System.out.println("SQLException: " + e.getMessage());
+            AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
         }
         return null;
     }
@@ -549,7 +543,7 @@ public class MySQLLoader implements Loader {
             st.executeUpdate("INSERT INTO AuthTGFriends(uuid, friend) VALUES ('" + uuid.toString() + "', '" + friend + "') ");
             conn.close();
         } catch (SQLException e) {
-            System.out.println("SQLException: " + e.getMessage());
+            AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
         }
     }
 
@@ -568,7 +562,7 @@ public class MySQLLoader implements Loader {
             }
             conn.close();
         } catch (SQLException e) {
-            System.out.println("SQLException: " + e.getMessage());
+            AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
         }
         return null;
     }
@@ -585,7 +579,7 @@ public class MySQLLoader implements Loader {
             st.executeUpdate("DELETE FROM AuthTGFriends WHERE uuid = '" + uuid.toString() + "' AND friend = '" + friend + "'");
             conn.close();
         } catch (SQLException e) {
-            System.out.println("SQLException: " + e.getMessage());
+            AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
         }
     }
 
@@ -603,7 +597,7 @@ public class MySQLLoader implements Loader {
             );
             conn.close();
         } catch (SQLException e) {
-            System.out.println("SQLException: " + e.getMessage());
+            AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
         }
     }
 
@@ -621,7 +615,7 @@ public class MySQLLoader implements Loader {
             );
             conn.close();
         } catch (SQLException e) {
-            System.out.println("SQLException: " + e.getMessage());
+            AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
         }
     }
 
@@ -644,7 +638,7 @@ public class MySQLLoader implements Loader {
             conn.close();
             return set;
         } catch (SQLException e) {
-            System.out.println("SQLException: " + e.getMessage());
+            AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
         }
         return null;
     }
@@ -668,7 +662,7 @@ public class MySQLLoader implements Loader {
             conn.close();
             return list;
         } catch (SQLException e) {
-            System.out.println("SQLException: " + e.getMessage());
+            AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
         }
         return null;
     }
@@ -687,7 +681,7 @@ public class MySQLLoader implements Loader {
             );
             conn.close();
         } catch (SQLException e) {
-            System.out.println("SQLException: " + e.getMessage());
+            AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
         }
     }
 
@@ -705,7 +699,7 @@ public class MySQLLoader implements Loader {
             );
             conn.close();
         } catch (SQLException e) {
-            System.out.println("SQLException: " + e.getMessage());
+            AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
         }
     }
 
@@ -726,7 +720,7 @@ public class MySQLLoader implements Loader {
             }
             conn.close();
         } catch (SQLException e) {
-            System.out.println("SQLException: " + e.getMessage());
+            AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
         }
         return false;
     }
@@ -745,7 +739,7 @@ public class MySQLLoader implements Loader {
             );
             conn.close();
         } catch (SQLException e) {
-            System.out.println("SQLException: " + e.getMessage());
+            AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
         }
     }
 
@@ -765,7 +759,7 @@ public class MySQLLoader implements Loader {
                 return rs.getString("timeBan");
             }
         } catch (SQLException e) {
-            System.out.println("SQLException: " + e.getMessage());
+            AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
         }
         return null;
     }
@@ -786,7 +780,7 @@ public class MySQLLoader implements Loader {
                 return rs.getString("reason");
             }
         } catch (SQLException e) {
-            System.out.println("SQLException: " + e.getMessage());
+            AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
         }
         return null;
     }
@@ -807,7 +801,7 @@ public class MySQLLoader implements Loader {
                 return rs.getString("admin");
             }
         } catch (SQLException e) {
-            System.out.println("SQLException: " + e.getMessage());
+            AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
         }
         return null;
     }
@@ -828,7 +822,7 @@ public class MySQLLoader implements Loader {
                 return rs.getString("time");
             }
         } catch (SQLException e) {
-            System.out.println("SQLException: " + e.getMessage());
+            AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
         }
         return null;
     }
@@ -846,7 +840,7 @@ public class MySQLLoader implements Loader {
                     "DELETE FROM AuthTGBans WHERE uuid = '" + uuid.toString() + "'"
             );
         } catch (SQLException e) {
-            System.out.println("SQLException: " + e.getMessage());
+            AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
         }
     }
 
@@ -866,7 +860,7 @@ public class MySQLLoader implements Loader {
                 return true;
             }
         } catch (SQLException e) {
-            System.out.println("SQLException: " + e.getMessage());
+            AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
         }
         return false;
     }
@@ -895,7 +889,7 @@ public class MySQLLoader implements Loader {
             }
             conn.close();
         } catch (SQLException e) {
-            System.out.println("Error: " + e.getMessage());
+            AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
         }
     }
 
@@ -915,7 +909,7 @@ public class MySQLLoader implements Loader {
                 return rs.getString("timeMute");
             }
         } catch (SQLException e) {
-            System.out.println("Error: " + e.getMessage());
+            AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
         }
         return null;
     }
@@ -936,7 +930,7 @@ public class MySQLLoader implements Loader {
                 return rs.getString("reason");
             }
         } catch (SQLException e) {
-            System.out.println("Error: " + e.getMessage());
+            AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
         }
         return null;
     }
@@ -957,7 +951,7 @@ public class MySQLLoader implements Loader {
                 return rs.getString("admin");
             }
         } catch (SQLException e) {
-            System.out.println("Error: " + e.getMessage());
+            AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
         }
         return null;
     }
@@ -978,7 +972,7 @@ public class MySQLLoader implements Loader {
                 return rs.getString("time");
             }
         } catch (SQLException e) {
-            System.out.println("Error: " + e.getMessage());
+            AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
         }
         return null;
     }
@@ -997,7 +991,7 @@ public class MySQLLoader implements Loader {
             );
             conn.close();
         } catch (SQLException e) {
-            System.out.println("Error: " + e.getMessage());
+            AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
         }
     }
 
@@ -1019,7 +1013,7 @@ public class MySQLLoader implements Loader {
                 }
             }
         } catch (SQLException e) {
-            System.out.println("Error: " + e.getMessage());
+            AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
         }
         return false;
     }
@@ -1046,7 +1040,7 @@ public class MySQLLoader implements Loader {
                 map.put(playername, list);
             }
         } catch (SQLException e) {
-            System.out.println("Error: " + e.getMessage());;
+            AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());;
         }
         return map;
     }
