@@ -8,7 +8,6 @@ import org.ezhik.authTG.User;
 import org.ezhik.authTG.events.FreezerEvent;
 import org.ezhik.authTG.events.MuterEvent;
 import org.ezhik.authTG.handlers.AuthHandler;
-import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.util.UUID;
@@ -24,6 +23,6 @@ public class LoginAcceptedYes implements CallbackQueryHandler{
         Player player = Bukkit.getPlayer(user.playername);
         AuthHandler.removeTimeout(player.getUniqueId());
         player.resetTitle();
-        player.sendMessage(ChatColor.translateAlternateColorCodes('&',AuthTG.config.getString("messages.minecraft.loginsuccess")));
+        player.sendMessage(ChatColor.translateAlternateColorCodes('&',AuthTG.getMessage("loginsuccess", "MC")));
     }
 }

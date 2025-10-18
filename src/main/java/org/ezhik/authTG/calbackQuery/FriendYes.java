@@ -1,8 +1,6 @@
 package org.ezhik.authTG.calbackQuery;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
 import org.ezhik.authTG.AuthTG;
 import org.ezhik.authTG.User;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -17,9 +15,9 @@ public class FriendYes implements CallbackQueryHandler {
         User friendUser = User.getCurrentUser(update.getCallbackQuery().getMessage().getChatId());
         AuthTG.loader.addFriend(playerUser.uuid, friendUser.playername);
         AuthTG.loader.addFriend(friendUser.uuid, playerUser.playername);
-        playerUser.sendMessage(AuthTG.config.getString("messages.telegram.addfriendyes").replace("{PLAYER}", friendUser.playername));
-        friendUser.sendMessage(AuthTG.config.getString("messages.telegram.addfriendyessuccess").replace("{PLAYER}", playerUser.playername));
-        if (playerUser.player != null) playerUser.player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.addfriendyes").replace("{PLAYER}", friendUser.playername)));
+        playerUser.sendMessage(AuthTG.getMessage("addfriendyes", "TG").replace("{PLAYER}", friendUser.playername));
+        friendUser.sendMessage(AuthTG.getMessage("addfriendyessuccess", "TG").replace("{PLAYER}", playerUser.playername));
+        if (playerUser.player != null) playerUser.player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("addfriendyes", "MC").replace("{PLAYER}", friendUser.playername)));
         AuthTG.bot.deleteMessage(update.getCallbackQuery().getMessage());
     }
 }

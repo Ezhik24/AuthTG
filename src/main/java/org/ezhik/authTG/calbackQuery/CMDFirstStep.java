@@ -14,7 +14,7 @@ public class CMDFirstStep implements CallbackQueryHandler{
     public void execute(Update update) {
         CommandCMDHandler.commands.remove(update.getCallbackQuery().getFrom().getId());
         User user = User.getCurrentUser(update.getCallbackQuery().getFrom().getId());
-        user.sendMessage(AuthTG.config.getString("messages.telegram.cmdfirstnick"));
+        user.sendMessage(AuthTG.getMessage("cmdfirstnick", "TG"));
         List<String> commands = new ArrayList<>();
         String[] command = update.getCallbackQuery().getData().split("_");
         if (command[1].equals("add")) commands.add(0, "add");

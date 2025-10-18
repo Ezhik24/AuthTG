@@ -4,13 +4,9 @@ import org.ezhik.authTG.PasswordHasher;
 import org.ezhik.authTG.events.MuterEvent;
 
 import java.sql.*;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.Date;
 
 public class MySQLLoader implements Loader {
     private String database;

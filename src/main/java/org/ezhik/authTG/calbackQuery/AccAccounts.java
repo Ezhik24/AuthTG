@@ -1,7 +1,5 @@
 package org.ezhik.authTG.calbackQuery;
 
-import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
 import org.ezhik.authTG.AuthTG;
 import org.ezhik.authTG.User;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -14,7 +12,7 @@ public class AccAccounts implements CallbackQueryHandler{
         String[] str = update.getCallbackQuery().getData().toString().split("_");
         AuthTG.loader.setCurrentUUID(UUID.fromString(str[1]), update.getCallbackQuery().getMessage().getChatId());
         User user = User.getUser(UUID.fromString(str[1]));
-        AuthTG.bot.sendMessage(update.getCallbackQuery().getMessage().getChatId(), AuthTG.config.getString("messages.telegram.accaccounts").replace("{PLAYER}", user.playername));
+        AuthTG.bot.sendMessage(update.getCallbackQuery().getMessage().getChatId(), AuthTG.getMessage("accaccounts", "TG").replace("{PLAYER}", user.playername));
         AuthTG.bot.deleteMessage(update.getCallbackQuery().getMessage());
     }
 }

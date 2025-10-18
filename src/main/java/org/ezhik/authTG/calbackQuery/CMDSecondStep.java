@@ -19,23 +19,23 @@ public class CMDSecondStep implements CallbackQueryHandler{
             if (list.get(0).equals("add")) {
                 if (target.commands != null && !target.commands.contains("ban")) {
                     AuthTG.loader.addCommand(target.uuid, "ban");
-                    user.sendMessage(AuthTG.config.getString("messages.telegram.cmdsecondadd").replace("{PLAYER}", target.playername).replace("{PERMISSION}", AuthTG.config.getString("messages.telegram.cmdsecondban")));
-                    if (target.activetg) target.sendMessage(AuthTG.config.getString("messages.telegram.cmdsecondaddplayer").replace("{PERMISSION}", AuthTG.config.getString("messages.telegram.cmdsecondban")));
+                    user.sendMessage(AuthTG.getMessage("cmdsecondadd", "TG").replace("{PLAYER}", target.playername).replace("{PERMISSION}", AuthTG.getMessage("cmdsecondban", "TG")));
+                    if (target.activetg) target.sendMessage(AuthTG.getMessage("cmdsecondaddplayer", "TG").replace("{PERMISSION}", AuthTG.getMessage("cmdsecondban", "TG")));
                     if (target.player != null)
-                        target.player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.cmdsecondaddplayer").replace("{PERMISSION}", AuthTG.config.getString("messages.minecraft.cmdsecondban"))));
+                        target.player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("cmdsecondaddplayer", "MC").replace("{PERMISSION}", AuthTG.getMessage("cmdsecondban", "MC"))));
                 } else {
-                    user.sendMessage(AuthTG.config.getString("messages.telegram.cmdsecondexcadd").replace("{PLAYER}", target.playername).replace("{PERMISSION}", AuthTG.config.getString("messages.telegram.cmdsecondmute")));
+                    user.sendMessage(AuthTG.getMessage("cmdsecondexcadd", "TG").replace("{PLAYER}", target.playername).replace("{PERMISSION}", AuthTG.getMessage("cmdsecondmute", "TG")));
                 }
             }
             if (list.get(0).equals("rem")) {
                 if (target.commands != null && target.commands.contains("ban")) {
                     AuthTG.loader.removeCommand(target.uuid, "ban");
-                    user.sendMessage(AuthTG.config.getString("messages.telegram.cmdsecondrem").replace("{PLAYER}", target.playername).replace("{PERMISSION}", AuthTG.config.getString("messages.telegram.cmdsecondban")));
-                    if (target.activetg) target.sendMessage(AuthTG.config.getString("messages.telegram.cmdsecondremplayer").replace("{PERMISSION}", AuthTG.config.getString("messages.telegram.cmdsecondban")));
+                    user.sendMessage(AuthTG.getMessage("cmdsecondrem", "TG").replace("{PLAYER}", target.playername).replace("{PERMISSION}", AuthTG.getMessage("cmdsecondban", "TG")));
+                    if (target.activetg) target.sendMessage(AuthTG.getMessage("cmdsecondremplayer", "TG").replace("{PERMISSION}", AuthTG.getMessage("cmdsecondban", "TG")));
                     if (target.player != null)
-                        target.player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.cmdsecondremplayer").replace("{PERMISSION}", AuthTG.config.getString("messages.minecraft.cmdsecondban"))));
+                        target.player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("cmdsecondremplayer", "MC").replace("{PERMISSION}", AuthTG.getMessage("cmdsecondban", "MC"))));
                 } else {
-                    user.sendMessage(AuthTG.config.getString("messages.telegram.cmdsecondexcrem").replace("{PLAYER}", target.playername).replace("{PERMISSION}", AuthTG.config.getString("messages.telegram.cmdsecondmute")));
+                    user.sendMessage(AuthTG.getMessage("cmdsecondexcrem", "TG").replace("{PLAYER}", target.playername).replace("{PERMISSION}", AuthTG.getMessage("cmdsecondmute", "TG")));
                 }
             }
         }
@@ -43,23 +43,23 @@ public class CMDSecondStep implements CallbackQueryHandler{
             if (list.get(0).equals("add")) {
                 if (target.commands != null && !target.commands.contains("kick")) {
                     AuthTG.loader.addCommand(target.uuid, "kick");
-                    user.sendMessage(AuthTG.config.getString("messages.telegram.cmdsecondadd").replace("{PLAYER}", target.playername).replace("{PERMISSION}", AuthTG.config.getString("messages.telegram.cmdsecondkick")));;
-                    if (target.activetg) target.sendMessage(AuthTG.config.getString("messages.telegram.cmdsecondaddplayer").replace("{PERMISSION}", AuthTG.config.getString("messages.telegram.cmdsecondkick")));
+                    user.sendMessage(AuthTG.getMessage("cmdsecondadd", "TG").replace("{PLAYER}", target.playername).replace("{PERMISSION}", AuthTG.getMessage("cmdsecondkick", "TG")));;
+                    if (target.activetg) target.sendMessage(AuthTG.getMessage("cmdsecondaddplayer", "TG").replace("{PERMISSION}", AuthTG.getMessage("cmdsecondkick", "TG")));
                     if (target.player != null)
-                        target.player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.cmdsecondaddplayer").replace("{PERMISSION}", AuthTG.config.getString("messages.minecraft.cmdsecondkick"))));
+                        target.player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("cmdsecondaddplayer", "MC").replace("{PERMISSION}", AuthTG.getMessage("cmdsecondkick", "MC"))));
                 } else {
-                    user.sendMessage(AuthTG.config.getString("messages.telegram.cmdsecondexcadd").replace("{PLAYER}", target.playername).replace("{PERMISSION}", AuthTG.config.getString("messages.telegram.cmdsecondmute")));
+                    user.sendMessage(AuthTG.getMessage("cmdsecondexcadd", "TG").replace("{PLAYER}", target.playername).replace("{PERMISSION}", AuthTG.getMessage("cmdsecondmute", "TG")));
                 }
             }
             if (list.get(0).equals("rem")) {
                 if (target.commands != null && target.commands.contains("kick")) {
                     AuthTG.loader.removeCommand(target.uuid, "kick");
-                    user.sendMessage(AuthTG.config.getString("messages.telegram.cmdsecondrem").replace("{PLAYER}", target.playername).replace("{PERMISSION}", AuthTG.config.getString("messages.telegram.cmdsecondkick")));
-                    if (target.activetg) target.sendMessage(AuthTG.config.getString("messages.telegram.cmdsecondremplayer").replace("{PERMISSION}", AuthTG.config.getString("messages.telegram.cmdsecondkick")));
+                    user.sendMessage(AuthTG.getMessage("cmdsecondrem", "TG").replace("{PLAYER}", target.playername).replace("{PERMISSION}", AuthTG.getMessage("cmdsecondkick", "TG")));
+                    if (target.activetg) target.sendMessage(AuthTG.getMessage("cmdsecondremplayer", "TG").replace("{PERMISSION}", AuthTG.getMessage("cmdsecondkick", "TG")));
                     if (target.player != null)
-                        target.player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.cmdsecondremplayer").replace("{PERMISSION}", AuthTG.config.getString("messages.minecraft.cmdsecondkick"))));
+                        target.player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("cmdsecondremplayer", "MC").replace("{PERMISSION}", AuthTG.getMessage("cmdsecondkick", "MC"))));
                 } else {
-                    user.sendMessage(AuthTG.config.getString("messages.telegram.cmdsecondexcrem").replace("{PLAYER}", target.playername).replace("{PERMISSION}", AuthTG.config.getString("messages.telegram.cmdsecondmute")));
+                    user.sendMessage(AuthTG.getMessage("cmdsecondexcrem", "TG").replace("{PLAYER}", target.playername).replace("{PERMISSION}", AuthTG.getMessage("cmdsecondmute", "TG")));
                 }
             }
         }
@@ -67,23 +67,23 @@ public class CMDSecondStep implements CallbackQueryHandler{
             if (list.get(0).equals("add")) {
                 if (target.commands != null && !target.commands.contains("mute")) {
                     AuthTG.loader.addCommand(target.uuid, "mute");
-                    user.sendMessage(AuthTG.config.getString("messages.telegram.cmdsecondadd").replace("{PLAYER}", target.playername).replace("{PERMISSION}", AuthTG.config.getString("messages.telegram.cmdsecondmute")));
-                    if (target.activetg) target.sendMessage(AuthTG.config.getString("messages.telegram.cmdsecondaddplayer").replace("{PERMISSION}", AuthTG.config.getString("messages.telegram.cmdsecondmute")));
+                    user.sendMessage(AuthTG.getMessage("cmdsecondadd", "TG").replace("{PLAYER}", target.playername).replace("{PERMISSION}", AuthTG.getMessage("cmdsecondmute", "TG")));
+                    if (target.activetg) target.sendMessage(AuthTG.getMessage("cmdsecondaddplayer", "TG").replace("{PERMISSION}", AuthTG.getMessage("cmdsecondmute", "TG")));
                     if (target.player != null)
-                        target.player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.cmdsecondaddplayer").replace("{PERMISSION}", AuthTG.config.getString("messages.minecraft.cmdsecondmute"))));
+                        target.player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("cmdsecondaddplayer", "MC").replace("{PERMISSION}", AuthTG.getMessage("cmdsecondmute", "MC"))));
                 } else {
-                    user.sendMessage(AuthTG.config.getString("messages.telegram.cmdsecondexcadd").replace("{PLAYER}", target.playername).replace("{PERMISSION}", AuthTG.config.getString("messages.telegram.cmdsecondmute")));
+                    user.sendMessage(AuthTG.getMessage("cmdsecondexcadd", "TG").replace("{PLAYER}", target.playername).replace("{PERMISSION}", AuthTG.getMessage("cmdsecondmute", "TG")));
                 }
             }
             if (list.get(0).equals("rem")) {
                 if (target.commands != null && target.commands.contains("mute")) {
                     AuthTG.loader.removeCommand(target.uuid, "mute");
-                    user.sendMessage(AuthTG.config.getString("messages.telegram.cmdsecondrem").replace("{PLAYER}", target.playername).replace("{PERMISSION}", AuthTG.config.getString("messages.telegram.cmdsecondmute")));
-                    if (target.activetg) target.sendMessage(AuthTG.config.getString("messages.telegram.cmdsecondremplayer").replace("{PERMISSION}", AuthTG.config.getString("messages.telegram.cmdsecondmute")));
+                    user.sendMessage(AuthTG.getMessage("cmdsecondrem", "TG").replace("{PLAYER}", target.playername).replace("{PERMISSION}", AuthTG.getMessage("cmdsecondmute", "TG")));
+                    if (target.activetg) target.sendMessage(AuthTG.getMessage("cmdsecondremplayer", "TG").replace("{PERMISSION}", AuthTG.getMessage("cmdsecondmute", "TG")));
                     if (target.player != null)
-                        target.player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.cmdsecondremplayer").replace("{PERMISSION}", AuthTG.config.getString("messages.minecraft.cmdsecondmute"))));
+                        target.player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("cmdsecondremplayer", "MC").replace("{PERMISSION}", AuthTG.getMessage("cmdsecondmute", "MC"))));
                 } else {
-                    user.sendMessage(AuthTG.config.getString("messages.telegram.cmdsecondexcrem").replace("{PLAYER}", target.playername).replace("{PERMISSION}", AuthTG.config.getString("messages.telegram.cmdsecondmute")));
+                    user.sendMessage(AuthTG.getMessage("cmdsecondexcrem", "TG").replace("{PLAYER}", target.playername).replace("{PERMISSION}", AuthTG.getMessage("cmdsecondmute", "TG")));
                 }
             }
         }

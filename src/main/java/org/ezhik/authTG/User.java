@@ -11,6 +11,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKe
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.util.*;
+import java.util.logging.Level;
 
 public class User {
     public Long chatid;
@@ -121,7 +122,7 @@ public class User {
         try {
             AuthTG.bot.execute(sendMessage);
         } catch (TelegramApiException e) {
-            System.out.println("Error sending message: " + e);
+            AuthTG.logger.log(Level.SEVERE ,"Error sending message: " + e);
         }
 
     }
@@ -149,7 +150,7 @@ public class User {
         try {
             AuthTG.bot.execute(sendMessage);
         } catch (TelegramApiException e) {
-            System.out.println("Error sending message: " + e);
+            AuthTG.logger.log(Level.SEVERE ,"Error sending message: " + e);
         }
     }
 }

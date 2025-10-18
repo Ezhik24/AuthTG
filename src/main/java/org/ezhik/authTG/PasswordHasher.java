@@ -3,6 +3,7 @@ package org.ezhik.authTG;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.logging.Level;
 
 public class PasswordHasher {
     public static String hashPassword(String password) {
@@ -11,7 +12,8 @@ public class PasswordHasher {
             byte[] hash = digest.digest(password.getBytes(StandardCharsets.UTF_8));
             return bytesToHex(hash);
         } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException("Ошибка получения хэша пароля", e);
+            AuthTG.logger.log(Level.SEVERE, "Error hashing password", e);
+            return null;
         }
     }
 

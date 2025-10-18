@@ -13,8 +13,7 @@ import org.ezhik.authTG.commandMC.*;
 import org.ezhik.authTG.events.*;
 import org.ezhik.authTG.handlers.*;
 import org.ezhik.authTG.migrates.*;
-import org.ezhik.authTG.otherAPI.Log4JFilter;
-import org.ezhik.authTG.otherAPI.PlaceholderAPI;
+import org.ezhik.authTG.otherAPI.*;
 import org.ezhik.authTG.tabcompleter.*;
 import org.ezhik.authTG.usersconfiguration.*;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
@@ -160,6 +159,16 @@ public final class AuthTG extends JavaPlugin {
             configGlobal.save(fileGlobal);
         } catch (IOException e) {
             logger.log(Level.SEVERE, "Can't save config.yml");
+        }
+    }
+    public static String getMessage(String path, String MCorTG) {
+        if (MCorTG.equals("MC")) {
+            return config.getString("messages.minecraft." + path).replace("{BR}", "\n");
+        } else if (MCorTG.equals("TG")) {
+            return config.getString("messages.telegram." + path).replace("{BR}", "\n");
+        } else {
+            logger.log(Level.SEVERE, "Message path not found, please contact the developer");
+            return null;
         }
     }
 }

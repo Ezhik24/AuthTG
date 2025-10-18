@@ -14,7 +14,7 @@ public class LoginAcceptedNo implements CallbackQueryHandler{
         String[] str = update.getCallbackQuery().getData().toString().split("_");
         User user = User.getUser(UUID.fromString(str[1]));
         AuthHandler.removeTimeout(user.uuid);
-        Handler.kick(user.playername, AuthTG.config.getString("messages.minecraft.loginnosuccess"));
+        Handler.kick(user.playername, AuthTG.getMessage("loginnosuccess", "MC"));
         AuthTG.bot.deleteMessage(update.getCallbackQuery().getMessage());
     }
 }

@@ -17,6 +17,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.logging.Level;
 
 public class BotTelegram extends TelegramLongPollingBot {
     private String username;
@@ -116,7 +117,7 @@ public class BotTelegram extends TelegramLongPollingBot {
         try {
             execute(sendMessage);
         } catch (TelegramApiException e) {
-            System.out.println("Error sending message: " + e);
+            AuthTG.logger.log(Level.SEVERE ,"Error sending message: " + e);
         }
     }
 
@@ -127,7 +128,7 @@ public class BotTelegram extends TelegramLongPollingBot {
         try {
             execute(deleteMessage);
         } catch (TelegramApiException e) {
-            System.out.println("Error deleting message: " + e);
+            AuthTG.logger.log(Level.SEVERE ,"Error deleting message: " + e);
         }
     }
 
