@@ -12,65 +12,65 @@ public class AdminCMD implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
         if (!commandSender.hasPermission("authtg.admin")) {
-            commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.adminnoperm")));
+            commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("adminnoperm", "MC")));
             return false;
         }
         if (strings.length == 0) {
-            commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.adminhelp")));
+            commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("adminhelp", "MC")));
             return false;
         }
         Player player = (Player) commandSender;
         if (strings[0].equals("add")) {
             if (strings.length < 2) {
-                commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.adminhelpadd")));
+                commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("adminhelpadd", "MC")));
                 return false;
             }
             User user = User.getUser(strings[1]);
             if (user == null) {
-                commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.adminusernotfound")));
+                commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("adminusernotfound", "MC")));
                 return false;
             }
             if (user.isadmin) {
-                commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.adminalreadyadmin")));
+                commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("adminalreadyadmin", "MC")));
                 return false;
             }
             AuthTG.loader.setAdmin(user.uuid);
-            player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.adminadded")));
-            if (user.activetg) user.sendMessage(AuthTG.config.getString("messages.telegram.adminadd"));
-            if (user.player != null) user.player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.adminadd")));
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("adminadded", "MC")));
+            if (user.activetg) user.sendMessage(AuthTG.getMessage("adminadd", "TG"));
+            if (user.player != null) user.player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("adminadd", "MC")));
         }
         else if (strings[0].equals("rem")) {
             if (strings.length < 2) {
-                commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.adminhelprem")));
+                commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("adminhelprem", "MC")));
                 return false;
             }
             User user = User.getUser(strings[1]);
             if (user == null) {
-                commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.adminusernotfound")));
+                commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("adminusernotfound", "MC")));
                 return false;
             }
             if (!user.isadmin) {
-                commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.adminnotadmin")));
+                commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("adminnotadmin", "MC")));
                 return false;
             }
             AuthTG.loader.removeAdmin(user.uuid);
-            if (user.player != null) user.player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.adminrem")));
-            if (user.activetg) user.sendMessage(AuthTG.config.getString("messages.telegram.adminrem"));
-            player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.adminremoved")));
+            if (user.player != null) user.player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("adminrem", "MC")));
+            if (user.activetg) user.sendMessage(AuthTG.getMessage("adminrem", "TG"));
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("adminremoved", "MC")));
         }
         else if (strings[0].equals("list")) {
             if (AuthTG.loader.getAdminList().isEmpty()) {
-                commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.adminlistnotfound")));
+                commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("adminlistnotfound", "MC")));
                 return false;
             } else {
-                player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.adminlist")));
+                player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("adminlist", "MC")));
                 for (String playername : AuthTG.loader.getAdminList()) {
-                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.adminlistplayer").replace("{PLAYER}", playername)));
+                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("adminlistplayer", "MC").replace("{PLAYER}", playername)));
                 }
                 return true;
             }
         } else {
-            commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.adminhelp")));
+            commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("adminhelp", "MC")));
             return false;
         }
         return true;

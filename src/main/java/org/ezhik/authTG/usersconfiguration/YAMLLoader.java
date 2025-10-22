@@ -426,6 +426,10 @@ public class YAMLLoader implements Loader{
     public void setPlayerNames(Long chatid, UUID uuid) {
         if (playernames.containsKey(chatid)) {
             playernames.get(chatid).add(uuid);
+        } else {
+            List<UUID> list = new ArrayList<>();
+            list.add(uuid);
+            playernames.put(chatid, list);
         }
     }
 

@@ -12,22 +12,22 @@ public class SetSpawnCMD implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
         if (!(commandSender instanceof Player)) {
-            System.out.println(AuthTG.config.get("messages.console.notplayer"));
+            System.out.println(AuthTG.getMessage("notplayer", "CE"));
             return false;
         }
         if (!commandSender.hasPermission("authtg.setspawn")) {
-            commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.setspawnnoperm")));
+            commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("setspawnnoperm", "MC")));
             return false;
         }
         if (strings.length == 0) {
             Player player = (Player) commandSender;
             AuthTG.config.set("spawnLocation",  player.getLocation());
-            commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.setspawnsuccess")));
+            commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("setspawnsuccess", "MC")));
             return true;
         }
         if (strings[0].equals("none")) {
             AuthTG.config.set("spawnLocation",  null);
-            commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.setspawnnone")));
+            commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("setspawnnone", "MC")));
             return true;
         }
         return true;

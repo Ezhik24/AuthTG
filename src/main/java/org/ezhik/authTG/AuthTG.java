@@ -33,19 +33,23 @@ public final class AuthTG extends JavaPlugin {
     public static FileConfiguration config;
     public static Logger logger;
     private static Plugin instance;
+    private static String version;
 
     @Override
     public void onEnable() {
         // Init
         instance = this;
+        version = getDescription().getVersion();
         // Load Logger
         logger = getLogger();
         // Load config plugin
         if (!getDataFolder().exists()) getDataFolder().mkdir();
         if (!new File(getDataFolder(), "config.yml").exists()) saveDefaultConfig();
         // Load temp-config and regeneration config.yml
-        saveResource("temp-config.yml", false);
-        setupConfiguration();
+        if (!config.getString("version").equals(getDescription().getVersion())) {
+            saveResource("temp-config.yml", false);
+            setupConfiguration();
+        }
         // Load config
         config = getConfig();
         // Logs
@@ -143,30 +147,37 @@ public final class AuthTG extends JavaPlugin {
         return instance;
     }
 
+    public static String getVersion() {
+        return version;
+    }
+
     private void setupConfiguration() {
-        File file = new File(getDataFolder(), "temp-config.yml");
-        YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
-        File fileGlobal = new File(getDataFolder(), "config.yml");
+        File fileTemp = new File("plugins/AuthTG/temp-config.yml");
+        YamlConfiguration configTemp = YamlConfiguration.loadConfiguration(fileTemp);
+        File fileGlobal = new File("plugins/AuthTG/config.yml");
         YamlConfiguration configGlobal = YamlConfiguration.loadConfiguration(fileGlobal);
-        Set<String> set = config.getKeys(true);
+        Set<String> set = configTemp.getKeys(true);
         for (String s : set) {
-            if (configGlobal.getString(s) == null) {
-                configGlobal.set(s, config.get(s));
+            if (!configGlobal.contains(s)) {
+                configGlobal.set(s, configTemp.get(s));
             }
         }
-        file.delete();
         try {
             configGlobal.save(fileGlobal);
         } catch (IOException e) {
             logger.log(Level.SEVERE, "Can't save config.yml");
         }
+        fileTemp.delete();
     }
-    public static String getMessage(String path, String MCorTG) {
-        if (MCorTG.equals("MC")) {
+    public static String getMessage(String path, String MCorTGorCNS) {
+        if (MCorTGorCNS.equals("MC")) {
             return config.getString("messages.minecraft." + path).replace("{BR}", "\n");
-        } else if (MCorTG.equals("TG")) {
+        } else if (MCorTGorCNS.equals("TG")) {
             return config.getString("messages.telegram." + path).replace("{BR}", "\n");
-        } else {
+        } else if (MCorTGorCNS.equals("CE")) {
+            return config.getString("messages.minecraft." + path).replace("{BR}", "\n");
+        }
+        else {
             logger.log(Level.SEVERE, "Message path not found, please contact the developer");
             return null;
         }

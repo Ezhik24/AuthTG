@@ -38,8 +38,6 @@ placeholders: # Подстановки для placeholders EN: Placeholders
     user: "Пользователь"
 messages: # Сообщения EN: Messages
   console: # Консольные сообщения EN: Console messages
-    mcbcsuccess: "[AuthTG] Message successfully sent!"
-    tgbcsuccess: "[AuthTG] Message successfully sent!"
     notplayer: "[AuthTG] This command can only be used by players!"
   telegram: # Сообщения в телеграме EN: Telegram messages
     macronoargs: "Вы ввели неверное количество аргументов!"
@@ -330,3 +328,4 @@ messages: # Сообщения EN: Messages
     successmute: "&f&l[&c&lAuthTG&f&l] Вы успешно замучили игрока: {PLAYER}"
     mute: "&fВы были замучены {BR} &cПричина: {REASON} {BR} &fДо: {TIMEMUTE} {BR} &cАдминистратор: {ADMIN} {BR} &7Время мута: {TIME}"
     ban: "&fВы были забанены {BR} &cПричина: {REASON} {BR} &fДо: {TIMEBAN} {BR} &cАдминистратор: {ADMIN} {BR} &7Время бана: {TIME}"
+version: "2.1"

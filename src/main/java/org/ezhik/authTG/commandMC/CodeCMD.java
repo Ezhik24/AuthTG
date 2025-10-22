@@ -14,22 +14,23 @@ import org.ezhik.authTG.handlers.AuthHandler;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.logging.Level;
 
 public class CodeCMD implements CommandExecutor {
     public static Map<UUID, String> code = new HashMap<>();
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
         if (!(commandSender instanceof Player)) {
-            System.out.println(AuthTG.config.get("messages.console.notplayer"));
+            AuthTG.logger.log(Level.INFO,AuthTG.getMessage("notplayer", "CE"));
             return false;
         }
         if (strings.length == 0) {
-            commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.codeusage")));
+            commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("codeusage", "MC")));
             return false;
         }
         Player player = (Player) commandSender;
         if (!strings[0].equals(code.get(player.getUniqueId()))) {
-            player.sendMessage(ChatColor.translateAlternateColorCodes('&',AuthTG.config.getString("messages.minecraft.codeuncorect")));
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&',AuthTG.getMessage("codeuncorect", "MC")));
             return false;
         }
         if (AuthTG.config.getBoolean("authNecessarily")) {
@@ -42,11 +43,11 @@ public class CodeCMD implements CommandExecutor {
             AuthTG.loader.setActiveTG(player.getUniqueId(), false);
             AuthTG.loader.setTwofactor(player.getUniqueId(), false);
             code.remove(player.getUniqueId());
-            player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.codeunlink")));
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("codeunlink", "MC")));
         } else {
             AuthTG.loader.setActiveTG(player.getUniqueId(), true);
             code.remove(player.getUniqueId());
-            player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.codelink")));
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("codelink", "MC")));
             if (AuthTG.config.getBoolean("notRegAndLogin")) {
                 player.resetTitle();
                 MuterEvent.unmute(player.getName());
@@ -55,7 +56,7 @@ public class CodeCMD implements CommandExecutor {
                 AuthTG.loader.setPlayerName(player.getUniqueId(), player.getName());
             }
             User user = User.getUser(player.getUniqueId());
-            user.sendMessage(AuthTG.config.getString("messages.telegram.codelinkplayer"));
+            user.sendMessage(AuthTG.getMessage("codelinkplayer", "TG"));
         }
         return true;
     }

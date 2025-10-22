@@ -18,7 +18,7 @@ public class PlaceholderAPI extends PlaceholderExpansion {
 
     @Override
     public @NotNull String getVersion() {
-        return "2.1";
+        return AuthTG.getVersion();
     }
 
     @Override
