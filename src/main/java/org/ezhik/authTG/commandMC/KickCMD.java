@@ -18,62 +18,62 @@ public class KickCMD implements CommandExecutor {
         if (commandSender instanceof Player) {
             Player player = (Player) commandSender;
             if (!player.hasPermission("authtg.kick")) {
-                player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.kicknoperm")));
+                player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("kicknoperm", "MC")));
                 return false;
             }
             if (strings.length == 0) {
-                player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.kickusage")));
+                player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("kickusage", "MC")));
                 return false;
             }
             if (strings.length < 2) {
-                player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.kickusage")));
+                player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("kickusage", "MC")));
                 return false;
             }
             String reason = String.join(" ", strings).substring(strings[0].length() + 1);
             UUID uuidtarget = AuthTG.loader.getUUIDbyPlayerName(strings[0]);
             if (uuidtarget == null) {
-                player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.kicknotfound")));
+                player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("kicknotfound", "MC")));
                 return false;
             }
             Player target = Bukkit.getPlayer(uuidtarget);
             if (target == null) {
-                player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.kicknotonline")));
+                player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("kicknotonline", "MC")));
                 return false;
             }
             if (reason.isEmpty()) {
-                player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.kicknotreason")));
+                player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("kicknotreason", "MC")));
                 return false;
             }
             Handler.kick(target.getName(), reason);
-            player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.kicksuccess").replace("{PLAYER}", target.getName())));
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("kicksuccess", "MC").replace("{PLAYER}", target.getName())));
             return true;
         }else {
             ConsoleCommandSender consoleCommandSender = Bukkit.getConsoleSender();
             if (strings.length == 0) {
-                consoleCommandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.kickusage")));
+                consoleCommandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("kickusage", "MC")));
                 return false;
             }
             if (strings.length < 2) {
-                consoleCommandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.kickusage")));
+                consoleCommandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("kickusage", "MC")));
                 return false;
             }
             String reason = String.join(" ", strings).substring(strings[0].length() + 1);
             UUID uuidtarget = AuthTG.loader.getUUIDbyPlayerName(strings[0]);
             if (uuidtarget == null) {
-                consoleCommandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.kicknotfound")));
+                consoleCommandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("kicknotfound", "MC")));
                 return false;
             }
             Player target = Bukkit.getPlayer(uuidtarget);
             if (target == null) {
-                consoleCommandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.kicknotonline")));
+                consoleCommandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("kicknotonline", "MC")));
                 return false;
             }
             if (reason.isEmpty()) {
-                consoleCommandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.kicknotreason")));
+                consoleCommandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("kicknotreason", "MC")));
                 return false;
             }
             Handler.kick(target.getName(), reason);
-            consoleCommandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.kicksuccess").replace("{PLAYER}", target.getName())));
+            consoleCommandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("kicksuccess", "MC").replace("{PLAYER}", target.getName())));
             return true;
         }
     }
