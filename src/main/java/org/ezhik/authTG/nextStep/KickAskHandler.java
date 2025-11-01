@@ -12,17 +12,17 @@ public class KickAskHandler implements NextStepHandler {
         User user1 = User.getUser(playername);
         User user = User.getCurrentUser(update.getMessage().getChatId());
         if (user1 == null) {
-            user.sendMessage(AuthTG.config.getString("messages.telegram.kickusernotfound"));
+            user.sendMessage(AuthTG.getMessage("kickusernotfound", "TG"));
             AuthTG.bot.remNextStepHandler(update.getMessage().getChatId());
             return;
         }
         if (user1.player == null) {
-            user.sendMessage(AuthTG.config.getString("messages.telegram.kickusernotonline"));
+            user.sendMessage(AuthTG.getMessage("kickusernotonline", "TG"));
             AuthTG.bot.remNextStepHandler(update.getMessage().getChatId());
             return;
         }
         Handler.kick(user1.playername, update.getMessage().getText().toString().substring(playername.length() + 1));
-        user.sendMessage(AuthTG.config.getString("messages.telegram.kickuser").replace("{PLAYER}", user1.playername));
+        user.sendMessage(AuthTG.getMessage("kickuser","TG").replace("{PLAYER}", user1.playername));
         AuthTG.bot.remNextStepHandler(update.getMessage().getChatId());
     }
 }

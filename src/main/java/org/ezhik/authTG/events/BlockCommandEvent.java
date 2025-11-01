@@ -9,17 +9,24 @@ import org.ezhik.authTG.AuthTG;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
+
+import static java.util.List.*;
 
 public class BlockCommandEvent implements Listener {
     @EventHandler
     public void onCommmand(PlayerCommandPreprocessEvent event) {
         Player player = event.getPlayer();
         if(MuterEvent.isMute(player)) {
-           if(!(event.getMessage().startsWith("/login") || event.getMessage().startsWith("/register") || event.getMessage().startsWith("/reg") || event.getMessage().startsWith("/l") || event.getMessage().startsWith("/code"))) {
+            List<String> commands = new ArrayList<>(List.of("/login", "/register", "/reg", "/l", "/code"));
+            commands.addAll(AuthTG.config.getStringList("commandsPreAuthorization"));
+            String command = event.getMessage().split(" ")[0];
+            if(!commands.contains(command)) {
                event.setCancelled(true);
-               player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.joinblock")));
-           }
+               player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("joinblock", "MC")));
+            }
         }
         if (MuterEvent.isMuteChat(player)) {
             String[] args = event.getMessage().split(" ");
@@ -31,10 +38,10 @@ public class BlockCommandEvent implements Listener {
                     return;
                 }
                 if (list.get(0).toString().equals("0")) {
-                    String message = ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.mute")).replace("{TIMEMUTE}", "навсегда").replace("{REASON}", AuthTG.loader.getMuteReason(player.getUniqueId())).replace("{TIME}", AuthTG.loader.getMuteTimeAdmin(event.getPlayer().getUniqueId())).replace("{ADMIN}", AuthTG.loader.getMuteAdmin(event.getPlayer().getUniqueId())).replace("{BR}", "\n");
+                    String message = ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("mute", "MC")).replace("{TIMEMUTE}", "навсегда").replace("{REASON}", AuthTG.loader.getMuteReason(player.getUniqueId())).replace("{TIME}", AuthTG.loader.getMuteTimeAdmin(event.getPlayer().getUniqueId())).replace("{ADMIN}", AuthTG.loader.getMuteAdmin(event.getPlayer().getUniqueId()));
                     event.getPlayer().sendMessage(message);
                 } else {
-                    String message = ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.mute")).replace("{TIMEMUTE}", AuthTG.loader.getMuteTime(player.getUniqueId())).replace("{REASON}", AuthTG.loader.getMuteReason(player.getUniqueId())).replace("{TIME}", AuthTG.loader.getMuteTimeAdmin(event.getPlayer().getUniqueId())).replace("{ADMIN}", AuthTG.loader.getMuteAdmin(event.getPlayer().getUniqueId())).replace("{BR}", "\n");
+                    String message = ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("mute", "MC")).replace("{TIMEMUTE}", AuthTG.loader.getMuteTime(player.getUniqueId())).replace("{REASON}", AuthTG.loader.getMuteReason(player.getUniqueId())).replace("{TIME}", AuthTG.loader.getMuteTimeAdmin(event.getPlayer().getUniqueId())).replace("{ADMIN}", AuthTG.loader.getMuteAdmin(event.getPlayer().getUniqueId()));
                     event.getPlayer().sendMessage(message);
                 }
                 event.setCancelled(true);

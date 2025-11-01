@@ -11,13 +11,13 @@ public class KickMeCMDHandler implements CommandHandler {
         User user = User.getCurrentUser(update.getMessage().getChatId());
         if (user != null) {
             if (user.player != null) {
-                Handler.kick(user.playername, AuthTG.config.getString("messages.telegram.kickmeplayer"));
-                user.sendMessage(AuthTG.config.getString("messages.telegram.kickmesuccess"));
+                Handler.kick(user.playername, AuthTG.getMessage("kickmeplayer", "TG"));
+                user.sendMessage(AuthTG.getMessage("kickmesuccess", "TG"));
             } else {
-                user.sendMessage(AuthTG.config.getString("messages.telegram.kickmeplnotonline"));
+                user.sendMessage(AuthTG.getMessage("kickmeplnotonline", "TG"));
             }
         } else {
-            AuthTG.bot.sendMessage(update.getMessage().getChatId(),AuthTG.config.getString("messages.telegram.kickmenotactive"));
+            AuthTG.bot.sendMessage(update.getMessage().getChatId(),AuthTG.getMessage("kickmenotactive", "TG"));
         }
     }
 }

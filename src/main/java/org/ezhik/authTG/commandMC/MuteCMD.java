@@ -67,7 +67,7 @@ public class MuteCMD implements CommandExecutor {
                 LocalDateTime date = LocalDateTime.now().plusHours(Integer.parseInt(strings[1].replace("h", "")));
                 formattedDate = date.format(formatter);
                 message = ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("mute", "MC")).replace("{TIMEMUTE}", AuthTG.loader.getMuteTime(targetuuid)).replace("{REASON}", AuthTG.loader.getMuteReason(targetuuid)).replace("{TIME}", AuthTG.loader.getMuteTimeAdmin(targetuuid)).replace("{ADMIN}", AuthTG.loader.getMuteAdmin(targetuuid));
-            }else if (strings[1].contains("-s")) {
+            }else if (strings[1].equals("-s")) {
                 formattedDate = "0";
                 message = ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("mute", "MC")).replace("{TIMEMUTE}", "навсегда").replace("{REASON}", AuthTG.loader.getMuteReason(targetuuid)).replace("{TIME}", AuthTG.loader.getMuteTimeAdmin(targetuuid)).replace("{ADMIN}", AuthTG.loader.getMuteAdmin(targetuuid));
             }
@@ -133,7 +133,7 @@ public class MuteCMD implements CommandExecutor {
                 formattedDate = date.format(formatter);
                 message = ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("mute", "MC")).replace("{TIMEMUTE}", AuthTG.loader.getMuteTime(targetuuid)).replace("{REASON}", AuthTG.loader.getMuteReason(targetuuid)).replace("{TIME}", AuthTG.loader.getMuteTimeAdmin(targetuuid)).replace("{ADMIN}", AuthTG.loader.getMuteAdmin(targetuuid));
             }
-            else if (strings[1].contains("-s")) {
+            else if (strings[1].equals("-s")) {
                 formattedDate = "0";
                 message = ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("mute", "MC")).replace("{TIMEMUTE}", "навсегда").replace("{REASON}", AuthTG.loader.getMuteReason(targetuuid)).replace("{TIME}", AuthTG.loader.getMuteTimeAdmin(targetuuid)).replace("{ADMIN}", AuthTG.loader.getMuteAdmin(targetuuid));
             }

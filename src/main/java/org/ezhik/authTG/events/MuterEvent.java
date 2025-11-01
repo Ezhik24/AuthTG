@@ -32,10 +32,10 @@ public class MuterEvent implements Listener {
             }
             if (AuthTG.loader.isMuted(event.getPlayer().getUniqueId())) {
                 if (list.get(0).toString().equals("0")) {
-                    String message = ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.mute")).replace("{TIMEMUTE}", "навсегда").replace("{REASON}", AuthTG.loader.getMuteReason(event.getPlayer().getUniqueId())).replace("{TIME}", AuthTG.loader.getMuteTimeAdmin(event.getPlayer().getUniqueId())).replace("{ADMIN}", AuthTG.loader.getMuteAdmin(event.getPlayer().getUniqueId())).replace("{BR}", "\n");
+                    String message = ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("mute", "MC")).replace("{TIMEMUTE}", "навсегда").replace("{REASON}", AuthTG.loader.getMuteReason(event.getPlayer().getUniqueId())).replace("{TIME}", AuthTG.loader.getMuteTimeAdmin(event.getPlayer().getUniqueId())).replace("{ADMIN}", AuthTG.loader.getMuteAdmin(event.getPlayer().getUniqueId())).replace("{BR}", "\n");
                     event.getPlayer().sendMessage(message);
                 } else {
-                    String message = ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.mute")).replace("{TIMEMUTE}", AuthTG.loader.getMuteTime(event.getPlayer().getUniqueId())).replace("{REASON}", AuthTG.loader.getMuteReason(event.getPlayer().getUniqueId())).replace("{TIME}", AuthTG.loader.getMuteTimeAdmin(event.getPlayer().getUniqueId())).replace("{ADMIN}", AuthTG.loader.getMuteAdmin(event.getPlayer().getUniqueId())).replace("{BR}", "\n");
+                    String message = ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("mute", "MC")).replace("{TIMEMUTE}", AuthTG.loader.getMuteTime(event.getPlayer().getUniqueId())).replace("{REASON}", AuthTG.loader.getMuteReason(event.getPlayer().getUniqueId())).replace("{TIME}", AuthTG.loader.getMuteTimeAdmin(event.getPlayer().getUniqueId())).replace("{ADMIN}", AuthTG.loader.getMuteAdmin(event.getPlayer().getUniqueId())).replace("{BR}", "\n");
                     event.getPlayer().sendMessage(message);
                 }
                 event.setCancelled(true);

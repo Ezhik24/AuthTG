@@ -17,43 +17,43 @@ public class UnMuteCMD implements CommandExecutor {
         if (commandSender instanceof Player) {
             Player player = (Player) commandSender;
             if (!commandSender.hasPermission("authtg.unmute")) {
-                player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.unmutenoperm")));
+                player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("unmutenoperm", "MC")));
                 return false;
             }
             if (strings.length == 0) {
-                player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.unmuteusage")));
+                player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("unmuteusage", "MC")));
                 return false;
             }
             UUID targetuuid = AuthTG.loader.getUUIDbyPlayerName(strings[0]);
             if (targetuuid == null) {
-                player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.unmutenotfound")));
+                player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("unmutenotfound", "MC")));
                 return false;
             }
             if (!AuthTG.loader.isMuted(targetuuid)) {
-                player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.unmutenotmuted")));
+                player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("unmutenotmuted", "MC")));
                 return false;
             }
             AuthTG.loader.deleteMute(targetuuid);
-            if (Bukkit.getPlayer(targetuuid) != null) Bukkit.getPlayer(targetuuid).sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.unmutepl")));
-            player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.unmute").replace("{PLAYER}", strings[0])));
+            if (Bukkit.getPlayer(targetuuid) != null) Bukkit.getPlayer(targetuuid).sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("unmutepl", "MC")));
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("unmute", "MC").replace("{PLAYER}", strings[0])));
         } else {
             ConsoleCommandSender console = Bukkit.getConsoleSender();
             if (strings.length == 0) {
-                console.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.unmuteusage")));
+                console.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("unmuteusage", "MC")));
                 return false;
             }
             UUID targetuuid = AuthTG.loader.getUUIDbyPlayerName(strings[0]);
             if (targetuuid == null) {
-                console.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.unmutenotfound")));
+                console.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("unmutenotfound", "MC")));
                 return false;
             }
             if (!AuthTG.loader.isMuted(targetuuid)) {
-                console.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.unmutenotmuted")));
+                console.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("unmutenotmuted", "MC")));
                 return false;
             }
-            if (Bukkit.getPlayer(targetuuid) != null) Bukkit.getPlayer(targetuuid).sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.unmutepl")));
+            if (Bukkit.getPlayer(targetuuid) != null) Bukkit.getPlayer(targetuuid).sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("unmutepl", "MC")));
             AuthTG.loader.deleteMute(targetuuid);
-            console.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.unmute").replace("{PLAYER}", strings[0])));
+            console.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("unmute", "MC").replace("{PLAYER}", strings[0])));
         }
         return true;
     }

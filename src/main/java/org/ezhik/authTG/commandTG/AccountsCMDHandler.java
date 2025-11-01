@@ -11,6 +11,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.logging.Level;
 
 public class AccountsCMDHandler implements CommandHandler{
     @Override
@@ -31,15 +32,15 @@ public class AccountsCMDHandler implements CommandHandler{
             players.setKeyboard(keyboard);
             SendMessage sendMessage = new SendMessage();
             sendMessage.setChatId(update.getMessage().getChatId());
-            sendMessage.setText(AuthTG.config.getString("messages.telegram.accountschange"));
+            sendMessage.setText(AuthTG.getMessage("accountschange", "TG"));
             sendMessage.setReplyMarkup(players);
             try {
                 AuthTG.bot.execute(sendMessage);
             } catch (TelegramApiException e) {
-                System.out.println("Error sending message: " + e);
+                AuthTG.logger.log(Level.SEVERE, "Error while sending message", e);
             }
         } else {
-            AuthTG.bot.sendMessage(update.getMessage().getChatId(), AuthTG.config.getString("messages.telegram.accounschangenotfound"));
+            AuthTG.bot.sendMessage(update.getMessage().getChatId(), AuthTG.getMessage("accounschangenotfound", "TG"));
         }
 
     }

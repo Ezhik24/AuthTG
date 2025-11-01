@@ -11,6 +11,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 public class FriendCMDHandler implements CommandHandler {
     @Override
@@ -19,7 +20,7 @@ public class FriendCMDHandler implements CommandHandler {
         User user = User.getCurrentUser(message.getChatId());
         List<List<InlineKeyboardButton>> friends = new ArrayList<>();
         if (user.friends != null && user.friends.isEmpty()) {
-            AuthTG.bot.sendMessage(message.getChatId(), AuthTG.config.getString("messages.telegram.notfriendsfound"));
+            AuthTG.bot.sendMessage(message.getChatId(), AuthTG.getMessage("notfriendsfound", "TG"));
             AuthTG.bot.deleteMessage(message);
             return;
         }
@@ -27,7 +28,7 @@ public class FriendCMDHandler implements CommandHandler {
             List<InlineKeyboardButton> colkeyb = new ArrayList<>();
             InlineKeyboardButton freeplayerbtn = new InlineKeyboardButton();
             User friend = User.getUser(friendname);
-            freeplayerbtn.setText(friendname + ((friend.player != null) ? AuthTG.config.getString("messages.telegram.friendonline") : AuthTG.config.getString("messages.telegram.friendoffline")));
+            freeplayerbtn.setText(friendname + ((friend.player != null) ? AuthTG.getMessage("friendonline", "TG") : AuthTG.getMessage("friendoffline", "TG")));
             freeplayerbtn.setCallbackData("chfr_" + friend.uuid);
             colkeyb.add(freeplayerbtn);
             friends.add(colkeyb);
@@ -36,12 +37,12 @@ public class FriendCMDHandler implements CommandHandler {
         friendskeyb.setKeyboard(friends);
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(message.getChatId());
-        sendMessage.setText(AuthTG.config.getString("messages.telegram.friendchange").replace("{PLAYER}", user.playername));
+        sendMessage.setText(AuthTG.getMessage("friendchange", "TG").replace("{PLAYER}", user.playername));
         sendMessage.setReplyMarkup(friendskeyb);
         try {
             AuthTG.bot.execute(sendMessage);
         } catch (TelegramApiException e) {
-            System.out.println("Error sending message: " + e);
+            AuthTG.logger.log(Level.SEVERE, "Error while sending message", e);
         }
         AuthTG.bot.deleteMessage(message);
     }

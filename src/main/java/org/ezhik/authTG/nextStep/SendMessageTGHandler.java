@@ -10,8 +10,8 @@ public class SendMessageTGHandler implements NextStepHandler {
         AuthTG.bot.remNextStepHandler(update.getMessage().getChatId());
         User senderuser = User.getCurrentUser(update.getMessage().getChatId());
         User frienduser = User.getUser(AuthTG.bot.getUserData(update.getMessage().getChatId().toString()));
-        frienduser.sendMessageFriend(AuthTG.config.getString("message.telegram.sendmessagetg").replace("{PLAYER}", senderuser.playername) + update.getMessage().getText().toString(), senderuser.uuid);
-        senderuser.sendMessage(AuthTG.config.getString("message.telegram.sendmessagetgsuccess"));
+        frienduser.sendMessageFriend(AuthTG.getMessage("sendmessagetg", "TG").replace("{PLAYER}", senderuser.playername) + update.getMessage().getText().toString(), senderuser.uuid);
+        senderuser.sendMessage(AuthTG.getMessage("sendmessagetgsuccess", "TG"));
         AuthTG.bot.remUserData(update.getMessage().getChatId().toString());
     }
 }

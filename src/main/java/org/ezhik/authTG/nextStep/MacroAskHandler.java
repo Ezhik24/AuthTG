@@ -19,14 +19,14 @@ public class MacroAskHandler implements NextStepHandler{
         User user = User.getCurrentUser(update.getMessage().getChatId());
         int count = StringUtils.countMatches(this.mccmd, "[arg");
         if (args.length != count) {
-            user.sendMessage(AuthTG.config.getString("messages.telegram.macronoargs"));
+            user.sendMessage(AuthTG.getMessage("macronoargs","TG"));
             AuthTG.bot.remNextStepHandler(update.getMessage().getChatId());
             return;
         }
         for (int i = 1; i <= count; i++) {
             this.mccmd = this.mccmd.replace("[arg" + i + "]", args[i-1]);
         }
-        user.sendMessage(AuthTG.config.getString("messages.telegram.macrosuccess"));
+        user.sendMessage(AuthTG.getMessage("macrosuccess","TG"));
         Handler.dispatchCommand(user.playername, this.mccmd);
         AuthTG.bot.remNextStepHandler(update.getMessage().getChatId());
     }

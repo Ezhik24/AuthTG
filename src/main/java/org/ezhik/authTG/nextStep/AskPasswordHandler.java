@@ -18,7 +18,7 @@ public class AskPasswordHandler implements NextStepHandler {
         if (AuthTG.loader.passwordValid(uuid, update.getMessage().getText().toString())) {
             User.register(update.getMessage(), uuid);
         } else {
-            AuthTG.bot.sendMessage(update.getMessage().getChatId(), AuthTG.config.getString("messages.telegram.activetgwrongpass"));
+            AuthTG.bot.sendMessage(update.getMessage().getChatId(), AuthTG.getMessage("activetgwrongpass", "TG"));
         }
         AuthTG.bot.deleteMessage(update.getMessage());
         AuthTG.bot.remNextStepHandler(key);

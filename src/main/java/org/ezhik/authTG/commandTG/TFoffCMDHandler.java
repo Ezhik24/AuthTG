@@ -14,9 +14,9 @@ public class TFoffCMDHandler implements CommandHandler{
             User user = User.getCurrentUser(update.getMessage().getChatId());
             if (user != null) {
                 AuthTG.loader.setTwofactor(user.uuid, false);
-                user.sendMessage(AuthTG.config.getString("messages.telegram.tfoffsuccess"));
+                user.sendMessage(AuthTG.getMessage("tfoffsuccess", "TG"));
             } else {
-                AuthTG.bot.sendMessage(update.getMessage().getChatId(), AuthTG.config.getString("messages.telegram.tfoffntactive"));
+                AuthTG.bot.sendMessage(update.getMessage().getChatId(), AuthTG.getMessage("tfoffntactive", "TG"));
             }
         }
     }
