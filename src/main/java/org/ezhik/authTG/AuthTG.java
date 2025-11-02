@@ -45,13 +45,13 @@ public final class AuthTG extends JavaPlugin {
         // Load config plugin
         if (!getDataFolder().exists()) getDataFolder().mkdir();
         if (!new File(getDataFolder(), "config.yml").exists()) saveDefaultConfig();
+        // Load config
+        config = getConfig();
         // Load temp-config and regeneration config.yml
-        if (!config.getString("version").equals(getDescription().getVersion())) {
+        if (!config.getString("version").equals(getDescription().getVersion()) || config.getString("version") == null) {
             saveResource("temp-config.yml", false);
             setupConfiguration();
         }
-        // Load config
-        config = getConfig();
         // Logs
         logger.log(Level.INFO, "Plugin started");
         // Load LoggerCore

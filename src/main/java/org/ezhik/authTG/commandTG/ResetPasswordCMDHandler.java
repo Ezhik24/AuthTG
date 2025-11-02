@@ -11,9 +11,9 @@ public class ResetPasswordCMDHandler implements CommandHandler {
         if (user != null) {
             String password = User.generateConfirmationCode();
             AuthTG.loader.setPasswordHash(user.uuid, password);
-            user.sendMessage(AuthTG.config.getString("messages.telegram.resetpasssuccess").replace("{PASSWORD}", password));
+            user.sendMessage(AuthTG.getMessage("resetpasssuccess", "TG").replace("{PASSWORD}", password));
         } else {
-            AuthTG.bot.sendMessage(update.getMessage().getChatId(),AuthTG.config.getString("messages.telegram.resetpassnotactive"));
+            AuthTG.bot.sendMessage(update.getMessage().getChatId(),AuthTG.getMessage("resetpassnotactive", "TG"));
         }
     }
 }

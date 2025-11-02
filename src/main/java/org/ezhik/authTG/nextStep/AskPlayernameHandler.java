@@ -15,20 +15,20 @@ public class AskPlayernameHandler implements NextStepHandler {
             User user = User.getUser(player.getUniqueId());
             if (user != null && user.activetg) {
                 if (user.chatid.equals(update.getMessage().getChatId())) {
-                    AuthTG.bot.sendMessage(update.getMessage().getChatId(), AuthTG.config.getString("messages.telegram.activetgalready"));
+                    AuthTG.bot.sendMessage(update.getMessage().getChatId(), AuthTG.getMessage("activetgalready", "TG"));
                 } else{
-                    AuthTG.bot.sendMessage(update.getMessage().getChatId(), AuthTG.config.getString("messages.telegram.activetgalreadyanother"));
+                    AuthTG.bot.sendMessage(update.getMessage().getChatId(), AuthTG.getMessage("activetgalreadyanother", "TG"));
                 }
             } else {
                 if (AuthTG.config.getBoolean("notRegAndLogin")) {
                      User.register(update.getMessage(), player.getUniqueId());
                 } else {
-                    AuthTG.bot.sendMessage(update.getMessage().getChatId(), AuthTG.config.getString("messages.telegram.activetgpasswd"));
+                    AuthTG.bot.sendMessage(update.getMessage().getChatId(), AuthTG.getMessage("activetgpasswd", "TG"));
                     AuthTG.bot.setNextStepHandler(key, new AskPasswordHandler(player.getUniqueId()));
                 }
             }
         } else {
-            AuthTG.bot.sendMessage(update.getMessage().getChatId(), AuthTG.config.getString("messages.telegram.playernotonlineactive"));
+            AuthTG.bot.sendMessage(update.getMessage().getChatId(), AuthTG.getMessage("playernotonlineactive", "TG"));
         }
     }
 }

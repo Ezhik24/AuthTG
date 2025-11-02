@@ -16,89 +16,74 @@ public class MuteCMDHandler implements CommandHandler {
     public void execute(Update update) {
         User user = User.getCurrentUser(update.getMessage().getFrom().getId());
         if (!user.activetg) {
-            AuthTG.bot.sendMessage(update.getMessage().getChatId(), AuthTG.config.getString("messages.telegram.mutetgactive"));
+            AuthTG.bot.sendMessage(update.getMessage().getChatId(), AuthTG.getMessage("mutetgactive", "TG"));
             return;
         }
         if (user.isadmin || user.commands != null && user.commands.contains("mute")) {
             String[] args = update.getMessage().getText().split(" ");
             if (args.length < 2) {
-                user.sendMessage(AuthTG.config.getString("messages.telegram.mute"));
+                user.sendMessage(AuthTG.getMessage("mute", "TG"));
                 AuthTG.bot.setNextStepHandler(update.getMessage().getChatId(), new MuteAskHandler());
             } else {
                 if (args.length < 3) {
-                    user.sendMessage(AuthTG.config.getString("messages.telegram.muteusage"));
+                    user.sendMessage(AuthTG.getMessage("muteusage", "TG"));
                     return;
                 }
                 User target = User.getUser(args[1]);
                 if (target == null) {
-                    user.sendMessage(AuthTG.config.getString("messages.telegram.muteplayernotfound"));
+                    user.sendMessage(AuthTG.getMessage("muteplayernotfound", "TG"));
                     return;
                 }
                 if (AuthTG.loader.isMuted(target.uuid)) {
-                    user.sendMessage(AuthTG.config.getString("messages.telegram.mutealready"));
+                    user.sendMessage(AuthTG.getMessage("mutealready", "TG"));
                     return;
                 }
                 if (args[2].equals("0")) {
-                    user.sendMessage(AuthTG.config.getString("messages.telegram.mutetimezero"));
+                    user.sendMessage(AuthTG.getMessage("mutetimezero", "TG"));
                     return;
                 }
                 String reason = String.join(" ", args).substring(args[0].length() + args[1].length() + args[2].length() + 3);
                 if (reason.length() > 120) {
-                    user.sendMessage(AuthTG.config.getString("messages.telegram.mutereasonlong"));
+                    user.sendMessage(AuthTG.getMessage("mutereasonlong", "TG"));
                     return;
                 }
-                if (args[2].contains("d")) {
+                int lettersCount = 0;
+                for (int i = 0; i < args[2].length(); i++) {
+                    if (Character.isAlphabetic(args[2].charAt(i))) {
+                        lettersCount++;
+                    }
+                }
+                LocalDateTime timedate = LocalDateTime.now();
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss dd.MM.yyyy");
+                String time = timedate.format(formatter);
+                String formattedDate = "", message = "", adminmsg = AuthTG.getMessage("mutesuccess", "TG").replace("{PLAYER}", target.playername);
+                if (lettersCount > 2) {
+                    user.sendMessage(AuthTG.getMessage("mutetimeformat", "TG"));
+                }
+                else if (args[2].contains("d")) {
                     LocalDateTime date = LocalDateTime.now().plusDays(Integer.parseInt(args[2].replace("d", "")));
-                    LocalDateTime timedate = LocalDateTime.now();
-                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss dd.MM.yyyy");
-                    String formattedDate = date.format(formatter);
-                    String time = timedate.format(formatter);
-                    AuthTG.loader.setMuteTime(target.uuid, formattedDate, reason, time, user.playername);
-                    user.sendMessage(AuthTG.config.getString("messages.telegram.mutesuccess").replace("{PLAYER}", target.playername));
-                    String message = ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.mute")).replace("{TIMEMUTE}", AuthTG.loader.getMuteTime(target.uuid)).replace("{REASON}", AuthTG.loader.getMuteReason(target.uuid)).replace("{TIME}", AuthTG.loader.getMuteTimeAdmin(target.uuid)).replace("{ADMIN}", AuthTG.loader.getMuteAdmin(target.uuid)).replace("{BR}", "\n");
-                    if (target.player != null) target.player.sendMessage(message);
+                    formattedDate = date.format(formatter);
+                    message = ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("mute", "MC")).replace("{TIMEMUTE}", AuthTG.loader.getMuteTime(target.uuid)).replace("{REASON}", AuthTG.loader.getMuteReason(target.uuid)).replace("{TIME}", AuthTG.loader.getMuteTimeAdmin(target.uuid)).replace("{ADMIN}", AuthTG.loader.getMuteAdmin(target.uuid));
                 } else if (args[2].contains("h")) {
                     LocalDateTime date = LocalDateTime.now().plusHours(Integer.parseInt(args[2].replace("h", "")));
-                    LocalDateTime timedate = LocalDateTime.now();
-                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss dd.MM.yyyy");
-                    String formattedDate = date.format(formatter);
-                    String time = timedate.format(formatter);
-                    AuthTG.loader.setMuteTime(target.uuid, formattedDate, reason, time, user.playername);
-                    user.sendMessage(AuthTG.config.getString("messages.telegram.mutesuccess").replace("{PLAYER}", target.playername));
-                    String message = ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.mute")).replace("{TIMEMUTE}", AuthTG.loader.getMuteTime(target.uuid)).replace("{REASON}", AuthTG.loader.getMuteReason(target.uuid)).replace("{TIME}", AuthTG.loader.getMuteTimeAdmin(target.uuid)).replace("{ADMIN}", AuthTG.loader.getMuteAdmin(target.uuid)).replace("{BR}", "\n");
-                    if (target.player != null) target.player.sendMessage(message);
+                    formattedDate = date.format(formatter);
+                    message = ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("mute", "MC")).replace("{TIMEMUTE}", AuthTG.loader.getMuteTime(target.uuid)).replace("{REASON}", AuthTG.loader.getMuteReason(target.uuid)).replace("{TIME}", AuthTG.loader.getMuteTimeAdmin(target.uuid)).replace("{ADMIN}", AuthTG.loader.getMuteAdmin(target.uuid));
+                }else if (args[2].equals("-s")) {
+                    formattedDate = "0";
+                    message = ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("mute", "MC")).replace("{TIMEMUTE}", "навсегда").replace("{REASON}", AuthTG.loader.getMuteReason(target.uuid)).replace("{TIME}", AuthTG.loader.getMuteTimeAdmin(target.uuid)).replace("{ADMIN}", AuthTG.loader.getMuteAdmin(target.uuid));
                 } else if (args[2].contains("m")) {
                     LocalDateTime date = LocalDateTime.now().plusMinutes(Integer.parseInt(args[2].replace("m", "")));
-                    LocalDateTime timedate = LocalDateTime.now();
-                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss dd.MM.yyyy");
-                    String formattedDate = date.format(formatter);
-                    String time = timedate.format(formatter);
-                    AuthTG.loader.setMuteTime(target.uuid, formattedDate, reason, time, user.playername);
-                    String message = ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.mute")).replace("{TIMEMUTE}", AuthTG.loader.getMuteTime(target.uuid)).replace("{REASON}", AuthTG.loader.getMuteReason(target.uuid)).replace("{TIME}", AuthTG.loader.getMuteTimeAdmin(target.uuid)).replace("{ADMIN}", AuthTG.loader.getMuteAdmin(target.uuid)).replace("{BR}", "\n");
-                    if (target.player != null) target.player.sendMessage(message);
-                    user.sendMessage(AuthTG.config.getString("messages.telegram.mutesuccess").replace("{PLAYER}", target.playername));
+                    formattedDate = date.format(formatter);
+                    message = ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("mute", "MC")).replace("{TIMEMUTE}", AuthTG.loader.getMuteTime(target.uuid)).replace("{REASON}", AuthTG.loader.getMuteReason(target.uuid)).replace("{TIME}", AuthTG.loader.getMuteTimeAdmin(target.uuid)).replace("{ADMIN}", AuthTG.loader.getMuteAdmin(target.uuid));
                 } else if (args[2].contains("s")) {
                     LocalDateTime date = LocalDateTime.now().plusSeconds(Integer.parseInt(args[2].replace("s", "")));
-                    LocalDateTime timedate = LocalDateTime.now();
-                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss dd.MM.yyyy");
-                    String formattedDate = date.format(formatter);
-                    String time = timedate.format(formatter);
-                    AuthTG.loader.setMuteTime(target.uuid, formattedDate, reason, time, user.playername);
-                    user.sendMessage(AuthTG.config.getString("messages.telegram.mutesuccess").replace("{PLAYER}", target.playername));
-                    String message = ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.mute")).replace("{TIMEMUTE}", AuthTG.loader.getMuteTime(target.uuid)).replace("{REASON}", AuthTG.loader.getMuteReason(target.uuid)).replace("{TIME}", AuthTG.loader.getMuteTimeAdmin(target.uuid)).replace("{ADMIN}", AuthTG.loader.getMuteAdmin(target.uuid)).replace("{BR}", "\n");
-                    if (target.player != null) target.player.sendMessage(message);
-                } else if (args[2].equals("-s")) {
-                    LocalDateTime timedate = LocalDateTime.now();
-                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss dd.MM.yyyy");
-                    String time = timedate.format(formatter);
-                    AuthTG.loader.setMuteTime(target.uuid, "0", reason, time, user.playername);
-                    user.sendMessage(AuthTG.config.getString("messages.telegram.mutesuccess").replace("{PLAYER}", target.playername));
-                    String message = ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.mute")).replace("{TIMEMUTE}", "навсегда").replace("{REASON}", AuthTG.loader.getMuteReason(target.uuid)).replace("{TIME}", AuthTG.loader.getMuteTimeAdmin(target.uuid)).replace("{ADMIN}", AuthTG.loader.getMuteAdmin(target.uuid)).replace("{BR}", "\n");
-                    if (target.player != null) target.player.sendMessage(message);
-                } else {
-                    user.sendMessage(AuthTG.config.getString("messages.telegram.mutetimeformat"));
+                    formattedDate = date.format(formatter);
+                    message = ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("mute", "MC")).replace("{TIMEMUTE}", AuthTG.loader.getMuteTime(target.uuid)).replace("{REASON}", AuthTG.loader.getMuteReason(target.uuid)).replace("{TIME}", AuthTG.loader.getMuteTimeAdmin(target.uuid)).replace("{ADMIN}", AuthTG.loader.getMuteAdmin(target.uuid));
                 }
+                if (target.player != null) target.player.sendMessage(message);
+                AuthTG.loader.setMuteTime(target.uuid, formattedDate, reason, time, user.playername);
+                user.sendMessage(adminmsg);
             }
-        } else user.sendMessage(AuthTG.config.getString("messages.telegram.mutenoperm"));
+        } else user.sendMessage(AuthTG.getMessage("mutenoperm", "TG"));
     }
 }

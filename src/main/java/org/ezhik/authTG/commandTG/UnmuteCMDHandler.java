@@ -10,33 +10,33 @@ public class UnmuteCMDHandler implements CommandHandler{
     public void execute(Update update) {
         User user = User.getCurrentUser(update.getMessage().getChatId());
         if (user == null) {
-            AuthTG.bot.sendMessage(update.getMessage().getChatId(), AuthTG.config.getString("messages.telegram.unmuteactive"));
+            AuthTG.bot.sendMessage(update.getMessage().getChatId(), AuthTG.getMessage("unmuteactive", "TG"));
             return;
         }
         if (!user.activetg) {
-            AuthTG.bot.sendMessage(update.getMessage().getChatId(), AuthTG.config.getString("messages.telegram.unmutenottgactive"));
+            AuthTG.bot.sendMessage(update.getMessage().getChatId(), AuthTG.getMessage("unmutenottgactive", "TG"));
             return;
         }
         if (user.isadmin || user.commands != null && user.commands.contains("mute")) {
             String[] args = update.getMessage().getText().split(" ");
             if (args.length < 2) {
-                user.sendMessage(AuthTG.config.getString("messages.telegram.unmute"));
+                user.sendMessage(AuthTG.getMessage("unmute", "TG"));
                 AuthTG.bot.setNextStepHandler(update.getMessage().getChatId(), new UnmuteAskHandler());
             } else {
                 User user1 = User.getUser(args[1]);
                 if (user1 == null) {
-                    user.sendMessage(AuthTG.config.getString("messages.telegram.unmuteusernotfound"));
+                    user.sendMessage(AuthTG.getMessage("unmuteusernotfound", "TG"));
                     return;
                 }
                 if (!AuthTG.loader.isMuted(user1.uuid)) {
-                    user.sendMessage(AuthTG.config.getString("messages.telegram.unmuteusernotmuted"));
+                    user.sendMessage(AuthTG.getMessage("unmuteusernotmuted", "TG"));
                     return;
                 }
                 AuthTG.loader.deleteMute(user1.uuid);
-                user.sendMessage(AuthTG.config.getString("messages.telegram.unmuteuser").replace("{PLAYER}", user1.playername));
+                user.sendMessage(AuthTG.getMessage("unmuteuser", "TG").replace("{PLAYER}", user1.playername));
             }
         } else {
-            user.sendMessage(AuthTG.config.getString("messages.telegram.unmuteadmin"));
+            user.sendMessage(AuthTG.getMessage("unmuteadmin", "TG"));
         }
 
     }

@@ -8,32 +8,35 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.ezhik.authTG.AuthTG;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 public class SetPasswordCMD implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String label, String[] strings) {
         if (!(commandSender instanceof Player)) {
-            System.out.println(AuthTG.config.get("messages.console.notplayer"));
+            AuthTG.logger.log(Level.INFO,AuthTG.getMessage("notplayer", "CE"));
             return false;
         }
         if (strings.length != 3) {
-            commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.setpasswordusage")));
+            commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("setpasswordusage", "MC")));
             return false;
         }
         if (!commandSender.hasPermission("authtg.setpassword")) {
-            commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.setpasswordnoperm")));
+            commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("setpasswordnoperm", "MC")));
             return false;
         }
         Player player = Bukkit.getPlayer(strings[0]);
         if (player == null) {
-            commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.setpassplnotfound")));
+            commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("setpassplnotfound", "MC")));
             return false;
         }
         if (!strings[1].equals(strings[2])) {
-            commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.setpassnotmatch")));
+            commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("setpassnotmatch", "MC")));
             return false;
         }
         AuthTG.loader.setPasswordHash(player.getUniqueId(), strings[1]);
-        commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.setpasssuccess").replace("{PLAYER}", player.getName())));
+        commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("setpasssuccess", "MC").replace("{PLAYER}", player.getName())));
         return true;
     }
 }

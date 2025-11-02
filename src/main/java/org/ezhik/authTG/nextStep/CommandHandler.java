@@ -19,7 +19,7 @@ public class CommandHandler implements NextStepHandler{
         User user = User.getCurrentUser(update.getMessage().getChatId());
         User target = User.getUser(update.getMessage().getText().toString());
         if (target == null) {
-            user.sendMessage(AuthTG.config.getString("messages.telegram.cmdusernotfound"));
+            user.sendMessage(AuthTG.getMessage("cmdusernotfound", "TG"));
             AuthTG.bot.remNextStepHandler(user.chatid);
             return;
         }
@@ -31,8 +31,8 @@ public class CommandHandler implements NextStepHandler{
             List<InlineKeyboardButton> row = new ArrayList<>();
             InlineKeyboardButton addbutton = new InlineKeyboardButton();
             InlineKeyboardButton removebutton = new InlineKeyboardButton();
-            addbutton.setText(AuthTG.config.getString("messages.telegram.cmdaddcommand"));
-            removebutton.setText(AuthTG.config.getString("messages.telegram.cmdremcommand"));
+            addbutton.setText(AuthTG.getMessage("cmdaddcommand", "TG"));
+            removebutton.setText(AuthTG.getMessage("cmdremcommand", "TG"));
             addbutton.setCallbackData("cmdfirst_add");
             removebutton.setCallbackData("cmdfirst_rem");
             row.add(addbutton);
@@ -43,7 +43,7 @@ public class CommandHandler implements NextStepHandler{
             SendMessage sendMessage = new SendMessage();
             sendMessage.setChatId(user.chatid);
             String command = target.commands.toString().replace("[", "").replace("]", "");
-            sendMessage.setText(AuthTG.config.getString("messages.telegram.cmdlist").replace("{PLAYER}", target.playername).replace("{COMMANDS}", command));
+            sendMessage.setText(AuthTG.getMessage("cmdlist", "TG").replace("{PLAYER}", target.playername).replace("{COMMANDS}", command));
             sendMessage.setReplyMarkup(markup);
             try {
                 AuthTG.bot.execute(sendMessage);
@@ -59,9 +59,9 @@ public class CommandHandler implements NextStepHandler{
             InlineKeyboardButton banbutton = new InlineKeyboardButton();
             InlineKeyboardButton mutebutton = new InlineKeyboardButton();
             InlineKeyboardButton kickbutton = new InlineKeyboardButton();
-            banbutton.setText(AuthTG.config.getString("messages.telegram.cmdban"));
-            mutebutton.setText(AuthTG.config.getString("messages.telegram.cmdmute"));
-            kickbutton.setText(AuthTG.config.getString("messages.telegram.cmdkick"));
+            banbutton.setText(AuthTG.getMessage("cmdban", "TG"));
+            mutebutton.setText(AuthTG.getMessage("cmdmute", "TG"));
+            kickbutton.setText(AuthTG.getMessage("cmdkick", "TG"));
             banbutton.setCallbackData("cmdsecond_ban");
             mutebutton.setCallbackData("cmdsecond_mute");
             kickbutton.setCallbackData("cmdsecond_kick");
@@ -73,7 +73,7 @@ public class CommandHandler implements NextStepHandler{
             markup.setKeyboard(keyboard);
             SendMessage sendMessage = new SendMessage();
             sendMessage.setChatId(user.chatid);
-            sendMessage.setText(AuthTG.config.getString("messages.telegram.cmdaddquestion").replace("{PLAYER}", target.playername));
+            sendMessage.setText(AuthTG.getMessage("cmdaddquestion", "TG").replace("{PLAYER}", target.playername));
             sendMessage.setReplyMarkup(markup);
             try {
                 AuthTG.bot.execute(sendMessage);
@@ -88,9 +88,9 @@ public class CommandHandler implements NextStepHandler{
             InlineKeyboardButton banbutton = new InlineKeyboardButton();
             InlineKeyboardButton mutebutton = new InlineKeyboardButton();
             InlineKeyboardButton kickbutton = new InlineKeyboardButton();
-            banbutton.setText(AuthTG.config.getString("messages.telegram.cmdban"));
-            mutebutton.setText(AuthTG.config.getString("messages.telegram.cmdmute"));
-            kickbutton.setText(AuthTG.config.getString("messages.telegram.cmdkick"));
+            banbutton.setText(AuthTG.getMessage("cmdban", "TG"));
+            mutebutton.setText(AuthTG.getMessage("cmdmute", "TG"));
+            kickbutton.setText(AuthTG.getMessage("cmdkick", "TG"));
             banbutton.setCallbackData("cmdsecond_ban");
             mutebutton.setCallbackData("cmdsecond_mute");
             kickbutton.setCallbackData("cmdsecond_kick");
@@ -102,7 +102,7 @@ public class CommandHandler implements NextStepHandler{
             markup.setKeyboard(keyboard);
             SendMessage sendMessage = new SendMessage();
             sendMessage.setChatId(user.chatid);
-            sendMessage.setText(AuthTG.config.getString("messages.telegram.cmdremquestion").replace("{PLAYER}", target.playername));
+            sendMessage.setText(AuthTG.getMessage("cmdremquestion", "TG").replace("{PLAYER}", target.playername));
             sendMessage.setReplyMarkup(markup);
             try {
                 AuthTG.bot.execute(sendMessage);

@@ -15,7 +15,7 @@ public class PlayerJoinAnotherEvent implements Listener {
         Player player = Bukkit.getPlayer(event.getName());
         if (player != null) {
             if (player.isOnline()) {
-                event.disallow(Result.KICK_OTHER, ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.joinanother")));
+                event.disallow(Result.KICK_OTHER, ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("joinanother", "MC")));
             }
         }
     }

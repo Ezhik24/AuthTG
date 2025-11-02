@@ -16,14 +16,14 @@ public class UnLinkCMDHandler implements CommandHandler {
             if (user != null) {
                 String code = User.generateConfirmationCode();
                 if (user.player != null) {
-                    user.player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.codemsgdeactivated")));
+                    user.player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("codemsgdeactivated", "MC")));
                     CodeCMD.code.put(user.uuid, code);
-                    user.sendMessage(AuthTG.config.getString("messages.telegram.unlinkcode").replace("{CODE}", code));
+                    user.sendMessage(AuthTG.getMessage("unlinkcode", "TG").replace("{CODE}", code));
                 } else {
-                    user.sendMessage(AuthTG.config.getString("messages.telegram.unlinkplntonline"));
+                    user.sendMessage(AuthTG.getMessage("unlinkplntonline", "TG"));
                 }
             } else {
-                AuthTG.bot.sendMessage(update.getMessage().getChatId(), AuthTG.config.getString("messages.telegram.unlinknotactive"));
+                AuthTG.bot.sendMessage(update.getMessage().getChatId(), AuthTG.getMessage("unlinknotactive", "TG"));
             }
         }
     }

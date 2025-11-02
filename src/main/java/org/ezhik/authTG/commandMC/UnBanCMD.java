@@ -17,41 +17,41 @@ public class UnBanCMD implements CommandExecutor {
         if (commandSender instanceof Player) {
             Player player = (Player) commandSender;
             if (!commandSender.hasPermission("authtg.unban")) {
-                player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.unbannoperm")));
+                player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("unbannoperm", "MC")));
                 return false;
             }
             if (strings.length == 0) {
-                player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.unbanusage")));
+                player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("unbanusage", "MC")));
                 return false;
             }
             UUID targetuuid = AuthTG.loader.getUUIDbyPlayerName(strings[0]);
             if (targetuuid == null) {
-                player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.unbannotfound")));
+                player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("unbannotfound", "MC")));
                 return false;
             }
             if (!AuthTG.loader.isBanned(targetuuid)) {
-                player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.unbannotbanned")));
+                player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("unbannotbanned", "MC")));
                 return false;
             }
             AuthTG.loader.deleteBan(targetuuid);
-            player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.unban").replace("{PLAYER}", strings[0])));
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("unban", "MC").replace("{PLAYER}", strings[0])));
         } else {
             ConsoleCommandSender console = Bukkit.getConsoleSender();
             if (strings.length == 0) {
-                console.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.unbanusage")));
+                console.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("unbanusage", "MC")));
                 return false;
             }
             UUID targetuuid = AuthTG.loader.getUUIDbyPlayerName(strings[0]);
             if (targetuuid == null) {
-                console.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.unbannotfound")));
+                console.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("unbannotfound", "MC")));
                 return false;
             }
             if (!AuthTG.loader.isBanned(targetuuid)) {
-                console.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.unbannotbanned")));
+                console.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("unbannotbanned", "MC")));
                 return false;
             }
             AuthTG.loader.deleteBan(targetuuid);
-            console.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.config.getString("messages.minecraft.unban").replace("{PLAYER}", strings[0])));
+            console.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("unban", "MC").replace("{PLAYER}", strings[0])));
         }
         return true;
     }

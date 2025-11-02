@@ -18,11 +18,11 @@ public class MacroCMDHandler implements CommandHandler {
     public void execute(Update update) {
         User user = User.getCurrentUser(update.getMessage().getFrom().getId());
         if (user == null) {
-            AuthTG.bot.sendMessage(update.getMessage().getChatId(), AuthTG.config.getString("messages.telegram.macronotfound"));
+            AuthTG.bot.sendMessage(update.getMessage().getChatId(), AuthTG.getMessage("macronotfound", "TG"));
             return;
         }
         if (!user.activetg) {
-            AuthTG.bot.sendMessage(update.getMessage().getChatId(), AuthTG.config.getString("messages.telegram.macronotg"));
+            AuthTG.bot.sendMessage(update.getMessage().getChatId(), AuthTG.getMessage("macronotg", "TG"));
             return;
         }
         String[] args = update.getMessage().getText().split(" ");
@@ -34,16 +34,16 @@ public class MacroCMDHandler implements CommandHandler {
                 return;
             }
             if (args.length != count + 1) {
-                user.sendMessage(AuthTG.config.getString("messages.telegram.macronoargs"));
+                user.sendMessage(AuthTG.getMessage("macronoargs", "TG"));
                 return;
             }
             for (int i = 0; i <= count; i++) {
                 this.mccmd = this.mccmd.replace("[arg" + i + "]", args[i]);
             }
-            user.sendMessage(AuthTG.config.getString("messages.telegram.macrosuccess"));
+            user.sendMessage(AuthTG.getMessage("macrosuccess", "TG"));
             Handler.dispatchCommand(user.playername, this.mccmd);
         } else {
-            user.sendMessage(AuthTG.config.getString("messages.telegram.macronoperm"));
+            user.sendMessage(AuthTG.getMessage("macronoperm", "TG"));
         }
     }
 }

@@ -58,8 +58,10 @@ public class BotTelegram extends TelegramLongPollingBot {
         callbackQueryHandler.put("cmdfirst", new CMDFirstStep());
         callbackQueryHandler.put("cmdsecond", new CMDSecondStep());
         ConfigurationSection section = AuthTG.config.getConfigurationSection("macro");
-        for (String key : section.getKeys(false)) {
-            commandHandler.put("/" + key, new MacroCMDHandler(section.getString(key + ".mccmd"), section.getString(key + ".nsmsg")));
+        if (section != null) {
+            for (String key : section.getKeys(false)) {
+                commandHandler.put("/" + key, new MacroCMDHandler(section.getString(key + ".mccmd"), section.getString(key + ".nsmsg")));
+            }
         }
     }
 

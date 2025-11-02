@@ -11,7 +11,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 public class StartCMDHandler implements CommandHandler{
     @Override
     public void execute(Update update) {
-        AuthTG.bot.sendMessage(update.getMessage().getChatId(), AuthTG.config.getString("messages.telegram.startlinkacc"));
+        AuthTG.bot.sendMessage(update.getMessage().getChatId(), AuthTG.getMessage("startlinkacc", "TG"));
         AuthTG.bot.setNextStepHandler(update.getMessage().getChatId(), new AskPlayernameHandler());
     }
 }

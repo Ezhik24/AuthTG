@@ -7,12 +7,14 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.ezhik.authTG.AuthTG;
 
+import java.util.logging.Level;
+
 public class SetSpawnCMD implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
         if (!(commandSender instanceof Player)) {
-            System.out.println(AuthTG.getMessage("notplayer", "CE"));
+            AuthTG.logger.log(Level.INFO,AuthTG.getMessage("notplayer", "CE"));
             return false;
         }
         if (!commandSender.hasPermission("authtg.setspawn")) {
