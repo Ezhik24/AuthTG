@@ -20,8 +20,12 @@ public class OnJoinEvent implements Listener {
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
         Player p = event.getPlayer();
-        if (AuthTG.config.getLocation("spawnLocation") != null) p.teleport(AuthTG.config.getLocation("spawnLocation"));
-        FreezerEvent.freezeplayer(p.getName());
+        if (AuthTG.spawn != null) {
+            p.teleport(AuthTG.spawn);
+            FreezerEvent.freezeplayer(p, AuthTG.spawn);
+        } else {
+            FreezerEvent.freezeplayer(p, p.getLocation());
+        }
         User user = User.getUser(p.getUniqueId());
         LocalDateTime date = LocalDateTime.now();
         if (AuthTG.loader.getBanTime(p.getUniqueId()) != null) {
@@ -41,7 +45,10 @@ public class OnJoinEvent implements Listener {
             Handler.kick(p.getName(), ChatColor.translateAlternateColorCodes('&',AuthTG.getMessage("nicknamelenght", "MC").replace("{MIN}", String.valueOf(AuthTG.config.getInt("minLenghtNickname"))).replace("{MAX}", String.valueOf(AuthTG.config.getInt("maxLenghtNickname")))));
         }
         AuthHandler.setTimeout(p.getUniqueId(), AuthTG.config.getInt("kickTimeout"));
-        if (AuthTG.config.getBoolean("notRegAndLogin")) {
+        if (AuthTG.config.getBoolean("notRegAndLogin") && !AuthTG.config.getBoolean("authNecessarily")) {
+            FreezerEvent.unfreezeplayer(p.getName());
+        }
+        else if (AuthTG.config.getBoolean("notRegAndLogin") && AuthTG.config.getBoolean("authNecessarily")) {
             if (user != null && user.activetg) {
                 MuterEvent.mute(p.getName(), ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("joininaccounttext", "MC")));
                 p.sendTitle(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("joininaccounts1", "MC")), AuthTG.getMessage("joininaccounts2", "MC"), 20, 10000000, 0);

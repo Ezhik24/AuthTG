@@ -4,6 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SingleLineChart;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -34,6 +35,7 @@ public final class AuthTG extends JavaPlugin {
     public static Logger logger;
     private static Plugin instance;
     private static String version;
+    public static Location spawn;
 
     @Override
     public void onEnable() {
@@ -47,6 +49,8 @@ public final class AuthTG extends JavaPlugin {
         if (!new File(getDataFolder(), "config.yml").exists()) saveDefaultConfig();
         // Load config
         config = getConfig();
+        // Load spawn
+        spawn = config.getLocation("spawnLocation");
         // Load temp-config and regeneration config.yml
         if (!config.getString("version").equals(getDescription().getVersion()) || config.getString("version") == null) {
             saveResource("temp-config.yml", false);
@@ -141,6 +145,16 @@ public final class AuthTG extends JavaPlugin {
     public void onDisable() {
         // Logs
         logger.log(Level.INFO, "Plugin stopped");
+        // Save spawn location
+        if (spawn == null) {
+            AuthTG.config.set("spawnLocation", null);
+            logger.log(Level.INFO, "Spawn location saved");
+            saveConfig();
+        } else {
+            AuthTG.config.set("spawnLocation", spawn);
+            logger.log(Level.INFO, "Spawn location saved");
+            saveConfig();
+        }
     }
 
     public static Plugin getInstance() {
