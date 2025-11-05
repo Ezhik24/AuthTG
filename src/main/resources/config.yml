@@ -22,6 +22,7 @@ minLenghtNickname: 3 # Минимальная длина ника EN: Min length
 maxLenghtNickname: 15 # Максимальная длина ника EN: Max length nickname
 minLenghtPassword: 3 # Минимальная длина пароля EN: Min length password
 maxLenghtPassword: 32 # Максимальная длина пароля EN: Max length password
+timeoutSession: 60 # Время в минутах,через которое у игрока сбросится сессия EN: Time in minutes after which the player will reset the session
 kickTimeout: 30 # Время в секундах, через которое игрок будет кикнут если не авторизовался EN: Time in seconds, after which the player will be kicked if not authorized
 spawnLocation: null # Спавн EN: Spawn
 activeChatinTG: true # Должен ли работать чат в телеграме EN: Must chat in Telegram
@@ -187,6 +188,7 @@ messages: # Сообщения EN: Messages
     cmdnull: "[Бот] Вы не авторизованы!"
     mutesuccess: "Вы успешно замутили {PLAYER}"
   minecraft: # Сообщения в майнкрафте EN: Minecraft messages
+    logout: "&cВы вышли из аккаунта!"
     kicktimeout: "Время на авторизацию истекло!"
     unbannoperm: "&c&l[AuthTG] &cУ вас нет прав!"
     unbanusage: "&c&l[AuthTG] &cВы не указали ник!"

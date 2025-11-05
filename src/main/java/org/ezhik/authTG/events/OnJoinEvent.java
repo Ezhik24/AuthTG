@@ -44,7 +44,13 @@ public class OnJoinEvent implements Listener {
         if (p.getName().length() < AuthTG.config.getInt("minLenghtNickname") || p.getName().length() > AuthTG.config.getInt("maxLenghtNickname")) {
             Handler.kick(p.getName(), ChatColor.translateAlternateColorCodes('&',AuthTG.getMessage("nicknamelenght", "MC").replace("{MIN}", String.valueOf(AuthTG.config.getInt("minLenghtNickname"))).replace("{MAX}", String.valueOf(AuthTG.config.getInt("maxLenghtNickname")))));
         }
-        AuthHandler.setTimeout(p.getUniqueId(), AuthTG.config.getInt("kickTimeout"));
+        if (AuthTG.sessionManager.isAuthorized(p)) {
+            FreezerEvent.unfreezeplayer(p.getName());
+            return;
+        }
+        if (AuthTG.config.getInt("kickTimeout") != 0) {
+            AuthHandler.setTimeout(p.getUniqueId(), AuthTG.config.getInt("kickTimeout"));
+        }
         if (AuthTG.config.getBoolean("notRegAndLogin") && !AuthTG.config.getBoolean("authNecessarily")) {
             FreezerEvent.unfreezeplayer(p.getName());
         }

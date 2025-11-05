@@ -15,6 +15,8 @@ import org.ezhik.authTG.events.*;
 import org.ezhik.authTG.handlers.*;
 import org.ezhik.authTG.migrates.*;
 import org.ezhik.authTG.otherAPI.*;
+import org.ezhik.authTG.session.IPManager;
+import org.ezhik.authTG.session.SessionManager;
 import org.ezhik.authTG.tabcompleter.*;
 import org.ezhik.authTG.usersconfiguration.*;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
@@ -36,6 +38,7 @@ public final class AuthTG extends JavaPlugin {
     private static Plugin instance;
     private static String version;
     public static Location spawn;
+    public  static SessionManager sessionManager;
 
     @Override
     public void onEnable() {
@@ -55,6 +58,12 @@ public final class AuthTG extends JavaPlugin {
         if (!config.getString("version").equals(getDescription().getVersion()) || config.getString("version") == null) {
             saveResource("temp-config.yml", false);
             setupConfiguration();
+        }
+        //Load SessionManager
+        if (Bukkit.getServer().getPluginManager().getPlugin("AuthTGCookie") != null) {
+            //TODO
+        } else {
+            sessionManager = new IPManager();
         }
         // Logs
         logger.log(Level.INFO, "Plugin started");
@@ -117,6 +126,7 @@ public final class AuthTG extends JavaPlugin {
         getCommand("ban").setExecutor(new BanCMD());
         getCommand("unban").setExecutor(new UnBanCMD());
         getCommand("unmute").setExecutor(new UnMuteCMD());
+        getCommand("logout").setExecutor(new LogoutCMD());
         // Register TabCompleter
         getCommand("admin").setTabCompleter(new AdminTabCompleter());
         getCommand("friend").setTabCompleter(new FriendTabCompleter());

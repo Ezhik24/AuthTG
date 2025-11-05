@@ -11,6 +11,7 @@ import org.ezhik.authTG.events.FreezerEvent;
 import org.ezhik.authTG.events.MuterEvent;
 import org.ezhik.authTG.handlers.AuthHandler;
 
+import java.time.LocalDateTime;
 import java.util.logging.Level;
 
 public class LoginCMD implements CommandExecutor {
@@ -52,11 +53,15 @@ public class LoginCMD implements CommandExecutor {
                 player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("joininaccounttext", "MC")));
                 player.sendTitle(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("joininaccounts1", "MC")), AuthTG.getMessage("joininaccounts2", "MC"), 0, 1000000000, 0);
             } else {
+                LocalDateTime time = LocalDateTime.now().plusMinutes(AuthTG.config.getInt("timeoutSession"));
+                AuthTG.sessionManager.addAuthorized(player.getUniqueId(), player.getAddress().getAddress().toString(),time);
                 player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("loginsuccess", "MC")));
                 FreezerEvent.unfreezeplayer(player.getName());
                 MuterEvent.unmute(player.getName());
                 player.resetTitle();
-                AuthHandler.removeTimeout(player.getUniqueId());
+                if (AuthTG.config.getInt("kickTimeout") != 0) {
+                    AuthHandler.removeTimeout(player.getUniqueId());
+                }
             }
         }
         return true;

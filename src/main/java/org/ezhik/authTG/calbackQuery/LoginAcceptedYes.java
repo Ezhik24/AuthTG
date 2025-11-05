@@ -10,6 +10,7 @@ import org.ezhik.authTG.events.MuterEvent;
 import org.ezhik.authTG.handlers.AuthHandler;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 public class LoginAcceptedYes implements CallbackQueryHandler{
@@ -21,7 +22,11 @@ public class LoginAcceptedYes implements CallbackQueryHandler{
         MuterEvent.unmute(user.playername);
         AuthTG.bot.deleteMessage(update.getCallbackQuery().getMessage());
         Player player = Bukkit.getPlayer(user.playername);
-        AuthHandler.removeTimeout(player.getUniqueId());
+        if (AuthTG.config.getInt("kickTimeout") != 0) {
+            AuthHandler.removeTimeout(player.getUniqueId());
+        }
+        LocalDateTime time = LocalDateTime.now().plusMinutes(AuthTG.config.getInt("timeoutSession"));
+        AuthTG.sessionManager.addAuthorized(player.getUniqueId(), player.getAddress().getAddress().toString(),time);
         player.resetTitle();
         player.sendMessage(ChatColor.translateAlternateColorCodes('&',AuthTG.getMessage("loginsuccess", "MC")));
     }

@@ -1,5 +1,6 @@
 package org.ezhik.authTG.usersconfiguration;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 public interface Loader {
@@ -101,4 +102,9 @@ public interface Loader {
 
     Map<String, List<Object>> getMutedPlayers();
 
+    void setSession(UUID uuid, String ip, LocalDateTime time);
+
+    void deleteSession(UUID uuid);
+
+    List<Object> getSession(UUID uuid);
 }

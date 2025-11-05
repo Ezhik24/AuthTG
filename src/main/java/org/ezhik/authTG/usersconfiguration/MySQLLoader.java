@@ -81,6 +81,14 @@ public class MySQLLoader implements Loader {
                     + "admin varchar(90) NOT NULL,"
                     + "PRIMARY KEY (priKey))"
             );
+            st.executeUpdate(
+                    "CREATE TABLE IF NOT EXISTS AuthTGSessions ("
+                    + "priKey INT NOT NULL AUTO_INCREMENT,"
+                    + "uuid varchar(36) NOT NULL,"
+                    + "ip varchar(120) NOT NULL,"
+                    + "time varchar(50) NOT NULL,"
+                    + "PRIMARY KEY (priKey))"
+            );
             conn.close();
         } catch (SQLException e) {
             AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
@@ -1043,5 +1051,65 @@ public class MySQLLoader implements Loader {
             AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());;
         }
         return map;
+    }
+
+    @Override
+    public void setSession(UUID uuid, String ip, LocalDateTime time) {
+        try {
+            conn = DriverManager.getConnection(
+                    "jdbc:mysql://" + this.host + "/" + this.database,
+                    this.username,
+                    this.password
+            );
+            st = conn.createStatement();
+            st.executeUpdate(
+                    "INSERT INTO AuthTGSessions(uuid, ip, time) VALUES ('" + uuid.toString() + "', '" + ip + "', '" + time.toString() + "')"
+            );
+            conn.close();
+        } catch (SQLException e) {
+            AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public void deleteSession(UUID uuid) {
+        try {
+            conn = DriverManager.getConnection(
+                    "jdbc:mysql://" + this.host + "/" + this.database,
+                    this.username,
+                    this.password
+            );
+            st = conn.createStatement();
+            st.executeUpdate(
+                    "DELETE FROM AuthTGSessions WHERE uuid = '" + uuid.toString() + "'"
+            );
+        } catch (SQLException e) {
+            AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public List<Object> getSession(UUID uuid) {
+        try {
+            conn = DriverManager.getConnection(
+                    "jdbc:mysql://" + this.host + "/" + this.database,
+                    this.username,
+                    this.password
+            );
+            st = conn.createStatement();
+            st.executeQuery(
+                    "SELECT * FROM AuthTGSessions WHERE uuid = '" + uuid.toString() + "'"
+            );
+            List<Object> list = new ArrayList<>();
+            if (rs.next()) {
+                list.add(0, rs.getString("ip"));
+                list.add(1, rs.getString("time"));
+            }
+            conn.close();
+            return list;
+        } catch (SQLException e) {
+            AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
+        }
+        return List.of();
     }
 }
