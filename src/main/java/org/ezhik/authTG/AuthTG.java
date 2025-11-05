@@ -4,6 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SingleLineChart;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -14,6 +15,8 @@ import org.ezhik.authTG.events.*;
 import org.ezhik.authTG.handlers.*;
 import org.ezhik.authTG.migrates.*;
 import org.ezhik.authTG.otherAPI.*;
+import org.ezhik.authTG.session.IPManager;
+import org.ezhik.authTG.session.SessionManager;
 import org.ezhik.authTG.tabcompleter.*;
 import org.ezhik.authTG.usersconfiguration.*;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
@@ -34,6 +37,8 @@ public final class AuthTG extends JavaPlugin {
     public static Logger logger;
     private static Plugin instance;
     private static String version;
+    public static Location spawn;
+    public  static SessionManager sessionManager;
 
     @Override
     public void onEnable() {
@@ -47,10 +52,18 @@ public final class AuthTG extends JavaPlugin {
         if (!new File(getDataFolder(), "config.yml").exists()) saveDefaultConfig();
         // Load config
         config = getConfig();
+        // Load spawn
+        spawn = config.getLocation("spawnLocation");
         // Load temp-config and regeneration config.yml
         if (!config.getString("version").equals(getDescription().getVersion()) || config.getString("version") == null) {
             saveResource("temp-config.yml", false);
             setupConfiguration();
+        }
+        //Load SessionManager
+        if (Bukkit.getServer().getPluginManager().getPlugin("AuthTGCookie") != null) {
+            //TODO
+        } else {
+            sessionManager = new IPManager();
         }
         // Logs
         logger.log(Level.INFO, "Plugin started");
@@ -113,6 +126,7 @@ public final class AuthTG extends JavaPlugin {
         getCommand("ban").setExecutor(new BanCMD());
         getCommand("unban").setExecutor(new UnBanCMD());
         getCommand("unmute").setExecutor(new UnMuteCMD());
+        getCommand("logout").setExecutor(new LogoutCMD());
         // Register TabCompleter
         getCommand("admin").setTabCompleter(new AdminTabCompleter());
         getCommand("friend").setTabCompleter(new FriendTabCompleter());
@@ -141,6 +155,16 @@ public final class AuthTG extends JavaPlugin {
     public void onDisable() {
         // Logs
         logger.log(Level.INFO, "Plugin stopped");
+        // Save spawn location
+        if (spawn == null) {
+            AuthTG.config.set("spawnLocation", null);
+            logger.log(Level.INFO, "Spawn location saved");
+            saveConfig();
+        } else {
+            AuthTG.config.set("spawnLocation", spawn);
+            logger.log(Level.INFO, "Spawn location saved");
+            saveConfig();
+        }
     }
 
     public static Plugin getInstance() {

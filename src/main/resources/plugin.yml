@@ -43,3 +43,5 @@ commands:
     description: 'Unban player'
   unmute:
     description: 'Unmute player'
+  logout:
+    description: 'Logout'

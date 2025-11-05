@@ -1,5 +1,6 @@
 package org.ezhik.authTG.commandMC;
 
+import jdk.javadoc.doclet.Taglet;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -23,12 +24,12 @@ public class SetSpawnCMD implements CommandExecutor {
         }
         if (strings.length == 0) {
             Player player = (Player) commandSender;
-            AuthTG.config.set("spawnLocation",  player.getLocation());
+            AuthTG.spawn = player.getLocation();
             commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("setspawnsuccess", "MC")));
             return true;
         }
         if (strings[0].equals("none")) {
-            AuthTG.config.set("spawnLocation",  null);
+            AuthTG.spawn = null;
             commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("setspawnnone", "MC")));
             return true;
         }

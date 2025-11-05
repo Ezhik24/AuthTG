@@ -14,6 +14,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.List;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class YAMLLoader implements Loader{
     public Map<Long,UUID> currentuser = new HashMap<>();
@@ -872,5 +873,65 @@ public class YAMLLoader implements Loader{
             }
         }
         return map;
+    }
+
+    @Override
+    public void setSession(UUID uuid, String ip, LocalDateTime time) {
+        File file = new File("plugins/AuthTG/users/" + uuid + ".yml");
+        YamlConfiguration config = new YamlConfiguration();
+        try {
+            config.load(file);
+        } catch (IOException e) {
+            AuthTG.logger.log(Level.SEVERE, "Error loading file: " + e);
+        } catch (InvalidConfigurationException e) {
+            AuthTG.logger.log(Level.SEVERE, "Error loading file: " + e);
+        }
+        config.set("session.ip", ip);
+        config.set("session.time", time.toString());
+        try {
+            config.save(file);
+        } catch (IOException e) {
+            AuthTG.logger.log(Level.SEVERE, "Error saving file: " + e);;
+        }
+
+    }
+
+    @Override
+    public void deleteSession(UUID uuid) {
+        File file = new File("plugins/AuthTG/users/" + uuid + ".yml");
+        YamlConfiguration config = new YamlConfiguration();
+        try {
+            config.load(file);
+        } catch (IOException e) {
+            AuthTG.logger.log(Level.SEVERE, "Error loading file: " + e);
+        } catch (InvalidConfigurationException e) {
+            AuthTG.logger.log(Level.SEVERE, "Error loading file: " + e);
+        }
+        config.set("session", null);
+        try {
+            config.save(file);
+        } catch (IOException e) {
+            AuthTG.logger.log(Level.SEVERE, "Error saving file: " + e);
+        }
+    }
+
+    @Override
+    public List<Object> getSession(UUID uuid) {
+        File file = new File("plugins/AuthTG/users/" + uuid + ".yml");
+        YamlConfiguration config = new YamlConfiguration();
+        try {
+            config.load(file);
+        } catch (IOException e) {
+            AuthTG.logger.log(Level.SEVERE, "Error loading file: " + e);
+        } catch (InvalidConfigurationException e) {
+            AuthTG.logger.log(Level.SEVERE, "Error loading file: " + e);
+        }
+        if (config.contains("session")) {
+            List<Object> list = new ArrayList<>();
+            list.add(config.getString("session.ip"));
+            list.add(config.get("session.time"));
+            return list;
+        }
+        return null;
     }
 }
