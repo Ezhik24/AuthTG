@@ -13,7 +13,7 @@ public class SendMessageMC implements CallbackQueryHandler {
         String[] str = update.getCallbackQuery().getData().toString().split("_");
         AuthTG.bot.deleteMessage(update.getCallbackQuery().getMessage());
         User user = User.getCurrentUser(update.getCallbackQuery().getMessage().getChatId());
-        user.sendMessage(AuthTG.getMessage("sndmsgmctext", "MC"));
+        user.sendMessage(AuthTG.getMessage("sndmsgmctext", "TG"));
         AuthTG.bot.setNextStepHandler(update.getCallbackQuery().getMessage().getChatId(), new SendMessageMCHandler());
         AuthTG.bot.setUserData(update.getCallbackQuery().getMessage().getChatId().toString(), UUID.fromString(str[1]));
     }

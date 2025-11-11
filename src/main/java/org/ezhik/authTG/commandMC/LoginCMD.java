@@ -21,7 +21,7 @@ public class LoginCMD implements CommandExecutor {
             AuthTG.logger.log(Level.INFO,AuthTG.getMessage("notplayer", "CE"));
             return false;
         }
-        if (AuthTG.config.getBoolean("notRegAndLogin")) {
+        if (AuthTG.notRegAndLogin) {
             commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("loginoff", "MC")));
             return false;
         }
@@ -35,7 +35,7 @@ public class LoginCMD implements CommandExecutor {
             return false;
         }
         User user = User.getUser(player.getUniqueId());
-        if (AuthTG.config.getBoolean("authNecessarily")) {
+        if (AuthTG.authNecessarily) {
             if (user.activetg) {
                 user.sendLoginAccepted(AuthTG.getMessage("loginaccept", "TG").replace("{PLAYER}", user.playername));
                 MuterEvent.mute(player.getName(), ChatColor.translateAlternateColorCodes('&',AuthTG.getMessage("joininaccounttext", "MC")));
@@ -53,13 +53,15 @@ public class LoginCMD implements CommandExecutor {
                 player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("joininaccounttext", "MC")));
                 player.sendTitle(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("joininaccounts1", "MC")), AuthTG.getMessage("joininaccounts2", "MC"), 0, 1000000000, 0);
             } else {
-                LocalDateTime time = LocalDateTime.now().plusMinutes(AuthTG.config.getInt("timeoutSession"));
+                LocalDateTime time = LocalDateTime.now().plusMinutes(AuthTG.timeoutSession);
                 AuthTG.sessionManager.addAuthorized(player.getUniqueId(), player.getAddress().getAddress().toString(),time);
                 player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("loginsuccess", "MC")));
                 FreezerEvent.unfreezeplayer(player.getName());
+                player.teleport(FreezerEvent.beforeFreeze.get(player.getName()));
+                FreezerEvent.beforeFreeze.remove(player.getName());
                 MuterEvent.unmute(player.getName());
                 player.resetTitle();
-                if (AuthTG.config.getInt("kickTimeout") != 0) {
+                if (AuthTG.kickTimeout != 0) {
                     AuthHandler.removeTimeout(player.getUniqueId());
                 }
             }

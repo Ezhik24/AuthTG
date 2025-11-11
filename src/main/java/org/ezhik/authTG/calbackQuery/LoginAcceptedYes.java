@@ -22,12 +22,14 @@ public class LoginAcceptedYes implements CallbackQueryHandler{
         MuterEvent.unmute(user.playername);
         AuthTG.bot.deleteMessage(update.getCallbackQuery().getMessage());
         Player player = Bukkit.getPlayer(user.playername);
-        if (AuthTG.config.getInt("kickTimeout") != 0) {
+        if (AuthTG.kickTimeout != 0) {
             AuthHandler.removeTimeout(player.getUniqueId());
         }
-        LocalDateTime time = LocalDateTime.now().plusMinutes(AuthTG.config.getInt("timeoutSession"));
+        LocalDateTime time = LocalDateTime.now().plusMinutes(AuthTG.timeoutSession);
         AuthTG.sessionManager.addAuthorized(player.getUniqueId(), player.getAddress().getAddress().toString(),time);
         player.resetTitle();
+        player.teleport(FreezerEvent.beforeFreeze.get(player.getName()));
+        FreezerEvent.beforeFreeze.remove(player.getName());
         player.sendMessage(ChatColor.translateAlternateColorCodes('&',AuthTG.getMessage("loginsuccess", "MC")));
     }
 }

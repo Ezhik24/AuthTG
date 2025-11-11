@@ -5,6 +5,7 @@ import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SingleLineChart;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -25,6 +26,7 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.logging.Level;
@@ -33,12 +35,16 @@ import java.util.logging.Logger;
 public final class AuthTG extends JavaPlugin {
     public static Loader loader;
     public static BotTelegram bot;
-    public static FileConfiguration config;
     public static Logger logger;
     private static Plugin instance;
     private static String version;
-    public static Location spawn;
     public  static SessionManager sessionManager;
+    public static boolean notRegAndLogin, authNecessarily, activeChatinTG;
+    public static List<String> mutecommands, commandsPreAuthorization;
+    public static int minLenghtNickname, minLenghtPassword, maxLenghtNickname, maxLenghtPassword, timeoutSession,kickTimeout;
+    public static double locationX, locationY, locationZ;
+    public static String world;
+    public static ConfigurationSection macro;
 
     @Override
     public void onEnable() {
@@ -50,15 +56,14 @@ public final class AuthTG extends JavaPlugin {
         // Load config plugin
         if (!getDataFolder().exists()) getDataFolder().mkdir();
         if (!new File(getDataFolder(), "config.yml").exists()) saveDefaultConfig();
-        // Load config
-        config = getConfig();
-        // Load spawn
-        spawn = config.getLocation("spawnLocation");
-        // Load temp-config and regeneration config.yml
-        if (!config.getString("version").equals(getDescription().getVersion()) || config.getString("version") == null) {
-            saveResource("temp-config.yml", false);
-            setupConfiguration();
-        }
+        if (!new File(getDataFolder(), "messages.yml").exists()) saveResource("messages.yml", true);
+        // Generate temp-config.yml
+        saveResource("temp-config.yml", true);
+        saveResource("temp-messages.yml", true);
+        setupMessages();
+        setupConfiguration();
+        // Load config parameters
+        loadConfigParameters();
         //Load SessionManager
         if (Bukkit.getServer().getPluginManager().getPlugin("AuthTGCookie") != null) {
             //TODO
@@ -135,18 +140,15 @@ public final class AuthTG extends JavaPlugin {
         MuterEvent.setMutedPlayers(loader.getMutedPlayers());
         // Load Bot
         bot = new BotTelegram(getConfig().getString("bot.token"), getConfig().getString("bot.username"));
-        if (!bot.BOT_IS_STARTED) {
-            if (bot.getBotToken().equals("changeme") && bot.getBotUsername().equals("changeme")) {
-                logger.log(Level.INFO,"Please set your bot token and username in config.yml");
-            } else {
-                TelegramBotsApi botsApi;
-                try {
-                    botsApi = new TelegramBotsApi(DefaultBotSession.class);
-                    botsApi.registerBot(bot);
-                    bot.BOT_IS_STARTED = true;
-                } catch (TelegramApiException e) {
-                    throw new RuntimeException(e);
-                }
+        if (bot.getBotToken().equals("changeme") && bot.getBotUsername().equals("changeme")) {
+            logger.log(Level.INFO,"Please set your bot token and username in config.yml");
+        } else {
+            TelegramBotsApi botsApi;
+            try {
+                botsApi = new TelegramBotsApi(DefaultBotSession.class);
+                botsApi.registerBot(bot);
+            } catch (TelegramApiException e) {
+                throw new RuntimeException(e);
             }
         }
     }
@@ -156,15 +158,6 @@ public final class AuthTG extends JavaPlugin {
         // Logs
         logger.log(Level.INFO, "Plugin stopped");
         // Save spawn location
-        if (spawn == null) {
-            AuthTG.config.set("spawnLocation", null);
-            logger.log(Level.INFO, "Spawn location saved");
-            saveConfig();
-        } else {
-            AuthTG.config.set("spawnLocation", spawn);
-            logger.log(Level.INFO, "Spawn location saved");
-            saveConfig();
-        }
     }
 
     public static Plugin getInstance() {
@@ -181,10 +174,10 @@ public final class AuthTG extends JavaPlugin {
         File fileGlobal = new File("plugins/AuthTG/config.yml");
         YamlConfiguration configGlobal = YamlConfiguration.loadConfiguration(fileGlobal);
         Set<String> set = configTemp.getKeys(true);
-        for (String s : set) {
-            if (!configGlobal.contains(s)) {
-                configGlobal.set(s, configTemp.get(s));
-            }
+        Set<String> setGlobal = configGlobal.getKeys(true);
+        set.removeAll(setGlobal);
+        for (String key : set) {
+            configGlobal.set(key, configTemp.get(key));
         }
         try {
             configGlobal.save(fileGlobal);
@@ -193,7 +186,27 @@ public final class AuthTG extends JavaPlugin {
         }
         fileTemp.delete();
     }
+    private void setupMessages() {
+        File fileTemp = new File("plugins/AuthTG/temp-messages.yml");
+        YamlConfiguration configTemp = YamlConfiguration.loadConfiguration(fileTemp);
+        File fileGlobal = new File("plugins/AuthTG/messages.yml");
+        YamlConfiguration configGlobal = YamlConfiguration.loadConfiguration(fileGlobal);
+        Set<String> set = configTemp.getKeys(true);
+        Set<String> setGlobal = configGlobal.getKeys(true);
+        set.removeAll(setGlobal);
+        for (String key : set) {
+            configGlobal.set(key, configTemp.get(key));
+        }
+        try {
+            configGlobal.save(fileGlobal);
+        } catch (IOException e) {
+            logger.log(Level.SEVERE, "Can't save messages.yml");
+        }
+        fileTemp.delete();
+    }
     public static String getMessage(String path, String MCorTGorCNS) {
+        File file = new File("plugins/AuthTG/messages.yml");
+        YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
         if (MCorTGorCNS.equals("MC")) {
             return config.getString("messages.minecraft." + path).replace("{BR}", "\n");
         } else if (MCorTGorCNS.equals("TG")) {
@@ -208,6 +221,8 @@ public final class AuthTG extends JavaPlugin {
     }
 
     public static String getPlaceholderMessage(String placeholder, String path) {
+        File file = new File("plugins/AuthTG/messages.yml");
+        YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
         if (placeholder.equals("none")) {
             return config.getString("placeholders." + path);
         } else if (placeholder.equals("activetg")) {
@@ -220,5 +235,24 @@ public final class AuthTG extends JavaPlugin {
             logger.log(Level.SEVERE, "Placeholder path not found, please contact the developer");
             return null;
         }
+    }
+
+    private void loadConfigParameters() {
+        notRegAndLogin = getConfig().getBoolean("notRegAndLogin");
+        authNecessarily = getConfig().getBoolean("authNecessarily");
+        activeChatinTG = getConfig().getBoolean("activeChatinTG");
+        mutecommands = getConfig().getStringList("mutecommands");
+        commandsPreAuthorization = getConfig().getStringList("commandsPreAuthorization");
+        minLenghtNickname = getConfig().getInt("minLenghtNickname");
+        maxLenghtNickname = getConfig().getInt("maxLenghtNickname");
+        minLenghtPassword = getConfig().getInt("minLenghtPassword");
+        maxLenghtPassword = getConfig().getInt("maxLenghtPassword");
+        timeoutSession = getConfig().getInt("timeoutSession");
+        kickTimeout = getConfig().getInt("kickTimeout");
+        locationX = getConfig().getDouble("spawn.x");
+        locationY = getConfig().getDouble("spawn.y");
+        locationZ = getConfig().getDouble("spawn.z");
+        world = getConfig().getString("spawn.world");
+        macro = getConfig().getConfigurationSection("macro");
     }
 }

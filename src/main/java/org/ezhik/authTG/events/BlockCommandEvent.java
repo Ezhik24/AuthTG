@@ -21,7 +21,7 @@ public class BlockCommandEvent implements Listener {
         Player player = event.getPlayer();
         if(MuterEvent.isMute(player)) {
             List<String> commands = new ArrayList<>(List.of("/login", "/register", "/reg", "/l", "/code"));
-            commands.addAll(AuthTG.config.getStringList("commandsPreAuthorization"));
+            commands.addAll(AuthTG.commandsPreAuthorization);
             String command = event.getMessage().split(" ")[0];
             if(!commands.contains(command)) {
                event.setCancelled(true);
@@ -30,7 +30,7 @@ public class BlockCommandEvent implements Listener {
         }
         if (MuterEvent.isMuteChat(player)) {
             String[] args = event.getMessage().split(" ");
-            if (args[0].contains(AuthTG.config.getList("mutecommands").toString())) {
+            if (args[0].contains(AuthTG.mutecommands.toString())) {
                 List<Object> list = MuterEvent.getMuteChat(event.getPlayer().getName());
                 if (LocalDateTime.now().isAfter((LocalDateTime) list.get(0))) {
                     MuterEvent.unmuteChat(event.getPlayer().getName());

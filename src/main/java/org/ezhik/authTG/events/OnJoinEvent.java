@@ -1,6 +1,9 @@
 package org.ezhik.authTG.events;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -20,11 +23,14 @@ public class OnJoinEvent implements Listener {
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
         Player p = event.getPlayer();
-        if (AuthTG.spawn != null) {
-            p.teleport(AuthTG.spawn);
-            FreezerEvent.freezeplayer(p, AuthTG.spawn);
-        } else {
+        if (AuthTG.world.equals("none")) {
             FreezerEvent.freezeplayer(p, p.getLocation());
+        } else {
+            Location playerloc = p.getLocation();
+            Location loc = new Location(Bukkit.getWorld(AuthTG.world), AuthTG.locationX, AuthTG.locationY, AuthTG.locationZ);
+            FreezerEvent.beforeFreeze.put(p.getName(), playerloc);
+            p.teleport(loc);
+            FreezerEvent.freezeplayer(p, loc);
         }
         User user = User.getUser(p.getUniqueId());
         LocalDateTime date = LocalDateTime.now();
@@ -41,20 +47,20 @@ public class OnJoinEvent implements Listener {
                 Handler.kick(p.getName(), ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("ban", "MC")).replace("{REASON}", AuthTG.loader.getBanReason(p.getUniqueId())).replace("{TIMEBAN}", AuthTG.loader.getBanTime(p.getUniqueId())).replace("{TIME}",AuthTG.loader.getBanTimeAdmin(p.getUniqueId())).replace("{ADMIN}", AuthTG.loader.getBanAdmin(p.getUniqueId())));
             }
         }
-        if (p.getName().length() < AuthTG.config.getInt("minLenghtNickname") || p.getName().length() > AuthTG.config.getInt("maxLenghtNickname")) {
-            Handler.kick(p.getName(), ChatColor.translateAlternateColorCodes('&',AuthTG.getMessage("nicknamelenght", "MC").replace("{MIN}", String.valueOf(AuthTG.config.getInt("minLenghtNickname"))).replace("{MAX}", String.valueOf(AuthTG.config.getInt("maxLenghtNickname")))));
+        if (p.getName().length() < AuthTG.minLenghtNickname || p.getName().length() > AuthTG.maxLenghtNickname) {
+            Handler.kick(p.getName(), ChatColor.translateAlternateColorCodes('&',AuthTG.getMessage("nicknamelenght", "MC").replace("{MIN}", String.valueOf(AuthTG.minLenghtNickname)).replace("{MAX}", String.valueOf(AuthTG.maxLenghtNickname))));
         }
         if (AuthTG.sessionManager.isAuthorized(p)) {
             FreezerEvent.unfreezeplayer(p.getName());
             return;
         }
-        if (AuthTG.config.getInt("kickTimeout") != 0) {
-            AuthHandler.setTimeout(p.getUniqueId(), AuthTG.config.getInt("kickTimeout"));
+        if (AuthTG.kickTimeout != 0) {
+            AuthHandler.setTimeout(p.getUniqueId(), AuthTG.kickTimeout);
         }
-        if (AuthTG.config.getBoolean("notRegAndLogin") && !AuthTG.config.getBoolean("authNecessarily")) {
+        if (AuthTG.notRegAndLogin && !AuthTG.authNecessarily) {
             FreezerEvent.unfreezeplayer(p.getName());
         }
-        else if (AuthTG.config.getBoolean("notRegAndLogin") && AuthTG.config.getBoolean("authNecessarily")) {
+        else if (AuthTG.notRegAndLogin && AuthTG.authNecessarily) {
             if (user != null && user.activetg) {
                 MuterEvent.mute(p.getName(), ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("joininaccounttext", "MC")));
                 p.sendTitle(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("joininaccounts1", "MC")), AuthTG.getMessage("joininaccounts2", "MC"), 20, 10000000, 0);
