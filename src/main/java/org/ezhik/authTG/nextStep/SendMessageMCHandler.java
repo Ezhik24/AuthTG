@@ -14,7 +14,7 @@ public class SendMessageMCHandler implements NextStepHandler {
         if (frienduser == null) {
             senderuser.sendMessage(AuthTG.getMessage("sendmsgmcerror", "TG"));
         } else {
-            frienduser.player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("sendmsgmc", "MC") + update.getMessage().getText()));
+            frienduser.player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("sendmsgmc", "MC").replace("{PLAYER}", senderuser.playername) + update.getMessage().getText()));
             senderuser.sendMessage(AuthTG.getMessage("sendmsgmcsuccess","TG"));
         }
         AuthTG.bot.remUserData(update.getMessage().getChatId().toString());

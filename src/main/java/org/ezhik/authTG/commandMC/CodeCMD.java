@@ -33,7 +33,7 @@ public class CodeCMD implements CommandExecutor {
             player.sendMessage(ChatColor.translateAlternateColorCodes('&',AuthTG.getMessage("codeuncorect", "MC")));
             return false;
         }
-        if (AuthTG.config.getBoolean("authNecessarily")) {
+        if (AuthTG.authNecessarily) {
             FreezerEvent.unfreezeplayer(player.getName());
             MuterEvent.unmute(player.getName());
             player.resetTitle();
@@ -48,7 +48,7 @@ public class CodeCMD implements CommandExecutor {
             AuthTG.loader.setActiveTG(player.getUniqueId(), true);
             code.remove(player.getUniqueId());
             player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("codelink", "MC")));
-            if (AuthTG.config.getBoolean("notRegAndLogin")) {
+            if (AuthTG.notRegAndLogin) {
                 player.resetTitle();
                 MuterEvent.unmute(player.getName());
                 FreezerEvent.unfreezeplayer(player.getName());

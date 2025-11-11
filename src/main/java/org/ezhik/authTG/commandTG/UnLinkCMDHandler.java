@@ -9,7 +9,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 public class UnLinkCMDHandler implements CommandHandler {
     @Override
     public void execute(Update update) {
-        if (AuthTG.config.getBoolean("notRegAndLogin")) {
+        if (AuthTG.notRegAndLogin) {
             AuthTG.bot.deleteMessage(update.getMessage());
         } else {
             User user = User.getCurrentUser(update.getMessage().getChatId());

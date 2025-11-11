@@ -20,7 +20,7 @@ public class RegisterCMD implements CommandExecutor {
             AuthTG.logger.log(Level.INFO,AuthTG.getMessage("notplayer", "CE"));
             return false;
         }
-        if (AuthTG.config.getBoolean("notRegAndLogin")) {
+        if (AuthTG.notRegAndLogin) {
             commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("registeroff", "MC")));
             return false;
         }
@@ -33,8 +33,8 @@ public class RegisterCMD implements CommandExecutor {
             player.sendMessage(ChatColor.translateAlternateColorCodes('&',AuthTG.getMessage("alreadyreg", "MC")));
             return false;
         }
-        if (strings[0].length() < AuthTG.config.getInt("minLenghtPassword") || strings[0].length() > AuthTG.config.getInt("maxLenghtPassword")) {
-            player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("registerlenght", "MC").replace("{MIN}", String.valueOf(AuthTG.config.getInt("minLenghtPassword"))).replace("{MAX}", String.valueOf(AuthTG.config.getInt("maxLenghtPassword")))));
+        if (strings[0].length() < AuthTG.minLenghtPassword || strings[0].length() > AuthTG.maxLenghtPassword) {
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("registerlenght", "MC").replace("{MIN}", String.valueOf(AuthTG.minLenghtPassword)).replace("{MAX}", String.valueOf(AuthTG.maxLenghtPassword))));
             return false;
         }
         if (!strings[0].equals(strings[1])) {
@@ -44,7 +44,7 @@ public class RegisterCMD implements CommandExecutor {
         AuthTG.loader.setPlayerName(player.getUniqueId(), player.getName());
         AuthTG.loader.setPasswordHash(player.getUniqueId(),strings[0]);
         AuthTG.loader.setActive(player.getUniqueId(), true);
-        if (AuthTG.config.getBoolean("authNecessarily")) {
+        if (AuthTG.authNecessarily) {
             player.sendMessage(ChatColor.translateAlternateColorCodes('&',AuthTG.getMessage("authtgactivetext", "MC")));
             MuterEvent.mute(player.getName(), ChatColor.translateAlternateColorCodes('&',AuthTG.getMessage("authtgactivetext", "MC")));
             player.sendTitle(ChatColor.translateAlternateColorCodes('&',AuthTG.getMessage("authtgactives1", "MC")), AuthTG.getMessage("authtgactives2", "MC"), 0,1000000000,0);

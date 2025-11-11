@@ -26,7 +26,6 @@ public class BotTelegram extends TelegramLongPollingBot {
     private Map<String, UUID> userData = new HashMap<>();
     private Map<Long, NextStepHandler> nextStepHandler = new HashMap<>();
     private Map<String, CallbackQueryHandler> callbackQueryHandler = new HashMap<>();
-    public boolean BOT_IS_STARTED = false;
 
     public BotTelegram(String token, String username) {
         this.username = username;
@@ -57,7 +56,7 @@ public class BotTelegram extends TelegramLongPollingBot {
         callbackQueryHandler.put("sndmc", new SendMessageMC());
         callbackQueryHandler.put("cmdfirst", new CMDFirstStep());
         callbackQueryHandler.put("cmdsecond", new CMDSecondStep());
-        ConfigurationSection section = AuthTG.config.getConfigurationSection("macro");
+        ConfigurationSection section = AuthTG.macro;
         if (section != null) {
             for (String key : section.getKeys(false)) {
                 commandHandler.put("/" + key, new MacroCMDHandler(section.getString(key + ".mccmd"), section.getString(key + ".nsmsg")));
@@ -93,7 +92,7 @@ public class BotTelegram extends TelegramLongPollingBot {
                     else Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&',AuthTG.getMessage("chatminecraft", "MC").replace("{PLAYER}", user.playername).replace("{MESSAGE}", message)));
                 } else this.sendMessage(chatid, AuthTG.getMessage("chatminecraftnotactive", "TG"));
             } else {
-                if (AuthTG.config.getBoolean("activeChatinTG")) {
+                if (AuthTG.activeChatinTG) {
                     User user = User.getUser(AuthTG.loader.getCurrentUUID(chatid));
                     if (user.activetg) {
                         for (Long s : AuthTG.loader.getChatID()) {

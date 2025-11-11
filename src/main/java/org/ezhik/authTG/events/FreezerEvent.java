@@ -13,6 +13,7 @@ import java.util.Map;
 public class FreezerEvent implements Listener {
 
     private static Map<String, Location> freezeplayer = new HashMap<String, Location>();
+    public static Map<String, Location> beforeFreeze = new HashMap<String, Location>();
     public static void freezeplayer(Player player, Location location) {
         freezeplayer.put(player.getName(), location);
     }

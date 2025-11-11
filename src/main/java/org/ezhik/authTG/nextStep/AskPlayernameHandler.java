@@ -20,7 +20,7 @@ public class AskPlayernameHandler implements NextStepHandler {
                     AuthTG.bot.sendMessage(update.getMessage().getChatId(), AuthTG.getMessage("activetgalreadyanother", "TG"));
                 }
             } else {
-                if (AuthTG.config.getBoolean("notRegAndLogin")) {
+                if (AuthTG.notRegAndLogin) {
                      User.register(update.getMessage(), player.getUniqueId());
                 } else {
                     AuthTG.bot.sendMessage(update.getMessage().getChatId(), AuthTG.getMessage("activetgpasswd", "TG"));
