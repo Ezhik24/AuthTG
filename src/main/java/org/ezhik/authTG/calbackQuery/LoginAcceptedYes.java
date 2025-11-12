@@ -21,8 +21,10 @@ public class LoginAcceptedYes implements CallbackQueryHandler{
         User user = User.getUser(UUID.fromString(str[1]));
         Player player = Bukkit.getPlayer(user.playername);
         FreezerEvent.unfreezeplayer(player.getName());
-        Handler.teleport(player.getName(), FreezerEvent.beforeFreeze.get(player.getName()));
-        System.out.println(FreezerEvent.beforeFreeze.get(player.getName()));
+        if (FreezerEvent.beforeFreeze.containsKey(player.getName())) {
+            Handler.teleport(player.getName(), FreezerEvent.beforeFreeze.get(player.getName()));
+            FreezerEvent.beforeFreeze.remove(player.getName());
+        }
         player.resetTitle();
         FreezerEvent.beforeFreeze.remove(player.getName());
         MuterEvent.unmute(user.playername);

@@ -57,8 +57,10 @@ public class LoginCMD implements CommandExecutor {
                 AuthTG.sessionManager.addAuthorized(player.getUniqueId(), player.getAddress().getAddress().toString(),time);
                 player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("loginsuccess", "MC")));
                 FreezerEvent.unfreezeplayer(player.getName());
-                player.teleport(FreezerEvent.beforeFreeze.get(player.getName()));
-                FreezerEvent.beforeFreeze.remove(player.getName());
+                if (FreezerEvent.beforeFreeze.containsKey(player.getName())) {
+                    player.teleport(FreezerEvent.beforeFreeze.get(player.getName()));
+                    FreezerEvent.beforeFreeze.remove(player.getName());
+                }
                 MuterEvent.unmute(player.getName());
                 player.resetTitle();
                 if (AuthTG.kickTimeout != 0) {
