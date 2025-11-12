@@ -23,16 +23,9 @@ public class OnJoinEvent implements Listener {
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
         Player p = event.getPlayer();
-        if (AuthTG.world.equals("none")) {
-            FreezerEvent.freezeplayer(p, p.getLocation());
-        } else {
-            Location playerloc = p.getLocation();
-            Location loc = new Location(Bukkit.getWorld(AuthTG.world), AuthTG.locationX, AuthTG.locationY, AuthTG.locationZ);
-            FreezerEvent.beforeFreeze.put(p.getName(), playerloc);
-            p.teleport(loc);
-            FreezerEvent.freezeplayer(p, loc);
+        if (AuthTG.sessionManager.isAuthorized(p)) {
+            return;
         }
-        User user = User.getUser(p.getUniqueId());
         LocalDateTime date = LocalDateTime.now();
         if (AuthTG.loader.getBanTime(p.getUniqueId()) != null) {
             if (AuthTG.loader.getBanTime(p.getUniqueId()).equals("0")) {
@@ -47,12 +40,18 @@ public class OnJoinEvent implements Listener {
                 Handler.kick(p.getName(), ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("ban", "MC")).replace("{REASON}", AuthTG.loader.getBanReason(p.getUniqueId())).replace("{TIMEBAN}", AuthTG.loader.getBanTime(p.getUniqueId())).replace("{TIME}",AuthTG.loader.getBanTimeAdmin(p.getUniqueId())).replace("{ADMIN}", AuthTG.loader.getBanAdmin(p.getUniqueId())));
             }
         }
+        if (AuthTG.world.equals("none")) {
+            FreezerEvent.freezeplayer(p, p.getLocation());
+        } else {
+            Location playerloc = p.getLocation();
+            Location loc = new Location(Bukkit.getWorld(AuthTG.world), AuthTG.locationX, AuthTG.locationY, AuthTG.locationZ);
+            FreezerEvent.beforeFreeze.put(p.getName(), playerloc);
+            p.teleport(loc);
+            FreezerEvent.freezeplayer(p, loc);
+        }
+        User user = User.getUser(p.getUniqueId());
         if (p.getName().length() < AuthTG.minLenghtNickname || p.getName().length() > AuthTG.maxLenghtNickname) {
             Handler.kick(p.getName(), ChatColor.translateAlternateColorCodes('&',AuthTG.getMessage("nicknamelenght", "MC").replace("{MIN}", String.valueOf(AuthTG.minLenghtNickname)).replace("{MAX}", String.valueOf(AuthTG.maxLenghtNickname))));
-        }
-        if (AuthTG.sessionManager.isAuthorized(p)) {
-            FreezerEvent.unfreezeplayer(p.getName());
-            return;
         }
         if (AuthTG.kickTimeout != 0) {
             AuthHandler.setTimeout(p.getUniqueId(), AuthTG.kickTimeout);

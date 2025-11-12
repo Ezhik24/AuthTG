@@ -8,6 +8,7 @@ import org.ezhik.authTG.User;
 import org.ezhik.authTG.events.FreezerEvent;
 import org.ezhik.authTG.events.MuterEvent;
 import org.ezhik.authTG.handlers.AuthHandler;
+import org.ezhik.authTG.handlers.Handler;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.time.LocalDateTime;
@@ -18,18 +19,20 @@ public class LoginAcceptedYes implements CallbackQueryHandler{
     public void execute(Update update) {
         String[] str = update.getCallbackQuery().getData().toString().split("_");
         User user = User.getUser(UUID.fromString(str[1]));
-        FreezerEvent.unfreezeplayer(user.playername);
+        Player player = Bukkit.getPlayer(user.playername);
+        FreezerEvent.unfreezeplayer(player.getName());
+        Handler.teleport(player.getName(), FreezerEvent.beforeFreeze.get(player.getName()));
+        System.out.println(FreezerEvent.beforeFreeze.get(player.getName()));
+        player.resetTitle();
+        FreezerEvent.beforeFreeze.remove(player.getName());
         MuterEvent.unmute(user.playername);
         AuthTG.bot.deleteMessage(update.getCallbackQuery().getMessage());
-        Player player = Bukkit.getPlayer(user.playername);
         if (AuthTG.kickTimeout != 0) {
             AuthHandler.removeTimeout(player.getUniqueId());
         }
         LocalDateTime time = LocalDateTime.now().plusMinutes(AuthTG.timeoutSession);
         AuthTG.sessionManager.addAuthorized(player.getUniqueId(), player.getAddress().getAddress().toString(),time);
         player.resetTitle();
-        player.teleport(FreezerEvent.beforeFreeze.get(player.getName()));
-        FreezerEvent.beforeFreeze.remove(player.getName());
         player.sendMessage(ChatColor.translateAlternateColorCodes('&',AuthTG.getMessage("loginsuccess", "MC")));
     }
 }
