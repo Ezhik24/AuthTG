@@ -23,6 +23,10 @@ public class OnJoinEvent implements Listener {
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
         Player p = event.getPlayer();
+        User user = User.getUser(p.getUniqueId());
+        if (user != null && user.activetg) {
+            user.sendMessage(AuthTG.getMessage("joinacc", "MC"));
+        }
         if (AuthTG.sessionManager.isAuthorized(p)) {
             return;
         }
@@ -49,7 +53,6 @@ public class OnJoinEvent implements Listener {
             p.teleport(loc);
             FreezerEvent.freezeplayer(p, loc);
         }
-        User user = User.getUser(p.getUniqueId());
         if (p.getName().length() < AuthTG.minLenghtNickname || p.getName().length() > AuthTG.maxLenghtNickname) {
             Handler.kick(p.getName(), ChatColor.translateAlternateColorCodes('&',AuthTG.getMessage("nicknamelenght", "MC").replace("{MIN}", String.valueOf(AuthTG.minLenghtNickname)).replace("{MAX}", String.valueOf(AuthTG.maxLenghtNickname))));
         }
