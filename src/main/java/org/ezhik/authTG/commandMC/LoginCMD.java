@@ -10,6 +10,7 @@ import org.ezhik.authTG.User;
 import org.ezhik.authTG.events.FreezerEvent;
 import org.ezhik.authTG.events.MuterEvent;
 import org.ezhik.authTG.handlers.AuthHandler;
+import org.ezhik.authTG.handlers.Handler;
 
 import java.time.LocalDateTime;
 import java.util.logging.Level;
@@ -37,7 +38,7 @@ public class LoginCMD implements CommandExecutor {
         User user = User.getUser(player.getUniqueId());
         if (AuthTG.authNecessarily) {
             if (user.activetg) {
-                user.sendLoginAccepted(AuthTG.getMessage("loginaccept", "TG").replace("{PLAYER}", user.playername));
+                user.sendLoginAccepted(AuthTG.getMessage("loginaccept", "TG").replace("{PLAYER}", user.playername).replace("{IP}", player.getAddress().getAddress().toString().replace("/", "")));
                 MuterEvent.mute(player.getName(), ChatColor.translateAlternateColorCodes('&',AuthTG.getMessage("joininaccounttext", "MC")));
                 player.sendMessage(ChatColor.translateAlternateColorCodes('&',AuthTG.getMessage("joininaccounttext", "MC")));
                 player.sendTitle(ChatColor.translateAlternateColorCodes('&',AuthTG.getMessage("joininaccounts1", "MC")), AuthTG.getMessage("joininaccounts2", "MC"), 0,1000000000,0);
@@ -48,7 +49,7 @@ public class LoginCMD implements CommandExecutor {
             }
         } else {
             if (user.activetg && user.twofactor) {
-                user.sendLoginAccepted(AuthTG.getMessage("loginaccept", "TG").replace("{PLAYER}", user.playername));
+                user.sendLoginAccepted(AuthTG.getMessage("loginaccept", "TG").replace("{PLAYER}", user.playername).replace("{IP}", player.getAddress().getAddress().toString().replace("/", "")));
                 MuterEvent.mute(player.getName(), ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("joininaccounttext", "MC")));
                 player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("joininaccounttext", "MC")));
                 player.sendTitle(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("joininaccounts1", "MC")), AuthTG.getMessage("joininaccounts2", "MC"), 0, 1000000000, 0);
@@ -58,7 +59,7 @@ public class LoginCMD implements CommandExecutor {
                 player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("loginsuccess", "MC")));
                 FreezerEvent.unfreezeplayer(player.getName());
                 if (FreezerEvent.beforeFreeze.containsKey(player.getName())) {
-                    player.teleport(FreezerEvent.beforeFreeze.get(player.getName()));
+                    Handler.teleport(player.getName(), FreezerEvent.beforeFreeze.get(player.getName()));
                     FreezerEvent.beforeFreeze.remove(player.getName());
                 }
                 MuterEvent.unmute(player.getName());

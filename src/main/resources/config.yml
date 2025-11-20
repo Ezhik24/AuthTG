@@ -25,6 +25,8 @@ maxLenghtPassword: 32 # Максимальная длина пароля EN: Max
 timeoutSession: 60 # Время в минутах,через которое у игрока сбросится сессия EN: Time in minutes after which the player will reset the session
 kickTimeout: 30 # Время в секундах, через которое игрок будет кикнут если не авторизовался EN: Time in seconds, after which the player will be kicked if not authorized
 activeChatinTG: true # Должен ли работать чат в телеграме EN: Must chat in Telegram
+forbiddenNicknames: ['Notch'] # Запрещенные ники с которых нельзя зайти на сервер EN: Forbidden nicknames from which you cannot enter the server
+maxAccountTGCount: 5 # Максимальное кол-во аккаунтов привязанных к телеграму (если 0,то без ограничений) EN: Maximum number of accounts linked to telegram (if 0, there are no limits)
 spawn: # Спавн EN: Spawn
   x: 0
   y: 0

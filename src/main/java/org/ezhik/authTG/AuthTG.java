@@ -7,7 +7,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -40,8 +39,8 @@ public final class AuthTG extends JavaPlugin {
     private static String version;
     public  static SessionManager sessionManager;
     public static boolean notRegAndLogin, authNecessarily, activeChatinTG;
-    public static List<String> mutecommands, commandsPreAuthorization;
-    public static int minLenghtNickname, minLenghtPassword, maxLenghtNickname, maxLenghtPassword, timeoutSession,kickTimeout;
+    public static List<String> mutecommands, commandsPreAuthorization, forbiddenNicknames;
+    public static int minLenghtNickname, minLenghtPassword, maxLenghtNickname, maxLenghtPassword, timeoutSession,kickTimeout, maxAccountTGCount;
     public static double locationX, locationY, locationZ;
     public static String world;
     public static ConfigurationSection macro;
@@ -65,8 +64,8 @@ public final class AuthTG extends JavaPlugin {
         // Load config parameters
         loadConfigParameters();
         //Load SessionManager
-        if (Bukkit.getServer().getPluginManager().getPlugin("AuthTGCookie") != null) {
-            //TODO
+        if (Bukkit.getPluginManager().getPlugin("AuthTGCookie") != null) {
+            // TODO
         } else {
             sessionManager = new IPManager();
         }
@@ -238,6 +237,8 @@ public final class AuthTG extends JavaPlugin {
     }
 
     private void loadConfigParameters() {
+        maxAccountTGCount = getConfig().getInt("maxAccountTGCount");
+        forbiddenNicknames = getConfig().getStringList("forbiddenNicknames");
         notRegAndLogin = getConfig().getBoolean("notRegAndLogin");
         authNecessarily = getConfig().getBoolean("authNecessarily");
         activeChatinTG = getConfig().getBoolean("activeChatinTG");
