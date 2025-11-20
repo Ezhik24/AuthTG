@@ -42,7 +42,7 @@ public class OnJoinEvent implements Listener {
             return;
         }
         if (user != null && user.activetg) {
-            user.sendMessage(AuthTG.getMessage("joinacc", "MC"));
+            user.sendMessage(AuthTG.getMessage("joinacc", "TG"));
         }
         if (AuthTG.world.equals("none")) {
             FreezerEvent.freezeplayer(p, p.getLocation());

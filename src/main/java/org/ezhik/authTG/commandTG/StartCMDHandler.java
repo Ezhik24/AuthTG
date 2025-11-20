@@ -12,12 +12,12 @@ public class StartCMDHandler implements CommandHandler{
     @Override
     public void execute(Update update) {
         if (AuthTG.maxAccountTGCount > 0) {
-            if (!AuthTG.loader.getPlayerNames(update.getMessage().getChatId()).isEmpty() && AuthTG.loader.getPlayerNames(update.getMessage().getChatId()).size() > AuthTG.maxAccountTGCount) {
+            if (AuthTG.loader.getPlayerNames(update.getMessage().getChatId()) != null && !AuthTG.loader.getPlayerNames(update.getMessage().getChatId()).isEmpty() && AuthTG.loader.getPlayerNames(update.getMessage().getChatId()).size() >= AuthTG.maxAccountTGCount) {
                 AuthTG.bot.sendMessage(update.getMessage().getChatId(), AuthTG.getMessage("startmaxacc", "TG"));
+                return;
             }
-        } else {
-            AuthTG.bot.sendMessage(update.getMessage().getChatId(), AuthTG.getMessage("startlinkacc", "TG"));
-            AuthTG.bot.setNextStepHandler(update.getMessage().getChatId(), new AskPlayernameHandler());
         }
+        AuthTG.bot.sendMessage(update.getMessage().getChatId(), AuthTG.getMessage("startlinkacc", "TG"));
+        AuthTG.bot.setNextStepHandler(update.getMessage().getChatId(), new AskPlayernameHandler());
     }
 }
