@@ -45,6 +45,7 @@ messages: # Сообщения EN: Messages
     cmdsecondaddplayer: 'Вам было выдано право {PERMISSION}'
     prefix: '[Бот@{PLAYER}] '
     msgfriend: '[Бот@{PLAYER}] '
+    startmaxacc: '[Бот] Вы достигли максимального количества аккаунтов привязанных к ТГ!'
     msgfriendbutton: 'Действия'
     broadcast: '[Бот] '
     nobutton: 'Нет'
@@ -52,7 +53,7 @@ messages: # Сообщения EN: Messages
     codemsgactivated: '[Бот] Введите в чате Майнкрафта /code {CODE}'
     friendjoin: '{PLAYER} вошел в игру'
     joinacc: 'Ваш аккаунт вошел в игру'
-    loginaccept: '[Бот@{PLAYER}] Это вы вошли в игру?'
+    loginaccept: '[Бот@{PLAYER}] На ваш аккаунт кто-то вошел с IP: {IP}'
     sendmessagetgsuccess: 'Вы успешно отправили сообщение!'
     sendmessagetg: 'Ваш друг {PLAYER} отправил вам сообщение: '
     sendmsgmcerror: 'Ваш друг не онлайн!'
@@ -160,6 +161,7 @@ messages: # Сообщения EN: Messages
     cmdnull: '[Бот] Вы не авторизованы!'
     mutesuccess: 'Вы успешно замутили {PLAYER}'
   minecraft: # Сообщения в майнкрафте EN: Minecraft messages
+    forbiddennickname: "&cУ вас запрещенный никнейм,поменять его!"
     logout: '&cВы вышли из аккаунта!'
     kicktimeout: 'Время на авторизацию истекло!'
     unbannoperm: '&c&l[AuthTG] &cУ вас нет прав!'

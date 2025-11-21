@@ -11,6 +11,12 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 public class StartCMDHandler implements CommandHandler{
     @Override
     public void execute(Update update) {
+        if (AuthTG.maxAccountTGCount > 0) {
+            if (AuthTG.loader.getPlayerNames(update.getMessage().getChatId()) != null && !AuthTG.loader.getPlayerNames(update.getMessage().getChatId()).isEmpty() && AuthTG.loader.getPlayerNames(update.getMessage().getChatId()).size() >= AuthTG.maxAccountTGCount) {
+                AuthTG.bot.sendMessage(update.getMessage().getChatId(), AuthTG.getMessage("startmaxacc", "TG"));
+                return;
+            }
+        }
         AuthTG.bot.sendMessage(update.getMessage().getChatId(), AuthTG.getMessage("startlinkacc", "TG"));
         AuthTG.bot.setNextStepHandler(update.getMessage().getChatId(), new AskPlayernameHandler());
     }

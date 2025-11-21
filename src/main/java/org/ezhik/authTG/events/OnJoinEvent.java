@@ -23,9 +23,7 @@ public class OnJoinEvent implements Listener {
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
         Player p = event.getPlayer();
-        if (AuthTG.sessionManager.isAuthorized(p)) {
-            return;
-        }
+        User user = User.getUser(p.getUniqueId());
         LocalDateTime date = LocalDateTime.now();
         if (AuthTG.loader.getBanTime(p.getUniqueId()) != null) {
             if (AuthTG.loader.getBanTime(p.getUniqueId()).equals("0")) {
@@ -40,16 +38,24 @@ public class OnJoinEvent implements Listener {
                 Handler.kick(p.getName(), ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("ban", "MC")).replace("{REASON}", AuthTG.loader.getBanReason(p.getUniqueId())).replace("{TIMEBAN}", AuthTG.loader.getBanTime(p.getUniqueId())).replace("{TIME}",AuthTG.loader.getBanTimeAdmin(p.getUniqueId())).replace("{ADMIN}", AuthTG.loader.getBanAdmin(p.getUniqueId())));
             }
         }
+        if (AuthTG.sessionManager.isAuthorized(p)) {
+            return;
+        }
+        if (user != null && user.activetg) {
+            user.sendMessage(AuthTG.getMessage("joinacc", "TG"));
+        }
         if (AuthTG.world.equals("none")) {
             FreezerEvent.freezeplayer(p, p.getLocation());
         } else {
             Location playerloc = p.getLocation();
             Location loc = new Location(Bukkit.getWorld(AuthTG.world), AuthTG.locationX, AuthTG.locationY, AuthTG.locationZ);
             FreezerEvent.beforeFreeze.put(p.getName(), playerloc);
-            p.teleport(loc);
+            Handler.teleport(p.getName(), loc);
             FreezerEvent.freezeplayer(p, loc);
         }
-        User user = User.getUser(p.getUniqueId());
+        if (AuthTG.forbiddenNicknames.contains(p.getName())) {
+            Handler.kick(p.getName(), ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("forbiddennickname", "MC")));
+        }
         if (p.getName().length() < AuthTG.minLenghtNickname || p.getName().length() > AuthTG.maxLenghtNickname) {
             Handler.kick(p.getName(), ChatColor.translateAlternateColorCodes('&',AuthTG.getMessage("nicknamelenght", "MC").replace("{MIN}", String.valueOf(AuthTG.minLenghtNickname)).replace("{MAX}", String.valueOf(AuthTG.maxLenghtNickname))));
         }
@@ -63,7 +69,7 @@ public class OnJoinEvent implements Listener {
             if (user != null && user.activetg) {
                 MuterEvent.mute(p.getName(), ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("joininaccounttext", "MC")));
                 p.sendTitle(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("joininaccounts1", "MC")), AuthTG.getMessage("joininaccounts2", "MC"), 20, 10000000, 0);
-                user.sendLoginAccepted(AuthTG.getMessage("loginaccept", "TG").replace("{PLAYER}", user.playername));
+                user.sendLoginAccepted(AuthTG.getMessage("loginaccept", "TG").replace("{PLAYER}", user.playername).replace("{IP}", p.getAddress().getAddress().toString().replace("/", "")));
             } else {
                 MuterEvent.mute(p.getName(), ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("authtgactivetext", "MC")));
                 p.sendTitle(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("authtgactives1", "MC")), AuthTG.getMessage("authtgactives2", "MC"), 20, 10000000, 0);
