@@ -54,6 +54,19 @@ public class LoginCMD implements CommandExecutor {
                 player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("joininaccounttext", "MC")));
                 player.sendTitle(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("joininaccounts1", "MC")), AuthTG.getMessage("joininaccounts2", "MC"), 0, 1000000000, 0);
             } else {
+                if (user.activetg) {
+                    if (user.friends != null) {
+                        for (String friend : user.friends) {
+                            User friendUser = User.getUser(friend);
+                            if (friendUser.activetg) {
+                                friendUser.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("friendjoin", "TG").replace("{PLAYER}", user.playername)));
+                            } else {
+                                AuthTG.loader.removeFriend(friendUser.uuid, user.playername);
+                                AuthTG.loader.removeFriend(user.uuid, friendUser.playername);
+                            }
+                        }
+                    }
+                }
                 LocalDateTime time = LocalDateTime.now().plusMinutes(AuthTG.timeoutSession);
                 AuthTG.sessionManager.addAuthorized(player.getUniqueId(), player.getAddress().getAddress().toString(),time);
                 player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("loginsuccess", "MC")));

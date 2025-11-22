@@ -26,13 +26,15 @@ public class LoginAcceptedYes implements CallbackQueryHandler{
             FreezerEvent.beforeFreeze.remove(player.getName());
         }
         player.resetTitle();
-        for (String friend : user.friends) {
-            User friendUser = User.getUser(friend);
-            if (friendUser.activetg) {
-                friendUser.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("friendjoin", "TG").replace("{PLAYER}", user.playername)));
-            } else {
-                AuthTG.loader.removeFriend(friendUser.uuid, user.playername);
-                AuthTG.loader.removeFriend(user.uuid, friendUser.playername);
+        if (user.friends != null) {
+            for (String friend : user.friends) {
+                User friendUser = User.getUser(friend);
+                if (friendUser.activetg) {
+                    friendUser.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("friendjoin", "TG").replace("{PLAYER}", user.playername)));
+                } else {
+                    AuthTG.loader.removeFriend(friendUser.uuid, user.playername);
+                    AuthTG.loader.removeFriend(user.uuid, friendUser.playername);
+                }
             }
         }
         FreezerEvent.beforeFreeze.remove(player.getName());
