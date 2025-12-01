@@ -45,3 +45,5 @@ commands:
     description: 'Unmute player'
   logout:
     description: 'Logout'
+  unlink:
+    description: 'Unlink'

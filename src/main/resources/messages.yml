@@ -161,6 +161,10 @@ messages: # Сообщения EN: Messages
     cmdnull: '[Бот] Вы не авторизованы!'
     mutesuccess: 'Вы успешно замутили {PLAYER}'
   minecraft: # Сообщения в майнкрафте EN: Minecraft messages
+    unlinknoperm: "&c&l[AuthTG] &cУ вас нет прав!"
+    unlinkusage: "&c&l[AuthTG] &cИспользование: /unlink <ник>!"
+    unlinkpl: "&c&l[AuthTG] &cВам отвязали аккаунт!"
+    unlinksuccess: "&c&l[AuthTG] &cВы успешно отвязали аккаунт!"
     forbiddennickname: "&cУ вас запрещенный никнейм,поменять его!"
     logout: '&cВы вышли из аккаунта!'
     kicktimeout: 'Время на авторизацию истекло!'

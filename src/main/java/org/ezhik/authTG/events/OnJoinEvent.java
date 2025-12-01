@@ -3,7 +3,6 @@ package org.ezhik.authTG.events;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -12,12 +11,10 @@ import org.ezhik.authTG.AuthTG;
 import org.ezhik.authTG.handlers.AuthHandler;
 import org.ezhik.authTG.handlers.Handler;
 import org.ezhik.authTG.User;
+import org.ezhik.authTG.IPManager;
 
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
-import java.util.List;
 
 public class OnJoinEvent implements Listener {
     @EventHandler
@@ -38,7 +35,7 @@ public class OnJoinEvent implements Listener {
                 Handler.kick(p.getName(), ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("ban", "MC")).replace("{REASON}", AuthTG.loader.getBanReason(p.getUniqueId())).replace("{TIMEBAN}", AuthTG.loader.getBanTime(p.getUniqueId())).replace("{TIME}",AuthTG.loader.getBanTimeAdmin(p.getUniqueId())).replace("{ADMIN}", AuthTG.loader.getBanAdmin(p.getUniqueId())));
             }
         }
-        if (AuthTG.sessionManager.isAuthorized(p)) {
+        if (IPManager.isAuthorized(p)) {
             return;
         }
         if (user != null && user.activetg) {

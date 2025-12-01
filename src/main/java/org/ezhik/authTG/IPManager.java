@@ -1,15 +1,12 @@
-package org.ezhik.authTG.session;
+package org.ezhik.authTG;
 
 import org.bukkit.entity.Player;
-import org.ezhik.authTG.AuthTG;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
-public class IPManager implements SessionManager{
-    @Override
-    public boolean isAuthorized(Player player) {
+public class IPManager{
+    public static boolean isAuthorized(Player player) {
         if (AuthTG.loader.getSession(player.getUniqueId()) != null) {
             if (AuthTG.loader.getSession(player.getUniqueId()).get(0).equals(player.getAddress().getAddress().toString())) {
                 LocalDateTime time = LocalDateTime.now();
@@ -24,13 +21,11 @@ public class IPManager implements SessionManager{
         return false;
     }
 
-    @Override
-    public void deleteAuthorized(UUID uuid) {
+    public static void deleteAuthorized(UUID uuid) {
         AuthTG.loader.deleteSession(uuid);
     }
 
-    @Override
-    public void addAuthorized(UUID uuid, String ip, LocalDateTime time) {
+    public static void addAuthorized(UUID uuid, String ip, LocalDateTime time) {
         AuthTG.loader.setSession(uuid, ip, time);
     }
 }
