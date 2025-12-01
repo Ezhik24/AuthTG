@@ -60,37 +60,37 @@ public class BanCMD implements CommandExecutor {
                     lettersCount++;
                 }
             }
-            String formattedDate = "", message = "", adminmsg = AuthTG.getMessage("bansuccess", "MC").replace("{PLAYER}", strings[0]);
+            String formattedDate = "", message = "";
             if (lettersCount > 1) {
                 player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("bannotimeformat", "MC")));
             }
             else if (strings[1].contains("d")) {
                 LocalDateTime date = LocalDateTime.now().plusDays(Integer.parseInt(strings[1].replace("d", "")));
                 formattedDate = date.format(formatter);
-                message = ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("ban", "MC")).replace("{ADMIN}", player.getName()).replace("{REASON}", reason).replace("{TIMEBAN}", formattedDate).replace("{TIME}", time).replace("{BR}", "\n");
+                message = ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("ban", "MC")).replace("{ADMIN}", player.getName()).replace("{REASON}", reason).replace("{TIMEBAN}", formattedDate).replace("{TIME}", time);
             }
             else if (strings[1].contains("h")) {
                 LocalDateTime date = LocalDateTime.now().plusHours(Integer.parseInt(strings[1].replace("h", "")));
                 formattedDate = date.format(formatter);
-                message = ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("ban", "MC")).replace("{ADMIN}", player.getName()).replace("{REASON}", reason).replace("{TIMEBAN}", formattedDate).replace("{TIME}", time).replace("{BR}", "\n");
+                message = ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("ban", "MC")).replace("{ADMIN}", player.getName()).replace("{REASON}", reason).replace("{TIMEBAN}", formattedDate).replace("{TIME}", time);
             }
             else if (strings[1].equals("-s")) {
                 formattedDate = "0";
-                message = ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("ban", "MC")).replace("{ADMIN}", player.getName()).replace("{REASON}", reason).replace("{TIMEBAN}", "навсегда").replace("{TIME}",formattedDate).replace("{BR}", "\n");
+                message = ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("ban", "MC")).replace("{ADMIN}", player.getName()).replace("{REASON}", reason).replace("{TIMEBAN}", "навсегда").replace("{TIME}",formattedDate);
             }
             else if (strings[1].contains("m")) {
                 LocalDateTime date = LocalDateTime.now().plusMinutes(Integer.parseInt(strings[1].replace("m", "")));
                 formattedDate = date.format(formatter);
-                message = ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("ban", "MC")).replace("{ADMIN}", player.getName()).replace("{REASON}", reason).replace("{TIMEBAN}", formattedDate).replace("{TIME}", time).replace("{BR}", "\n");
+                message = ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("ban", "MC")).replace("{ADMIN}", player.getName()).replace("{REASON}", reason).replace("{TIMEBAN}", formattedDate).replace("{TIME}", time);
             }
             else if (strings[1].contains("s")) {
                 LocalDateTime date = LocalDateTime.now().plusSeconds(Integer.parseInt(strings[1].replace("s", "")));
                 formattedDate = date.format(formatter);
-                message = ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("ban", "MC")).replace("{ADMIN}", player.getName()).replace("{REASON}", reason).replace("{TIMEBAN}", formattedDate).replace("{TIME}", time).replace("{BR}", "\n");
+                message = ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("ban", "MC")).replace("{ADMIN}", player.getName()).replace("{REASON}", reason).replace("{TIMEBAN}", formattedDate).replace("{TIME}", time);
             }
             AuthTG.loader.setBanTime(targetuuid, formattedDate, reason, time, player.getName());
             if (target != null) Handler.kick(target.getName(), message);
-            player.sendMessage(ChatColor.translateAlternateColorCodes('&', adminmsg));
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("bansuccess", "MC").replace("{PLAYER}", strings[0])));
             return true;
         } else {
             ConsoleCommandSender console = Bukkit.getConsoleSender();
@@ -124,7 +124,7 @@ public class BanCMD implements CommandExecutor {
             LocalDateTime timedate = LocalDateTime.now();
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss dd.MM.yyyy");
             String time = timedate.format(formatter);
-            String formattedDate = "", message = "", adminmsg = AuthTG.getMessage("bansuccess", "MC").replace("{PLAYER}", strings[0]);
+            String formattedDate = "", message = "";
             int lettersCount = 0;
             for (int i = 0; i < strings[1].length(); i++) {
                 if (Character.isAlphabetic(strings[1].charAt(i))) {
@@ -137,29 +137,29 @@ public class BanCMD implements CommandExecutor {
             else if (strings[1].contains("d")) {
                 LocalDateTime date = LocalDateTime.now().plusDays(Integer.parseInt(strings[1].replace("d", "")));
                 formattedDate = date.format(formatter);
-                message = ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("ban", "MC")).replace("{ADMIN}", "CONSOLE").replace("{REASON}", reason).replace("{TIMEBAN}", formattedDate).replace("{TIME}", time).replace("{BR}", "\n");
+                message = ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("ban", "MC")).replace("{ADMIN}", "CONSOLE").replace("{REASON}", reason).replace("{TIMEBAN}", formattedDate).replace("{TIME}", time);
             }
             else if (strings[1].contains("h")) {
                 LocalDateTime date = LocalDateTime.now().plusHours(Integer.parseInt(strings[1].replace("h", "")));
                 formattedDate = date.format(formatter);
-                message = ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("ban", "MC")).replace("{ADMIN}", "CONSOLE").replace("{REASON}", reason).replace("{TIMEBAN}", formattedDate).replace("{TIME}", time).replace("{BR}", "\n");
+                message = ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("ban", "MC")).replace("{ADMIN}", "CONSOLE").replace("{REASON}", reason).replace("{TIMEBAN}", formattedDate).replace("{TIME}", time);
             }
             else if (strings[1].equals("-s")) {
                 formattedDate = "0";
-                message = ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("ban", "MC")).replace("{ADMIN}", "CONSOLE").replace("{REASON}", reason).replace("{TIMEBAN}", "навсегда").replace("{TIME}",formattedDate).replace("{BR}", "\n");
+                message = ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("ban", "MC")).replace("{ADMIN}", "CONSOLE").replace("{REASON}", reason).replace("{TIMEBAN}", "навсегда").replace("{TIME}",formattedDate);
             }
             else if (strings[1].contains("m")) {
                 LocalDateTime date = LocalDateTime.now().plusMinutes(Integer.parseInt(strings[1].replace("m", "")));
                 formattedDate = date.format(formatter);
-                message = ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("ban", "MC")).replace("{ADMIN}", "CONSOLE").replace("{REASON}", reason).replace("{TIMEBAN}", formattedDate).replace("{TIME}", time).replace("{BR}", "\n");
+                message = ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("ban", "MC")).replace("{ADMIN}", "CONSOLE").replace("{REASON}", reason).replace("{TIMEBAN}", formattedDate).replace("{TIME}", time);
             }
             else if (strings[1].contains("s")) {
                 LocalDateTime date = LocalDateTime.now().plusSeconds(Integer.parseInt(strings[1].replace("s", "")));
                 formattedDate = date.format(formatter);
-                message = ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("ban", "MC")).replace("{ADMIN}", "CONSOLE").replace("{REASON}", reason).replace("{TIMEBAN}", formattedDate).replace("{TIME}", time).replace("{BR}", "\n");
+                message = ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("ban", "MC")).replace("{ADMIN}", "CONSOLE").replace("{REASON}", reason).replace("{TIMEBAN}", formattedDate).replace("{TIME}", time);
             }
             AuthTG.loader.setBanTime(targetuuid, formattedDate, reason, time, "CONSOLE");
-            console.sendMessage(ChatColor.translateAlternateColorCodes('&', adminmsg));
+            console.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("bansuccess", "MC").replace("{PLAYER}", strings[0])));
             if (target != null) Handler.kick(target.getName(), message);
         }
         return true;
