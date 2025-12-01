@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.ezhik.authTG.AuthTG;
+import org.ezhik.authTG.IPManager;
 import org.ezhik.authTG.User;
 import org.ezhik.authTG.events.FreezerEvent;
 import org.ezhik.authTG.events.MuterEvent;
@@ -44,7 +45,7 @@ public class LoginAcceptedYes implements CallbackQueryHandler{
             AuthHandler.removeTimeout(player.getUniqueId());
         }
         LocalDateTime time = LocalDateTime.now().plusMinutes(AuthTG.timeoutSession);
-        AuthTG.sessionManager.addAuthorized(player.getUniqueId(), player.getAddress().getAddress().toString(),time);
+        IPManager.addAuthorized(player.getUniqueId(), player.getAddress().getAddress().toString(),time);
         player.resetTitle();
         player.sendMessage(ChatColor.translateAlternateColorCodes('&',AuthTG.getMessage("loginsuccess", "MC")));
     }

@@ -4,8 +4,6 @@ import org.apache.logging.log4j.LogManager;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SingleLineChart;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
@@ -15,8 +13,6 @@ import org.ezhik.authTG.events.*;
 import org.ezhik.authTG.handlers.*;
 import org.ezhik.authTG.migrates.*;
 import org.ezhik.authTG.otherAPI.*;
-import org.ezhik.authTG.session.IPManager;
-import org.ezhik.authTG.session.SessionManager;
 import org.ezhik.authTG.tabcompleter.*;
 import org.ezhik.authTG.usersconfiguration.*;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
@@ -37,7 +33,6 @@ public final class AuthTG extends JavaPlugin {
     public static Logger logger;
     private static Plugin instance;
     private static String version;
-    public  static SessionManager sessionManager;
     public static boolean notRegAndLogin, authNecessarily, activeChatinTG;
     public static List<String> mutecommands, commandsPreAuthorization, forbiddenNicknames;
     public static int minLenghtNickname, minLenghtPassword, maxLenghtNickname, maxLenghtPassword, timeoutSession,kickTimeout, maxAccountTGCount;
@@ -63,12 +58,6 @@ public final class AuthTG extends JavaPlugin {
         setupConfiguration();
         // Load config parameters
         loadConfigParameters();
-        //Load SessionManager
-        if (Bukkit.getPluginManager().getPlugin("AuthTGCookie") != null) {
-            // TODO
-        } else {
-            sessionManager = new IPManager();
-        }
         // Logs
         logger.log(Level.INFO, "Plugin started");
         // Load LoggerCore
@@ -108,9 +97,11 @@ public final class AuthTG extends JavaPlugin {
             ConfigurationSection mysql = getConfig().getConfigurationSection("mysql");
             loader = new MySQLLoader(mysql.getString("db"), mysql.getString("user"), mysql.getString("pass"), mysql.getString("host"));
             new MySQLMigrate(mysql.getString("db"), mysql.getString("host"), mysql.getString("user"), mysql.getString("pass"));
+            getConfig().set("onceUsed.mysql", true);
+            saveConfig();
         } else {
             ConfigurationSection mysql = getConfig().getConfigurationSection("mysql");
-            if (!getConfig().getString("mysql.host").equals("localhost")) new YAMLMigrate(mysql.getString("db"), mysql.getString("host"), mysql.getString("user"),mysql.getString("pass"));
+            if (!getConfig().getConfigurationSection("onceUsed").getBoolean("mysql")) new YAMLMigrate(mysql.getString("db"), mysql.getString("host"), mysql.getString("user"),mysql.getString("pass"));
             loader = new YAMLLoader();
         }
         // Register commands
@@ -131,10 +122,14 @@ public final class AuthTG extends JavaPlugin {
         getCommand("unban").setExecutor(new UnBanCMD());
         getCommand("unmute").setExecutor(new UnMuteCMD());
         getCommand("logout").setExecutor(new LogoutCMD());
+        getCommand("unlink").setExecutor(new UnLinkCMD());
         // Register TabCompleter
         getCommand("admin").setTabCompleter(new AdminTabCompleter());
         getCommand("friend").setTabCompleter(new FriendTabCompleter());
         getCommand("command").setTabCompleter(new CommandTabCompleter());
+        getCommand("ban").setTabCompleter(new BanTabCompleter());
+        getCommand("mute").setTabCompleter(new MuteTabCompleter());
+        getCommand("setspawn").setTabCompleter(new SetSpawnTabCompleter());
         // Load MutedPlayers
         MuterEvent.setMutedPlayers(loader.getMutedPlayers());
         // Load Bot
@@ -156,7 +151,6 @@ public final class AuthTG extends JavaPlugin {
     public void onDisable() {
         // Logs
         logger.log(Level.INFO, "Plugin stopped");
-        // Save spawn location
     }
 
     public static Plugin getInstance() {

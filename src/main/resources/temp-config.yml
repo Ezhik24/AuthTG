@@ -32,3 +32,5 @@ spawn: # Спавн EN: Spawn
   y: 0
   z: 0
   world: "none"
+onceUsed: # НЕ ТРОГАЙТЕ ЭТО EN: Do not touch
+  mysql: false

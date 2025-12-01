@@ -72,7 +72,7 @@ public class CommandCMD implements CommandExecutor {
                 player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("cmdusernotfound", "MC")));
                 return false;
             }
-            if (user.commands != null && user.commands.isEmpty()) {
+            if (user.commands == null || user.commands.isEmpty()) {
                 player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("cmdlistempty", "MC").replace("{PLAYER}", strings[1])));
                 return false;
             }

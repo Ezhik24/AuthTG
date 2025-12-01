@@ -6,6 +6,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.ezhik.authTG.AuthTG;
+import org.ezhik.authTG.IPManager;
 import org.ezhik.authTG.User;
 import org.ezhik.authTG.events.FreezerEvent;
 import org.ezhik.authTG.events.MuterEvent;
@@ -68,7 +69,7 @@ public class LoginCMD implements CommandExecutor {
                     }
                 }
                 LocalDateTime time = LocalDateTime.now().plusMinutes(AuthTG.timeoutSession);
-                AuthTG.sessionManager.addAuthorized(player.getUniqueId(), player.getAddress().getAddress().toString(),time);
+                IPManager.addAuthorized(player.getUniqueId(), player.getAddress().getAddress().toString(),time);
                 player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("loginsuccess", "MC")));
                 FreezerEvent.unfreezeplayer(player.getName());
                 if (FreezerEvent.beforeFreeze.containsKey(player.getName())) {
