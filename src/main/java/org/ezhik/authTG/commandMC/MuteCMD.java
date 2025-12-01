@@ -54,34 +54,35 @@ public class MuteCMD implements CommandExecutor {
             LocalDateTime timedate = LocalDateTime.now();
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss dd.MM.yyyy");
             String time = timedate.format(formatter);
-            String formattedDate = "", message = "", adminmsg = AuthTG.getMessage("successmute", "MC").replace("{PLAYER}", strings[0]);
+            String formattedDate = "", message = "";
             if (lettersCount > 1) {
                 player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("mutetimeformat", "MC")));
             }
             else if (strings[1].contains("d")) {
                 LocalDateTime date = LocalDateTime.now().plusDays(Integer.parseInt(strings[1].replace("d", "")));
                 formattedDate = date.format(formatter);
-                message = ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("mute", "MC")).replace("{TIMEMUTE}", AuthTG.loader.getMuteTime(targetuuid)).replace("{REASON}", AuthTG.loader.getMuteReason(targetuuid)).replace("{TIME}", AuthTG.loader.getMuteTimeAdmin(targetuuid)).replace("{ADMIN}", AuthTG.loader.getMuteAdmin(targetuuid));
+                message = ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("mute", "MC")).replace("{TIMEMUTE}", formattedDate).replace("{REASON}", reason).replace("{TIME}", time).replace("{ADMIN}", player.getName());
             }
             else if (strings[1].contains("h")) {
                 LocalDateTime date = LocalDateTime.now().plusHours(Integer.parseInt(strings[1].replace("h", "")));
                 formattedDate = date.format(formatter);
-                message = ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("mute", "MC")).replace("{TIMEMUTE}", AuthTG.loader.getMuteTime(targetuuid)).replace("{REASON}", AuthTG.loader.getMuteReason(targetuuid)).replace("{TIME}", AuthTG.loader.getMuteTimeAdmin(targetuuid)).replace("{ADMIN}", AuthTG.loader.getMuteAdmin(targetuuid));
-            }else if (strings[1].equals("-s")) {
+                message = ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("mute", "MC")).replace("{TIMEMUTE}", formattedDate).replace("{REASON}", reason).replace("{TIME}", time).replace("{ADMIN}", player.getName());
+            }
+            else if (strings[1].equals("-s")) {
                 formattedDate = "0";
-                message = ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("mute", "MC")).replace("{TIMEMUTE}", "навсегда").replace("{REASON}", AuthTG.loader.getMuteReason(targetuuid)).replace("{TIME}", AuthTG.loader.getMuteTimeAdmin(targetuuid)).replace("{ADMIN}", AuthTG.loader.getMuteAdmin(targetuuid));
+                message = ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("mute", "MC")).replace("{TIMEMUTE}", "навсегда").replace("{REASON}", reason).replace("{TIME}", time).replace("{ADMIN}", player.getName());
             }
             else if (strings[1].contains("m")) {
                 LocalDateTime date = LocalDateTime.now().plusMinutes(Integer.parseInt(strings[1].replace("m", "")));
                 formattedDate = date.format(formatter);
-                message = ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("mute", "MC")).replace("{TIMEMUTE}", AuthTG.loader.getMuteTime(targetuuid)).replace("{REASON}", AuthTG.loader.getMuteReason(targetuuid)).replace("{TIME}", AuthTG.loader.getMuteTimeAdmin(targetuuid)).replace("{ADMIN}", AuthTG.loader.getMuteAdmin(targetuuid));
+                message = ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("mute", "MC")).replace("{TIMEMUTE}", formattedDate).replace("{REASON}", reason).replace("{TIME}", time).replace("{ADMIN}", player.getName());
             }
             else if (strings[1].contains("s")) {
                 LocalDateTime date = LocalDateTime.now().plusSeconds(Integer.parseInt(strings[1].replace("s", "")));
                 formattedDate = date.format(formatter);
-                message = ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("mute", "MC")).replace("{TIMEMUTE}", AuthTG.loader.getMuteTime(targetuuid)).replace("{REASON}", AuthTG.loader.getMuteReason(targetuuid)).replace("{TIME}", AuthTG.loader.getMuteTimeAdmin(targetuuid)).replace("{ADMIN}", AuthTG.loader.getMuteAdmin(targetuuid));
+                message = ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("mute", "MC")).replace("{TIMEMUTE}", formattedDate).replace("{REASON}", reason).replace("{TIME}",time).replace("{ADMIN}", player.getName());
             }
-            player.sendMessage(adminmsg);
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("successmute", "MC").replace("{PLAYER}", strings[0])));
             if (target != null) target.sendMessage(message);
             AuthTG.loader.setMuteTime(targetuuid, formattedDate, reason, time, player.getName());
             return true;
@@ -119,37 +120,37 @@ public class MuteCMD implements CommandExecutor {
             LocalDateTime timedate = LocalDateTime.now();
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss dd.MM.yyyy");
             String time = timedate.format(formatter);
-            String formattedDate = "", message = "", adminmsg = AuthTG.getMessage("successmute", "MC").replace("{PLAYER}", strings[0]);
+            String formattedDate = "", message = "";
             if (lettersCount > 1) {
                 console.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("mutetimeformat", "MC")));
             }
             else if (strings[1].contains("d")) {
                 LocalDateTime date = LocalDateTime.now().plusDays(Integer.parseInt(strings[1].replace("d", "")));
                 formattedDate = date.format(formatter);
-                message = ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("mute", "MC")).replace("{TIMEMUTE}", AuthTG.loader.getMuteTime(targetuuid)).replace("{REASON}", AuthTG.loader.getMuteReason(targetuuid)).replace("{TIME}", AuthTG.loader.getMuteTimeAdmin(targetuuid)).replace("{ADMIN}", AuthTG.loader.getMuteAdmin(targetuuid));
+                message = ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("mute", "MC")).replace("{TIMEMUTE}", formattedDate).replace("{REASON}", reason).replace("{TIME}", time).replace("{ADMIN}", "CONSOLE");
             }
             else if (strings[1].contains("h")) {
                 LocalDateTime date = LocalDateTime.now().plusHours(Integer.parseInt(strings[1].replace("h", "")));
                 formattedDate = date.format(formatter);
-                message = ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("mute", "MC")).replace("{TIMEMUTE}", AuthTG.loader.getMuteTime(targetuuid)).replace("{REASON}", AuthTG.loader.getMuteReason(targetuuid)).replace("{TIME}", AuthTG.loader.getMuteTimeAdmin(targetuuid)).replace("{ADMIN}", AuthTG.loader.getMuteAdmin(targetuuid));
+                    message = ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("mute", "MC")).replace("{TIMEMUTE}", formattedDate).replace("{REASON}", reason).replace("{TIME}", time).replace("{ADMIN}", "CONSOLE");
             }
             else if (strings[1].equals("-s")) {
                 formattedDate = "0";
-                message = ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("mute", "MC")).replace("{TIMEMUTE}", "навсегда").replace("{REASON}", AuthTG.loader.getMuteReason(targetuuid)).replace("{TIME}", AuthTG.loader.getMuteTimeAdmin(targetuuid)).replace("{ADMIN}", AuthTG.loader.getMuteAdmin(targetuuid));
+                message = ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("mute", "MC")).replace("{TIMEMUTE}", "навсегда").replace("{REASON}", reason).replace("{TIME}", time).replace("{ADMIN}", "CONSOLE");
             }
             else if (strings[1].contains("m")) {
                 LocalDateTime date = LocalDateTime.now().plusMinutes(Integer.parseInt(strings[1].replace("m", "")));
                 formattedDate = date.format(formatter);
-                message = ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("mute", "MC")).replace("{TIMEMUTE}", AuthTG.loader.getMuteTime(targetuuid)).replace("{REASON}", AuthTG.loader.getMuteReason(targetuuid)).replace("{TIME}", AuthTG.loader.getMuteTimeAdmin(targetuuid)).replace("{ADMIN}", AuthTG.loader.getMuteAdmin(targetuuid));
+                message = ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("mute", "MC")).replace("{TIMEMUTE}", formattedDate).replace("{REASON}", reason).replace("{TIME}", time).replace("{ADMIN}", "CONSOLE");
             }
             else if (strings[1].contains("s")) {
                 LocalDateTime date = LocalDateTime.now().plusSeconds(Integer.parseInt(strings[1].replace("s", "")));
                 formattedDate = date.format(formatter);
-                message = ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("mute", "MC")).replace("{TIMEMUTE}", AuthTG.loader.getMuteTime(targetuuid)).replace("{REASON}", AuthTG.loader.getMuteReason(targetuuid)).replace("{TIME}", AuthTG.loader.getMuteTimeAdmin(targetuuid)).replace("{ADMIN}", AuthTG.loader.getMuteAdmin(targetuuid));
+                message = ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("mute", "MC")).replace("{TIMEMUTE}", formattedDate).replace("{REASON}", reason).replace("{TIME}",time).replace("{ADMIN}", "CONSOLE");
             }
             if (target != null) target.sendMessage(message);
             AuthTG.loader.setMuteTime(targetuuid, formattedDate, reason, time, "CONSOLE");
-            console.sendMessage(ChatColor.translateAlternateColorCodes('&', adminmsg));
+            console.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("successmute", "MC").replace("{PLAYER}", strings[0])));
         }
         return true;
     }
