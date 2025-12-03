@@ -101,7 +101,7 @@ public final class AuthTG extends JavaPlugin {
             saveConfig();
         } else {
             ConfigurationSection mysql = getConfig().getConfigurationSection("mysql");
-            if (!getConfig().getConfigurationSection("onceUsed").getBoolean("mysql")) new YAMLMigrate(mysql.getString("db"), mysql.getString("host"), mysql.getString("user"),mysql.getString("pass"));
+            if (getConfig().getConfigurationSection("onceUsed").getBoolean("mysql")) new YAMLMigrate(mysql.getString("db"), mysql.getString("host"), mysql.getString("user"),mysql.getString("pass"));
             loader = new YAMLLoader();
         }
         // Register commands

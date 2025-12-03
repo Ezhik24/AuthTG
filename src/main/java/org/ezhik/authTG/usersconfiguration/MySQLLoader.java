@@ -1102,8 +1102,8 @@ public class MySQLLoader implements Loader {
             );
             List<Object> list = new ArrayList<>();
             if (rs.next()) {
-                list.add(0, rs.getString("ip"));
-                list.add(1, rs.getString("time"));
+                list.add(rs.getString("ip"));
+                list.add(rs.getString("time"));
             }
             conn.close();
             return list;

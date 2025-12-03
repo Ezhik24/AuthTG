@@ -6,6 +6,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.ezhik.authTG.AuthTG;
+import org.ezhik.authTG.User;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,6 +21,10 @@ public class FreezerEvent implements Listener {
     }
     public static void unfreezeplayer(String name) {
         freezeplayer.remove(name);
+        User user = User.getUser(name);
+        if (user != null && user.activetg) {
+            user.sendMessage(AuthTG.getMessage("joinacc", "TG").replace("{IP}", user.player.getAddress().getAddress().toString()).replace("/", ""));
+        }
     }
     public static boolean isFreeze(Player player) {
         return freezeplayer.containsKey(player.getName());
