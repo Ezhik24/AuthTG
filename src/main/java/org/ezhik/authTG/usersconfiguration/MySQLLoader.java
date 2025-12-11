@@ -45,6 +45,7 @@ public class MySQLLoader implements Loader {
                     + "lastname varchar(120),"
                     + "currentUUID BOOLEAN NOT NULL DEFAULT false,"
                     + "admin BOOLEAN NOT NULL DEFAULT false,"
+                    + "ip varchar(32)"
                     + "PRIMARY KEY (priKey))"
             );
             st.executeUpdate(

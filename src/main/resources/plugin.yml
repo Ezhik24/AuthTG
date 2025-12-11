@@ -13,6 +13,8 @@ commands:
     description: 'Login'
     aliases:
       - l
+  authtg:
+    description: 'AuthTGCMD'
   code:
     description: 'Code'
   mcbc:

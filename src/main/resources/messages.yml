@@ -161,6 +161,10 @@ messages: # Сообщения EN: Messages
     cmdnull: '[Бот] Вы не авторизованы!'
     mutesuccess: 'Вы успешно замутили {PLAYER}'
   minecraft: # Сообщения в майнкрафте EN: Minecraft messages
+    authtgnoperm: "&c&l[AuthTG] &cУ вас нет прав"
+    authtgnobotmysql: "&cВНИМАНИЕ! НОВЫЕ НАСТРОЙКИ БОТА И БАЗЫ ДАННЫХ НЕ ПРИМЕНЯТСЯ! ДЛЯ ЭТОГО ПЕРЕЗАГРУЖАЙТЕ СЕРВЕР"
+    authtgsuccess: "&c&l[AuthTG] Успешно!"
+    authtgusage: "&c&l[AuthTG] &cИспользование: /authtg <reload>"
     unlinknoperm: "&c&l[AuthTG] &cУ вас нет прав!"
     unlinkusage: "&c&l[AuthTG] &cИспользование: /unlink <ник>!"
     unlinkpl: "&c&l[AuthTG] &cВам отвязали аккаунт!"

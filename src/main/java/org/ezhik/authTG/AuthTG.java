@@ -5,6 +5,7 @@ import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SingleLineChart;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -123,6 +124,7 @@ public final class AuthTG extends JavaPlugin {
         getCommand("unmute").setExecutor(new UnMuteCMD());
         getCommand("logout").setExecutor(new LogoutCMD());
         getCommand("unlink").setExecutor(new UnLinkCMD());
+        getCommand("authtg").setExecutor(new AuthTGCMD());
         // Register TabCompleter
         getCommand("admin").setTabCompleter(new AdminTabCompleter());
         getCommand("friend").setTabCompleter(new FriendTabCompleter());
@@ -230,24 +232,26 @@ public final class AuthTG extends JavaPlugin {
         }
     }
 
-    private void loadConfigParameters() {
-        maxAccountTGCount = getConfig().getInt("maxAccountTGCount");
-        forbiddenNicknames = getConfig().getStringList("forbiddenNicknames");
-        notRegAndLogin = getConfig().getBoolean("notRegAndLogin");
-        authNecessarily = getConfig().getBoolean("authNecessarily");
-        activeChatinTG = getConfig().getBoolean("activeChatinTG");
-        mutecommands = getConfig().getStringList("mutecommands");
-        commandsPreAuthorization = getConfig().getStringList("commandsPreAuthorization");
-        minLenghtNickname = getConfig().getInt("minLenghtNickname");
-        maxLenghtNickname = getConfig().getInt("maxLenghtNickname");
-        minLenghtPassword = getConfig().getInt("minLenghtPassword");
-        maxLenghtPassword = getConfig().getInt("maxLenghtPassword");
-        timeoutSession = getConfig().getInt("timeoutSession");
-        kickTimeout = getConfig().getInt("kickTimeout");
-        locationX = getConfig().getDouble("spawn.x");
-        locationY = getConfig().getDouble("spawn.y");
-        locationZ = getConfig().getDouble("spawn.z");
-        world = getConfig().getString("spawn.world");
-        macro = getConfig().getConfigurationSection("macro");
+    public static void loadConfigParameters() {
+        File file = new File("plugins/AuthTG/config.yml");
+        YamlConfiguration getConfig = YamlConfiguration.loadConfiguration(file);
+        maxAccountTGCount = getConfig.getInt("maxAccountTGCount");
+        forbiddenNicknames = getConfig.getStringList("forbiddenNicknames");
+        notRegAndLogin = getConfig.getBoolean("notRegAndLogin");
+        authNecessarily = getConfig.getBoolean("authNecessarily");
+        activeChatinTG = getConfig.getBoolean("activeChatinTG");
+        mutecommands = getConfig.getStringList("mutecommands");
+        commandsPreAuthorization = getConfig.getStringList("commandsPreAuthorization");
+        minLenghtNickname = getConfig.getInt("minLenghtNickname");
+        maxLenghtNickname = getConfig.getInt("maxLenghtNickname");
+        minLenghtPassword = getConfig.getInt("minLenghtPassword");
+        maxLenghtPassword = getConfig.getInt("maxLenghtPassword");
+        timeoutSession = getConfig.getInt("timeoutSession");
+        kickTimeout = getConfig.getInt("kickTimeout");
+        locationX = getConfig.getDouble("spawn.x");
+        locationY = getConfig.getDouble("spawn.y");
+        locationZ = getConfig.getDouble("spawn.z");
+        world = getConfig.getString("spawn.world");
+        macro = getConfig.getConfigurationSection("macro");
     }
 }
