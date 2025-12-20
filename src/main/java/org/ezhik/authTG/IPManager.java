@@ -3,20 +3,29 @@ package org.ezhik.authTG;
 import org.bukkit.entity.Player;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
+import java.util.List;
 import java.util.UUID;
+import java.util.logging.Level;
 
 public class IPManager{
     public static boolean isAuthorized(Player player) {
-        if (AuthTG.loader.getSession(player.getUniqueId()) != null) {
-            if (AuthTG.loader.getSession(player.getUniqueId()).get(0).equals(player.getAddress().getAddress().toString())) {
-                LocalDateTime time = LocalDateTime.now();
-                if (time.isBefore(LocalDateTime.parse(AuthTG.loader.getSession(player.getUniqueId()).get(1).toString()))) {
-                    return true;
-                } else {
-                    AuthTG.loader.deleteSession(player.getUniqueId());
-                    return false;
-                }
-            }
+        List<Object> session = AuthTG.loader.getSession(player.getUniqueId());
+        if (session == null || session.size() < 2 || player.getAddress() == null) {
+            return false;
+        }
+        String sessionIP = String.valueOf(session.get(0));
+        String playerIP = player.getAddress().getAddress().toString();
+        if (!sessionIP.equals(playerIP)) {
+            return false;
+        }
+        try {
+            LocalDateTime date = LocalDateTime.now();
+            LocalDateTime expireTime = LocalDateTime.parse(String.valueOf(session.get(1)));
+            return date.isBefore(expireTime);
+        } catch (DateTimeParseException e) {
+            AuthTG.logger.log(Level.WARNING, "Invalid session time for player " + player.getUniqueId());
+            AuthTG.loader.deleteSession(player.getUniqueId());
         }
         return false;
     }

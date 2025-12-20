@@ -39,7 +39,7 @@ public class LoginCMD implements CommandExecutor {
         User user = User.getUser(player.getUniqueId());
         if (AuthTG.authNecessarily) {
             if (user.activetg) {
-                user.sendLoginAccepted(AuthTG.getMessage("loginaccept", "TG").replace("{PLAYER}", user.playername).replace("{IP}", player.getAddress().getAddress().toString().replace("/", "")));
+                user.sendLoginAccepted(AuthTG.getMessage("loginaccept", "TG").replace("{PLAYER}", user.playername));
                 MuterEvent.mute(player.getName(), ChatColor.translateAlternateColorCodes('&',AuthTG.getMessage("joininaccounttext", "MC")));
                 player.sendMessage(ChatColor.translateAlternateColorCodes('&',AuthTG.getMessage("joininaccounttext", "MC")));
                 player.sendTitle(ChatColor.translateAlternateColorCodes('&',AuthTG.getMessage("joininaccounts1", "MC")), AuthTG.getMessage("joininaccounts2", "MC"), 0,1000000000,0);
@@ -50,7 +50,7 @@ public class LoginCMD implements CommandExecutor {
             }
         } else {
             if (user.activetg && user.twofactor) {
-                user.sendLoginAccepted(AuthTG.getMessage("loginaccept", "TG").replace("{PLAYER}", user.playername).replace("{IP}", player.getAddress().getAddress().toString().replace("/", "")));
+                user.sendLoginAccepted(AuthTG.getMessage("loginaccept", "TG").replace("{PLAYER}", user.playername));
                 MuterEvent.mute(player.getName(), ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("joininaccounttext", "MC")));
                 player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("joininaccounttext", "MC")));
                 player.sendTitle(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("joininaccounts1", "MC")), AuthTG.getMessage("joininaccounts2", "MC"), 0, 1000000000, 0);

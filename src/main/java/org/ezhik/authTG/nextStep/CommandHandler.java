@@ -65,6 +65,12 @@ public class CommandHandler implements NextStepHandler{
             banbutton.setCallbackData("cmdsecond_ban");
             mutebutton.setCallbackData("cmdsecond_mute");
             kickbutton.setCallbackData("cmdsecond_kick");
+            for (String key : AuthTG.macro.getKeys(false)) {
+                InlineKeyboardButton keyButton = new InlineKeyboardButton();
+                keyButton.setCallbackData("cmdsecond_" + key);
+                keyButton.setText(AuthTG.macro.getString(key + ".textbutton"));
+                row.add(keyButton);
+            }
             row.add(banbutton);
             row.add(mutebutton);
             row.add(kickbutton);
@@ -94,6 +100,12 @@ public class CommandHandler implements NextStepHandler{
             banbutton.setCallbackData("cmdsecond_ban");
             mutebutton.setCallbackData("cmdsecond_mute");
             kickbutton.setCallbackData("cmdsecond_kick");
+            for (String key : AuthTG.macro.getKeys(false)) {
+                InlineKeyboardButton keyButton = new InlineKeyboardButton();
+                keyButton.setCallbackData("cmdsecond_" + key);
+                keyButton.setText(AuthTG.macro.getString(key + ".textbutton"));
+                row.add(keyButton);
+            }
             row.add(banbutton);
             row.add(mutebutton);
             row.add(kickbutton);
