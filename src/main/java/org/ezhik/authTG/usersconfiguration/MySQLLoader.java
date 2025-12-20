@@ -45,6 +45,8 @@ public class MySQLLoader implements Loader {
                     + "lastname varchar(120),"
                     + "currentUUID BOOLEAN NOT NULL DEFAULT false,"
                     + "admin BOOLEAN NOT NULL DEFAULT false,"
+                    + "ip varchar(72),"
+                    + "time varchar(120),"
                     + "PRIMARY KEY (priKey))"
             );
             st.executeUpdate(
@@ -79,14 +81,6 @@ public class MySQLLoader implements Loader {
                     + "reason varchar(120) NOT NULL,"
                     + "time varchar(36) NOT NULL,"
                     + "admin varchar(90) NOT NULL,"
-                    + "PRIMARY KEY (priKey))"
-            );
-            st.executeUpdate(
-                    "CREATE TABLE IF NOT EXISTS AuthTGSessions ("
-                    + "priKey INT NOT NULL AUTO_INCREMENT,"
-                    + "uuid varchar(36) NOT NULL,"
-                    + "ip varchar(120) NOT NULL,"
-                    + "time varchar(50) NOT NULL,"
                     + "PRIMARY KEY (priKey))"
             );
             conn.close();
@@ -1063,7 +1057,7 @@ public class MySQLLoader implements Loader {
             );
             st = conn.createStatement();
             st.executeUpdate(
-                    "INSERT INTO AuthTGSessions(uuid, ip, time) VALUES ('" + uuid.toString() + "', '" + ip + "', '" + time.toString() + "')"
+                    "UPDATE AuthTGUsers SET ip = '" + ip + "', time = '" + time + "' WHERE uuid = '" + uuid.toString() +"'"
             );
             conn.close();
         } catch (SQLException e) {
@@ -1081,7 +1075,7 @@ public class MySQLLoader implements Loader {
             );
             st = conn.createStatement();
             st.executeUpdate(
-                    "DELETE FROM AuthTGSessions WHERE uuid = '" + uuid.toString() + "'"
+                    "UPDATE AuthTGUsers SET ip = '0', time = '0' WHERE uuid = '" + uuid.toString() + "'"
             );
         } catch (SQLException e) {
             AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
@@ -1096,9 +1090,10 @@ public class MySQLLoader implements Loader {
                     this.username,
                     this.password
             );
+            System.out.println(uuid.toString());
             st = conn.createStatement();
-            st.executeQuery(
-                    "SELECT * FROM AuthTGSessions WHERE uuid = '" + uuid.toString() + "'"
+            rs = st.executeQuery(
+                    "SELECT ip, time FROM AuthTGUsers WHERE uuid = '" + uuid.toString() + "'"
             );
             List<Object> list = new ArrayList<>();
             if (rs.next()) {
