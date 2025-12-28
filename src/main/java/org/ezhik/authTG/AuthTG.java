@@ -5,7 +5,6 @@ import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SingleLineChart;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -40,6 +39,7 @@ public final class AuthTG extends JavaPlugin {
     public static double locationX, locationY, locationZ;
     public static String world;
     public static ConfigurationSection macro;
+    private static MySQLPool mysqlPool;
 
     @Override
     public void onEnable() {
@@ -96,8 +96,40 @@ public final class AuthTG extends JavaPlugin {
         // Load UserConfiguration
         if (getConfig().getConfigurationSection("mysql").getBoolean("use")) {
             ConfigurationSection mysql = getConfig().getConfigurationSection("mysql");
-            loader = new MySQLLoader(mysql.getString("db"), mysql.getString("user"), mysql.getString("pass"), mysql.getString("host"));
-            new MySQLMigrate(mysql.getString("db"), mysql.getString("host"), mysql.getString("user"), mysql.getString("pass"));
+
+            ConfigurationSection pool = mysql.getConfigurationSection("pool");
+            int maxPool = pool.getInt("maximumPoolSize");
+            long connTimeout = pool.getLong("connectionTimeoutMs");
+            long idleTimeout = pool.getLong("idleTimeoutMs");
+            long maxLifetime = pool.getLong("maxLifetimeMs");
+            String jdbcParams = pool.getString("jdbcParams");
+
+            try {
+                mysqlPool = new MySQLPool(
+                        mysql.getString("host"),
+                        mysql.getString("db"),
+                        mysql.getString("user"),
+                        mysql.getString("pass"),
+                        maxPool, connTimeout, idleTimeout, maxLifetime,
+                        jdbcParams
+                );
+
+                MySQLSchemaMigrator.migrate(mysqlPool.dataSource(), mysql.getString("db"));
+
+                // loader теперь только работает с данными, НЕ создаёт таблицы
+                loader = new MySQLLoader(mysqlPool.dataSource());
+
+
+                new MySQLMigrate(mysql.getString("db"), mysql.getString("host"), mysql.getString("user"), mysql.getString("pass"));
+
+                getConfig().set("onceUsed.mysql", true);
+                saveConfig();
+
+            } catch (Exception e) {
+                logger.log(Level.SEVERE, "[AuthTG] Cannot init MySQL/Hikari: " + e.getMessage());
+                Bukkit.getPluginManager().disablePlugin(this);
+                return;
+            }
             getConfig().set("onceUsed.mysql", true);
             saveConfig();
         } else {
@@ -151,8 +183,11 @@ public final class AuthTG extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        // Logs
         logger.log(Level.INFO, "Plugin stopped");
+        if (mysqlPool != null) {
+            mysqlPool.close();
+            mysqlPool = null;
+        }
     }
 
     public static Plugin getInstance() {

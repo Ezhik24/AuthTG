@@ -5,66 +5,90 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class Handler extends BukkitRunnable {
-    private static Map<String, String> kickplayers = new HashMap<>();
-    private static Map<String, String> minecrfatmsg = new HashMap<>();
-    private static Map<String, String> dispatcCommand = new HashMap<>();
-    private static Map<String, Location> locationMap = new HashMap<>();
+    private static final Map<String, String> kickplayers = new ConcurrentHashMap<>();
+    private static final Map<String, String> minecrfatmsg = new ConcurrentHashMap<>();
+    private static final Map<String, String> dispatcCommand = new ConcurrentHashMap<>();
+    private static final Map<String, Location> locationMap = new ConcurrentHashMap<>();
+
     @Override
     public void run() {
-        if (kickplayers.size() != 0) {
-            for(String name : kickplayers.keySet()) {
+
+        // KICK
+        if (!kickplayers.isEmpty()) {
+            for (Map.Entry<String, String> e : kickplayers.entrySet()) {
+                String name = e.getKey();
+                String reason = e.getValue();
+
                 Player player = Bukkit.getPlayer(name);
-                if(player == null) {
-                    kickplayers.remove(name);
-                } else {
-                    player.kickPlayer(kickplayers.get(name));
-                    kickplayers.remove(name);
+                if (player != null) {
+                    player.kickPlayer(reason);
                 }
+
+                // удаляем именно эту пару, чтобы не снести новый reason, если его поменяли между чтением и удалением
+                kickplayers.remove(name, reason);
             }
         }
-        if (minecrfatmsg.size() != 0) {
-            for(String name : minecrfatmsg.keySet()) {
+
+        // CHAT
+        if (!minecrfatmsg.isEmpty()) {
+            for (Map.Entry<String, String> e : minecrfatmsg.entrySet()) {
+                String name = e.getKey();
+                String message = e.getValue();
+
                 Player player = Bukkit.getPlayer(name);
-                if(player == null) {
-                    minecrfatmsg.remove(name);
-                } else {
-                    player.chat(minecrfatmsg.get(name));
-                    minecrfatmsg.remove(name);
+                if (player != null) {
+                    // отправка через chat (если message начинается с / — выполнится как команда игрока)
+                    player.chat(message);
                 }
+
+                minecrfatmsg.remove(name, message);
             }
         }
-        if (dispatcCommand.size() != 0) {
-            for(String name : dispatcCommand.keySet()) {
-                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), dispatcCommand.get(name));
-                dispatcCommand.remove(name);
+
+        // DISPATCH COMMAND (console)
+        if (!dispatcCommand.isEmpty()) {
+            for (Map.Entry<String, String> e : dispatcCommand.entrySet()) {
+                String name = e.getKey();
+                String command = e.getValue();
+
+                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command);
+
+                dispatcCommand.remove(name, command);
             }
         }
-        if (locationMap.size() != 0) {
-            for(String name : locationMap.keySet()) {
+
+        // TELEPORT
+        if (!locationMap.isEmpty()) {
+            for (Map.Entry<String, Location> e : locationMap.entrySet()) {
+                String name = e.getKey();
+                Location location = e.getValue();
+
                 Player player = Bukkit.getPlayer(name);
-                if(player == null) {
-                    locationMap.remove(name);
-                } else {
-                    player.teleport(locationMap.get(name));
-                    locationMap.remove(name);
+                if (player != null && location != null) {
+                    player.teleport(location);
                 }
+
+                locationMap.remove(name, location);
             }
         }
     }
 
-    public static void kick(String name,String reason) {
+    public static void kick(String name, String reason) {
         kickplayers.put(name, reason);
     }
-    public static void sendMCmessage(String name,String message) {
+
+    public static void sendMCmessage(String name, String message) {
         minecrfatmsg.put(name, message);
     }
+
     public static void dispatchCommand(String name, String command) {
         dispatcCommand.put(name, command);
     }
+
     public static void teleport(String name, Location location) {
         locationMap.put(name, location);
     }

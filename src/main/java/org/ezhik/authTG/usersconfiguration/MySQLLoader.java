@@ -4,6 +4,7 @@ import org.ezhik.authTG.AuthTG;
 import org.ezhik.authTG.PasswordHasher;
 import org.ezhik.authTG.events.MuterEvent;
 
+import javax.sql.DataSource;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -11,94 +12,21 @@ import java.util.*;
 import java.util.logging.Level;
 
 public class MySQLLoader implements Loader {
-    private String database;
-    private String username;
-    private String password;
-    private String host;
-    Connection conn = null;
-    Statement st = null;
-    ResultSet rs = null;
-    public MySQLLoader(String database, String username, String password, String host) {
-        this.database = database;
-        this.username = username;
-        this.password = password;
-        this.host = host;
-        try {
-            conn = DriverManager.getConnection(
-                    "jdbc:mysql://" + host + "/" + database,
-                    username,
-                    password
-            );
-            st = conn.createStatement();
-            st.executeUpdate(
-                    "CREATE TABLE IF NOT EXISTS AuthTGUsers ("
-                    + "priKey INT NOT NULL AUTO_INCREMENT,"
-                    + "uuid varchar(36) NOT NULL,"
-                    + "playername varchar(120) NOT NULL,"
-                    + "password varchar(64),"
-                    + "active BOOLEAN NOT NULL DEFAULT false,"
-                    + "twofactor BOOLEAN NOT NULL DEFAULT false,"
-                    + "activeTG BOOLEAN NOT NULL DEFAULT false,"
-                    + "chatid BIGINT,"
-                    + "username varchar(32),"
-                    + "firstname varchar(120),"
-                    + "lastname varchar(120),"
-                    + "currentUUID BOOLEAN NOT NULL DEFAULT false,"
-                    + "admin BOOLEAN NOT NULL DEFAULT false,"
-                    + "ip varchar(72),"
-                    + "time varchar(120),"
-                    + "PRIMARY KEY (priKey))"
-            );
-            st.executeUpdate(
-                    "CREATE TABLE IF NOT EXISTS AuthTGFriends ("
-                    + "priKey INT NOT NULL AUTO_INCREMENT,"
-                    + "uuid varchar(36) NOT NULL,"
-                    + "friend varchar(120) NOT NULL,"
-                    + "PRIMARY KEY (priKey))"
-            );
-            st.executeUpdate(
-                    "CREATE TABLE IF NOT EXISTS AuthTGCommands ("
-                    + "priKey INT NOT NULL AUTO_INCREMENT,"
-                    + "uuid varchar(36) NOT NULL,"
-                    + "command varchar(30) NOT NULL,"
-                    + "PRIMARY KEY (priKey))"
-            );
-            st.executeUpdate(
-                    "CREATE TABLE IF NOT EXISTS AuthTGBans ("
-                    + "priKey INT NOT NULL AUTO_INCREMENT,"
-                    + "uuid varchar(36) NOT NULL,"
-                    + "timeBan varchar(64) NOT NULL,"
-                    + "reason varchar(120) NOT NULL,"
-                    + "time varchar(36) NOT NULL,"
-                    + "admin varchar(90) NOT NULL,"
-                    + "PRIMARY KEY (priKey))"
-            );
-            st.executeUpdate(
-                    "CREATE TABLE IF NOT EXISTS AuthTGMutes ("
-                    + "priKey INT NOT NULL AUTO_INCREMENT,"
-                    + "uuid varchar(36) NOT NULL,"
-                    + "timeMute varchar(64) NOT NULL,"
-                    + "reason varchar(120) NOT NULL,"
-                    + "time varchar(36) NOT NULL,"
-                    + "admin varchar(90) NOT NULL,"
-                    + "PRIMARY KEY (priKey))"
-            );
-            conn.close();
-        } catch (SQLException e) {
-            AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
-        }
+
+    private final DataSource ds;
+
+    public MySQLLoader(DataSource ds) {
+        this.ds = ds;
     }
+
     @Override
     public void setPlayerName(UUID uuid, String playername) {
-        try {
-            conn = DriverManager.getConnection(
-                    "jdbc:mysql://" + this.host + "/" + this.database,
-                    this.username,
-                    this.password
-            );
-            st = conn.createStatement();
-            st.executeUpdate("INSERT INTO AuthTGUsers(uuid, playername, currentUUID) VALUES ('" + uuid.toString() + "', '" + playername + "', false) ");
-            conn.close();
+        String sql = "INSERT INTO AuthTGUsers(uuid, playername, currentUUID) VALUES (?, ?, false)";
+        try (Connection c = ds.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setString(1, uuid.toString());
+            ps.setString(2, playername);
+            ps.executeUpdate();
         } catch (SQLException e) {
             AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
         }
@@ -106,16 +34,12 @@ public class MySQLLoader implements Loader {
 
     @Override
     public void setPasswordHash(UUID uuid, String password) {
-        try {
-            conn = DriverManager.getConnection(
-                    "jdbc:mysql://" + this.host + "/" + this.database,
-                    this.username,
-                    this.password
-            );
-            st = conn.createStatement();
-            String hash = PasswordHasher.hashPassword(password);
-            st.executeUpdate("UPDATE AuthTGUsers SET password = '" + hash + "' WHERE uuid = '" + uuid.toString() + "'");
-            conn.close();
+        String sql = "UPDATE AuthTGUsers SET password=? WHERE uuid=?";
+        try (Connection c = ds.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setString(1, PasswordHasher.hashPassword(password));
+            ps.setString(2, uuid.toString());
+            ps.executeUpdate();
         } catch (SQLException e) {
             AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
         }
@@ -123,15 +47,12 @@ public class MySQLLoader implements Loader {
 
     @Override
     public void setActive(UUID uuid, boolean active) {
-        try {
-            conn = DriverManager.getConnection(
-                    "jdbc:mysql://" + this.host + "/" + this.database,
-                    this.username,
-                    this.password
-            );
-            st = conn.createStatement();
-            st.executeUpdate("UPDATE AuthTGUsers SET active = " + active + " WHERE uuid = '" + uuid.toString() + "'");
-            conn.close();
+        String sql = "UPDATE AuthTGUsers SET active=? WHERE uuid=?";
+        try (Connection c = ds.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setBoolean(1, active);
+            ps.setString(2, uuid.toString());
+            ps.executeUpdate();
         } catch (SQLException e) {
             AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
         }
@@ -139,18 +60,13 @@ public class MySQLLoader implements Loader {
 
     @Override
     public boolean isActive(UUID uuid) {
-        try {
-            conn = DriverManager.getConnection(
-                    "jdbc:mysql://" + this.host + "/" + this.database,
-                    this.username,
-                    this.password
-            );
-            st = conn.createStatement();
-            rs = st.executeQuery("SELECT active FROM AuthTGUsers WHERE uuid = '" + uuid.toString() + "'");
-            if (rs.next()) {
-                return rs.getBoolean("active");
+        String sql = "SELECT active FROM AuthTGUsers WHERE uuid=?";
+        try (Connection c = ds.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setString(1, uuid.toString());
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) return rs.getBoolean("active");
             }
-            conn.close();
         } catch (SQLException e) {
             AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
         }
@@ -159,18 +75,15 @@ public class MySQLLoader implements Loader {
 
     @Override
     public boolean passwordValid(UUID uuid, String password) {
-        try {
-            conn = DriverManager.getConnection(
-                    "jdbc:mysql://" + this.host + "/" + this.database,
-                    this.username,
-                    this.password
-            );
-            st = conn.createStatement();
-            rs = st.executeQuery("SELECT password FROM AuthTGUsers WHERE uuid = '" + uuid.toString() + "'");
-            if (rs.next()) {
-                return PasswordHasher.hashPassword(password).equals(rs.getString("password"));
+        String sql = "SELECT password FROM AuthTGUsers WHERE uuid=?";
+        try (Connection c = ds.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setString(1, uuid.toString());
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return PasswordHasher.hashPassword(password).equals(rs.getString("password"));
+                }
             }
-            conn.close();
         } catch (SQLException e) {
             AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
         }
@@ -179,18 +92,13 @@ public class MySQLLoader implements Loader {
 
     @Override
     public String getPlayerName(UUID uuid) {
-        try {
-            conn = DriverManager.getConnection(
-                    "jdbc:mysql://" + this.host + "/" + this.database,
-                    this.username,
-                    this.password
-            );
-            st = conn.createStatement();
-            rs = st.executeQuery("SELECT playername FROM AuthTGUsers WHERE uuid = '" + uuid.toString() + "'");
-            if (rs.next()) {
-                return rs.getString("playername");
+        String sql = "SELECT playername FROM AuthTGUsers WHERE uuid=?";
+        try (Connection c = ds.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setString(1, uuid.toString());
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) return rs.getString("playername");
             }
-            conn.close();
         } catch (SQLException e) {
             AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
         }
@@ -199,18 +107,13 @@ public class MySQLLoader implements Loader {
 
     @Override
     public boolean getTwofactor(UUID uuid) {
-        try {
-            conn = DriverManager.getConnection(
-                    "jdbc:mysql://" + this.host + "/" + this.database,
-                    this.username,
-                    this.password
-            );
-            st = conn.createStatement();
-            rs = st.executeQuery("SELECT twofactor FROM AuthTGUsers WHERE uuid = '" + uuid.toString() + "'");
-            if (rs.next()) {
-                return rs.getBoolean("twofactor");
+        String sql = "SELECT twofactor FROM AuthTGUsers WHERE uuid=?";
+        try (Connection c = ds.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setString(1, uuid.toString());
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) return rs.getBoolean("twofactor");
             }
-            conn.close();
         } catch (SQLException e) {
             AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
         }
@@ -219,18 +122,13 @@ public class MySQLLoader implements Loader {
 
     @Override
     public boolean getActiveTG(UUID uuid) {
-        try {
-            conn = DriverManager.getConnection(
-                    "jdbc:mysql://" + this.host + "/" + this.database,
-                    this.username,
-                    this.password
-            );
-            st = conn.createStatement();
-            rs = st.executeQuery("SELECT activeTG FROM AuthTGUsers WHERE uuid = '" + uuid.toString() + "'");
-            if (rs.next()) {
-                return rs.getBoolean("activeTG");
+        String sql = "SELECT activeTG FROM AuthTGUsers WHERE uuid=?";
+        try (Connection c = ds.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setString(1, uuid.toString());
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) return rs.getBoolean("activeTG");
             }
-            conn.close();
         } catch (SQLException e) {
             AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
         }
@@ -239,21 +137,17 @@ public class MySQLLoader implements Loader {
 
     @Override
     public List<String> getListFriends(UUID uuid) {
-        try {
-            conn = DriverManager.getConnection(
-                    "jdbc:mysql://" + this.host + "/" + this.database,
-                    this.username,
-                    this.password
-            );
-            st = conn.createStatement();
-            rs = st.executeQuery("SELECT friend FROM AuthTGFriends WHERE uuid = '" + uuid.toString() + "'");
-            List<String> list = new ArrayList<>();
-            while (rs.next()) {
-                if (!list.contains(rs.getString("friend"))) {
-                    list.add(rs.getString("friend"));
+        String sql = "SELECT friend FROM AuthTGFriends WHERE uuid=?";
+        List<String> list = new ArrayList<>();
+        try (Connection c = ds.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setString(1, uuid.toString());
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    String f = rs.getString("friend");
+                    if (!list.contains(f)) list.add(f);
                 }
             }
-            conn.close();
             return list;
         } catch (SQLException e) {
             AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
@@ -263,18 +157,13 @@ public class MySQLLoader implements Loader {
 
     @Override
     public String getUserName(UUID uuid) {
-        try {
-            conn = DriverManager.getConnection(
-                    "jdbc:mysql://" + this.host + "/" + this.database,
-                    this.username,
-                    this.password
-            );
-            st = conn.createStatement();
-            rs = st.executeQuery("SELECT username FROM AuthTGUsers WHERE uuid = '" + uuid.toString() + "'");
-            if (rs.next()) {
-                return rs.getString("username");
+        String sql = "SELECT username FROM AuthTGUsers WHERE uuid=?";
+        try (Connection c = ds.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setString(1, uuid.toString());
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) return rs.getString("username");
             }
-            conn.close();
         } catch (SQLException e) {
             AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
         }
@@ -283,18 +172,13 @@ public class MySQLLoader implements Loader {
 
     @Override
     public String getFirstName(UUID uuid) {
-        try {
-            conn = DriverManager.getConnection(
-                    "jdbc:mysql://" + this.host + "/" + this.database,
-                    this.username,
-                    this.password
-            );
-            st = conn.createStatement();
-            rs = st.executeQuery("SELECT firstname FROM AuthTGUsers WHERE uuid = '" + uuid.toString() + "'");
-            if (rs.next()) {
-                return rs.getString("firstname");
+        String sql = "SELECT firstname FROM AuthTGUsers WHERE uuid=?";
+        try (Connection c = ds.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setString(1, uuid.toString());
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) return rs.getString("firstname");
             }
-            conn.close();
         } catch (SQLException e) {
             AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
         }
@@ -303,18 +187,13 @@ public class MySQLLoader implements Loader {
 
     @Override
     public String getLastName(UUID uuid) {
-        try {
-            conn = DriverManager.getConnection(
-                    "jdbc:mysql://" + this.host + "/" + this.database,
-                    this.username,
-                    this.password
-            );
-            st = conn.createStatement();
-            rs = st.executeQuery("SELECT lastname FROM AuthTGUsers WHERE uuid = '" + uuid.toString() + "'");
-            if (rs.next()) {
-                return rs.getString("lastname");
+        String sql = "SELECT lastname FROM AuthTGUsers WHERE uuid=?";
+        try (Connection c = ds.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setString(1, uuid.toString());
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) return rs.getString("lastname");
             }
-            conn.close();
         } catch (SQLException e) {
             AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
         }
@@ -323,18 +202,13 @@ public class MySQLLoader implements Loader {
 
     @Override
     public Long getChatID(UUID uuid) {
-        try {
-            conn = DriverManager.getConnection(
-                    "jdbc:mysql://" + this.host + "/" + this.database,
-                    this.username,
-                    this.password
-            );
-            st = conn.createStatement();
-            rs = st.executeQuery("SELECT chatid FROM AuthTGUsers WHERE uuid = '" + uuid.toString() + "'");
-            if (rs.next()) {
-                return rs.getLong("chatid");
+        String sql = "SELECT chatid FROM AuthTGUsers WHERE uuid=?";
+        try (Connection c = ds.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setString(1, uuid.toString());
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) return rs.getLong("chatid");
             }
-            conn.close();
         } catch (SQLException e) {
             AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
         }
@@ -343,23 +217,13 @@ public class MySQLLoader implements Loader {
 
     @Override
     public UUID getCurrentUUID(Long chatid) {
-        try {
-            conn = DriverManager.getConnection(
-                    "jdbc:mysql://" + this.host + "/" + this.database,
-                    this.username,
-                    this.password
-            );
-            st = conn.createStatement();
-            rs = st.executeQuery("SELECT currentUUID FROM AuthTGUsers WHERE chatid = " + chatid);
-            if (rs.next()) {
-                if (rs.getBoolean("currentUUID")) {
-                    ResultSet rs1 = st.executeQuery("SELECT uuid FROM AuthTGUsers WHERE chatid = " + chatid);
-                    if (rs1.next()) {
-                        return UUID.fromString(rs1.getString("uuid"));
-                    }
-                }
+        String sql = "SELECT uuid FROM AuthTGUsers WHERE chatid=? AND currentUUID=true LIMIT 1";
+        try (Connection c = ds.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setLong(1, chatid);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) return UUID.fromString(rs.getString("uuid"));
             }
-            conn.close();
         } catch (SQLException e) {
             AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
         }
@@ -368,17 +232,17 @@ public class MySQLLoader implements Loader {
 
     @Override
     public void setCurrentUUID(UUID uuid, Long chatid) {
-        try {
-            conn = DriverManager.getConnection(
-                    "jdbc:mysql://" + this.host + "/" + this.database,
-                    this.username,
-                    this.password
-            );
-            st = conn.createStatement();
-            rs = st.executeQuery("SELECT currentUUID FROM AuthTGUsers WHERE chatid = " + chatid);
-            st.executeUpdate("UPDATE AuthTGUsers SET currentUUID = false WHERE chatid = " + chatid);
-            st.executeUpdate("UPDATE AuthTGUsers SET currentUUID = true WHERE uuid = '" + uuid.toString() + "'");
-            conn.close();
+        String clear = "UPDATE AuthTGUsers SET currentUUID=false WHERE chatid=?";
+        String set = "UPDATE AuthTGUsers SET currentUUID=true WHERE uuid=?";
+        try (Connection c = ds.getConnection()) {
+            try (PreparedStatement ps = c.prepareStatement(clear)) {
+                ps.setLong(1, chatid);
+                ps.executeUpdate();
+            }
+            try (PreparedStatement ps = c.prepareStatement(set)) {
+                ps.setString(1, uuid.toString());
+                ps.executeUpdate();
+            }
         } catch (SQLException e) {
             AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
         }
@@ -386,15 +250,12 @@ public class MySQLLoader implements Loader {
 
     @Override
     public void setChatID(UUID uuid, Long chatid) {
-        try {
-            conn = DriverManager.getConnection(
-                    "jdbc:mysql://" + this.host + "/" + this.database,
-                    this.username,
-                    this.password
-            );
-            st = conn.createStatement();
-            st.executeUpdate("UPDATE AuthTGUsers SET chatid = " + chatid + " WHERE uuid = '" + uuid.toString() + "'");
-            conn.close();
+        String sql = "UPDATE AuthTGUsers SET chatid=? WHERE uuid=?";
+        try (Connection c = ds.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setLong(1, chatid);
+            ps.setString(2, uuid.toString());
+            ps.executeUpdate();
         } catch (SQLException e) {
             AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
         }
@@ -402,15 +263,12 @@ public class MySQLLoader implements Loader {
 
     @Override
     public void setUsername(UUID uuid, String username) {
-        try {
-            conn = DriverManager.getConnection(
-                    "jdbc:mysql://" + this.host + "/" + this.database,
-                    this.username,
-                    this.password
-            );
-            st = conn.createStatement();
-            st.executeUpdate("UPDATE AuthTGUsers SET username = '" + username + "' WHERE uuid = '" + uuid.toString() + "'");
-            conn.close();
+        String sql = "UPDATE AuthTGUsers SET username=? WHERE uuid=?";
+        try (Connection c = ds.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setString(1, username);
+            ps.setString(2, uuid.toString());
+            ps.executeUpdate();
         } catch (SQLException e) {
             AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
         }
@@ -418,15 +276,12 @@ public class MySQLLoader implements Loader {
 
     @Override
     public void setLastName(UUID uuid, String lastname) {
-        try {
-            conn = DriverManager.getConnection(
-                    "jdbc:mysql://" + this.host + "/" + this.database,
-                    this.username,
-                    this.password
-            );
-            st = conn.createStatement();
-            st.executeUpdate("UPDATE AuthTGUsers SET lastname = '" + lastname + "' WHERE uuid = '" + uuid.toString() + "'");
-            conn.close();
+        String sql = "UPDATE AuthTGUsers SET lastname=? WHERE uuid=?";
+        try (Connection c = ds.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setString(1, lastname);
+            ps.setString(2, uuid.toString());
+            ps.executeUpdate();
         } catch (SQLException e) {
             AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
         }
@@ -434,15 +289,12 @@ public class MySQLLoader implements Loader {
 
     @Override
     public void setFirstName(UUID uuid, String firstname) {
-        try {
-            conn = DriverManager.getConnection(
-                    "jdbc:mysql://" + this.host + "/" + this.database,
-                    this.username,
-                    this.password
-            );
-            st = conn.createStatement();
-            st.executeUpdate("UPDATE AuthTGUsers SET firstname = '" + firstname + "' WHERE uuid = '" + uuid.toString() + "'");
-            conn.close();
+        String sql = "UPDATE AuthTGUsers SET firstname=? WHERE uuid=?";
+        try (Connection c = ds.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setString(1, firstname);
+            ps.setString(2, uuid.toString());
+            ps.executeUpdate();
         } catch (SQLException e) {
             AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
         }
@@ -450,15 +302,12 @@ public class MySQLLoader implements Loader {
 
     @Override
     public void setTwofactor(UUID uuid, boolean state) {
-        try {
-            conn = DriverManager.getConnection(
-                    "jdbc:mysql://" + this.host + "/" + this.database,
-                    this.username,
-                    this.password
-            );
-            st = conn.createStatement();
-            st.executeUpdate("UPDATE AuthTGUsers SET twofactor = " + state + " WHERE uuid = '" + uuid.toString() + "'");
-            conn.close();
+        String sql = "UPDATE AuthTGUsers SET twofactor=? WHERE uuid=?";
+        try (Connection c = ds.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setBoolean(1, state);
+            ps.setString(2, uuid.toString());
+            ps.executeUpdate();
         } catch (SQLException e) {
             AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
         }
@@ -466,15 +315,12 @@ public class MySQLLoader implements Loader {
 
     @Override
     public void setActiveTG(UUID uuid, boolean state) {
-        try {
-            conn = DriverManager.getConnection(
-                    "jdbc:mysql://" + this.host + "/" + this.database,
-                    this.username,
-                    this.password
-            );
-            st = conn.createStatement();
-            st.executeUpdate("UPDATE AuthTGUsers SET activeTG = " + state + " WHERE uuid = '" + uuid.toString() + "'");
-            conn.close();
+        String sql = "UPDATE AuthTGUsers SET activeTG=? WHERE uuid=?";
+        try (Connection c = ds.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setBoolean(1, state);
+            ps.setString(2, uuid.toString());
+            ps.executeUpdate();
         } catch (SQLException e) {
             AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
         }
@@ -482,23 +328,17 @@ public class MySQLLoader implements Loader {
 
     @Override
     public List<UUID> getPlayerNames(Long chatid) {
-        try {
-            conn = DriverManager.getConnection(
-                    "jdbc:mysql://" + this.host + "/" + this.database,
-                    this.username,
-                    this.password
-            );
-            st = conn.createStatement();
-            rs = st.executeQuery("SELECT uuid,activeTG FROM AuthTGUsers WHERE chatid = " + chatid);
-            List<UUID> list = new ArrayList<>();
-            while (rs.next()) {
-                if (rs.getBoolean("activeTG")) {
-                    if (!list.contains(UUID.fromString(rs.getString("uuid")))) {
-                        list.add(UUID.fromString(rs.getString("uuid")));
-                    }
+        String sql = "SELECT uuid FROM AuthTGUsers WHERE chatid=? AND activeTG=true";
+        List<UUID> list = new ArrayList<>();
+        try (Connection c = ds.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setLong(1, chatid);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    UUID u = UUID.fromString(rs.getString("uuid"));
+                    if (!list.contains(u)) list.add(u);
                 }
             }
-            conn.close();
             return list;
         } catch (SQLException e) {
             AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
@@ -511,21 +351,12 @@ public class MySQLLoader implements Loader {
 
     @Override
     public Set<Long> getChatID() {
-        try {
-            conn = DriverManager.getConnection(
-                    "jdbc:mysql://" + this.host + "/" + this.database,
-                    this.username,
-                    this.password
-            );
-            st = conn.createStatement();
-            Set<Long> set = new HashSet<>();
-            rs = st.executeQuery("SELECT chatid FROM AuthTGUsers");
-            while (rs.next()) {
-                if (!set.contains(rs.getLong("chatid"))) {
-                    set.add(rs.getLong("chatid"));
-                }
-            }
-            conn.close();
+        String sql = "SELECT chatid FROM AuthTGUsers";
+        Set<Long> set = new HashSet<>();
+        try (Connection c = ds.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) set.add(rs.getLong("chatid"));
             return set;
         } catch (SQLException e) {
             AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
@@ -535,15 +366,12 @@ public class MySQLLoader implements Loader {
 
     @Override
     public void addFriend(UUID uuid, String friend) {
-        try {
-            conn = DriverManager.getConnection(
-                    "jdbc:mysql://" + this.host + "/" + this.database,
-                    this.username,
-                    this.password
-            );
-            st = conn.createStatement();
-            st.executeUpdate("INSERT INTO AuthTGFriends(uuid, friend) VALUES ('" + uuid.toString() + "', '" + friend + "') ");
-            conn.close();
+        String sql = "INSERT INTO AuthTGFriends(uuid, friend) VALUES (?, ?)";
+        try (Connection c = ds.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setString(1, uuid.toString());
+            ps.setString(2, friend);
+            ps.executeUpdate();
         } catch (SQLException e) {
             AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
         }
@@ -551,18 +379,13 @@ public class MySQLLoader implements Loader {
 
     @Override
     public UUID getUUIDbyPlayerName(String playername) {
-        try {
-            conn = DriverManager.getConnection(
-                    "jdbc:mysql://" + this.host + "/" + this.database,
-                    this.username,
-                    this.password
-            );
-            st = conn.createStatement();
-            rs = st.executeQuery("SELECT uuid FROM AuthTGUsers WHERE playername = '" + playername + "'");
-            if (rs.next()) {
-                return UUID.fromString(rs.getString("uuid"));
+        String sql = "SELECT uuid FROM AuthTGUsers WHERE playername=? LIMIT 1";
+        try (Connection c = ds.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setString(1, playername);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) return UUID.fromString(rs.getString("uuid"));
             }
-            conn.close();
         } catch (SQLException e) {
             AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
         }
@@ -571,15 +394,12 @@ public class MySQLLoader implements Loader {
 
     @Override
     public void removeFriend(UUID uuid, String friend) {
-        try {
-            conn = DriverManager.getConnection(
-                    "jdbc:mysql://" + this.host + "/" + this.database,
-                    this.username,
-                    this.password
-            );
-            st = conn.createStatement();
-            st.executeUpdate("DELETE FROM AuthTGFriends WHERE uuid = '" + uuid.toString() + "' AND friend = '" + friend + "'");
-            conn.close();
+        String sql = "DELETE FROM AuthTGFriends WHERE uuid=? AND friend=?";
+        try (Connection c = ds.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setString(1, uuid.toString());
+            ps.setString(2, friend);
+            ps.executeUpdate();
         } catch (SQLException e) {
             AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
         }
@@ -587,17 +407,11 @@ public class MySQLLoader implements Loader {
 
     @Override
     public void setAdmin(UUID uuid) {
-        try {
-            conn = DriverManager.getConnection(
-                    "jdbc:mysql://" + this.host + "/" + this.database,
-                    this.username,
-                    this.password
-            );
-            st = conn.createStatement();
-            st.executeUpdate(
-                    "UPDATE AuthTGUsers SET admin = true WHERE uuid = '" + uuid.toString() + "'"
-            );
-            conn.close();
+        String sql = "UPDATE AuthTGUsers SET admin=true WHERE uuid=?";
+        try (Connection c = ds.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setString(1, uuid.toString());
+            ps.executeUpdate();
         } catch (SQLException e) {
             AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
         }
@@ -605,17 +419,11 @@ public class MySQLLoader implements Loader {
 
     @Override
     public void removeAdmin(UUID uuid) {
-        try {
-            conn = DriverManager.getConnection(
-                    "jdbc:mysql://" + this.host + "/" + this.database,
-                    this.username,
-                    this.password
-            );
-            st = conn.createStatement();
-            st.executeUpdate(
-                    "UPDATE AuthTGUsers SET admin = false WHERE uuid = '" + uuid.toString() + "'"
-            );
-            conn.close();
+        String sql = "UPDATE AuthTGUsers SET admin=false WHERE uuid=?";
+        try (Connection c = ds.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setString(1, uuid.toString());
+            ps.executeUpdate();
         } catch (SQLException e) {
             AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
         }
@@ -623,21 +431,12 @@ public class MySQLLoader implements Loader {
 
     @Override
     public Set<String> getAdminList() {
-        try {
-            conn = DriverManager.getConnection(
-                    "jdbc:mysql://" + this.host + "/" + this.database,
-                    this.username,
-                    this.password
-            );
-            st = conn.createStatement();
-            rs = st.executeQuery(
-                    "SELECT playername FROM AuthTGUsers WHERE admin = true"
-            );
-            Set<String> set = new HashSet<>();
-            while (rs.next()) {
-                set.add(rs.getString("playername"));
-            }
-            conn.close();
+        String sql = "SELECT playername FROM AuthTGUsers WHERE admin=true";
+        Set<String> set = new HashSet<>();
+        try (Connection c = ds.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) set.add(rs.getString("playername"));
             return set;
         } catch (SQLException e) {
             AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
@@ -647,21 +446,14 @@ public class MySQLLoader implements Loader {
 
     @Override
     public Set<String> getCommands(UUID uuid) {
-        try {
-            conn = DriverManager.getConnection(
-                    "jdbc:mysql://" + this.host + "/" + this.database,
-                    this.username,
-                    this.password
-            );
-            st = conn.createStatement();
-            rs = st.executeQuery(
-                    "SELECT command FROM AuthTGCommands WHERE uuid = '" + uuid.toString() + "'"
-            );
-            Set<String> list = new HashSet<>();
-            while (rs.next()) {
-                list.add(rs.getString("command"));
+        String sql = "SELECT command FROM AuthTGCommands WHERE uuid=?";
+        Set<String> list = new HashSet<>();
+        try (Connection c = ds.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setString(1, uuid.toString());
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) list.add(rs.getString("command"));
             }
-            conn.close();
             return list;
         } catch (SQLException e) {
             AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
@@ -671,17 +463,12 @@ public class MySQLLoader implements Loader {
 
     @Override
     public void addCommand(UUID uuid, String command) {
-        try {
-            conn = DriverManager.getConnection(
-                    "jdbc:mysql://" + this.host + "/" + this.database,
-                    this.username,
-                    this.password
-            );
-            st = conn.createStatement();
-            st.executeUpdate(
-                    "INSERT INTO AuthTGCommands(uuid, command) VALUES ('" + uuid.toString() + "', '" + command + "')"
-            );
-            conn.close();
+        String sql = "INSERT INTO AuthTGCommands(uuid, command) VALUES (?, ?)";
+        try (Connection c = ds.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setString(1, uuid.toString());
+            ps.setString(2, command);
+            ps.executeUpdate();
         } catch (SQLException e) {
             AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
         }
@@ -689,17 +476,12 @@ public class MySQLLoader implements Loader {
 
     @Override
     public void removeCommand(UUID uuid, String command) {
-        try {
-            conn = DriverManager.getConnection(
-                    "jdbc:mysql://" + this.host + "/" + this.database,
-                    this.username,
-                    this.password
-            );
-            st = conn.createStatement();
-            st.executeUpdate(
-                    "DELETE FROM AuthTGCommands WHERE uuid = '" + uuid.toString() + "' AND command = '" + command + "'"
-            );
-            conn.close();
+        String sql = "DELETE FROM AuthTGCommands WHERE uuid=? AND command=?";
+        try (Connection c = ds.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setString(1, uuid.toString());
+            ps.setString(2, command);
+            ps.executeUpdate();
         } catch (SQLException e) {
             AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
         }
@@ -707,20 +489,13 @@ public class MySQLLoader implements Loader {
 
     @Override
     public boolean isAdmin(UUID uuid) {
-        try {
-            conn = DriverManager.getConnection(
-                    "jdbc:mysql://" + this.host + "/" + this.database,
-                    this.username,
-                    this.password
-            );
-            st = conn.createStatement();
-            rs = st.executeQuery(
-                    "SELECT admin FROM AuthTGUsers WHERE uuid = '" + uuid.toString() + "'"
-            );
-            if (rs.next()) {
-                return rs.getBoolean("admin");
+        String sql = "SELECT admin FROM AuthTGUsers WHERE uuid=?";
+        try (Connection c = ds.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setString(1, uuid.toString());
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) return rs.getBoolean("admin");
             }
-            conn.close();
         } catch (SQLException e) {
             AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
         }
@@ -729,118 +504,32 @@ public class MySQLLoader implements Loader {
 
     @Override
     public void setBanTime(UUID uuid, String dateBan, String reason, String time, String admin) {
-        try {
-            conn = DriverManager.getConnection(
-                    "jdbc:mysql://" + this.host + "/" + this.database,
-                    this.username,
-                    this.password
-            );
-            st = conn.createStatement();
-            st.executeUpdate(
-                    "INSERT INTO AuthTGBans(uuid, timeBan, reason, time, admin) VALUES ('" + uuid.toString() + "', '" + dateBan + "', '" + reason + "', '" + time + "', '" + admin + "')"
-            );
-            conn.close();
+        String sql = "INSERT INTO AuthTGBans(uuid, timeBan, reason, time, admin) VALUES (?, ?, ?, ?, ?)";
+        try (Connection c = ds.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setString(1, uuid.toString());
+            ps.setString(2, dateBan);
+            ps.setString(3, reason);
+            ps.setString(4, time);
+            ps.setString(5, admin);
+            ps.executeUpdate();
         } catch (SQLException e) {
             AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
         }
     }
 
-    @Override
-    public String getBanTime(UUID uuid) {
-        try {
-            conn = DriverManager.getConnection(
-                    "jdbc:mysql://" + this.host + "/" + this.database,
-                    this.username,
-                    this.password
-            );
-            st = conn.createStatement();
-            rs = st.executeQuery(
-                    "SELECT timeBan FROM AuthTGBans WHERE uuid = '" + uuid.toString() + "'"
-            );
-            if (rs.next()) {
-                return rs.getString("timeBan");
-            }
-        } catch (SQLException e) {
-            AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
-        }
-        return null;
-    }
-
-    @Override
-    public String getBanReason(UUID uuid) {
-        try {
-            conn = DriverManager.getConnection(
-                    "jdbc:mysql://" + this.host + "/" + this.database,
-                    this.username,
-                    this.password
-            );
-            st = conn.createStatement();
-            rs = st.executeQuery(
-                    "SELECT reason FROM AuthTGBans WHERE uuid = '" + uuid.toString() + "'"
-            );
-            if (rs.next()) {
-                return rs.getString("reason");
-            }
-        } catch (SQLException e) {
-            AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
-        }
-        return null;
-    }
-
-    @Override
-    public String getBanAdmin(UUID uuid) {
-        try {
-            conn = DriverManager.getConnection(
-                    "jdbc:mysql://" + this.host + "/" + this.database,
-                    this.username,
-                    this.password
-            );
-            st = conn.createStatement();
-            rs = st.executeQuery(
-                    "SELECT admin FROM AuthTGBans WHERE uuid = '" + uuid.toString() + "'"
-            );
-            if (rs.next()) {
-                return rs.getString("admin");
-            }
-        } catch (SQLException e) {
-            AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
-        }
-        return null;
-    }
-
-    @Override
-    public String getBanTimeAdmin(UUID uuid) {
-        try {
-            conn = DriverManager.getConnection(
-                    "jdbc:mysql://" + this.host + "/" + this.database,
-                    this.username,
-                    this.password
-            );
-            st = conn.createStatement();
-            rs = st.executeQuery(
-                    "SELECT time FROM AuthTGBans WHERE uuid = '" + uuid.toString() + "'"
-            );
-            if (rs.next()) {
-                return rs.getString("time");
-            }
-        } catch (SQLException e) {
-            AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
-        }
-        return null;
-    }
+    @Override public String getBanTime(UUID uuid) { return getOneString("SELECT timeBan FROM AuthTGBans WHERE uuid=?", uuid); }
+    @Override public String getBanReason(UUID uuid) { return getOneString("SELECT reason FROM AuthTGBans WHERE uuid=?", uuid); }
+    @Override public String getBanAdmin(UUID uuid) { return getOneString("SELECT admin FROM AuthTGBans WHERE uuid=?", uuid); }
+    @Override public String getBanTimeAdmin(UUID uuid) { return getOneString("SELECT time FROM AuthTGBans WHERE uuid=?", uuid); }
 
     @Override
     public void deleteBan(UUID uuid) {
-        try {
-            conn = DriverManager.getConnection(
-                    "jdbc:mysql://" + this.host + "/" + this.database,
-                    this.username,
-                    this.password
-            );
-            st = conn.createStatement();
-            st.executeUpdate(
-                    "DELETE FROM AuthTGBans WHERE uuid = '" + uuid.toString() + "'"
-            );
+        String sql = "DELETE FROM AuthTGBans WHERE uuid=?";
+        try (Connection c = ds.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setString(1, uuid.toString());
+            ps.executeUpdate();
         } catch (SQLException e) {
             AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
         }
@@ -848,18 +537,12 @@ public class MySQLLoader implements Loader {
 
     @Override
     public boolean isBanned(UUID uuid) {
-        try {
-            conn = DriverManager.getConnection(
-                    "jdbc:mysql://" + this.host + "/" + this.database,
-                    this.username,
-                    this.password
-            );
-            st = conn.createStatement();
-            rs = st.executeQuery(
-                    "SELECT uuid FROM AuthTGBans WHERE uuid = '" + uuid.toString() + "'"
-            );
-            if (rs.next()) {
-                return true;
+        String sql = "SELECT 1 FROM AuthTGBans WHERE uuid=? LIMIT 1";
+        try (Connection c = ds.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setString(1, uuid.toString());
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next();
             }
         } catch (SQLException e) {
             AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
@@ -869,129 +552,49 @@ public class MySQLLoader implements Loader {
 
     @Override
     public void setMuteTime(UUID uuid, String dateMute, String reason, String time, String admin) {
-        try {
-            conn = DriverManager.getConnection(
-                    "jdbc:mysql://" + this.host + "/" + this.database,
-                    this.username,
-                    this.password
-            );
-            st = conn.createStatement();
-            st.executeUpdate(
-                    "INSERT INTO AuthTGMutes(uuid, timeMute, reason, time, admin) VALUES ('" + uuid.toString() + "', '" + dateMute + "', '" + reason + "', '" + time + "', '" + admin + "')"
-            );
-            rs = st.executeQuery(
-                    "SELECT playername FROM AuthTGUsers WHERE uuid = '" + uuid.toString() + "'"
-            );
-            if (rs.next()) {
-                List<Object> list = new ArrayList<>();
-                LocalDateTime parsedDate = LocalDateTime.parse(dateMute, DateTimeFormatter.ofPattern("HH:mm:ss dd.MM.yyyy"));
-                list.add(0, parsedDate);
-                list.add(1, reason);
-                MuterEvent.muteChat(rs.getString("playername"), list);
+        String insert = "INSERT INTO AuthTGMutes(uuid, timeMute, reason, time, admin) VALUES (?, ?, ?, ?, ?)";
+        String pname = "SELECT playername FROM AuthTGUsers WHERE uuid=? LIMIT 1";
+
+        try (Connection c = ds.getConnection()) {
+            try (PreparedStatement ps = c.prepareStatement(insert)) {
+                ps.setString(1, uuid.toString());
+                ps.setString(2, dateMute);
+                ps.setString(3, reason);
+                ps.setString(4, time);
+                ps.setString(5, admin);
+                ps.executeUpdate();
             }
-            conn.close();
+
+            try (PreparedStatement ps = c.prepareStatement(pname)) {
+                ps.setString(1, uuid.toString());
+                try (ResultSet rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        List<Object> list = new ArrayList<>();
+                        LocalDateTime parsedDate = LocalDateTime.parse(dateMute, DateTimeFormatter.ofPattern("HH:mm:ss dd.MM.yyyy"));
+                        list.add(0, parsedDate);
+                        list.add(1, reason);
+                        MuterEvent.muteChat(rs.getString("playername"), list);
+                    }
+                }
+            }
+
         } catch (SQLException e) {
             AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
         }
     }
 
-    @Override
-    public String getMuteTime(UUID uuid) {
-        try {
-            conn = DriverManager.getConnection(
-                    "jdbc:mysql://" + this.host + "/" + this.database,
-                    this.username,
-                    this.password
-            );
-            st = conn.createStatement();
-            rs = st.executeQuery(
-                    "SELECT timeMute FROM AuthTGMutes WHERE uuid = '" + uuid.toString() + "'"
-            );
-            if (rs.next()) {
-                return rs.getString("timeMute");
-            }
-        } catch (SQLException e) {
-            AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
-        }
-        return null;
-    }
-
-    @Override
-    public String getMuteReason(UUID uuid) {
-        try {
-            conn = DriverManager.getConnection(
-                    "jdbc:mysql://" + this.host + "/" + this.database,
-                    this.username,
-                    this.password
-            );
-            st = conn.createStatement();
-            rs = st.executeQuery(
-                    "SELECT reason FROM AuthTGMutes WHERE uuid = '" + uuid.toString() + "'"
-            );
-            if (rs.next()) {
-                return rs.getString("reason");
-            }
-        } catch (SQLException e) {
-            AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
-        }
-        return null;
-    }
-
-    @Override
-    public String getMuteAdmin(UUID uuid) {
-        try {
-            conn = DriverManager.getConnection(
-                    "jdbc:mysql://" + this.host + "/" + this.database,
-                    this.username,
-                    this.password
-            );
-            st = conn.createStatement();
-            rs = st.executeQuery(
-                    "SELECT admin FROM AuthTGMutes WHERE uuid = '" + uuid.toString() + "'"
-            );
-            if (rs.next()) {
-                return rs.getString("admin");
-            }
-        } catch (SQLException e) {
-            AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
-        }
-        return null;
-    }
-
-    @Override
-    public String getMuteTimeAdmin(UUID uuid) {
-        try {
-            conn = DriverManager.getConnection(
-                    "jdbc:mysql://" + this.host + "/" + this.database,
-                    this.username,
-                    this.password
-            );
-            st = conn.createStatement();
-            rs = st.executeQuery(
-                    "SELECT time FROM AuthTGMutes WHERE uuid = '" + uuid.toString() + "'"
-            );
-            if (rs.next()) {
-                return rs.getString("time");
-            }
-        } catch (SQLException e) {
-            AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
-        }
-        return null;
-    }
+    @Override public String getMuteTime(UUID uuid) { return getOneString("SELECT timeMute FROM AuthTGMutes WHERE uuid=?", uuid); }
+    @Override public String getMuteReason(UUID uuid) { return getOneString("SELECT reason FROM AuthTGMutes WHERE uuid=?", uuid); }
+    @Override public String getMuteAdmin(UUID uuid) { return getOneString("SELECT admin FROM AuthTGMutes WHERE uuid=?", uuid); }
+    @Override public String getMuteTimeAdmin(UUID uuid) { return getOneString("SELECT time FROM AuthTGMutes WHERE uuid=?", uuid); }
 
     @Override
     public void deleteMute(UUID uuid) {
-        try {
-            conn = DriverManager.getConnection(
-                    "jdbc:mysql://" + this.host + "/" + this.database,
-                    this.username,
-                    this.password
-            );
-            st = conn.createStatement();
-            st.executeUpdate(
-                    "DELETE FROM AuthTGMutes WHERE uuid = '" + uuid.toString() + "'"
-            );
-            conn.close();
+        String sql = "DELETE FROM AuthTGMutes WHERE uuid=?";
+        try (Connection c = ds.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setString(1, uuid.toString());
+            ps.executeUpdate();
         } catch (SQLException e) {
             AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
         }
@@ -999,20 +602,12 @@ public class MySQLLoader implements Loader {
 
     @Override
     public boolean isMuted(UUID uuid) {
-        try {
-            conn = DriverManager.getConnection(
-                    "jdbc:mysql://" + this.host + "/" + this.database,
-                    this.username,
-                    this.password
-            );
-            st = conn.createStatement();
-            rs = st.executeQuery(
-                    "SELECT timeMute FROM AuthTGMutes WHERE uuid = '" + uuid.toString() + "'"
-            );
-            if (rs.next()) {
-                if (rs.getString("timeMute") != null) {
-                    return true;
-                }
+        String sql = "SELECT timeMute FROM AuthTGMutes WHERE uuid=? LIMIT 1";
+        try (Connection c = ds.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setString(1, uuid.toString());
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) return rs.getString("timeMute") != null;
             }
         } catch (SQLException e) {
             AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
@@ -1023,43 +618,44 @@ public class MySQLLoader implements Loader {
     @Override
     public Map<String, List<Object>> getMutedPlayers() {
         Map<String, List<Object>> map = new HashMap<>();
-        try {
-            conn = DriverManager.getConnection(
-                    "jdbc:mysql://" + this.host + "/" + this.database,
-                    this.username,
-                    this.password
-            );
-            st = conn.createStatement();
-            rs = st.executeQuery(
-                    "SELECT * FROM AuthTGMutes"
-            );
+
+        // меньше запросов: подтягиваем playername JOIN'ом
+        String sql = "SELECT m.timeMute, m.reason, u.playername " +
+                "FROM AuthTGMutes m " +
+                "LEFT JOIN AuthTGUsers u ON u.uuid = m.uuid";
+
+        try (Connection c = ds.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
             while (rs.next()) {
+                String playername = rs.getString("playername");
+                if (playername == null) continue;
+
                 List<Object> list = new ArrayList<>();
                 LocalDateTime parsedDate = LocalDateTime.parse(rs.getString("timeMute"), DateTimeFormatter.ofPattern("HH:mm:ss dd.MM.yyyy"));
                 list.add(0, parsedDate);
                 list.add(1, rs.getString("reason"));
-                String playername = getPlayerName(UUID.fromString(rs.getString("uuid")));
+
                 map.put(playername, list);
             }
+
         } catch (SQLException e) {
-            AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());;
+            AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
         }
+
         return map;
     }
 
     @Override
     public void setSession(UUID uuid, String ip, LocalDateTime time) {
-        try {
-            conn = DriverManager.getConnection(
-                    "jdbc:mysql://" + this.host + "/" + this.database,
-                    this.username,
-                    this.password
-            );
-            st = conn.createStatement();
-            st.executeUpdate(
-                    "UPDATE AuthTGUsers SET ip = '" + ip + "', time = '" + time + "' WHERE uuid = '" + uuid.toString() +"'"
-            );
-            conn.close();
+        String sql = "UPDATE AuthTGUsers SET ip=?, time=? WHERE uuid=?";
+        try (Connection c = ds.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setString(1, ip);
+            ps.setString(2, String.valueOf(time));
+            ps.setString(3, uuid.toString());
+            ps.executeUpdate();
         } catch (SQLException e) {
             AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
         }
@@ -1067,16 +663,11 @@ public class MySQLLoader implements Loader {
 
     @Override
     public void deleteSession(UUID uuid) {
-        try {
-            conn = DriverManager.getConnection(
-                    "jdbc:mysql://" + this.host + "/" + this.database,
-                    this.username,
-                    this.password
-            );
-            st = conn.createStatement();
-            st.executeUpdate(
-                    "UPDATE AuthTGUsers SET ip = '0', time = '0' WHERE uuid = '" + uuid.toString() + "'"
-            );
+        String sql = "UPDATE AuthTGUsers SET ip='0', time='0' WHERE uuid=?";
+        try (Connection c = ds.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setString(1, uuid.toString());
+            ps.executeUpdate();
         } catch (SQLException e) {
             AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
         }
@@ -1084,27 +675,34 @@ public class MySQLLoader implements Loader {
 
     @Override
     public List<Object> getSession(UUID uuid) {
-        try {
-            conn = DriverManager.getConnection(
-                    "jdbc:mysql://" + this.host + "/" + this.database,
-                    this.username,
-                    this.password
-            );
-            System.out.println(uuid.toString());
-            st = conn.createStatement();
-            rs = st.executeQuery(
-                    "SELECT ip, time FROM AuthTGUsers WHERE uuid = '" + uuid.toString() + "'"
-            );
-            List<Object> list = new ArrayList<>();
-            if (rs.next()) {
-                list.add(rs.getString("ip"));
-                list.add(rs.getString("time"));
+        String sql = "SELECT ip, time FROM AuthTGUsers WHERE uuid=?";
+        try (Connection c = ds.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setString(1, uuid.toString());
+            try (ResultSet rs = ps.executeQuery()) {
+                List<Object> list = new ArrayList<>();
+                if (rs.next()) {
+                    list.add(rs.getString("ip"));
+                    list.add(rs.getString("time"));
+                }
+                return list;
             }
-            conn.close();
-            return list;
         } catch (SQLException e) {
             AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
         }
         return List.of();
+    }
+
+    private String getOneString(String sql, UUID uuid) {
+        try (Connection c = ds.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setString(1, uuid.toString());
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) return rs.getString(1);
+            }
+        } catch (SQLException e) {
+            AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
+        }
+        return null;
     }
 }
