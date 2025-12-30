@@ -111,7 +111,7 @@ public class BotTelegram extends TelegramLongPollingBot {
         if (nextStepHandler.containsKey(chatid) && !text.startsWith("/")) {
             NextStepHandler h = nextStepHandler.get(chatid);
             if (h != null) h.execute(update);
-            safeDelete(update.getMessage());
+            deleteMessage(update.getMessage());
             return;
         }
 
@@ -123,7 +123,7 @@ public class BotTelegram extends TelegramLongPollingBot {
             CommandHandler h = commandHandler.get(str[0]);
             if (h != null) h.execute(update);
 
-            safeDelete(update.getMessage());
+            deleteMessage(update.getMessage());
             return;
         }
 
@@ -147,7 +147,7 @@ public class BotTelegram extends TelegramLongPollingBot {
                 this.sendMessage(chatid, AuthTG.getMessage("chatminecraftnotactive", "TG"));
             }
 
-            safeDelete(update.getMessage());
+            deleteMessage(update.getMessage());
             return;
         }
 
@@ -173,7 +173,7 @@ public class BotTelegram extends TelegramLongPollingBot {
             }
         }
 
-        safeDelete(update.getMessage());
+        deleteMessage(update.getMessage());
     }
 
     private void handleCallback(Update update) {
@@ -266,5 +266,21 @@ public class BotTelegram extends TelegramLongPollingBot {
     public UUID getUserData(String username) {
         if (username == null) return null;
         return userData.get(username);
+    }
+    public void deleteMessage(Message message) {
+        if (message == null) return;
+
+        DeleteMessage deleteMessage = new DeleteMessage();
+        deleteMessage.setChatId(message.getChatId());
+        deleteMessage.setMessageId(message.getMessageId());
+
+        try {
+            execute(deleteMessage);
+        } catch (TelegramApiRequestException e) {
+            // Частые кейсы: "message can't be deleted", "message to delete not found"
+            AuthTG.logger.log(Level.FINE, "[AuthTG] deleteMessage: " + e.getErrorCode() + " " + e.getApiResponse());
+        } catch (TelegramApiException e) {
+            AuthTG.logger.log(Level.FINE, "[AuthTG] deleteMessage error: " + e.getMessage());
+        }
     }
 }
