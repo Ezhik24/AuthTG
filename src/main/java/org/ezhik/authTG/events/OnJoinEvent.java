@@ -66,7 +66,11 @@ public class OnJoinEvent implements Listener {
             if (user != null && user.activetg) {
                 MuterEvent.mute(p.getName(), ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("joininaccounttext", "MC")));
                 p.sendTitle(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("joininaccounts1", "MC")), AuthTG.getMessage("joininaccounts2", "MC"), 20, 10000000, 0);
-                user.sendLoginAccepted(AuthTG.getMessage("loginaccept", "TG").replace("{PLAYER}", user.playername));
+                user.sendLoginAccepted(
+                        AuthTG.getMessage("loginaccept", "TG")
+                                .replace("{PLAYER}", user.playername)
+                                .replace("{IP}", p.getAddress().getAddress().getHostAddress())
+                );
             } else {
                 MuterEvent.mute(p.getName(), ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("authtgactivetext", "MC")));
                 p.sendTitle(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("authtgactives1", "MC")), AuthTG.getMessage("authtgactives2", "MC"), 20, 10000000, 0);

@@ -11,9 +11,25 @@ import java.util.List;
 public class CMDSecondStep implements CallbackQueryHandler{
     @Override
     public void execute(Update update) {
-        User user = User.getCurrentUser((update.getCallbackQuery().getFrom().getId()));
-        List<String> list = CommandCMDHandler.commands.get(user.chatid);
+        long chatId = update.getCallbackQuery().getMessage().getChatId();
+
+        User user = User.getCurrentUser(chatId);
+        if (user == null) {
+            AuthTG.bot.sendMessage(chatId, AuthTG.getMessage("cmdnull", "TG"));
+            return;
+        }
+
+        List<String> list = CommandCMDHandler.commands.get(chatId);
+        if (list == null || list.size() < 2) {
+            user.sendMessage(AuthTG.getMessage("cmdfirst", "TG"));
+            return;
+        }
+
         User target = User.getUser(list.get(1));
+        if (target == null) {
+            user.sendMessage(AuthTG.getMessage("cmdusernotfound", "TG"));
+            return;
+        }
         String[] args = update.getCallbackQuery().getData().split("_");
         if (args[1].equals("ban")) {
             if (list.get(0).equals("add")) {
@@ -24,7 +40,7 @@ public class CMDSecondStep implements CallbackQueryHandler{
                     if (target.player != null)
                         target.player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("cmdsecondaddplayer", "MC").replace("{PERMISSION}", AuthTG.getMessage("cmdsecondban", "MC"))));
                 } else {
-                    user.sendMessage(AuthTG.getMessage("cmdsecondexcadd", "TG").replace("{PLAYER}", target.playername).replace("{PERMISSION}", AuthTG.getMessage("cmdsecondmute", "TG")));
+                    user.sendMessage(AuthTG.getMessage("cmdsecondexcadd", "TG").replace("{PLAYER}", target.playername).replace("{PERMISSION}", AuthTG.getMessage("cmdsecondban", "TG")));
                 }
             }
             if (list.get(0).equals("rem")) {
@@ -48,7 +64,7 @@ public class CMDSecondStep implements CallbackQueryHandler{
                     if (target.player != null)
                         target.player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("cmdsecondaddplayer", "MC").replace("{PERMISSION}", AuthTG.getMessage("cmdsecondkick", "MC"))));
                 } else {
-                    user.sendMessage(AuthTG.getMessage("cmdsecondexcadd", "TG").replace("{PLAYER}", target.playername).replace("{PERMISSION}", AuthTG.getMessage("cmdsecondmute", "TG")));
+                    user.sendMessage(AuthTG.getMessage("cmdsecondexcadd", "TG").replace("{PLAYER}", target.playername).replace("{PERMISSION}", AuthTG.getMessage("cmdsecondkick", "TG")));
                 }
             }
             if (list.get(0).equals("rem")) {
@@ -59,7 +75,7 @@ public class CMDSecondStep implements CallbackQueryHandler{
                     if (target.player != null)
                         target.player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("cmdsecondremplayer", "MC").replace("{PERMISSION}", AuthTG.getMessage("cmdsecondkick", "MC"))));
                 } else {
-                    user.sendMessage(AuthTG.getMessage("cmdsecondexcrem", "TG").replace("{PLAYER}", target.playername).replace("{PERMISSION}", AuthTG.getMessage("cmdsecondmute", "TG")));
+                    user.sendMessage(AuthTG.getMessage("cmdsecondexcrem", "TG").replace("{PLAYER}", target.playername).replace("{PERMISSION}", AuthTG.getMessage("cmdsecondkick", "TG")));
                 }
             }
         }
@@ -92,23 +108,23 @@ public class CMDSecondStep implements CallbackQueryHandler{
                 if (list.get(0).equals("add")) {
                     if (target.commands != null && !target.commands.contains(key)) {
                         AuthTG.loader.addCommand(target.uuid, key);
-                        user.sendMessage(AuthTG.getMessage("cmdsecondadd", "TG").replace("{PLAYER}", target.playername).replace("{PERMISSION}", AuthTG.getMessage("cmdsecondmute", "TG")));
-                        if (target.activetg) target.sendMessage(AuthTG.getMessage("cmdsecondaddplayer", "TG").replace("{PERMISSION}", AuthTG.getMessage("cmdsecondmute", "TG")));
+                        user.sendMessage(AuthTG.getMessage("cmdsecondadd", "TG").replace("{PLAYER}", target.playername).replace("{PERMISSION}", AuthTG.macro.getString(key + ".textbutton")));
+                        if (target.activetg) target.sendMessage(AuthTG.getMessage("cmdsecondaddplayer", "TG").replace("{PERMISSION}", AuthTG.macro.getString(key + ".textbutton")));
                         if (target.player != null)
                             target.player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("cmdsecondaddplayer", "MC").replace("{PERMISSION}", AuthTG.getMessage("cmdsecondmute", "MC"))));
                     } else {
-                        user.sendMessage(AuthTG.getMessage("cmdsecondexcadd", "TG").replace("{PLAYER}", target.playername).replace("{PERMISSION}", AuthTG.getMessage("cmdsecondmute", "TG")));
+                        user.sendMessage(AuthTG.getMessage("cmdsecondexcadd", "TG").replace("{PLAYER}", target.playername).replace("{PERMISSION}",AuthTG.macro.getString(key + ".textbutton")));
                     }
                 }
                 if (list.get(0).equals("rem")) {
                     if (target.commands != null && target.commands.contains(key)) {
                         AuthTG.loader.removeCommand(target.uuid, key);
-                        user.sendMessage(AuthTG.getMessage("cmdsecondrem", "TG").replace("{PLAYER}", target.playername).replace("{PERMISSION}", AuthTG.getMessage("cmdsecondmute", "TG")));
-                        if (target.activetg) target.sendMessage(AuthTG.getMessage("cmdsecondremplayer", "TG").replace("{PERMISSION}", AuthTG.getMessage("cmdsecondmute", "TG")));
+                        user.sendMessage(AuthTG.getMessage("cmdsecondrem", "TG").replace("{PLAYER}", target.playername).replace("{PERMISSION}", AuthTG.macro.getString(key + ".textbutton")));
+                        if (target.activetg) target.sendMessage(AuthTG.getMessage("cmdsecondremplayer", "TG").replace("{PERMISSION}", AuthTG.macro.getString(key + ".textbutton")));
                         if (target.player != null)
                             target.player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("cmdsecondremplayer", "MC").replace("{PERMISSION}", AuthTG.getMessage("cmdsecondmute", "MC"))));
                     } else {
-                        user.sendMessage(AuthTG.getMessage("cmdsecondexcrem", "TG").replace("{PLAYER}", target.playername).replace("{PERMISSION}", AuthTG.getMessage("cmdsecondmute", "TG")));
+                        user.sendMessage(AuthTG.getMessage("cmdsecondexcrem", "TG").replace("{PLAYER}", target.playername).replace("{PERMISSION}", AuthTG.macro.getString(key + ".textbutton")));
                     }
                 }
             }

@@ -7,6 +7,7 @@ import org.ezhik.authTG.User;
 import org.ezhik.authTG.handlers.Handler;
 import org.ezhik.authTG.nextStep.MacroAskHandler;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import java.util.Arrays;
 
 public class MacroCMDHandler implements CommandHandler {
     String mccmd, nsmsg;
@@ -25,23 +26,43 @@ public class MacroCMDHandler implements CommandHandler {
             AuthTG.bot.sendMessage(update.getMessage().getChatId(), AuthTG.getMessage("macronotg", "TG"));
             return;
         }
-        String[] args = update.getMessage().getText().split(" ");
+
+        String[] args = update.getMessage().getText().trim().split("\\s+");
+        if (args.length == 0) return;
+
         if (user.isadmin || user.commands != null && user.commands.contains(args[0].substring(1))) {
             int count = StringUtils.countMatches(this.mccmd, "[arg");
+            boolean greedyLast = count > 0 && this.mccmd.contains("[arg" + count + "]*");
+
             if (args.length == 1) {
                 user.sendMessage(this.nsmsg);
                 AuthTG.bot.setNextStepHandler(update.getMessage().getChatId(), new MacroAskHandler(this.mccmd, this.nsmsg));
                 return;
             }
-            if (args.length != count + 1) {
+
+            int provided = args.length - 1; // без самой команды /bc
+            if (provided < count || (!greedyLast && provided != count)) {
                 user.sendMessage(AuthTG.getMessage("macronoargs", "TG"));
                 return;
             }
-            for (int i = 0; i <= count; i++) {
-                this.mccmd = this.mccmd.replace("[arg" + i + "]", args[i]);
+
+            String cmd = this.mccmd;
+
+            for (int i = 1; i <= count; i++) {
+                String value;
+                if (i == count && greedyLast) {
+                    value = String.join(" ", Arrays.copyOfRange(args, i, args.length));
+                } else {
+                    value = args[i];
+                }
+
+                // сначала заменяем вариант со звездочкой, иначе останется лишняя "*"
+                cmd = cmd.replace("[arg" + i + "]*", value);
+                cmd = cmd.replace("[arg" + i + "]", value);
             }
+
             user.sendMessage(AuthTG.getMessage("macrosuccess", "TG"));
-            Handler.dispatchCommand(user.playername, this.mccmd);
+            Handler.dispatchCommand(user.playername, cmd);
         } else {
             user.sendMessage(AuthTG.getMessage("macronoperm", "TG"));
         }
