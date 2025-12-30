@@ -6,17 +6,19 @@ import org.bstats.charts.SingleLineChart;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.ezhik.authTG.commandMC.*;
 import org.ezhik.authTG.events.*;
 import org.ezhik.authTG.handlers.*;
 import org.ezhik.authTG.migrates.*;
-import org.ezhik.authTG.otherAPI.*;
+import org.ezhik.authTG.otherAPI.Log4JFilter;
+import org.ezhik.authTG.otherAPI.PlaceholderAPI;
 import org.ezhik.authTG.tabcompleter.*;
 import org.ezhik.authTG.usersconfiguration.*;
+import org.telegram.telegrambots.bots.DefaultBotOptions;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import org.telegram.telegrambots.meta.generics.BotSession;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
 import java.io.File;
@@ -28,43 +30,54 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public final class AuthTG extends JavaPlugin {
+
     public static Loader loader;
     public static BotTelegram bot;
     public static Logger logger;
-    private static Plugin instance;
+    private static AuthTG instance;
     private static String version;
+
     public static boolean notRegAndLogin, authNecessarily, activeChatinTG;
     public static List<String> mutecommands, commandsPreAuthorization, forbiddenNicknames;
-    public static int minLenghtNickname, minLenghtPassword, maxLenghtNickname, maxLenghtPassword, timeoutSession,kickTimeout, maxAccountTGCount;
+    public static int minLenghtNickname, minLenghtPassword, maxLenghtNickname, maxLenghtPassword, timeoutSession, kickTimeout, maxAccountTGCount;
     public static double locationX, locationY, locationZ;
     public static String world;
     public static ConfigurationSection macro;
+
     private static MySQLPool mysqlPool;
+    private BotSession botSession;
 
     @Override
     public void onEnable() {
-        // Init
         instance = this;
         version = getDescription().getVersion();
-        // Load Logger
         logger = getLogger();
-        // Load config plugin
-        if (!getDataFolder().exists()) getDataFolder().mkdir();
+
+
+        if (!getDataFolder().exists()) getDataFolder().mkdirs();
+        File usersDir = new File(getDataFolder(), "users");
+        if (!usersDir.exists()) usersDir.mkdirs();
+
+
         if (!new File(getDataFolder(), "config.yml").exists()) saveDefaultConfig();
         if (!new File(getDataFolder(), "messages.yml").exists()) saveResource("messages.yml", true);
-        // Generate temp-config.yml
+
+
         saveResource("temp-config.yml", true);
         saveResource("temp-messages.yml", true);
         setupMessages();
         setupConfiguration();
-        // Load config parameters
+
+
         loadConfigParameters();
-        // Logs
+
         logger.log(Level.INFO, "Plugin started");
-        // Load LoggerCore
+
+
         org.apache.logging.log4j.core.Logger coreLogger = (org.apache.logging.log4j.core.Logger) LogManager.getRootLogger();
         coreLogger.addFilter(new Log4JFilter());
-        // Register Events
+
+
         Bukkit.getServer().getPluginManager().registerEvents(new FreezerEvent(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new OnJoinEvent(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new MuterEvent(), this);
@@ -75,11 +88,13 @@ public final class AuthTG extends JavaPlugin {
         Bukkit.getServer().getPluginManager().registerEvents(new BlockDropBEvent(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new PlayerJoinAnotherEvent(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new onLeaveEvent(), this);
-        // Load placeholders
+
+
         if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
             new PlaceholderAPI().register();
         }
-        // Load Metrics
+
+
         Metrics metrics = new Metrics(this, 27268);
         metrics.addCustomChart(new SingleLineChart("players", new Callable<Integer>() {
             @Override
@@ -88,16 +103,68 @@ public final class AuthTG extends JavaPlugin {
             }
         }));
         metrics.addCustomChart(new SingleLineChart("servers", () -> 1));
-        // Load Handlers
+
+
         Handler handler = new Handler();
         AuthHandler authHandler = new AuthHandler();
         authHandler.runTaskTimer(this, 0, 20);
         handler.runTaskTimer(this, 0, 1);
-        // Load UserConfiguration
-        if (getConfig().getConfigurationSection("mysql").getBoolean("use")) {
-            ConfigurationSection mysql = getConfig().getConfigurationSection("mysql");
 
+
+        initLoader();
+
+
+        registerCommands();
+
+
+        registerTabCompleters();
+
+
+        MuterEvent.setMutedPlayers(loader.getMutedPlayers());
+
+
+        initTelegramBot();
+    }
+
+    @Override
+    public void onDisable() {
+        logger.log(Level.INFO, "Plugin stopped");
+
+        if (botSession != null) {
+            try {
+                botSession.stop();
+            } catch (Exception ignored) {}
+            botSession = null;
+        }
+
+        if (mysqlPool != null) {
+            try {
+                mysqlPool.close();
+            } catch (Exception ignored) {}
+            mysqlPool = null;
+        }
+    }
+
+    public static AuthTG getInstance() {
+        return instance;
+    }
+
+    public static String getVersion() {
+        return version;
+    }
+
+    private void initLoader() {
+        ConfigurationSection mysql = getConfig().getConfigurationSection("mysql");
+        boolean useMysql = mysql != null && mysql.getBoolean("use");
+
+        if (useMysql) {
             ConfigurationSection pool = mysql.getConfigurationSection("pool");
+            if (pool == null) {
+                logger.log(Level.SEVERE, "[AuthTG] mysql.pool section not found in config.yml");
+                Bukkit.getPluginManager().disablePlugin(this);
+                return;
+            }
+
             int maxPool = pool.getInt("maximumPoolSize");
             long connTimeout = pool.getLong("connectionTimeoutMs");
             long idleTimeout = pool.getLong("idleTimeoutMs");
@@ -115,29 +182,70 @@ public final class AuthTG extends JavaPlugin {
                 );
 
                 MySQLSchemaMigrator.migrate(mysqlPool.dataSource(), mysql.getString("db"));
-
-                // loader теперь только работает с данными, НЕ создаёт таблицы
                 loader = new MySQLLoader(mysqlPool.dataSource());
 
 
-                new MySQLMigrate(mysql.getString("db"), mysql.getString("host"), mysql.getString("user"), mysql.getString("pass"));
-
-                getConfig().set("onceUsed.mysql", true);
-                saveConfig();
+                if (!getConfig().getConfigurationSection("onceUsed").getBoolean("mysql")) {
+                    new MySQLMigrate(mysql.getString("db"), mysql.getString("host"), mysql.getString("user"), mysql.getString("pass"));
+                    getConfig().set("onceUsed.mysql", true);
+                    saveConfig();
+                }
 
             } catch (Exception e) {
                 logger.log(Level.SEVERE, "[AuthTG] Cannot init MySQL/Hikari: " + e.getMessage());
                 Bukkit.getPluginManager().disablePlugin(this);
-                return;
             }
-            getConfig().set("onceUsed.mysql", true);
-            saveConfig();
+
         } else {
-            ConfigurationSection mysql = getConfig().getConfigurationSection("mysql");
-            if (getConfig().getConfigurationSection("onceUsed").getBoolean("mysql")) new YAMLMigrate(mysql.getString("db"), mysql.getString("host"), mysql.getString("user"),mysql.getString("pass"));
+
+            if (getConfig().getConfigurationSection("onceUsed").getBoolean("mysql")) {
+
+                new YAMLMigrate(
+                        getConfig().getConfigurationSection("mysql").getString("db"),
+                        getConfig().getConfigurationSection("mysql").getString("host"),
+                        getConfig().getConfigurationSection("mysql").getString("user"),
+                        getConfig().getConfigurationSection("mysql").getString("pass")
+                );
+                getConfig().set("onceUsed.mysql", false);
+                saveConfig();
+            }
             loader = new YAMLLoader();
         }
-        // Register commands
+    }
+
+    private void initTelegramBot() {
+        DefaultBotOptions options = new DefaultBotOptions();
+
+
+        options.setGetUpdatesTimeout(50);
+
+        bot = new BotTelegram(
+                getConfig().getString("bot.token"),
+                getConfig().getString("bot.username"),
+                options
+        );
+
+        if ("changeme".equals(bot.getBotToken()) && "changeme".equals(bot.getBotUsername())) {
+            logger.log(Level.INFO, "Please set your bot token and username in config.yml");
+            return;
+        }
+
+        try {
+            TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
+
+
+            if (botSession != null) {
+                try { botSession.stop(); } catch (Exception ignored) {}
+                botSession = null;
+            }
+
+            botSession = botsApi.registerBot(bot);
+        } catch (TelegramApiException e) {
+            logger.log(Level.SEVERE, "[AuthTG] Telegram init error: " + e.getMessage());
+        }
+    }
+
+    private void registerCommands() {
         getCommand("register").setExecutor(new RegisterCMD());
         getCommand("login").setExecutor(new LoginCMD());
         getCommand("code").setExecutor(new CodeCMD());
@@ -157,119 +265,99 @@ public final class AuthTG extends JavaPlugin {
         getCommand("logout").setExecutor(new LogoutCMD());
         getCommand("unlink").setExecutor(new UnLinkCMD());
         getCommand("authtg").setExecutor(new AuthTGCMD());
-        // Register TabCompleter
+    }
+
+    private void registerTabCompleters() {
         getCommand("admin").setTabCompleter(new AdminTabCompleter());
         getCommand("friend").setTabCompleter(new FriendTabCompleter());
         getCommand("command").setTabCompleter(new CommandTabCompleter());
         getCommand("ban").setTabCompleter(new BanTabCompleter());
         getCommand("mute").setTabCompleter(new MuteTabCompleter());
         getCommand("setspawn").setTabCompleter(new SetSpawnTabCompleter());
-        // Load MutedPlayers
-        MuterEvent.setMutedPlayers(loader.getMutedPlayers());
-        // Load Bot
-        bot = new BotTelegram(getConfig().getString("bot.token"), getConfig().getString("bot.username"));
-        if (bot.getBotToken().equals("changeme") && bot.getBotUsername().equals("changeme")) {
-            logger.log(Level.INFO,"Please set your bot token and username in config.yml");
-        } else {
-            TelegramBotsApi botsApi;
-            try {
-                botsApi = new TelegramBotsApi(DefaultBotSession.class);
-                botsApi.registerBot(bot);
-            } catch (TelegramApiException e) {
-                throw new RuntimeException(e);
-            }
-        }
-    }
-
-    @Override
-    public void onDisable() {
-        logger.log(Level.INFO, "Plugin stopped");
-        if (mysqlPool != null) {
-            mysqlPool.close();
-            mysqlPool = null;
-        }
-    }
-
-    public static Plugin getInstance() {
-        return instance;
-    }
-
-    public static String getVersion() {
-        return version;
     }
 
     private void setupConfiguration() {
-        File fileTemp = new File("plugins/AuthTG/temp-config.yml");
+        File fileTemp = new File(getDataFolder(), "temp-config.yml");
         YamlConfiguration configTemp = YamlConfiguration.loadConfiguration(fileTemp);
-        File fileGlobal = new File("plugins/AuthTG/config.yml");
+
+        File fileGlobal = new File(getDataFolder(), "config.yml");
         YamlConfiguration configGlobal = YamlConfiguration.loadConfiguration(fileGlobal);
+
         Set<String> set = configTemp.getKeys(true);
         Set<String> setGlobal = configGlobal.getKeys(true);
         set.removeAll(setGlobal);
+
         for (String key : set) {
             configGlobal.set(key, configTemp.get(key));
         }
+
         try {
             configGlobal.save(fileGlobal);
         } catch (IOException e) {
             logger.log(Level.SEVERE, "Can't save config.yml");
         }
+
         fileTemp.delete();
     }
+
     private void setupMessages() {
-        File fileTemp = new File("plugins/AuthTG/temp-messages.yml");
+        File fileTemp = new File(getDataFolder(), "temp-messages.yml");
         YamlConfiguration configTemp = YamlConfiguration.loadConfiguration(fileTemp);
-        File fileGlobal = new File("plugins/AuthTG/messages.yml");
+
+        File fileGlobal = new File(getDataFolder(), "messages.yml");
         YamlConfiguration configGlobal = YamlConfiguration.loadConfiguration(fileGlobal);
+
         Set<String> set = configTemp.getKeys(true);
         Set<String> setGlobal = configGlobal.getKeys(true);
         set.removeAll(setGlobal);
+
         for (String key : set) {
             configGlobal.set(key, configTemp.get(key));
         }
+
         try {
             configGlobal.save(fileGlobal);
         } catch (IOException e) {
             logger.log(Level.SEVERE, "Can't save messages.yml");
         }
+
         fileTemp.delete();
     }
+
     public static String getMessage(String path, String MCorTGorCNS) {
-        File file = new File("plugins/AuthTG/messages.yml");
+        File file = new File(getInstance().getDataFolder(), "messages.yml");
         YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
-        if (MCorTGorCNS.equals("MC")) {
-            return config.getString("messages.minecraft." + path).replace("{BR}", "\n");
-        } else if (MCorTGorCNS.equals("TG")) {
-            return config.getString("messages.telegram." + path).replace("{BR}", "\n");
-        } else if (MCorTGorCNS.equals("CE")) {
-            return config.getString("messages.minecraft." + path).replace("{BR}", "\n");
-        }
-        else {
+
+        if ("MC".equals(MCorTGorCNS)) {
+            return config.getString("messages.minecraft." + path, "").replace("{BR}", "\n");
+        } else if ("TG".equals(MCorTGorCNS)) {
+            return config.getString("messages.telegram." + path, "").replace("{BR}", "\n");
+        } else if ("CE".equals(MCorTGorCNS)) {
+            return config.getString("messages.minecraft." + path, "").replace("{BR}", "\n");
+        } else {
             logger.log(Level.SEVERE, "Message path not found, please contact the developer");
-            return null;
+            return "";
         }
     }
 
     public static String getPlaceholderMessage(String placeholder, String path) {
-        File file = new File("plugins/AuthTG/messages.yml");
+        File file = new File(getInstance().getDataFolder(), "messages.yml");
         YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
-        if (placeholder.equals("none")) {
-            return config.getString("placeholders." + path);
-        } else if (placeholder.equals("activetg")) {
-            return config.getString("placeholders." + placeholder + "." + path);
-        } else if (placeholder.equals("twofactor")) {
-            return config.getString("placeholders." + placeholder + "." + path);
-        } else if (placeholder.equals("status")) {
-            return config.getString("placeholders." + placeholder + "." + path);
+
+        if ("none".equals(placeholder)) {
+            return config.getString("placeholders." + path, "");
+        } else if ("activetg".equals(placeholder) || "twofactor".equals(placeholder) || "status".equals(placeholder)) {
+            return config.getString("placeholders." + placeholder + "." + path, "");
         } else {
             logger.log(Level.SEVERE, "Placeholder path not found, please contact the developer");
-            return null;
+            return "";
         }
     }
 
     public static void loadConfigParameters() {
-        File file = new File("plugins/AuthTG/config.yml");
+        File file = new File(getInstance().getDataFolder(), "config.yml");
         YamlConfiguration getConfig = YamlConfiguration.loadConfiguration(file);
+
         maxAccountTGCount = getConfig.getInt("maxAccountTGCount");
         forbiddenNicknames = getConfig.getStringList("forbiddenNicknames");
         notRegAndLogin = getConfig.getBoolean("notRegAndLogin");
