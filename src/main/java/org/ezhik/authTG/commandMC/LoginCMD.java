@@ -37,6 +37,9 @@ public class LoginCMD implements CommandExecutor {
             return false;
         }
         User user = User.getUser(player.getUniqueId());
+        if (!AuthTG.loader.containsIpRegistration(player.getUniqueId())) AuthTG.loader.setIpRegistration(
+                player.getUniqueId(),
+                player.getAddress().getAddress().toString());
         if (AuthTG.authNecessarily) {
             if (user.activetg) {
                 user.sendLoginAccepted(

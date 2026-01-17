@@ -22,13 +22,11 @@ macro:
   # testcmd: - Команда,которая будет в тг EN: Command that will be in tg
     # mccmd: 'whitelist [arg1] [arg2]' - Команда,которая будет вызываться в боте (если есть аргументы к команде,прописывайте их [arg1] и т.д.) EN: Command that will be called in the bot (if there are arguments to the command, write them [arg1] and so on.)
     # nsmsg: 'test' - Сообщение,которое будет написано если введена обычная команда без аргументов (В этом сообщении обычно указывается: 'Введите аргументы для команды') EN: Message that will be written if the normal command is entered without arguments (In this message it is usually specified: 'Enter the arguments for the command')
-    # textbutton: 'text' - Текст кнопки,когда добавляете доступ к команде (/command)
     #MODIFIED BY GAS333T: [arg1]*  - отделит все аргументы внутрь себя, то есть tgbc [arg1]* с командой "/tgbc привет мир" возьмет арпгументы "привет мир" в один [arg1] EN: use translator pls.
 #EXAMPLE
   bc:
     mccmd: "tgbc [arg1]*"
     nsmsg: "Write message to users with telegram auth"
-    textbutton: "Broadcast"
 mutecommands: ['/tell'] # Команды, которые нельзя использовать EN: Commands that cannot be used
 commandsPreAuthorization: ['/tell'] # Команды,которые будут доступны перед авторизацией EN: Commands that will be available before
 notRegAndLogin: false # Без /register и /login EN: Without /register and /login
@@ -42,6 +40,7 @@ kickTimeout: 30 # Время в секундах, через которое иг
 activeChatinTG: true # Должен ли работать чат в телеграме EN: Must chat in Telegram
 forbiddenNicknames: ['Notch'] # Запрещенные ники с которых нельзя зайти на сервер EN: Forbidden nicknames from which you cannot enter the server
 maxAccountTGCount: 5 # Максимальное кол-во аккаунтов привязанных к телеграму (если 0,то без ограничений) EN: Maximum number of accounts linked to telegram (if 0, there are no limits)
+ipregmax: 10 # Максимальное кол-во аккаунтов зарегистрированных по одному IP EN: please use translator
 spawn: # Спавн EN: Spawn
   x: 0
   y: 0

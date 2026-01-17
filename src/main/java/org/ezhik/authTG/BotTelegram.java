@@ -203,14 +203,13 @@ public class BotTelegram extends TelegramLongPollingBot {
             execute(sendMessage);
 
         } catch (TelegramApiRequestException e) {
-            // 400 chat not found => юзер не стартовал бота / удалил чат / заблокировал
             if (e.getErrorCode() == 400 && e.getApiResponse() != null && e.getApiResponse().contains("chat not found")) {
                 try {
                     List<UUID> uuids = AuthTG.loader.getPlayerNames(chatId);
                     if (uuids != null) {
                         for (UUID u : uuids) {
                             AuthTG.loader.setActiveTG(u, false);
-                            AuthTG.loader.setChatID(u, 0L); // достаточно: getCurrentUUID больше не найдёт
+                            AuthTG.loader.setChatID(u, 0L);
                         }
                     }
                 } catch (Exception ignored) {}
@@ -236,7 +235,6 @@ public class BotTelegram extends TelegramLongPollingBot {
         try {
             execute(deleteMessage);
         } catch (TelegramApiRequestException e) {
-            // Частые/нормальные кейсы: "message can't be deleted", "message to delete not found"
             AuthTG.logger.log(Level.FINE, "[AuthTG] deleteMessage: " + e.getErrorCode() + " " + e.getApiResponse());
         } catch (TelegramApiException e) {
             AuthTG.logger.log(Level.FINE, "[AuthTG] deleteMessage error: " + e.getMessage());
@@ -277,7 +275,6 @@ public class BotTelegram extends TelegramLongPollingBot {
         try {
             execute(deleteMessage);
         } catch (TelegramApiRequestException e) {
-            // Частые кейсы: "message can't be deleted", "message to delete not found"
             AuthTG.logger.log(Level.FINE, "[AuthTG] deleteMessage: " + e.getErrorCode() + " " + e.getApiResponse());
         } catch (TelegramApiException e) {
             AuthTG.logger.log(Level.FINE, "[AuthTG] deleteMessage error: " + e.getMessage());

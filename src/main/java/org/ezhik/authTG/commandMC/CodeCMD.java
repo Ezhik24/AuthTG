@@ -53,6 +53,7 @@ public class CodeCMD implements CommandExecutor {
                 MuterEvent.unmute(player.getName());
                 FreezerEvent.unfreezeplayer(player.getName());
                 AuthTG.loader.setActive(player.getUniqueId(), true);
+                AuthTG.loader.setIpRegistration(player.getUniqueId(), player.getAddress().getAddress().toString());
                 AuthTG.loader.setPlayerName(player.getUniqueId(), player.getName());
             }
             User user = User.getUser(player.getUniqueId());

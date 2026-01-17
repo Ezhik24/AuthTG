@@ -39,7 +39,7 @@ public final class AuthTG extends JavaPlugin {
 
     public static boolean notRegAndLogin, authNecessarily, activeChatinTG;
     public static List<String> mutecommands, commandsPreAuthorization, forbiddenNicknames;
-    public static int minLenghtNickname, minLenghtPassword, maxLenghtNickname, maxLenghtPassword, timeoutSession, kickTimeout, maxAccountTGCount;
+    public static int ipregmax,minLenghtNickname, minLenghtPassword, maxLenghtNickname, maxLenghtPassword, timeoutSession, kickTimeout, maxAccountTGCount;
     public static double locationX, locationY, locationZ;
     public static String world;
     public static ConfigurationSection macro;
@@ -88,6 +88,7 @@ public final class AuthTG extends JavaPlugin {
         Bukkit.getServer().getPluginManager().registerEvents(new BlockDropBEvent(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new PlayerJoinAnotherEvent(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new onLeaveEvent(), this);
+        Bukkit.getServer().getPluginManager().registerEvents(new InventoryEvent(), this);
 
 
         if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
@@ -229,19 +230,21 @@ public final class AuthTG extends JavaPlugin {
             logger.log(Level.INFO, "Please set your bot token and username in config.yml");
             return;
         }
-
         try {
             TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
 
 
             if (botSession != null) {
-                try { botSession.stop(); } catch (Exception ignored) {}
+                try {
+                    botSession.stop();
+                } catch (Exception ignored) {
+                }
                 botSession = null;
             }
 
             botSession = botsApi.registerBot(bot);
         } catch (TelegramApiException e) {
-            logger.log(Level.SEVERE, "[AuthTG] Telegram init error: " + e.getMessage());
+            logger.severe("Error: " + e.getMessage());
         }
     }
 
@@ -376,5 +379,6 @@ public final class AuthTG extends JavaPlugin {
         locationZ = getConfig.getDouble("spawn.z");
         world = getConfig.getString("spawn.world");
         macro = getConfig.getConfigurationSection("macro");
+        ipregmax = getConfig.getInt("ipregmax");
     }
 }

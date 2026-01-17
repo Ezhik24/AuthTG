@@ -21,6 +21,7 @@ public class YAMLLoader implements Loader{
     public Map<Long,List<UUID>> playernames = new HashMap<>();
     public Map<String,UUID> uuidbyplayername = new HashMap<>();
     public Map<String,UUID> adminlist = new HashMap<>();
+    public Map<String,Integer> ipInteger = new HashMap<>();
     public YAMLLoader() {
         File[] folder = new File("plugins/AuthTG/users/").listFiles();
         if (folder != null) {
@@ -43,6 +44,15 @@ public class YAMLLoader implements Loader{
                     }
                     if (config.getBoolean("admin")) {
                         adminlist.put(config.getString("playername"), UUID.fromString(file.getName().replace(".yml", "")));
+                    }
+                    if (config.contains("ipRegistration")) {
+                        String ipReg = config.getString("ipRegistration");
+                        if (ipInteger.containsKey(ipReg)) {
+                            ipInteger.put(ipReg, ipInteger.get(ipReg) +1 );
+                        }
+                        else {
+                            ipInteger.put(ipReg, 1);
+                        }
                     }
                 } catch (IOException e) {
                     AuthTG.logger.log(Level.SEVERE, "Error load file: " + e);
@@ -933,5 +943,50 @@ public class YAMLLoader implements Loader{
             return list;
         }
         return null;
+    }
+
+    @Override
+    public void setIpRegistration(UUID uuid, String ip) {
+        File file = new File("plugins/AuthTG/users/" + uuid + ".yml");
+        YamlConfiguration config = new YamlConfiguration();
+        try {
+            config.load(file);
+        } catch (IOException e) {
+            AuthTG.logger.log(Level.SEVERE, "Error loading file: " + e);
+        } catch (InvalidConfigurationException e) {
+            AuthTG.logger.log(Level.SEVERE, "Error loading file: " + e);
+        }
+        config.set("ipRegistration", ip);
+        if (ipInteger.containsKey(ip)) {
+            ipInteger.put(ip, ipInteger.get(ip) +1 );
+        }
+        else {
+            ipInteger.put(ip, 1);
+        }
+        try {
+            config.save(file);
+        } catch (IOException e) {
+            AuthTG.logger.log(Level.SEVERE, "Error saving file: " + e);
+        }
+    }
+
+    @Override
+    public Integer getIpsRegistration(String ip) {
+        if (ipInteger.containsKey(ip)) return ipInteger.get(ip);
+        return 0;
+    }
+
+    @Override
+    public boolean containsIpRegistration(UUID uuid) {
+        File file = new File("plugins/AuthTG/users/" + uuid + ".yml");
+        YamlConfiguration config = new YamlConfiguration();
+        try {
+            config.load(file);
+        } catch (IOException e) {
+            AuthTG.logger.log(Level.SEVERE, "Error loading file: " + e);
+        } catch (InvalidConfigurationException e) {
+            AuthTG.logger.log(Level.SEVERE, "Error loading file: " + e);
+        }
+        return config.contains("ipRegistration");
     }
 }

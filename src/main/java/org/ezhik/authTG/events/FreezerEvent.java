@@ -29,6 +29,10 @@ public class FreezerEvent implements Listener {
     public static boolean isFreeze(Player player) {
         return freezeplayer.containsKey(player.getName());
     }
+
+    public static boolean isFreeze(String name) {
+        return freezeplayer.containsKey(name);
+    }
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
         if (freezeplayer.containsKey(event.getPlayer().getName())) {

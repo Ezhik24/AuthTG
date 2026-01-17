@@ -8,8 +8,7 @@ import java.util.logging.Level;
 
 public final class MySQLSchemaMigrator {
 
-    // увеличивай при изменениях БД, ПОЖАЛУЙСТА
-    private static final int LATEST_VERSION = 2;
+    private static final int LATEST_VERSION = 3;
 
     private MySQLSchemaMigrator() {}
 
@@ -20,7 +19,6 @@ public final class MySQLSchemaMigrator {
             ensureMetaTable(c);
             int current = getSchemaVersion(c);
 
-            // миграции по порядку
             while (current < LATEST_VERSION) {
                 int next = current + 1;
                 AuthTG.logger.log(Level.INFO, "[AuthTG] DB migrate: " + current + " -> " + next);
@@ -28,6 +26,7 @@ public final class MySQLSchemaMigrator {
                 switch (next) {
                     case 1 -> migrateToV1(c);
                     case 2 -> migrateToV2(c, databaseName);
+                    case 3 -> migrateToV3(c);
                     default -> throw new IllegalStateException("Unknown schema version: " + next);
                 }
 
@@ -62,7 +61,6 @@ public final class MySQLSchemaMigrator {
                 } catch (NumberFormatException ignored) {}
             }
         }
-        // если нет — считаем 0 и создаём запись
         try (PreparedStatement ps = c.prepareStatement("INSERT INTO AuthTGMeta(k, v) VALUES('schema_version', '0')")) {
             ps.executeUpdate();
         }
@@ -75,8 +73,6 @@ public final class MySQLSchemaMigrator {
             ps.executeUpdate();
         }
     }
-
-    // v1: гарантированно создаём таблицы (как у тебя было в MySQLLoader constructor)
     private static void migrateToV1(Connection c) throws SQLException {
         try (Statement st = c.createStatement()) {
             st.executeUpdate(
@@ -94,8 +90,9 @@ public final class MySQLSchemaMigrator {
                             "lastname varchar(120)," +
                             "currentUUID BOOLEAN NOT NULL DEFAULT false," +
                             "admin BOOLEAN NOT NULL DEFAULT false," +
-                            "ip varchar(72)," +
-                            "time varchar(120)," +
+                            "ipSession varchar(72)," +
+                            "timeSession varchar(120)," +
+                            "ipRegistration varchar(72)," +
                             "PRIMARY KEY (priKey)" +
                             ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4"
             );
@@ -144,22 +141,14 @@ public final class MySQLSchemaMigrator {
         }
     }
 
-    // v2: индексы + каскады
     private static void migrateToV2(Connection c, String db) throws SQLException {
-
-        // 1) делаем uuid в Users индексируемым/уникальным (иначе FK не повесить)
-        // MySQL не умеет "IF NOT EXISTS" для индекса -> проверяем через information_schema
         if (!indexExists(c, db, "AuthTGUsers", "uq_authtgusers_uuid")) {
             try (Statement st = c.createStatement()) {
                 st.executeUpdate("ALTER TABLE AuthTGUsers ADD UNIQUE KEY uq_authtgusers_uuid (uuid)");
             } catch (SQLException e) {
-                // Если вдруг у кого-то дубли uuid — FK не повесится. Логируем и продолжаем, не роняем сервер.
                 AuthTG.logger.log(Level.SEVERE, "[AuthTG] Cannot create UNIQUE index on AuthTGUsers.uuid: " + e.getMessage());
             }
         }
-
-        // 2) FK + каскады для дочерних таблиц
-        // тоже проверяем существование, иначе будет ошибка на повторном запуске
         ensureFk(c, db, "AuthTGFriends", "fk_authtgfriends_users_uuid",
                 "uuid", "AuthTGUsers", "uuid");
 
@@ -171,6 +160,17 @@ public final class MySQLSchemaMigrator {
 
         ensureFk(c, db, "AuthTGMutes", "fk_authtgmutes_users_uuid",
                 "uuid", "AuthTGUsers", "uuid");
+    }
+
+    private static void migrateToV3(Connection c) throws SQLException {
+
+        try(Statement st = c.createStatement()) {
+            st.executeUpdate("ALTER TABLE AuthTGUsers RENAME COLUMN ip TO ipSession");
+            st.executeUpdate("ALTER TABLE AuthTGUsers RENAME COLUMN time TO timeSession");
+            st.executeUpdate("ALTER TABLE AuthTGUsers ADD COLUMN ipRegistration VARCHAR(72) NULL");
+
+            st.executeUpdate("CREATE INDEX idx_users_ip_registration ON AuthTGUsers(ipRegistration)");
+        }
     }
 
     private static boolean indexExists(Connection c, String db, String table, String indexName) throws SQLException {
@@ -213,8 +213,6 @@ public final class MySQLSchemaMigrator {
                             " ON DELETE CASCADE ON UPDATE CASCADE"
             );
         } catch (SQLException e) {
-            // если движок не InnoDB / нет индекса / есть мусорные значения uuid — FK не встанет.
-            // НЕ роняем плагин, просто логируем.
             AuthTG.logger.log(Level.SEVERE, "[AuthTG] Cannot add FK " + fkName + " on " + childTable + ": " + e.getMessage());
         }
     }

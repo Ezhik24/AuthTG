@@ -619,7 +619,6 @@ public class MySQLLoader implements Loader {
     public Map<String, List<Object>> getMutedPlayers() {
         Map<String, List<Object>> map = new HashMap<>();
 
-        // меньше запросов: подтягиваем playername JOIN'ом
         String sql = "SELECT m.timeMute, m.reason, u.playername " +
                 "FROM AuthTGMutes m " +
                 "LEFT JOIN AuthTGUsers u ON u.uuid = m.uuid";
@@ -649,7 +648,7 @@ public class MySQLLoader implements Loader {
 
     @Override
     public void setSession(UUID uuid, String ip, LocalDateTime time) {
-        String sql = "UPDATE AuthTGUsers SET ip=?, time=? WHERE uuid=?";
+        String sql = "UPDATE AuthTGUsers SET ipSession=?, timeSession=? WHERE uuid=?";
         try (Connection c = ds.getConnection();
              PreparedStatement ps = c.prepareStatement(sql)) {
             ps.setString(1, ip);
@@ -663,7 +662,7 @@ public class MySQLLoader implements Loader {
 
     @Override
     public void deleteSession(UUID uuid) {
-        String sql = "UPDATE AuthTGUsers SET ip='0', time='0' WHERE uuid=?";
+        String sql = "UPDATE AuthTGUsers SET ipSession='0', timeSession='0' WHERE uuid=?";
         try (Connection c = ds.getConnection();
              PreparedStatement ps = c.prepareStatement(sql)) {
             ps.setString(1, uuid.toString());
@@ -675,7 +674,7 @@ public class MySQLLoader implements Loader {
 
     @Override
     public List<Object> getSession(UUID uuid) {
-        String sql = "SELECT ip, time FROM AuthTGUsers WHERE uuid=?";
+        String sql = "SELECT ipSession, timeSession FROM AuthTGUsers WHERE uuid=?";
         try (Connection c = ds.getConnection();
              PreparedStatement ps = c.prepareStatement(sql)) {
             ps.setString(1, uuid.toString());
@@ -691,6 +690,54 @@ public class MySQLLoader implements Loader {
             AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
         }
         return List.of();
+    }
+
+    @Override
+    public void setIpRegistration(UUID uuid, String ip) {
+        String sql = "UPDATE AuthTGUsers SET ipRegistration=? WHERE uuid?";
+        try (Connection c = ds.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setString(1, ip);
+            ps.setString(2, uuid.toString());
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public Integer getIpsRegistration(String ip) {
+        String sql = "SELECT * FROM AuthTGUsers WHERE ipRegistration=?";
+        try (Connection c = ds.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setString(1, ip);
+            ResultSet rs = ps.executeQuery();
+            int i = 0;
+            while(rs.next()) {
+                i++;
+            }
+            return i;
+        } catch (SQLException e) {
+            AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
+        }
+        return 0;
+    }
+
+    @Override
+    public boolean containsIpRegistration(UUID uuid) {
+        String sql = "SELECT * FROM AuthTGUsers WHERE uuid=?";
+        try (Connection c = ds.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setString(1, uuid.toString());
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getString("ipRegistration") != null || !rs.getString("ipRegistration").equals("0");
+            }
+            return false;
+        } catch (SQLException e) {
+            AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
+        }
+        return false;
     }
 
     private String getOneString(String sql, UUID uuid) {

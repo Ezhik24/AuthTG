@@ -68,7 +68,7 @@ public class CommandHandler implements NextStepHandler{
             for (String key : AuthTG.macro.getKeys(false)) {
                 InlineKeyboardButton keyButton = new InlineKeyboardButton();
                 keyButton.setCallbackData("cmdsecond_" + key);
-                keyButton.setText(AuthTG.macro.getString(key + ".textbutton"));
+                keyButton.setText(AuthTG.macro.getString(key));
                 row.add(keyButton);
             }
             row.add(banbutton);
@@ -103,7 +103,7 @@ public class CommandHandler implements NextStepHandler{
             for (String key : AuthTG.macro.getKeys(false)) {
                 InlineKeyboardButton keyButton = new InlineKeyboardButton();
                 keyButton.setCallbackData("cmdsecond_" + key);
-                keyButton.setText(AuthTG.macro.getString(key + ".textbutton"));
+                keyButton.setText(AuthTG.macro.getString(key));
                 row.add(keyButton);
             }
             row.add(banbutton);

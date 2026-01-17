@@ -107,4 +107,10 @@ public interface Loader {
     void deleteSession(UUID uuid);
 
     List<Object> getSession(UUID uuid);
+
+    void setIpRegistration(UUID uuid, String ip);
+
+    Integer getIpsRegistration(String ip);
+
+    boolean containsIpRegistration(UUID uuid);
 }

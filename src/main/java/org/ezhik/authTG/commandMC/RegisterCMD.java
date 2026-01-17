@@ -41,9 +41,14 @@ public class RegisterCMD implements CommandExecutor {
             player.sendMessage(ChatColor.translateAlternateColorCodes('&',AuthTG.getMessage("registernomatch", "MC")));
             return false;
         }
+        if (AuthTG.loader.getIpsRegistration(player.getAddress().getAddress().toString()) >= AuthTG.ipregmax) {
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("registeripregmax", "MC")));
+            return false;
+        }
         AuthTG.loader.setPlayerName(player.getUniqueId(), player.getName());
         AuthTG.loader.setPasswordHash(player.getUniqueId(),strings[0]);
         AuthTG.loader.setActive(player.getUniqueId(), true);
+        AuthTG.loader.setIpRegistration(player.getUniqueId(), player.getAddress().getAddress().toString());
         if (AuthTG.authNecessarily) {
             player.sendMessage(ChatColor.translateAlternateColorCodes('&',AuthTG.getMessage("authtgactivetext", "MC")));
             MuterEvent.mute(player.getName(), ChatColor.translateAlternateColorCodes('&',AuthTG.getMessage("authtgactivetext", "MC")));
