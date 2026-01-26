@@ -161,6 +161,7 @@ messages: # Сообщения EN: Messages
     cmdnull: '[Бот] Вы не авторизованы!'
     mutesuccess: 'Вы успешно замутили {PLAYER}'
   minecraft: # Сообщения в майнкрафте EN: Minecraft messages
+    registeripregmax: "&c&l[AuthTG] &cВы превысили лимит по IP!"
     authtgnoperm: "&c&l[AuthTG] &cУ вас нет прав"
     authtgnobotmysql: "&cВНИМАНИЕ! НОВЫЕ НАСТРОЙКИ БОТА И БАЗЫ ДАННЫХ НЕ ПРИМЕНЯТСЯ! ДЛЯ ЭТОГО ПЕРЕЗАГРУЖАЙТЕ СЕРВЕР"
     authtgsuccess: "&c&l[AuthTG] Успешно!"

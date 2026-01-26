@@ -90,9 +90,8 @@ public final class MySQLSchemaMigrator {
                             "lastname varchar(120)," +
                             "currentUUID BOOLEAN NOT NULL DEFAULT false," +
                             "admin BOOLEAN NOT NULL DEFAULT false," +
-                            "ipSession varchar(72)," +
-                            "timeSession varchar(120)," +
-                            "ipRegistration varchar(72)," +
+                            "ip varchar(72)," +
+                            "time varchar(120)," +
                             "PRIMARY KEY (priKey)" +
                             ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4"
             );

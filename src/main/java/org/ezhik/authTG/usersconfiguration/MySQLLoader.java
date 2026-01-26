@@ -694,7 +694,7 @@ public class MySQLLoader implements Loader {
 
     @Override
     public void setIpRegistration(UUID uuid, String ip) {
-        String sql = "UPDATE AuthTGUsers SET ipRegistration=? WHERE uuid?";
+        String sql = "UPDATE AuthTGUsers SET ipRegistration=? WHERE uuid=?";
         try (Connection c = ds.getConnection();
              PreparedStatement ps = c.prepareStatement(sql)) {
             ps.setString(1, ip);
@@ -731,7 +731,9 @@ public class MySQLLoader implements Loader {
             ps.setString(1, uuid.toString());
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                return rs.getString("ipRegistration") != null || !rs.getString("ipRegistration").equals("0");
+                if (rs.getString("ipRegistration") == null) return false;
+                else if (rs.getString("ipRegistration").equals("0")) return false;
+                else return true;
             }
             return false;
         } catch (SQLException e) {
