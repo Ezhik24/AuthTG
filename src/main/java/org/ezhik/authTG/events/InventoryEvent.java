@@ -10,8 +10,6 @@ import org.bukkit.event.inventory.InventoryOpenEvent;
 public class InventoryEvent implements Listener {
     @EventHandler
     public void onInventoryOpen(InventoryOpenEvent event) {
-        System.out.println("test1");
-        System.out.println(event.getPlayer().getName());
         if (FreezerEvent.isFreeze(event.getPlayer().getName())) {
             event.getView().close();
             event.setCancelled(true);

@@ -681,8 +681,8 @@ public class MySQLLoader implements Loader {
             try (ResultSet rs = ps.executeQuery()) {
                 List<Object> list = new ArrayList<>();
                 if (rs.next()) {
-                    list.add(rs.getString("ip"));
-                    list.add(rs.getString("time"));
+                    list.add(rs.getString("ipSession"));
+                    list.add(rs.getString("timeSession"));
                 }
                 return list;
             }
