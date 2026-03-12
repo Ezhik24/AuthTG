@@ -1,5 +1,5 @@
 name: AuthTG
-version: '2.6'
+version: '2.6.2'
 main: org.ezhik.authTG.AuthTG
 api-version: '1.16'
 authors: [Ezhik24, ABBAfan]
@@ -49,3 +49,5 @@ commands:
     description: 'Logout'
   unlink:
     description: 'Unlink'
+  mail:
+    description: 'Mail verification'

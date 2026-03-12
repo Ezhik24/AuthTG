@@ -989,4 +989,84 @@ public class YAMLLoader implements Loader{
         }
         return config.contains("ipRegistration");
     }
+
+    @Override
+    public void setEmail(UUID uuid, String email) {
+        File file = new File("plugins/AuthTG/users/" + uuid + ".yml");
+        YamlConfiguration config = new YamlConfiguration();
+        try {
+            config.load(file);
+        } catch (IOException e) {
+            AuthTG.logger.log(Level.SEVERE, "Error loading file: " + e);
+        } catch (InvalidConfigurationException e) {
+            AuthTG.logger.log(Level.SEVERE, "Error loading file: " + e);
+        }
+
+        if (email == null || email.isBlank()) {
+            config.set("email", null);
+        } else {
+            config.set("email", email);
+        }
+
+        try {
+            config.save(file);
+        } catch (IOException e) {
+            AuthTG.logger.log(Level.SEVERE, "Error saving file: " + e);
+        }
+    }
+
+    @Override
+    public String getEmail(UUID uuid) {
+        File file = new File("plugins/AuthTG/users/" + uuid + ".yml");
+        YamlConfiguration config = new YamlConfiguration();
+        try {
+            config.load(file);
+        } catch (FileNotFoundException e) {
+            return "";
+        } catch (IOException e) {
+            AuthTG.logger.log(Level.SEVERE, "Error loading file: " + e);
+        } catch (InvalidConfigurationException e) {
+            AuthTG.logger.log(Level.SEVERE, "Error loading file: " + e);
+        }
+
+        return config.getString("email", "");
+    }
+
+    @Override
+    public void setVerifiedEmail(UUID uuid, boolean verified) {
+        File file = new File("plugins/AuthTG/users/" + uuid + ".yml");
+        YamlConfiguration config = new YamlConfiguration();
+        try {
+            config.load(file);
+        } catch (IOException e) {
+            AuthTG.logger.log(Level.SEVERE, "Error loading file: " + e);
+        } catch (InvalidConfigurationException e) {
+            AuthTG.logger.log(Level.SEVERE, "Error loading file: " + e);
+        }
+
+        config.set("isVerifiedEmail", verified);
+
+        try {
+            config.save(file);
+        } catch (IOException e) {
+            AuthTG.logger.log(Level.SEVERE, "Error saving file: " + e);
+        }
+    }
+
+    @Override
+    public boolean isVerifiedEmail(UUID uuid) {
+        File file = new File("plugins/AuthTG/users/" + uuid + ".yml");
+        YamlConfiguration config = new YamlConfiguration();
+        try {
+            config.load(file);
+        } catch (FileNotFoundException e) {
+            return false;
+        } catch (IOException e) {
+            AuthTG.logger.log(Level.SEVERE, "Error loading file: " + e);
+        } catch (InvalidConfigurationException e) {
+            AuthTG.logger.log(Level.SEVERE, "Error loading file: " + e);
+        }
+
+        return config.getBoolean("isVerifiedEmail", false);
+    }
 }

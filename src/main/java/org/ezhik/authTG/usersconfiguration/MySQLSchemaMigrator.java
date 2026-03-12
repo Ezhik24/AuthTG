@@ -8,9 +8,10 @@ import java.util.logging.Level;
 
 public final class MySQLSchemaMigrator {
 
-    private static final int LATEST_VERSION = 3;
+    private static final int LATEST_VERSION = 4;
 
-    private MySQLSchemaMigrator() {}
+    private MySQLSchemaMigrator() {
+    }
 
     public static void migrate(DataSource ds, String databaseName) {
         try (Connection c = ds.getConnection()) {
@@ -27,6 +28,7 @@ public final class MySQLSchemaMigrator {
                     case 1 -> migrateToV1(c);
                     case 2 -> migrateToV2(c, databaseName);
                     case 3 -> migrateToV3(c);
+                    case 4 -> migrateToV4(c, databaseName);
                     default -> throw new IllegalStateException("Unknown schema version: " + next);
                 }
 
@@ -58,12 +60,15 @@ public final class MySQLSchemaMigrator {
             if (rs.next()) {
                 try {
                     return Integer.parseInt(rs.getString("v"));
-                } catch (NumberFormatException ignored) {}
+                } catch (NumberFormatException ignored) {
+                }
             }
         }
+
         try (PreparedStatement ps = c.prepareStatement("INSERT INTO AuthTGMeta(k, v) VALUES('schema_version', '0')")) {
             ps.executeUpdate();
         }
+
         return 0;
     }
 
@@ -73,6 +78,7 @@ public final class MySQLSchemaMigrator {
             ps.executeUpdate();
         }
     }
+
     private static void migrateToV1(Connection c) throws SQLException {
         try (Statement st = c.createStatement()) {
             st.executeUpdate(
@@ -145,9 +151,11 @@ public final class MySQLSchemaMigrator {
             try (Statement st = c.createStatement()) {
                 st.executeUpdate("ALTER TABLE AuthTGUsers ADD UNIQUE KEY uq_authtgusers_uuid (uuid)");
             } catch (SQLException e) {
-                AuthTG.logger.log(Level.SEVERE, "[AuthTG] Cannot create UNIQUE index on AuthTGUsers.uuid: " + e.getMessage());
+                AuthTG.logger.log(Level.SEVERE,
+                        "[AuthTG] Cannot create UNIQUE index on AuthTGUsers.uuid: " + e.getMessage());
             }
         }
+
         ensureFk(c, db, "AuthTGFriends", "fk_authtgfriends_users_uuid",
                 "uuid", "AuthTGUsers", "uuid");
 
@@ -162,13 +170,44 @@ public final class MySQLSchemaMigrator {
     }
 
     private static void migrateToV3(Connection c) throws SQLException {
-
-        try(Statement st = c.createStatement()) {
+        try (Statement st = c.createStatement()) {
             st.executeUpdate("ALTER TABLE AuthTGUsers RENAME COLUMN ip TO ipSession");
             st.executeUpdate("ALTER TABLE AuthTGUsers RENAME COLUMN time TO timeSession");
             st.executeUpdate("ALTER TABLE AuthTGUsers ADD COLUMN ipRegistration VARCHAR(72) NULL");
-
             st.executeUpdate("CREATE INDEX idx_users_ip_registration ON AuthTGUsers(ipRegistration)");
+        }
+    }
+
+    private static void migrateToV4(Connection c, String db) throws SQLException {
+        if (!columnExists(c, db, "AuthTGUsers", "email")) {
+            try (Statement st = c.createStatement()) {
+                st.executeUpdate("ALTER TABLE AuthTGUsers ADD COLUMN email VARCHAR(255) NULL");
+            }
+        }
+
+        if (!columnExists(c, db, "AuthTGUsers", "isVerifiedEmail")) {
+            try (Statement st = c.createStatement()) {
+                st.executeUpdate("ALTER TABLE AuthTGUsers ADD COLUMN isVerifiedEmail BOOLEAN NOT NULL DEFAULT false");
+            }
+        }
+
+        if (!indexExists(c, db, "AuthTGUsers", "idx_users_email")) {
+            try (Statement st = c.createStatement()) {
+                st.executeUpdate("CREATE INDEX idx_users_email ON AuthTGUsers(email)");
+            }
+        }
+    }
+
+    private static boolean columnExists(Connection c, String db, String table, String column) throws SQLException {
+        String sql = "SELECT 1 FROM information_schema.columns " +
+                "WHERE table_schema=? AND table_name=? AND column_name=? LIMIT 1";
+        try (PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setString(1, db);
+            ps.setString(2, table);
+            ps.setString(3, column);
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next();
+            }
         }
     }
 
@@ -187,7 +226,8 @@ public final class MySQLSchemaMigrator {
 
     private static boolean fkExists(Connection c, String db, String table, String fkName) throws SQLException {
         String sql = "SELECT 1 FROM information_schema.table_constraints " +
-                "WHERE constraint_schema=? AND table_name=? AND constraint_name=? AND constraint_type='FOREIGN KEY' LIMIT 1";
+                "WHERE constraint_schema=? AND table_name=? AND constraint_name=? " +
+                "AND constraint_type='FOREIGN KEY' LIMIT 1";
         try (PreparedStatement ps = c.prepareStatement(sql)) {
             ps.setString(1, db);
             ps.setString(2, table);
@@ -202,7 +242,9 @@ public final class MySQLSchemaMigrator {
                                  String childTable, String fkName,
                                  String childColumn, String parentTable, String parentColumn) throws SQLException {
 
-        if (fkExists(c, db, childTable, fkName)) return;
+        if (fkExists(c, db, childTable, fkName)) {
+            return;
+        }
 
         try (Statement st = c.createStatement()) {
             st.executeUpdate(
@@ -212,7 +254,8 @@ public final class MySQLSchemaMigrator {
                             " ON DELETE CASCADE ON UPDATE CASCADE"
             );
         } catch (SQLException e) {
-            AuthTG.logger.log(Level.SEVERE, "[AuthTG] Cannot add FK " + fkName + " on " + childTable + ": " + e.getMessage());
+            AuthTG.logger.log(Level.SEVERE,
+                    "[AuthTG] Cannot add FK " + fkName + " on " + childTable + ": " + e.getMessage());
         }
     }
 }

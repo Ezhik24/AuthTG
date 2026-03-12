@@ -268,6 +268,8 @@ public final class AuthTG extends JavaPlugin {
         getCommand("logout").setExecutor(new LogoutCMD());
         getCommand("unlink").setExecutor(new UnLinkCMD());
         getCommand("authtg").setExecutor(new AuthTGCMD());
+        getCommand("mail").setExecutor(new MailCMD());
+
     }
 
     private void registerTabCompleters() {
@@ -277,6 +279,7 @@ public final class AuthTG extends JavaPlugin {
         getCommand("ban").setTabCompleter(new BanTabCompleter());
         getCommand("mute").setTabCompleter(new MuteTabCompleter());
         getCommand("setspawn").setTabCompleter(new SetSpawnTabCompleter());
+        getCommand("mail").setTabCompleter(new MailTabCompleter());
     }
 
     private void setupConfiguration() {

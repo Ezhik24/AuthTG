@@ -46,5 +46,61 @@ spawn: # Спавн EN: Spawn
   y: 0
   z: 0
   world: 'none'
+
+mail:
+  enabled: true
+
+  # LOCAL | API | SMTP
+  provider: "LOCAL"
+
+  codeLength: 6
+  codeExpireSeconds: 300
+
+  api:
+    url: ""
+    method: "POST"
+    contentType: "application/json"
+    connectTimeoutMs: 5000
+    readTimeoutMs: 5000
+
+    headers:
+      X-Internal-Token: ""
+
+    fields:
+      nickname: "{PLAYER}"
+      email: "{EMAIL}"
+      code: "{CODE}"
+      #uuid: "{UUID}"
+      #ip: "{IP}"
+
+  smtp:
+    host: "smtp.gmail.com"
+    port: 587
+    auth: true
+    startTls: true
+    startTlsRequired: false
+    ssl: false
+    sslProtocols: ""
+
+    username: ""
+    password: ""
+
+    fromEmail: ""
+    fromName: "AuthTG"
+
+    subject: "Код подтверждения для {PLAYER}"
+    html: false
+    body:
+      - "Здравствуйте, {PLAYER}!"
+      - "Ваш код подтверждения: {CODE}"
+      - "Почта: {EMAIL}"
+      - "Если вы не запрашивали привязку почты, просто проигнорируйте это письмо."
+
+    connectTimeoutMs: 10000
+    timeoutMs: 10000
+    writeTimeoutMs: 10000
+    debug: false
+
 onceUsed: # НЕ ТРОГАЙТЕ ЭТО EN: Do not touch
   mysql: false
+
