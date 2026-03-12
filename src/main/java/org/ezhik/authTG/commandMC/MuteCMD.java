@@ -132,7 +132,7 @@ public class MuteCMD implements CommandExecutor {
             else if (strings[1].contains("h")) {
                 LocalDateTime date = LocalDateTime.now().plusHours(Integer.parseInt(strings[1].replace("h", "")));
                 formattedDate = date.format(formatter);
-                    message = ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("mute", "MC")).replace("{TIMEMUTE}", formattedDate).replace("{REASON}", reason).replace("{TIME}", time).replace("{ADMIN}", "CONSOLE");
+                message = ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("mute", "MC")).replace("{TIMEMUTE}", formattedDate).replace("{REASON}", reason).replace("{TIME}", time).replace("{ADMIN}", "CONSOLE");
             }
             else if (strings[1].equals("-s")) {
                 formattedDate = "0";

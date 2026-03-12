@@ -113,4 +113,12 @@ public interface Loader {
     Integer getIpsRegistration(String ip);
 
     boolean containsIpRegistration(UUID uuid);
+
+    void setEmail(UUID uuid, String email);
+
+    String getEmail(UUID uuid);
+
+    void setVerifiedEmail(UUID uuid, boolean verified);
+
+    boolean isVerifiedEmail(UUID uuid);
 }

@@ -37,6 +37,8 @@ public class YAMLMigrate {
                 config.set("twofactor", rs.getBoolean("twofactor"));
                 config.set("activetg", rs.getBoolean("activetg"));
                 config.set("admin", rs.getBoolean("admin"));
+                if (rs.getString("email") != null) config.set("email", rs.getString("email"));
+                config.set("isVerifiedEmail", rs.getBoolean("isVerifiedEmail"));
                 try {
                     config.save(file);
                 } catch (IOException e) {
