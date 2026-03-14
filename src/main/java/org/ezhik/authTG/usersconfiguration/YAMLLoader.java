@@ -1069,4 +1069,35 @@ public class YAMLLoader implements Loader{
 
         return config.getBoolean("isVerifiedEmail", false);
     }
+
+    @Override
+    public void setCaptchaTimeout(UUID uuid, LocalDateTime time) {
+        File file = new File("plugins/AuthTG/users/" + uuid + ".yml");
+        YamlConfiguration config = new YamlConfiguration();
+        try {
+            config.load(file);
+        } catch (IOException e) {
+            AuthTG.logger.log(Level.SEVERE, "Error loading file: " + e);
+        } catch (InvalidConfigurationException e) {
+            AuthTG.logger.log(Level.SEVERE, "Error loading file: " + e);
+        }
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss dd.MM.yyyy");
+        String timeFormatted = time.format(formatter);
+        config.set("captchaTimeout", timeFormatted);
+    }
+
+    @Override
+    public LocalDateTime getCaptchaTimeout(UUID uuid) {
+        File file = new File("plugins/AuthTG/users/" + uuid + ".yml");
+        YamlConfiguration config = new YamlConfiguration();
+        try {
+            config.load(file);
+        } catch (IOException e) {
+            AuthTG.logger.log(Level.SEVERE, "Error loading file: " + e);
+        } catch (InvalidConfigurationException e) {
+            AuthTG.logger.log(Level.SEVERE, "Error loading file: " + e);
+        }
+        if (config.getString("captchaTimeout") == null) return LocalDateTime.now();
+        return LocalDateTime.parse(config.getString("captchaTimeout"), DateTimeFormatter.ofPattern("HH:mm:ss dd.MM.yyyy"));
+    }
 }

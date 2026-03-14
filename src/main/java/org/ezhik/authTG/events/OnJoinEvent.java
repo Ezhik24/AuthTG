@@ -7,7 +7,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.inventory.Inventory;
 import org.ezhik.authTG.AuthTG;
+import org.ezhik.authTG.captcha.Captcha;
 import org.ezhik.authTG.handlers.AuthHandler;
 import org.ezhik.authTG.handlers.Handler;
 import org.ezhik.authTG.User;
@@ -56,6 +58,18 @@ public class OnJoinEvent implements Listener {
         if (p.getName().length() < AuthTG.minLenghtNickname || p.getName().length() > AuthTG.maxLenghtNickname) {
             Handler.kick(p.getName(), ChatColor.translateAlternateColorCodes('&',AuthTG.getMessage("nicknamelenght", "MC").replace("{MIN}", String.valueOf(AuthTG.minLenghtNickname)).replace("{MAX}", String.valueOf(AuthTG.maxLenghtNickname))));
         }
+        if (AuthTG.getInstance().getConfig().getBoolean("captcha.enabled")) {
+            if (LocalDateTime.now().isAfter(AuthTG.loader.getCaptchaTimeout(p.getUniqueId()))) {
+                Inventory inv = Captcha.loadCaptcha(p);
+                Captcha.list.add(p.getUniqueId());
+                p.openInventory(inv);
+                return;
+            }
+        }
+        loadRegistration(p,user);
+    }
+
+    public static void loadRegistration(Player p, User user) {
         if (AuthTG.kickTimeout != 0) {
             AuthHandler.setTimeout(p.getUniqueId(), AuthTG.kickTimeout);
         }

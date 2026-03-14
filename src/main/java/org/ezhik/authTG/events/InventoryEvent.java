@@ -6,11 +6,12 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
+import org.ezhik.authTG.captcha.Captcha;
 
 public class InventoryEvent implements Listener {
     @EventHandler
     public void onInventoryOpen(InventoryOpenEvent event) {
-        if (FreezerEvent.isFreeze(event.getPlayer().getName())) {
+        if (FreezerEvent.isFreeze(event.getPlayer().getName()) && !Captcha.list.contains(event.getPlayer().getUniqueId())) {
             event.getView().close();
             event.setCancelled(true);
         }

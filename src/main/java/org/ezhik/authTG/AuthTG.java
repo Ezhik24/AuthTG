@@ -7,6 +7,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.ezhik.authTG.captcha.ClickInventoryEvent;
 import org.ezhik.authTG.commandMC.*;
 import org.ezhik.authTG.events.*;
 import org.ezhik.authTG.handlers.*;
@@ -77,7 +78,7 @@ public final class AuthTG extends JavaPlugin {
         org.apache.logging.log4j.core.Logger coreLogger = (org.apache.logging.log4j.core.Logger) LogManager.getRootLogger();
         coreLogger.addFilter(new Log4JFilter());
 
-
+        Bukkit.getServer().getPluginManager().registerEvents(new ClickInventoryEvent(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new FreezerEvent(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new OnJoinEvent(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new MuterEvent(), this);
@@ -90,12 +91,12 @@ public final class AuthTG extends JavaPlugin {
         Bukkit.getServer().getPluginManager().registerEvents(new onLeaveEvent(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new InventoryEvent(), this);
 
-
+        // Load PlaceholderAPI
         if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
             new PlaceholderAPI().register();
         }
 
-
+        //Loading Metrics by bStats
         Metrics metrics = new Metrics(this, 27268);
         metrics.addCustomChart(new SingleLineChart("players", new Callable<Integer>() {
             @Override
@@ -105,25 +106,25 @@ public final class AuthTG extends JavaPlugin {
         }));
         metrics.addCustomChart(new SingleLineChart("servers", () -> 1));
 
-
+        //Load Handlers
         Handler handler = new Handler();
         AuthHandler authHandler = new AuthHandler();
         authHandler.runTaskTimer(this, 0, 20);
         handler.runTaskTimer(this, 0, 1);
 
-
+        //Load UsersConfigurations
         initLoader();
 
-
+        // Register commands
         registerCommands();
 
-
+        // Register TabCompleters
         registerTabCompleters();
 
-
+        // Setting Muted Player
         MuterEvent.setMutedPlayers(loader.getMutedPlayers());
 
-
+        // Starting TelegramBot
         initTelegramBot();
     }
 

@@ -121,4 +121,8 @@ public interface Loader {
     void setVerifiedEmail(UUID uuid, boolean verified);
 
     boolean isVerifiedEmail(UUID uuid);
+
+    void setCaptchaTimeout(UUID uuid, LocalDateTime time);
+
+    LocalDateTime getCaptchaTimeout(UUID uuid);
 }
