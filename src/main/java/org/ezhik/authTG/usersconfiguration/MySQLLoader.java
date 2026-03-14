@@ -518,6 +518,61 @@ public class MySQLLoader implements Loader {
         }
     }
 
+    @Override
+    public void setEmail(UUID uuid, String email) {
+        String sql = "UPDATE AuthTGUsers SET email=? WHERE uuid=?";
+        try (Connection c = ds.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
+
+            if (email == null || email.isBlank()) {
+                ps.setNull(1, Types.VARCHAR);
+            } else {
+                ps.setString(1, email);
+            }
+
+            ps.setString(2, uuid.toString());
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public String getEmail(UUID uuid) {
+        String value = getOneString("SELECT email FROM AuthTGUsers WHERE uuid=?", uuid);
+        return value == null ? "" : value;
+    }
+
+    @Override
+    public void setVerifiedEmail(UUID uuid, boolean verified) {
+        String sql = "UPDATE AuthTGUsers SET isVerifiedEmail=? WHERE uuid=?";
+        try (Connection c = ds.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setBoolean(1, verified);
+            ps.setString(2, uuid.toString());
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public boolean isVerifiedEmail(UUID uuid) {
+        String sql = "SELECT isVerifiedEmail FROM AuthTGUsers WHERE uuid=?";
+        try (Connection c = ds.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setString(1, uuid.toString());
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getBoolean("isVerifiedEmail");
+                }
+            }
+        } catch (SQLException e) {
+            AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
+        }
+        return false;
+    }
+
     @Override public String getBanTime(UUID uuid) { return getOneString("SELECT timeBan FROM AuthTGBans WHERE uuid=?", uuid); }
     @Override public String getBanReason(UUID uuid) { return getOneString("SELECT reason FROM AuthTGBans WHERE uuid=?", uuid); }
     @Override public String getBanAdmin(UUID uuid) { return getOneString("SELECT admin FROM AuthTGBans WHERE uuid=?", uuid); }
