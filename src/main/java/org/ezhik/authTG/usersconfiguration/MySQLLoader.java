@@ -573,6 +573,39 @@ public class MySQLLoader implements Loader {
         return false;
     }
 
+    @Override
+    public void setCaptchaTimeout(UUID uuid, LocalDateTime time) {
+        String sql = "UPDATE AuthTGUsers SET captchaTimeout=? WHERE uuid=?";
+        try (Connection c = ds.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss dd.MM.yyyy");
+            String timeFormatted = time.format(formatter);
+            ps.setString(1, timeFormatted);
+            ps.setString(2, uuid.toString());
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public LocalDateTime getCaptchaTimeout(UUID uuid) {
+        String sql = "SELECT captchaTimeout FROM AuthTGUsers WHERE uuid=?";
+        try (Connection c = ds.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setString(1, uuid.toString());
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    if (rs.getString("captchaTimeout") == null) return LocalDateTime.now();
+                    return LocalDateTime.parse(rs.getString("captchaTimeout"), DateTimeFormatter.ofPattern("HH:mm:ss dd.MM.yyyy"));
+                }
+            }
+        } catch (SQLException e) {
+            AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
+        }
+        return null;
+    }
+
     @Override public String getBanTime(UUID uuid) { return getOneString("SELECT timeBan FROM AuthTGBans WHERE uuid=?", uuid); }
     @Override public String getBanReason(UUID uuid) { return getOneString("SELECT reason FROM AuthTGBans WHERE uuid=?", uuid); }
     @Override public String getBanAdmin(UUID uuid) { return getOneString("SELECT admin FROM AuthTGBans WHERE uuid=?", uuid); }

@@ -47,7 +47,7 @@ public class BotTelegram extends TelegramLongPollingBot {
         this.token = token;
 
         commandHandler.put("/resetpassword", new ResetPasswordCMDHandler());
-        //commandHandler.put("/start", new StartCMDHandler());
+        commandHandler.put("/start", new StartCMDHandler());
         commandHandler.put("/link", new StartCMDHandler());
         commandHandler.put("/tfon", new TFonCMDHandler());
         commandHandler.put("/tfoff", new TFoffCMDHandler());

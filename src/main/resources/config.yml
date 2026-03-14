@@ -9,6 +9,9 @@ captcha:
 bot: # Настройки бота EN: Settings of bot
   token: changeme # Токен бота EN: Bot token
   username: changeme # Имя бота EN: Bot username
+captcha:
+  enabled: true # Включить/выключить каптчу
+  timeoutCaptcha: 3 # Сколько не спрашивать у игрока каптчу
 mysql: # Настройки базы данных EN: Database settings
   use: false # Использовать базу данных EN: Use database
   host: 'localhost' # Хост базы данных,УКАЗЫВАЙТЕ ТУТ ЖЕ ПОРТ,ЕСЛИ ИСПОЛЬЗУЕТСЯ EN: Host of database, ENTER HERE PORT IF YOU USE

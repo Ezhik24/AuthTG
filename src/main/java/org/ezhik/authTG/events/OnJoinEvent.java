@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.inventory.Inventory;
 import org.ezhik.authTG.AuthTG;
 import org.ezhik.authTG.IPManager;
 import org.ezhik.authTG.User;
