@@ -18,27 +18,38 @@ import java.util.logging.Level;
 
 public class CodeCMD implements CommandExecutor {
     public static Map<UUID, String> code = new HashMap<>();
+
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
         if (!(commandSender instanceof Player)) {
-            AuthTG.logger.log(Level.INFO,AuthTG.getMessage("notplayer", "CE"));
+            AuthTG.logger.log(Level.INFO, AuthTG.getMessage("notplayer", "CE"));
             return false;
         }
+
+        Player player = (Player) commandSender;
+
+        if (!AuthTG.isTelegramEnabled()) {
+            player.sendMessage(ChatColor.RED + "Telegram integration is disabled in config.yml");
+            return false;
+        }
+
         if (strings.length == 0) {
             commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("codeusage", "MC")));
             return false;
         }
-        Player player = (Player) commandSender;
+
         if (!strings[0].equals(code.get(player.getUniqueId()))) {
-            player.sendMessage(ChatColor.translateAlternateColorCodes('&',AuthTG.getMessage("codeuncorect", "MC")));
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("codeuncorect", "MC")));
             return false;
         }
+
         if (AuthTG.authNecessarily) {
             FreezerEvent.unfreezeplayer(player.getName());
             MuterEvent.unmute(player.getName());
             player.resetTitle();
             AuthHandler.removeTimeout(player.getUniqueId());
         }
+
         if (AuthTG.loader.getActiveTG(player.getUniqueId())) {
             AuthTG.loader.setActiveTG(player.getUniqueId(), false);
             AuthTG.loader.setTwofactor(player.getUniqueId(), false);
@@ -57,7 +68,9 @@ public class CodeCMD implements CommandExecutor {
                 AuthTG.loader.setPlayerName(player.getUniqueId(), player.getName());
             }
             User user = User.getUser(player.getUniqueId());
-            user.sendMessage(AuthTG.getMessage("codelinkplayer", "TG"));
+            if (user != null) {
+                user.sendMessage(AuthTG.getMessage("codelinkplayer", "TG"));
+            }
         }
         return true;
     }

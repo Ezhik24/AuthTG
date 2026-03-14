@@ -17,6 +17,21 @@ public final class MailApiService {
     }
 
     public static boolean sendLinkCode(String playerName, UUID uuid, String ip, String email, String code) {
+        return sendCode("mail.api.fields", playerName, uuid, ip, email, code);
+    }
+
+    public static boolean sendTwoFactorCode(String playerName, UUID uuid, String ip, String email, String code) {
+        return sendCode("mail.api.twoFactorFields", playerName, uuid, ip, email, code,
+                "mail.api.fields");
+    }
+
+    private static boolean sendCode(String fieldsPath,
+                                    String playerName,
+                                    UUID uuid,
+                                    String ip,
+                                    String email,
+                                    String code,
+                                    String... fallbackPaths) {
         String apiUrl = AuthTG.getInstance().getConfig().getString("mail.api.url", "");
         if (apiUrl == null || apiUrl.isBlank()) {
             AuthTG.logger.log(Level.WARNING, "[AuthTG] mail.api.url is empty");
@@ -26,9 +41,9 @@ public final class MailApiService {
         String method = AuthTG.getInstance().getConfig().getString("mail.api.method", "POST");
         String contentType = AuthTG.getInstance().getConfig().getString("mail.api.contentType", "application/json");
 
-        ConfigurationSection fields = AuthTG.getInstance().getConfig().getConfigurationSection("mail.api.fields");
+        ConfigurationSection fields = getFields(fieldsPath, fallbackPaths);
         if (fields == null || fields.getKeys(false).isEmpty()) {
-            AuthTG.logger.log(Level.WARNING, "[AuthTG] mail.api.fields is empty");
+            AuthTG.logger.log(Level.WARNING, "[AuthTG] " + fieldsPath + " is empty");
             return false;
         }
 
@@ -79,6 +94,24 @@ public final class MailApiService {
                 connection.disconnect();
             }
         }
+    }
+
+    private static ConfigurationSection getFields(String mainPath, String... fallbackPaths) {
+        ConfigurationSection fields = AuthTG.getInstance().getConfig().getConfigurationSection(mainPath);
+        if (fields != null && !fields.getKeys(false).isEmpty()) {
+            return fields;
+        }
+
+        if (fallbackPaths != null) {
+            for (String fallbackPath : fallbackPaths) {
+                ConfigurationSection fallback = AuthTG.getInstance().getConfig().getConfigurationSection(fallbackPath);
+                if (fallback != null && !fallback.getKeys(false).isEmpty()) {
+                    return fallback;
+                }
+            }
+        }
+
+        return fields;
     }
 
     private static String buildJson(ConfigurationSection fields,

@@ -1,5 +1,11 @@
 # Приветствую! Это конфиг с настройками AuthTG
 # Hi! This is a config with AuthTG settings
+tg: true
+
+captcha:
+  enabled: true
+  timeoutCaptcha: 3
+
 bot: # Настройки бота EN: Settings of bot
   token: changeme # Токен бота EN: Bot token
   username: changeme # Имя бота EN: Bot username
@@ -12,13 +18,14 @@ mysql: # Настройки базы данных EN: Database settings
   db: 'AuthTG' # Имя базы данных EN: Database name
   user: 'root' # Имя пользователя EN: Username
   pass: '123' # Пароль EN: Password
-
+  #НЕ ТРОГАТЬ
   pool:
     maximumPoolSize: 10
     connectionTimeoutMs: 30000
     idleTimeoutMs: 600000
     maxLifetimeMs: 1800000
     jdbcParams: "useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=UTC"
+
 macro:
   # Example | Пример
   # testcmd: - Команда,которая будет в тг EN: Command that will be in tg
@@ -75,6 +82,11 @@ mail:
       #uuid: "{UUID}"
       #ip: "{IP}"
 
+    twoFactorFields:
+      nickname: "{PLAYER}"
+      email: "{EMAIL}"
+      code: "{CODE}"
+
   smtp:
     host: "smtp.gmail.com"
     port: 587
@@ -98,6 +110,12 @@ mail:
       - "Почта: {EMAIL}"
       - "Если вы не запрашивали привязку почты, просто проигнорируйте это письмо."
 
+    twoFactorSubject: "Код входа для {PLAYER}"
+    twoFactorBody:
+      - "Здравствуйте, {PLAYER}!"
+      - "Ваш код для входа: {CODE}"
+      - "Если это были не вы, срочно смените пароль."
+
     connectTimeoutMs: 10000
     timeoutMs: 10000
     writeTimeoutMs: 10000
@@ -106,3 +124,4 @@ mail:
 
 onceUsed: # НЕ ТРОГАЙТЕ ЭТО EN: Do not touch
   mysql: false
+

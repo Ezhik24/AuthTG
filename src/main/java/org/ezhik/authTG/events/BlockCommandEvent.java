@@ -6,46 +6,88 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.ezhik.authTG.AuthTG;
+import org.ezhik.authTG.captcha.Captcha;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.stream.Stream;
-
-import static java.util.List.*;
+import java.util.Locale;
+import java.util.Set;
 
 public class BlockCommandEvent implements Listener {
+
     @EventHandler
     public void onCommmand(PlayerCommandPreprocessEvent event) {
         Player player = event.getPlayer();
-        if(MuterEvent.isMute(player)) {
-            List<String> commands = new ArrayList<>(List.of("/login", "/register", "/reg", "/l", "/code"));
-            commands.addAll(AuthTG.commandsPreAuthorization);
-            String command = event.getMessage().split(" ")[0];
-            if(!commands.contains(command)) {
-               event.setCancelled(true);
-               player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("joinblock", "MC")));
+
+        if (Captcha.isPending(player.getUniqueId())) {
+            event.setCancelled(true);
+            player.sendMessage("§cСначала пройдите капчу.");
+            return;
+        }
+
+        if (MuterEvent.isMute(player)) {
+            Set<String> allowedCommands = new LinkedHashSet<>(List.of(
+                    "/login", "/register", "/reg", "/l", "/code", "/2fa"
+            ));
+
+            for (String command : AuthTG.commandsPreAuthorization) {
+                if (command == null) {
+                    continue;
+                }
+
+                String normalized = command.trim().toLowerCase(Locale.ROOT);
+                if (!normalized.isBlank()) {
+                    allowedCommands.add(normalized);
+                }
+            }
+
+            String command = event.getMessage().split(" ")[0].toLowerCase(Locale.ROOT);
+            if (!allowedCommands.contains(command)) {
+                event.setCancelled(true);
+                player.sendMessage(ChatColor.translateAlternateColorCodes('&',
+                        AuthTG.getMessage("joinblock", "MC")));
             }
         }
+
         if (MuterEvent.isMuteChat(player)) {
             String[] args = event.getMessage().split(" ");
-            if (args[0].contains(AuthTG.mutecommands.toString())) {
-                List<Object> list = MuterEvent.getMuteChat(event.getPlayer().getName());
-                if (LocalDateTime.now().isAfter((LocalDateTime) list.get(0))) {
-                    MuterEvent.unmuteChat(event.getPlayer().getName());
-                    AuthTG.loader.deleteMute(event.getPlayer().getUniqueId());
-                    return;
-                }
-                if (list.get(0).toString().equals("0")) {
-                    String message = ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("mute", "MC")).replace("{TIMEMUTE}", "навсегда").replace("{REASON}", AuthTG.loader.getMuteReason(player.getUniqueId())).replace("{TIME}", AuthTG.loader.getMuteTimeAdmin(event.getPlayer().getUniqueId())).replace("{ADMIN}", AuthTG.loader.getMuteAdmin(event.getPlayer().getUniqueId()));
-                    event.getPlayer().sendMessage(message);
-                } else {
-                    String message = ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("mute", "MC")).replace("{TIMEMUTE}", AuthTG.loader.getMuteTime(player.getUniqueId())).replace("{REASON}", AuthTG.loader.getMuteReason(player.getUniqueId())).replace("{TIME}", AuthTG.loader.getMuteTimeAdmin(event.getPlayer().getUniqueId())).replace("{ADMIN}", AuthTG.loader.getMuteAdmin(event.getPlayer().getUniqueId()));
-                    event.getPlayer().sendMessage(message);
-                }
-                event.setCancelled(true);
+            String command = args[0].toLowerCase(Locale.ROOT);
+
+            if (!AuthTG.mutecommands.contains(command)) {
+                return;
             }
+
+            List<Object> list = MuterEvent.getMuteChat(player.getName());
+            if (list == null || list.isEmpty()) {
+                return;
+            }
+
+            if (!"0".equals(String.valueOf(list.get(0))) && LocalDateTime.now().isAfter((LocalDateTime) list.get(0))) {
+                MuterEvent.unmuteChat(player.getName());
+                AuthTG.loader.deleteMute(player.getUniqueId());
+                return;
+            }
+
+            String message;
+            if ("0".equals(String.valueOf(list.get(0)))) {
+                message = ChatColor.translateAlternateColorCodes('&',
+                                AuthTG.getMessage("mute", "MC"))
+                        .replace("{TIMEMUTE}", "навсегда")
+                        .replace("{REASON}", AuthTG.loader.getMuteReason(player.getUniqueId()))
+                        .replace("{TIME}", AuthTG.loader.getMuteTimeAdmin(player.getUniqueId()))
+                        .replace("{ADMIN}", AuthTG.loader.getMuteAdmin(player.getUniqueId()));
+            } else {
+                message = ChatColor.translateAlternateColorCodes('&',
+                                AuthTG.getMessage("mute", "MC"))
+                        .replace("{TIMEMUTE}", AuthTG.loader.getMuteTime(player.getUniqueId()))
+                        .replace("{REASON}", AuthTG.loader.getMuteReason(player.getUniqueId()))
+                        .replace("{TIME}", AuthTG.loader.getMuteTimeAdmin(player.getUniqueId()))
+                        .replace("{ADMIN}", AuthTG.loader.getMuteAdmin(player.getUniqueId()));
+            }
+
+            player.sendMessage(message);
+            event.setCancelled(true);
         }
     }
 }

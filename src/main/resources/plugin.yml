@@ -1,9 +1,10 @@
 name: AuthTG
-version: '2.6.2'
+version: '2.6.3 - Tg Fix v2.0 '
 main: org.ezhik.authTG.AuthTG
 api-version: '1.16'
 authors: [Ezhik24, ABBAfan]
 softdepend: ["PlaceholderAPI"]
+
 commands:
   register:
     description: 'Register'
@@ -51,3 +52,9 @@ commands:
     description: 'Unlink'
   mail:
     description: 'Mail verification'
+
+  prefer:
+    description: 'Preferred 2FA method'
+
+  2fa:
+    description: 'Mail 2FA code'

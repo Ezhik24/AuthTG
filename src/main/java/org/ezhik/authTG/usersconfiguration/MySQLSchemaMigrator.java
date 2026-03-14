@@ -8,7 +8,7 @@ import java.util.logging.Level;
 
 public final class MySQLSchemaMigrator {
 
-    private static final int LATEST_VERSION = 5;
+    private static final int LATEST_VERSION = 6;
 
     private MySQLSchemaMigrator() {
     }
@@ -29,7 +29,8 @@ public final class MySQLSchemaMigrator {
                     case 2 -> migrateToV2(c, databaseName);
                     case 3 -> migrateToV3(c);
                     case 4 -> migrateToV4(c, databaseName);
-                    case 5 -> migrateToV5(c);
+                    case 5 -> migrateToV5(c, databaseName); // captchaTimeout
+                    case 6 -> migrateToV6(c, databaseName); // preferred2fa
                     default -> throw new IllegalStateException("Unknown schema version: " + next);
                 }
 
@@ -37,8 +38,10 @@ public final class MySQLSchemaMigrator {
                 current = next;
             }
 
+            reconcileOptionalColumns(c, databaseName);
+
         } catch (SQLException e) {
-            AuthTG.logger.log(Level.SEVERE, "[AuthTG] DB migrate failed: " + e.getMessage());
+            AuthTG.logger.log(Level.SEVERE, "[AuthTG] DB migrate failed: " + e.getMessage(), e);
             throw new RuntimeException(e);
         }
     }
@@ -153,19 +156,16 @@ public final class MySQLSchemaMigrator {
                 st.executeUpdate("ALTER TABLE AuthTGUsers ADD UNIQUE KEY uq_authtgusers_uuid (uuid)");
             } catch (SQLException e) {
                 AuthTG.logger.log(Level.SEVERE,
-                        "[AuthTG] Cannot create UNIQUE index on AuthTGUsers.uuid: " + e.getMessage());
+                        "[AuthTG] Cannot create UNIQUE index on AuthTGUsers.uuid: " + e.getMessage(), e);
             }
         }
 
         ensureFk(c, db, "AuthTGFriends", "fk_authtgfriends_users_uuid",
                 "uuid", "AuthTGUsers", "uuid");
-
         ensureFk(c, db, "AuthTGCommands", "fk_authtgcommands_users_uuid",
                 "uuid", "AuthTGUsers", "uuid");
-
         ensureFk(c, db, "AuthTGBans", "fk_authtgbans_users_uuid",
                 "uuid", "AuthTGUsers", "uuid");
-
         ensureFk(c, db, "AuthTGMutes", "fk_authtgmutes_users_uuid",
                 "uuid", "AuthTGUsers", "uuid");
     }
@@ -199,10 +199,33 @@ public final class MySQLSchemaMigrator {
         }
     }
 
-    private static void migrateToV5(Connection c) throws SQLException {
-        try (Statement st = c.createStatement()) {
-            st.executeUpdate("ALTER TABLE AuthTGUsers ADD COLUMN captchaTimeout VARCHAR(120) NULL");
-            st.executeUpdate("CREATE INDEX idx_users_captcha_timeout ON AuthTGUsers(captchaTimeout)");
+    private static void migrateToV5(Connection c, String db) throws SQLException {
+        if (!columnExists(c, db, "AuthTGUsers", "captchaTimeout")) {
+            try (Statement st = c.createStatement()) {
+                st.executeUpdate("ALTER TABLE AuthTGUsers ADD COLUMN captchaTimeout VARCHAR(120) NULL");
+            }
+        }
+    }
+
+    private static void migrateToV6(Connection c, String db) throws SQLException {
+        if (!columnExists(c, db, "AuthTGUsers", "preferred2fa")) {
+            try (Statement st = c.createStatement()) {
+                st.executeUpdate("ALTER TABLE AuthTGUsers ADD COLUMN preferred2fa VARCHAR(16) NULL");
+            }
+        }
+    }
+
+    private static void reconcileOptionalColumns(Connection c, String db) throws SQLException {
+        if (!columnExists(c, db, "AuthTGUsers", "captchaTimeout")) {
+            try (Statement st = c.createStatement()) {
+                st.executeUpdate("ALTER TABLE AuthTGUsers ADD COLUMN captchaTimeout VARCHAR(120) NULL");
+            }
+        }
+
+        if (!columnExists(c, db, "AuthTGUsers", "preferred2fa")) {
+            try (Statement st = c.createStatement()) {
+                st.executeUpdate("ALTER TABLE AuthTGUsers ADD COLUMN preferred2fa VARCHAR(16) NULL");
+            }
         }
     }
 
@@ -263,7 +286,7 @@ public final class MySQLSchemaMigrator {
             );
         } catch (SQLException e) {
             AuthTG.logger.log(Level.SEVERE,
-                    "[AuthTG] Cannot add FK " + fkName + " on " + childTable + ": " + e.getMessage());
+                    "[AuthTG] Cannot add FK " + fkName + " on " + childTable + ": " + e.getMessage(), e);
         }
     }
 }

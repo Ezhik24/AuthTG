@@ -8,10 +8,8 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
-import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.util.*;
-import java.util.logging.Level;
 
 public class User {
     public Long chatid;
@@ -22,9 +20,9 @@ public class User {
     public boolean activetg;
     public boolean twofactor;
     public Player player;
-    public  UUID uuid;
+    public UUID uuid;
     public String playername;
-    public List<String > friends;
+    public List<String> friends;
     public boolean isadmin;
     public Set<String> commands;
 
@@ -43,7 +41,7 @@ public class User {
         this.isadmin = AuthTG.loader.isAdmin(uuid);
         this.commands = AuthTG.loader.getCommands(uuid);
     }
-    // Generate a random confirmation code
+
     public static String generateConfirmationCode() {
         Random random = new Random();
         String characters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -59,16 +57,18 @@ public class User {
         User user = new User(uuid);
         if (user.active) {
             return user;
+        } else {
+            return null;
         }
-        else return null;
     }
 
     public static User getUser(String playername) {
         UUID uuid = AuthTG.loader.getUUIDbyPlayerName(playername);
         if (uuid != null) {
-            User user = getUser(uuid);
-            return user;
-        } else return null;
+            return getUser(uuid);
+        } else {
+            return null;
+        }
     }
 
     public static User getCurrentUser(Long chatid) {
@@ -76,8 +76,7 @@ public class User {
         if (uuid == null) {
             return null;
         } else {
-            User user = getUser(uuid);
-            return user;
+            return getUser(uuid);
         }
     }
 
@@ -91,40 +90,57 @@ public class User {
         AuthTG.loader.setActiveTG(uuid, false);
         AuthTG.loader.setCurrentUUID(uuid, message.getChatId());
         AuthTG.loader.setPlayerNames(message.getChatId(), uuid);
+
         String code = generateConfirmationCode();
-        AuthTG.bot.sendMessage(message.getChatId(), AuthTG.getMessage("codemsgactivated", "TG").replace("{CODE}", code));
-        player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("codemsgactivated", "MC")));
+        AuthTG.bot.sendMessage(
+                message.getChatId(),
+                AuthTG.getMessage("codemsgactivated", "TG").replace("{CODE}", code)
+        );
+
+        if (player != null) {
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&',
+                    AuthTG.getMessage("codemsgactivated", "MC")));
+        }
+
         CodeCMD.code.put(uuid, code);
     }
 
     public void sendMessage(String message) {
-        AuthTG.bot.sendMessage(this.chatid, AuthTG.getMessage("prefix", "TG").replace("{PLAYER}", this.playername) + message);
+        AuthTG.bot.sendMessage(
+                this.chatid,
+                AuthTG.getMessage("prefix", "TG").replace("{PLAYER}", this.playername) + message
+        );
     }
 
     public void sendLoginAccepted(String message) {
         InlineKeyboardMarkup keyb = new InlineKeyboardMarkup();
         List<InlineKeyboardButton> colkeyb = new ArrayList<>();
+
         InlineKeyboardButton yesbtn = new InlineKeyboardButton();
         yesbtn.setText(AuthTG.getMessage("yesbutton", "TG"));
         yesbtn.setCallbackData("ys_" + this.uuid);
+
         InlineKeyboardButton nobtn = new InlineKeyboardButton();
         nobtn.setText(AuthTG.getMessage("nobutton", "TG"));
         nobtn.setCallbackData("no_" + this.uuid);
+
         colkeyb.add(yesbtn);
         colkeyb.add(nobtn);
-        List<List<InlineKeyboardButton>>keyboard = new ArrayList<>();
+
+        List<List<InlineKeyboardButton>> keyboard = new ArrayList<>();
         keyboard.add(colkeyb);
         keyb.setKeyboard(keyboard);
+
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(this.chatid);
         sendMessage.setText(message);
         sendMessage.setReplyMarkup(keyb);
-        try {
-            AuthTG.bot.execute(sendMessage);
-        } catch (TelegramApiException e) {
-            AuthTG.logger.log(Level.SEVERE ,"Error sending message: " + e);
-        }
 
+        AuthTG.bot.executeAsync(sendMessage);
+    }
+
+    public void sendLoginAcceptedAsync(String message) {
+        sendLoginAccepted(message);
     }
 
     public static void sendBroadcastMessage(String message) {
@@ -137,20 +153,20 @@ public class User {
         InlineKeyboardMarkup playerkeyb = new InlineKeyboardMarkup();
         List<InlineKeyboardButton> colkeyb = new ArrayList<>();
         List<List<InlineKeyboardButton>> keyboard = new ArrayList<>();
+
         InlineKeyboardButton acts = new InlineKeyboardButton();
         acts.setText(AuthTG.getMessage("msgfriendbutton", "TG"));
         acts.setCallbackData("chfr_" + friend);
+
         colkeyb.add(acts);
         keyboard.add(colkeyb);
         playerkeyb.setKeyboard(keyboard);
+
         SendMessage sendMessage = new SendMessage();
         sendMessage.setText(AuthTG.getMessage("msgfriend", "TG").replace("{PLAYER}", this.playername) + message);
         sendMessage.setChatId(this.chatid);
         sendMessage.setReplyMarkup(playerkeyb);
-        try {
-            AuthTG.bot.execute(sendMessage);
-        } catch (TelegramApiException e) {
-            AuthTG.logger.log(Level.SEVERE ,"Error sending message: " + e);
-        }
+
+        AuthTG.bot.executeAsync(sendMessage);
     }
 }
