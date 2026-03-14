@@ -2,6 +2,10 @@
 # Hi! This is a config with AuthTG settings
 tg: true
 
+captcha:
+  enabled: true
+  timeoutCaptcha: 3
+
 bot: # Настройки бота EN: Settings of bot
   token: changeme # Токен бота EN: Bot token
   username: changeme # Имя бота EN: Bot username

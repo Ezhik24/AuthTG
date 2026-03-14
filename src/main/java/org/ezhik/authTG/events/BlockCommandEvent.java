@@ -6,6 +6,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.ezhik.authTG.AuthTG;
+import org.ezhik.authTG.captcha.Captcha;
 
 import java.time.LocalDateTime;
 import java.util.LinkedHashSet;
@@ -19,6 +20,12 @@ public class BlockCommandEvent implements Listener {
     public void onCommmand(PlayerCommandPreprocessEvent event) {
         Player player = event.getPlayer();
 
+        if (Captcha.isPending(player.getUniqueId())) {
+            event.setCancelled(true);
+            player.sendMessage("§cСначала пройдите капчу.");
+            return;
+        }
+
         if (MuterEvent.isMute(player)) {
             Set<String> allowedCommands = new LinkedHashSet<>(List.of(
                     "/login", "/register", "/reg", "/l", "/code", "/2fa"
@@ -28,6 +35,7 @@ public class BlockCommandEvent implements Listener {
                 if (command == null) {
                     continue;
                 }
+
                 String normalized = command.trim().toLowerCase(Locale.ROOT);
                 if (!normalized.isBlank()) {
                     allowedCommands.add(normalized);

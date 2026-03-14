@@ -9,6 +9,7 @@ import org.bukkit.command.TabCompleter;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.ezhik.authTG.captcha.ClickInventoryEvent;
 import org.ezhik.authTG.commandMC.*;
 import org.ezhik.authTG.events.*;
 import org.ezhik.authTG.handlers.AuthHandler;
@@ -170,6 +171,7 @@ public final class AuthTG extends JavaPlugin {
     }
 
     private void registerEvents() {
+        Bukkit.getServer().getPluginManager().registerEvents(new ClickInventoryEvent(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new FreezerEvent(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new OnJoinEvent(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new MuterEvent(), this);
