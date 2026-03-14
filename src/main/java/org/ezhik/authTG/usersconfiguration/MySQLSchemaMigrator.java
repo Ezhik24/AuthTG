@@ -8,7 +8,7 @@ import java.util.logging.Level;
 
 public final class MySQLSchemaMigrator {
 
-    private static final int LATEST_VERSION = 4;
+    private static final int LATEST_VERSION = 5;
 
     private MySQLSchemaMigrator() {
     }
@@ -29,6 +29,7 @@ public final class MySQLSchemaMigrator {
                     case 2 -> migrateToV2(c, databaseName);
                     case 3 -> migrateToV3(c);
                     case 4 -> migrateToV4(c, databaseName);
+                    case 5 -> migrateToV5(c, databaseName);
                     default -> throw new IllegalStateException("Unknown schema version: " + next);
                 }
 
@@ -194,6 +195,14 @@ public final class MySQLSchemaMigrator {
         if (!indexExists(c, db, "AuthTGUsers", "idx_users_email")) {
             try (Statement st = c.createStatement()) {
                 st.executeUpdate("CREATE INDEX idx_users_email ON AuthTGUsers(email)");
+            }
+        }
+    }
+
+    private static void migrateToV5(Connection c, String db) throws SQLException {
+        if (!columnExists(c, db, "AuthTGUsers", "preferred2fa")) {
+            try (Statement st = c.createStatement()) {
+                st.executeUpdate("ALTER TABLE AuthTGUsers ADD COLUMN preferred2fa VARCHAR(16) NULL");
             }
         }
     }

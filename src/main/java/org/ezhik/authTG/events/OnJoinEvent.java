@@ -61,7 +61,7 @@ public class OnJoinEvent implements Listener {
         }
 
         if (IPManager.isAuthorized(p)) {
-            if (user != null && user.activetg) {
+            if (AuthTG.isTelegramEnabled() && user != null && user.activetg) {
                 user.sendMessage(
                         AuthTG.getMessage("joinacc", "TG")
                                 .replace("{IP}", p.getAddress().getAddress().toString())
@@ -110,56 +110,72 @@ public class OnJoinEvent implements Listener {
 
         if (AuthTG.notRegAndLogin && !AuthTG.authNecessarily) {
             FreezerEvent.unfreezeplayer(p.getName());
-        } else if (AuthTG.notRegAndLogin && AuthTG.authNecessarily) {
-            if (user != null && user.activetg) {
-                MuterEvent.mute(p.getName(),
-                        ChatColor.translateAlternateColorCodes('&',
-                                AuthTG.getMessage("joininaccounttext", "MC")));
-                p.sendTitle(
-                        ChatColor.translateAlternateColorCodes('&',
-                                AuthTG.getMessage("joininaccounts1", "MC")),
-                        AuthTG.getMessage("joininaccounts2", "MC"),
-                        20, 10000000, 0
-                );
+            if (AuthTG.kickTimeout != 0) {
+                AuthHandler.removeTimeout(p.getUniqueId());
+            }
+            return;
+        }
 
-                user.sendLoginAcceptedAsync(
-                        AuthTG.getMessage("loginaccept", "TG")
-                                .replace("{PLAYER}", user.playername)
-                                .replace("{IP}", p.getAddress().getAddress().getHostAddress())
-                );
+        if (AuthTG.notRegAndLogin && AuthTG.authNecessarily) {
+            if (AuthTG.isTelegramEnabled()) {
+                if (user != null && user.activetg) {
+                    MuterEvent.mute(p.getName(),
+                            ChatColor.translateAlternateColorCodes('&',
+                                    AuthTG.getMessage("joininaccounttext", "MC")));
+                    p.sendTitle(
+                            ChatColor.translateAlternateColorCodes('&',
+                                    AuthTG.getMessage("joininaccounts1", "MC")),
+                            AuthTG.getMessage("joininaccounts2", "MC"),
+                            20, 10000000, 0
+                    );
+
+                    user.sendLoginAcceptedAsync(
+                            AuthTG.getMessage("loginaccept", "TG")
+                                    .replace("{PLAYER}", user.playername)
+                                    .replace("{IP}", p.getAddress().getAddress().getHostAddress())
+                    );
+                } else {
+                    MuterEvent.mute(p.getName(),
+                            ChatColor.translateAlternateColorCodes('&',
+                                    AuthTG.getMessage("authtgactivetext", "MC")));
+                    p.sendTitle(
+                            ChatColor.translateAlternateColorCodes('&',
+                                    AuthTG.getMessage("authtgactives1", "MC")),
+                            AuthTG.getMessage("authtgactives2", "MC"),
+                            20, 10000000, 0
+                    );
+                }
             } else {
-                MuterEvent.mute(p.getName(),
-                        ChatColor.translateAlternateColorCodes('&',
-                                AuthTG.getMessage("authtgactivetext", "MC")));
-                p.sendTitle(
-                        ChatColor.translateAlternateColorCodes('&',
-                                AuthTG.getMessage("authtgactives1", "MC")),
-                        AuthTG.getMessage("authtgactives2", "MC"),
-                        20, 10000000, 0
-                );
+                FreezerEvent.unfreezeplayer(p.getName());
+                MuterEvent.unmute(p.getName());
+                p.resetTitle();
+                if (AuthTG.kickTimeout != 0) {
+                    AuthHandler.removeTimeout(p.getUniqueId());
+                }
             }
+            return;
+        }
+
+        if (user != null) {
+            MuterEvent.mute(p.getName(),
+                    ChatColor.translateAlternateColorCodes('&',
+                            AuthTG.getMessage("loginmessage", "MC")));
+            p.sendTitle(
+                    ChatColor.translateAlternateColorCodes('&',
+                            AuthTG.getMessage("logintitles1", "MC")),
+                    AuthTG.getMessage("logintitles2", "MC"),
+                    20, 10000000, 0
+            );
         } else {
-            if (user != null) {
-                MuterEvent.mute(p.getName(),
-                        ChatColor.translateAlternateColorCodes('&',
-                                AuthTG.getMessage("loginmessage", "MC")));
-                p.sendTitle(
-                        ChatColor.translateAlternateColorCodes('&',
-                                AuthTG.getMessage("logintitles1", "MC")),
-                        AuthTG.getMessage("logintitles2", "MC"),
-                        20, 10000000, 0
-                );
-            } else {
-                MuterEvent.mute(p.getName(),
-                        ChatColor.translateAlternateColorCodes('&',
-                                AuthTG.getMessage("registermessage", "MC")));
-                p.sendTitle(
-                        ChatColor.translateAlternateColorCodes('&',
-                                AuthTG.getMessage("registertitles1", "MC")),
-                        AuthTG.getMessage("registertitles2", "MC"),
-                        20, 10000000, 0
-                );
-            }
+            MuterEvent.mute(p.getName(),
+                    ChatColor.translateAlternateColorCodes('&',
+                            AuthTG.getMessage("registermessage", "MC")));
+            p.sendTitle(
+                    ChatColor.translateAlternateColorCodes('&',
+                            AuthTG.getMessage("registertitles1", "MC")),
+                    AuthTG.getMessage("registertitles2", "MC"),
+                    20, 10000000, 0
+            );
         }
     }
 }

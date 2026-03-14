@@ -9,6 +9,7 @@ import org.ezhik.authTG.handlers.Handler;
 import org.ezhik.authTG.nextStep.NextStepHandler;
 import org.telegram.telegrambots.bots.DefaultBotOptions;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
+import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
@@ -34,7 +35,6 @@ public class BotTelegram extends TelegramLongPollingBot {
     private final Map<String, UUID> userData = new ConcurrentHashMap<>();
     private final Map<Long, NextStepHandler> nextStepHandler = new ConcurrentHashMap<>();
     private final Map<String, CallbackQueryHandler> callbackQueryHandler = new ConcurrentHashMap<>();
-
     private final ExecutorService telegramIoExecutor = Executors.newSingleThreadExecutor(r -> {
         Thread thread = new Thread(r, "AuthTG-TelegramIO");
         thread.setDaemon(true);
@@ -47,7 +47,7 @@ public class BotTelegram extends TelegramLongPollingBot {
         this.token = token;
 
         commandHandler.put("/resetpassword", new ResetPasswordCMDHandler());
-        // commandHandler.put("/start", new StartCMDHandler());
+        //commandHandler.put("/start", new StartCMDHandler());
         commandHandler.put("/link", new StartCMDHandler());
         commandHandler.put("/tfon", new TFonCMDHandler());
         commandHandler.put("/tfoff", new TFoffCMDHandler());
@@ -83,6 +83,10 @@ public class BotTelegram extends TelegramLongPollingBot {
         }
     }
 
+    private boolean isTelegramEnabled() {
+        return AuthTG.isTelegramEnabled();
+    }
+
     @Override
     public String getBotUsername() {
         return username;
@@ -95,6 +99,8 @@ public class BotTelegram extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
+        if (!isTelegramEnabled()) return;
+
         try {
             if (update.hasMessage() && update.getMessage() != null && update.getMessage().hasText()) {
                 handleMessage(update);
@@ -147,7 +153,6 @@ public class BotTelegram extends TelegramLongPollingBot {
                                     .replace("{PLAYER}", user.playername)
                                     .replace("{MESSAGE}", message));
 
-                    // Это Bukkit API, а update Telegram приходит не на main thread.
                     Bukkit.getScheduler().runTask(AuthTG.getInstance(), () ->
                             Bukkit.broadcastMessage(mcMessage)
                     );
@@ -188,6 +193,8 @@ public class BotTelegram extends TelegramLongPollingBot {
         String data = update.getCallbackQuery().getData();
         if (data == null) return;
 
+        answerCallback(update.getCallbackQuery().getId(), null);
+
         String[] str = data.split("_");
         if (str.length == 0) return;
 
@@ -200,6 +207,7 @@ public class BotTelegram extends TelegramLongPollingBot {
     }
 
     public void sendMessage(Long chatId, String message) {
+        if (!isTelegramEnabled()) return;
         if (chatId == null || chatId <= 0) return;
         if (message == null) message = "";
 
@@ -210,14 +218,15 @@ public class BotTelegram extends TelegramLongPollingBot {
         executeAsync(sendMessage);
     }
 
-
     public void executeAsync(SendMessage sendMessage) {
+        if (!isTelegramEnabled()) return;
         if (sendMessage == null) return;
-
         telegramIoExecutor.execute(() -> executeSendMessageNow(sendMessage));
     }
 
     private void executeSendMessageNow(SendMessage sendMessage) {
+        if (!isTelegramEnabled()) return;
+
         try {
             execute(sendMessage);
 
@@ -256,12 +265,14 @@ public class BotTelegram extends TelegramLongPollingBot {
     }
 
     public void deleteMessage(Message message) {
+        if (!isTelegramEnabled()) return;
         if (message == null) return;
-
         telegramIoExecutor.execute(() -> deleteMessageNow(message));
     }
 
     private void deleteMessageNow(Message message) {
+        if (!isTelegramEnabled()) return;
+
         DeleteMessage deleteMessage = new DeleteMessage();
         deleteMessage.setChatId(message.getChatId());
         deleteMessage.setMessageId(message.getMessageId());
@@ -277,6 +288,27 @@ public class BotTelegram extends TelegramLongPollingBot {
         }
     }
 
+    public void answerCallback(String callbackQueryId, String text) {
+        if (!isTelegramEnabled()) return;
+        if (callbackQueryId == null || callbackQueryId.isBlank()) return;
+
+        telegramIoExecutor.execute(() -> {
+            AnswerCallbackQuery answer = new AnswerCallbackQuery();
+            answer.setCallbackQueryId(callbackQueryId);
+            if (text != null && !text.isBlank()) {
+                answer.setText(text);
+                answer.setShowAlert(false);
+            }
+
+            try {
+                execute(answer);
+            } catch (TelegramApiException e) {
+                AuthTG.logger.log(Level.FINE,
+                        "[AuthTG] answerCallback error: " + e.getMessage());
+            }
+        });
+    }
+
     private Long parseChatId(String chatId) {
         if (chatId == null || chatId.isBlank()) {
             return null;
@@ -289,27 +321,39 @@ public class BotTelegram extends TelegramLongPollingBot {
     }
 
     public void setNextStepHandler(Long chatid, NextStepHandler nextStepHandler) {
+        if (!isTelegramEnabled()) return;
         if (chatid == null || nextStepHandler == null) return;
         this.nextStepHandler.put(chatid, nextStepHandler);
     }
 
     public void remNextStepHandler(Long chatid) {
+        if (!isTelegramEnabled()) return;
         if (chatid == null) return;
         this.nextStepHandler.remove(chatid);
     }
 
     public void setUserData(String username, UUID data) {
+        if (!isTelegramEnabled()) return;
         if (username == null || data == null) return;
         this.userData.put(username, data);
     }
 
     public void remUserData(String username) {
+        if (!isTelegramEnabled()) return;
         if (username == null) return;
         this.userData.remove(username);
     }
 
     public UUID getUserData(String username) {
+        if (!isTelegramEnabled()) return null;
         if (username == null) return null;
         return userData.get(username);
+    }
+
+    public void shutdown() {
+        nextStepHandler.clear();
+        userData.clear();
+        callbackQueryHandler.clear();
+        telegramIoExecutor.shutdownNow();
     }
 }

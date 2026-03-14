@@ -6,14 +6,9 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.ezhik.authTG.AuthTG;
-import org.ezhik.authTG.IPManager;
 import org.ezhik.authTG.User;
-import org.ezhik.authTG.events.FreezerEvent;
-import org.ezhik.authTG.events.MuterEvent;
-import org.ezhik.authTG.handlers.AuthHandler;
-import org.ezhik.authTG.handlers.Handler;
+import org.ezhik.authTG.handlers.TwoFactorAuthService;
 
-import java.time.LocalDateTime;
 import java.util.logging.Level;
 
 public class LoginCMD implements CommandExecutor {
@@ -45,6 +40,11 @@ public class LoginCMD implements CommandExecutor {
         }
 
         User user = User.getUser(player.getUniqueId());
+        if (user == null) {
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&',
+                    AuthTG.getMessage("loginpassnovalid", "MC")));
+            return false;
+        }
 
         if (!AuthTG.loader.containsIpRegistration(player.getUniqueId())) {
             AuthTG.loader.setIpRegistration(
@@ -53,94 +53,14 @@ public class LoginCMD implements CommandExecutor {
             );
         }
 
-        String loginAcceptMessage = AuthTG.getMessage("loginaccept", "TG")
-                .replace("{PLAYER}", user.playername)
-                .replace("{IP}", player.getAddress().getAddress().getHostAddress());
-
-        if (AuthTG.authNecessarily) {
-            if (user.activetg) {
-                user.sendLoginAcceptedAsync(loginAcceptMessage);
-
-                MuterEvent.mute(player.getName(),
-                        ChatColor.translateAlternateColorCodes('&',
-                                AuthTG.getMessage("joininaccounttext", "MC")));
-                player.sendMessage(ChatColor.translateAlternateColorCodes('&',
-                        AuthTG.getMessage("joininaccounttext", "MC")));
-                player.sendTitle(
-                        ChatColor.translateAlternateColorCodes('&',
-                                AuthTG.getMessage("joininaccounts1", "MC")),
-                        AuthTG.getMessage("joininaccounts2", "MC"),
-                        0, 1000000000, 0
-                );
-            } else {
-                MuterEvent.mute(player.getName(),
-                        ChatColor.translateAlternateColorCodes('&',
-                                AuthTG.getMessage("authtgactivetext", "MC")));
-                player.sendMessage(ChatColor.translateAlternateColorCodes('&',
-                        AuthTG.getMessage("authtgactivetext", "MC")));
-                player.sendTitle(
-                        ChatColor.translateAlternateColorCodes('&',
-                                AuthTG.getMessage("authtgactives1", "MC")),
-                        AuthTG.getMessage("authtgactives2", "MC"),
-                        0, 1000000000, 0
-                );
-            }
-        } else {
-            if (user.activetg && user.twofactor) {
-                user.sendLoginAcceptedAsync(loginAcceptMessage);
-
-                MuterEvent.mute(player.getName(),
-                        ChatColor.translateAlternateColorCodes('&',
-                                AuthTG.getMessage("joininaccounttext", "MC")));
-                player.sendMessage(ChatColor.translateAlternateColorCodes('&',
-                        AuthTG.getMessage("joininaccounttext", "MC")));
-                player.sendTitle(
-                        ChatColor.translateAlternateColorCodes('&',
-                                AuthTG.getMessage("joininaccounts1", "MC")),
-                        AuthTG.getMessage("joininaccounts2", "MC"),
-                        0, 1000000000, 0
-                );
-            } else {
-                if (user.activetg) {
-                    if (user.friends != null) {
-                        for (String friend : user.friends) {
-                            User friendUser = User.getUser(friend);
-                            if (friendUser != null && friendUser.activetg) {
-                                friendUser.sendMessage(ChatColor.translateAlternateColorCodes('&',
-                                        AuthTG.getMessage("friendjoin", "TG")
-                                                .replace("{PLAYER}", user.playername)));
-                            } else if (friendUser != null) {
-                                AuthTG.loader.removeFriend(friendUser.uuid, user.playername);
-                                AuthTG.loader.removeFriend(user.uuid, friendUser.playername);
-                            }
-                        }
-                    }
-                }
-
-                LocalDateTime time = LocalDateTime.now().plusMinutes(AuthTG.timeoutSession);
-                IPManager.addAuthorized(player.getUniqueId(),
-                        player.getAddress().getAddress().toString(),
-                        time);
-
-                player.sendMessage(ChatColor.translateAlternateColorCodes('&',
-                        AuthTG.getMessage("loginsuccess", "MC")));
-
-                FreezerEvent.unfreezeplayer(player.getName());
-
-                if (FreezerEvent.beforeFreeze.containsKey(player.getName())) {
-                    Handler.teleport(player.getName(), FreezerEvent.beforeFreeze.get(player.getName()));
-                    FreezerEvent.beforeFreeze.remove(player.getName());
-                }
-
-                MuterEvent.unmute(player.getName());
-                player.resetTitle();
-
-                if (AuthTG.kickTimeout != 0) {
-                    AuthHandler.removeTimeout(player.getUniqueId());
-                }
-            }
+        // Если тут вернулся true - значит уже запущен второй фактор
+        // или вход заблокирован из-за обязательного 2FA без доступного метода.
+        if (TwoFactorAuthService.beginSecondFactorOrLogin(player, user)) {
+            return true;
         }
 
+        // Иначе логиним сразу.
+        TwoFactorAuthService.completeLogin(player);
         return true;
     }
 }

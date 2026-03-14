@@ -7,6 +7,8 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.ezhik.authTG.AuthTG;
+import org.ezhik.authTG.TwoFactorMethod;
+import org.ezhik.authTG.TwoFactorPreferenceRepository;
 import org.ezhik.authTG.mail.MailCodeSession;
 import org.ezhik.authTG.mail.MailCodeStore;
 import org.ezhik.authTG.mail.MailDeliveryService;
@@ -160,6 +162,17 @@ public class MailCMD implements CommandExecutor {
 
         AuthTG.loader.setEmail(uuid, "");
         AuthTG.loader.setVerifiedEmail(uuid, false);
+
+        TwoFactorMethod current = TwoFactorPreferenceRepository.get(uuid);
+        if (current == TwoFactorMethod.MAIL) {
+            if (AuthTG.isTelegramEnabled() && AuthTG.loader.getActiveTG(uuid)) {
+                AuthTG.loader.setTwofactor(uuid, true);
+                TwoFactorPreferenceRepository.set(uuid, TwoFactorMethod.TG);
+            } else {
+                AuthTG.loader.setTwofactor(uuid, false);
+                TwoFactorPreferenceRepository.set(uuid, TwoFactorMethod.OFF);
+            }
+        }
 
         player.sendMessage(color(AuthTG.getMessage("mailunlinksuccess", "MC")));
         return true;

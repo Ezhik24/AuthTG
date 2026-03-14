@@ -1,5 +1,7 @@
 # Приветствую! Это конфиг с настройками AuthTG
 # Hi! This is a config with AuthTG settings
+tg: true
+
 bot: # Настройки бота EN: Settings of bot
   token: changeme # Токен бота EN: Bot token
   username: changeme # Имя бота EN: Bot username
@@ -73,6 +75,11 @@ mail:
       #uuid: "{UUID}"
       #ip: "{IP}"
 
+    twoFactorFields:
+      nickname: "{PLAYER}"
+      email: "{EMAIL}"
+      code: "{CODE}"
+
   smtp:
     host: "smtp.gmail.com"
     port: 587
@@ -96,10 +103,17 @@ mail:
       - "Почта: {EMAIL}"
       - "Если вы не запрашивали привязку почты, просто проигнорируйте это письмо."
 
+    twoFactorSubject: "Код входа для {PLAYER}"
+    twoFactorBody:
+      - "Здравствуйте, {PLAYER}!"
+      - "Ваш код для входа: {CODE}"
+      - "Если это были не вы, срочно смените пароль."
+
     connectTimeoutMs: 10000
     timeoutMs: 10000
     writeTimeoutMs: 10000
     debug: false
+
 
 onceUsed: # НЕ ТРОГАЙТЕ ЭТО EN: Do not touch
   mysql: false

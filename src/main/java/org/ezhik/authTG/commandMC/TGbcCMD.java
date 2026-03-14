@@ -13,6 +13,15 @@ import org.ezhik.authTG.User;
 public class TGbcCMD implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
+        if (!AuthTG.isTelegramEnabled()) {
+            if (commandSender instanceof Player) {
+                commandSender.sendMessage(ChatColor.RED + "Telegram integration is disabled in config.yml");
+            } else {
+                Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "Telegram integration is disabled in config.yml");
+            }
+            return false;
+        }
+
         if (commandSender instanceof Player) {
             if (!commandSender.hasPermission("authtg.tgbc")) {
                 commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("tgbcnoperm", "MC")));
