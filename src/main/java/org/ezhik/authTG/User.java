@@ -8,10 +8,8 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
-import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.util.*;
-import java.util.logging.Level;
 
 public class User {
     public Long chatid;
@@ -138,15 +136,11 @@ public class User {
         sendMessage.setText(message);
         sendMessage.setReplyMarkup(keyb);
 
-        try {
-            AuthTG.bot.execute(sendMessage);
-        } catch (TelegramApiException e) {
-            AuthTG.logger.log(Level.SEVERE, "Error sending message: " + e);
-        }
+        AuthTG.bot.executeAsync(sendMessage);
     }
 
     public void sendLoginAcceptedAsync(String message) {
-        Bukkit.getScheduler().runTaskAsynchronously(AuthTG.getInstance(), () -> sendLoginAccepted(message));
+        sendLoginAccepted(message);
     }
 
     public static void sendBroadcastMessage(String message) {
@@ -173,10 +167,6 @@ public class User {
         sendMessage.setChatId(this.chatid);
         sendMessage.setReplyMarkup(playerkeyb);
 
-        try {
-            AuthTG.bot.execute(sendMessage);
-        } catch (TelegramApiException e) {
-            AuthTG.logger.log(Level.SEVERE, "Error sending message: " + e);
-        }
+        AuthTG.bot.executeAsync(sendMessage);
     }
 }
