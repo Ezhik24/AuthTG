@@ -1,5 +1,5 @@
 name: AuthTG
-version: '2.6.3 - Tg Fix v2.0 '
+version: '2.6.3'
 main: org.ezhik.authTG.AuthTG
 api-version: '1.16'
 authors: [Ezhik24, ABBAfan]
@@ -18,6 +18,10 @@ commands:
     description: 'AuthTGCMD'
   code:
     description: 'Code'
+  2fa:
+    description: 'Mail 2FA code'
+  prefer:
+    description: 'Preferred 2FA method'
   mcbc:
     description: 'MCBC'
   tgbc:
@@ -52,9 +56,5 @@ commands:
     description: 'Unlink'
   mail:
     description: 'Mail verification'
-
-  prefer:
-    description: 'Preferred 2FA method'
-
-  2fa:
-    description: 'Mail 2FA code'
+  captcha:
+    description: 'Open captcha menu'

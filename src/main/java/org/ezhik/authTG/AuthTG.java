@@ -328,6 +328,7 @@ public final class AuthTG extends JavaPlugin {
         registerCommand("code", new CodeCMD());
         registerCommand("2fa", new TwoFactorCodeCMD());
         registerCommand("prefer", new PreferCMD());
+        registerCommand("captcha", new CaptchaCMD());
 
         registerCommand("mcbc", new MCbcCMD());
         registerCommand("tgbc", new TGbcCMD());

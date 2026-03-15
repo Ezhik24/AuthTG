@@ -43,6 +43,29 @@ public final class Captcha {
         return uuid != null && PENDING.contains(uuid);
     }
 
+    public static void beginChallenge(Player player) {
+        if (player == null) {
+            return;
+        }
+
+        UUID uuid = player.getUniqueId();
+        PENDING.add(uuid);
+        ATTEMPTS.putIfAbsent(uuid, MAX_ATTEMPTS);
+    }
+
+    public static void openFor(Player player) {
+        if (player == null || !player.isOnline()) {
+            return;
+        }
+
+        UUID uuid = player.getUniqueId();
+        if (!PENDING.contains(uuid)) {
+            beginChallenge(player);
+        }
+
+        player.openInventory(buildCaptcha(player));
+    }
+
     public static void clear(UUID uuid) {
         if (uuid == null) {
             return;
@@ -53,18 +76,6 @@ public final class Captcha {
         CORRECTS.remove(uuid);
     }
 
-    public static void openFor(Player player) {
-        if (player == null) {
-            return;
-        }
-
-        UUID uuid = player.getUniqueId();
-        ATTEMPTS.putIfAbsent(uuid, MAX_ATTEMPTS);
-        PENDING.add(uuid);
-
-        player.openInventory(buildCaptcha(player));
-    }
-
     public static void checkCaptcha(Player player, Material clickedMaterial) {
         if (player == null || clickedMaterial == null) {
             return;
@@ -72,8 +83,8 @@ public final class Captcha {
 
         UUID uuid = player.getUniqueId();
         Material correct = CORRECTS.get(uuid);
+
         if (correct == null) {
-            clear(uuid);
             player.closeInventory();
             return;
         }
@@ -102,7 +113,15 @@ public final class Captcha {
         ATTEMPTS.put(uuid, triesLeft);
         player.closeInventory();
         player.sendMessage("§eКапча не пройдена. Осталось попыток: " + triesLeft);
-        player.openInventory(buildCaptcha(player));
+        player.sendMessage("§7Напишите §e/captcha §7чтобы открыть её снова.");
+
+        Bukkit.getScheduler().runTaskLater(AuthTG.getInstance(), () -> {
+            Player online = Bukkit.getPlayer(uuid);
+            if (online == null || !online.isOnline() || !isPending(uuid)) {
+                return;
+            }
+            online.sendTitle("§c§lКапча", "§7Напишите /captcha", 0, 40, 10);
+        }, 2L);
     }
 
     private static Inventory buildCaptcha(Player player) {

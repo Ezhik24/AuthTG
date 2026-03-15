@@ -365,3 +365,9 @@ messages: # Сообщения EN: Messages
     twofactorrequirednomethod: '&f&l[&c&lAuthTG&f&l] &cНа сервере требуется 2FA, но у вас не настроен ни Telegram, ни подтверждённая почта.'
     twofactorrequiredtitle: '&c&lТребуется 2FA'
     twofactorrequiredsubtitle: '&7Привяжите Telegram или подтвердите почту'
+
+  captchawaittext: '&f&l[&c&lAuthTG&f&l] &aПройдите капчу, чтобы продолжить вход.'
+  captchawaittitle: '&c&lПройдите капчу'
+  captchawaitsubtitle: '&7Выберите нужный цвет в меню'
+  captchaopened: '&f&l[&c&lAuthTG&f&l] &aКапча открыта.'
+  captchanotpending: '&f&l[&c&lAuthTG&f&l] &cСейчас капча не требуется.'

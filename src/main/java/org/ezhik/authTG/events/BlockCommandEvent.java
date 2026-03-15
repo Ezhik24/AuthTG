@@ -21,8 +21,13 @@ public class BlockCommandEvent implements Listener {
         Player player = event.getPlayer();
 
         if (Captcha.isPending(player.getUniqueId())) {
-            event.setCancelled(true);
-            player.sendMessage("§cСначала пройдите капчу.");
+            String command = event.getMessage().split(" ")[0].toLowerCase(Locale.ROOT);
+
+            if (!command.equals("/captcha")) {
+                event.setCancelled(true);
+                player.sendMessage(color(mc("captchawaittext",
+                        "&aПройдите капчу, чтобы продолжить вход. Используйте &e/captcha&a.")));
+            }
             return;
         }
 
@@ -31,12 +36,11 @@ public class BlockCommandEvent implements Listener {
                     "/login", "/register", "/reg", "/l", "/code", "/2fa"
             ));
 
-            for (String command : AuthTG.commandsPreAuthorization) {
-                if (command == null) {
+            for (String cmd : AuthTG.commandsPreAuthorization) {
+                if (cmd == null) {
                     continue;
                 }
-
-                String normalized = command.trim().toLowerCase(Locale.ROOT);
+                String normalized = cmd.trim().toLowerCase(Locale.ROOT);
                 if (!normalized.isBlank()) {
                     allowedCommands.add(normalized);
                 }
@@ -89,5 +93,14 @@ public class BlockCommandEvent implements Listener {
             player.sendMessage(message);
             event.setCancelled(true);
         }
+    }
+
+    private static String mc(String key, String fallback) {
+        String value = AuthTG.getMessage(key, "MC");
+        return value == null || value.isBlank() ? fallback : value;
+    }
+
+    private static String color(String text) {
+        return ChatColor.translateAlternateColorCodes('&', text);
     }
 }

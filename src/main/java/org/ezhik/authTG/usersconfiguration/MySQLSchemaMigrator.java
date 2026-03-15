@@ -29,8 +29,8 @@ public final class MySQLSchemaMigrator {
                     case 2 -> migrateToV2(c, databaseName);
                     case 3 -> migrateToV3(c);
                     case 4 -> migrateToV4(c, databaseName);
-                    case 5 -> migrateToV5(c, databaseName); // captchaTimeout
-                    case 6 -> migrateToV6(c, databaseName); // preferred2fa
+                    case 5 -> migrateToV5(c, databaseName); // preferred2fa
+                    case 6 -> migrateToV6(c, databaseName); // captchaTimeout
                     default -> throw new IllegalStateException("Unknown schema version: " + next);
                 }
 
@@ -200,31 +200,31 @@ public final class MySQLSchemaMigrator {
     }
 
     private static void migrateToV5(Connection c, String db) throws SQLException {
-        if (!columnExists(c, db, "AuthTGUsers", "captchaTimeout")) {
+        if (!columnExists(c, db, "AuthTGUsers", "preferred2fa")) {
             try (Statement st = c.createStatement()) {
-                st.executeUpdate("ALTER TABLE AuthTGUsers ADD COLUMN captchaTimeout VARCHAR(120) NULL");
+                st.executeUpdate("ALTER TABLE AuthTGUsers ADD COLUMN preferred2fa VARCHAR(16) NULL");
             }
         }
     }
 
     private static void migrateToV6(Connection c, String db) throws SQLException {
-        if (!columnExists(c, db, "AuthTGUsers", "preferred2fa")) {
-            try (Statement st = c.createStatement()) {
-                st.executeUpdate("ALTER TABLE AuthTGUsers ADD COLUMN preferred2fa VARCHAR(16) NULL");
-            }
-        }
-    }
-
-    private static void reconcileOptionalColumns(Connection c, String db) throws SQLException {
         if (!columnExists(c, db, "AuthTGUsers", "captchaTimeout")) {
             try (Statement st = c.createStatement()) {
                 st.executeUpdate("ALTER TABLE AuthTGUsers ADD COLUMN captchaTimeout VARCHAR(120) NULL");
             }
         }
+    }
 
+    private static void reconcileOptionalColumns(Connection c, String db) throws SQLException {
         if (!columnExists(c, db, "AuthTGUsers", "preferred2fa")) {
             try (Statement st = c.createStatement()) {
                 st.executeUpdate("ALTER TABLE AuthTGUsers ADD COLUMN preferred2fa VARCHAR(16) NULL");
+            }
+        }
+
+        if (!columnExists(c, db, "AuthTGUsers", "captchaTimeout")) {
+            try (Statement st = c.createStatement()) {
+                st.executeUpdate("ALTER TABLE AuthTGUsers ADD COLUMN captchaTimeout VARCHAR(120) NULL");
             }
         }
     }
