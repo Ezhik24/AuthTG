@@ -1,12 +1,12 @@
 package org.ezhik.authTG.commandMC;
 
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.ezhik.authTG.AuthTG;
 import org.ezhik.authTG.captcha.Captcha;
+import org.ezhik.authTG.util.MessageHelper;
 
 import java.util.logging.Level;
 
@@ -22,23 +22,19 @@ public class CaptchaCMD implements CommandExecutor {
         Player player = (Player) commandSender;
 
         if (!Captcha.isPending(player.getUniqueId())) {
-            player.sendMessage(color(mc("captchanotpending",
-                    "&cСейчас капча не требуется.")));
+            MessageHelper.send(player, mc("captchanotpending",
+                    "<red>Сейчас капча не требуется."));
             return true;
         }
 
         Captcha.openFor(player);
-        player.sendMessage(color(mc("captchaopened",
-                "&aКапча открыта.")));
+        MessageHelper.send(player, mc("captchaopened",
+                "<green>Открываем капчу..."));
         return true;
     }
 
     private String mc(String key, String fallback) {
         String value = AuthTG.getMessage(key, "MC");
         return value == null || value.isBlank() ? fallback : value;
-    }
-
-    private String color(String text) {
-        return ChatColor.translateAlternateColorCodes('&', text);
     }
 }

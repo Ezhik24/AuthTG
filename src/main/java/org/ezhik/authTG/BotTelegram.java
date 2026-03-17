@@ -1,7 +1,7 @@
 package org.ezhik.authTG;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
+import org.ezhik.authTG.util.MessageHelper;
 import org.bukkit.configuration.ConfigurationSection;
 import org.ezhik.authTG.calbackQuery.*;
 import org.ezhik.authTG.commandTG.*;
@@ -148,14 +148,14 @@ public class BotTelegram extends TelegramLongPollingBot {
                 if (user.player != null) {
                     Handler.sendMCmessage(user.playername, message);
                 } else {
-                    String mcMessage = ChatColor.translateAlternateColorCodes('&',
-                            AuthTG.getMessage("chatminecraft", "MC")
-                                    .replace("{PLAYER}", user.playername)
-                                    .replace("{MESSAGE}", message));
+                    String mcMessage = AuthTG.getMessage("chatminecraft", "MC")
+                            .replace("{PLAYER}", user.playername)
+                            .replace("{MESSAGE}", message);
 
-                    Bukkit.getScheduler().runTask(AuthTG.getInstance(), () ->
-                            Bukkit.broadcastMessage(mcMessage)
-                    );
+                    Bukkit.getScheduler().runTask(AuthTG.getInstance(), () -> {
+                        Bukkit.getOnlinePlayers().forEach(player -> MessageHelper.send(player, mcMessage));
+                        MessageHelper.send(Bukkit.getConsoleSender(), mcMessage);
+                    });
                 }
             } else {
                 this.sendMessage(chatid, AuthTG.getMessage("chatminecraftnotactive", "TG"));

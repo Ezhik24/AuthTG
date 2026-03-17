@@ -1,7 +1,6 @@
 package org.ezhik.authTG.handlers;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.ezhik.authTG.AuthTG;
 import org.ezhik.authTG.IPManager;
@@ -12,6 +11,7 @@ import org.ezhik.authTG.events.FreezerEvent;
 import org.ezhik.authTG.events.MuterEvent;
 import org.ezhik.authTG.mail.MailDeliveryService;
 import org.ezhik.authTG.mail.MailTwoFactorCodeStore;
+import org.ezhik.authTG.util.MessageHelper;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -29,6 +29,14 @@ public final class TwoFactorAuthService {
         UUID uuid = player.getUniqueId();
         boolean telegramAvailable = canUseTelegram(user);
         boolean mailAvailable = canUseMail(uuid);
+        boolean hasAnyAvailableMethod = telegramAvailable || mailAvailable;
+
+        if (!hasAnyAvailableMethod) {
+            if (AuthTG.authNecessarily) {
+                return blockRequiredTwoFactorWithoutMethod(player);
+            }
+            return false;
+        }
 
         TwoFactorMethod preferred = TwoFactorPreferenceRepository.get(uuid);
 
@@ -41,7 +49,7 @@ public final class TwoFactorAuthService {
                     if (mailAvailable) {
                         return beginMailChallenge(player);
                     }
-                    return blockUnavailableConfiguredTwoFactor(player);
+                    break;
 
                 case MAIL:
                     if (mailAvailable) {
@@ -50,7 +58,7 @@ public final class TwoFactorAuthService {
                     if (telegramAvailable) {
                         return beginTelegramChallenge(player, user);
                     }
-                    return blockUnavailableConfiguredTwoFactor(player);
+                    break;
 
                 case OFF:
                     if (AuthTG.authNecessarily) {
@@ -83,7 +91,7 @@ public final class TwoFactorAuthService {
             if (mailAvailable) {
                 return beginMailChallenge(player);
             }
-            return blockUnavailableConfiguredTwoFactor(player);
+            return false;
         }
 
         return false;
@@ -98,45 +106,44 @@ public final class TwoFactorAuthService {
         String email = AuthTG.loader.getEmail(uuid);
 
         if (email == null || email.isBlank()) {
-            player.sendMessage(color(mc("mail2faunavailable",
-                    "&cПочтовая 2FA сейчас недоступна.")));
+            MessageHelper.send(player, mc("mail2faunavailable",
+                    "<red>Почтовая 2FA сейчас недоступна."));
             return true;
         }
 
         if (!MailDeliveryService.isEnabled() || !MailDeliveryService.hasValidProvider()) {
-            player.sendMessage(color(mc("mail2faunavailable",
-                    "&cПочтовая 2FA сейчас недоступна.")));
+            MessageHelper.send(player, mc("mail2faunavailable",
+                    "<red>Почтовая 2FA сейчас недоступна."));
             return true;
         }
 
-        MuterEvent.mute(player.getName(), color(mc("mail2fawaittext",
-                "&aПодтвердите вход кодом из письма.")));
-        player.sendTitle(
-                color(mc("mail2fawaittitle", "&c&lПодтвердите вход")),
-                mc("mail2fawaitsubtitle", "/2fa <код из письма>"),
-                0,
-                1000000000,
-                0
+        MuterEvent.mute(player.getName(), MessageHelper.legacySection(mc("mail2fawaittext",
+                "<green>Подтвердите вход кодом из письма.")));
+
+        MessageHelper.showTitle(
+                player,
+                mc("mail2fawaittitle", "<red><bold>Подтвердите вход"),
+                mc("mail2fawaitsubtitle", "<gray>/2fa <код из письма>")
         );
 
         String code = MailTwoFactorCodeStore.generateCode(MailDeliveryService.getCodeLength());
 
         if (MailDeliveryService.isLocalMode()) {
             MailTwoFactorCodeStore.create(uuid, email, code, MailDeliveryService.getCodeExpireSeconds());
-            player.sendMessage(color(mc("mail2fasent",
-                    "&aКод 2FA отправлен на &e{EMAIL}&a.").replace("{EMAIL}", email)));
-            player.sendMessage(color(mc("mail2fainput",
-                    "&aВведите &e/2fa <код>&a.")));
-            player.sendMessage(color(mc("mail2falocalcode",
-                    "&e[LOCAL] Код 2FA: {CODE}").replace("{CODE}", code)));
+            MessageHelper.send(player, mc("mail2fasent",
+                    "<green>Код 2FA отправлен на <yellow>{EMAIL}<green>.").replace("{EMAIL}", email));
+            MessageHelper.send(player, mc("mail2fainput",
+                    "<green>Введите <yellow>/2fa <код><green>."));
+            MessageHelper.send(player, mc("mail2falocalcode",
+                    "<yellow>[LOCAL] Код 2FA: {CODE}").replace("{CODE}", code));
             return true;
         }
 
         String playerName = player.getName();
         String ip = getPlayerIp(player);
 
-        player.sendMessage(color(mc("mail2fasending",
-                "&aОтправляем код 2FA на &e{EMAIL}&a...").replace("{EMAIL}", email)));
+        MessageHelper.send(player, mc("mail2fasending",
+                "<green>Отправляем код 2FA на <yellow>{EMAIL}<green>...").replace("{EMAIL}", email));
 
         Bukkit.getScheduler().runTaskAsynchronously(AuthTG.getInstance(), () -> {
             boolean sent = MailDeliveryService.sendTwoFactorCode(playerName, uuid, ip, email, code);
@@ -149,14 +156,14 @@ public final class TwoFactorAuthService {
 
                 if (sent) {
                     MailTwoFactorCodeStore.create(uuid, email, code, MailDeliveryService.getCodeExpireSeconds());
-                    online.sendMessage(color(mc("mail2fasent",
-                            "&aКод 2FA отправлен на &e{EMAIL}&a.").replace("{EMAIL}", email)));
-                    online.sendMessage(color(mc("mail2fainput",
-                            "&aВведите &e/2fa <код>&a.")));
+                    MessageHelper.send(online, mc("mail2fasent",
+                            "<green>Код 2FA отправлен на <yellow>{EMAIL}<green>.").replace("{EMAIL}", email));
+                    MessageHelper.send(online, mc("mail2fainput",
+                            "<green>Введите <yellow>/2fa <код><green>."));
                 } else {
                     MailTwoFactorCodeStore.remove(uuid);
-                    online.sendMessage(color(mc("mail2fasenderror",
-                            "&cНе удалось отправить письмо с кодом 2FA.")));
+                    MessageHelper.send(online, mc("mail2fasenderror",
+                            "<red>Не удалось отправить письмо с кодом 2FA."));
                 }
             });
         });
@@ -171,15 +178,13 @@ public final class TwoFactorAuthService {
 
         user.sendLoginAcceptedAsync(buildTelegramMessage(player, user));
 
-        MuterEvent.mute(player.getName(),
-                color(mc("joininaccounttext", "&aПодтвердите вход в Telegram.")));
-        player.sendMessage(color(mc("joininaccounttext", "&aПодтвердите вход в Telegram.")));
-        player.sendTitle(
-                color(mc("joininaccounts1", "&c&lПодтвердите вход")),
-                mc("joininaccounts2", "&7Откройте Telegram"),
-                0,
-                1000000000,
-                0
+        String waitText = mc("joininaccounttext", "<green>Подтвердите вход в Telegram.");
+        MuterEvent.mute(player.getName(), MessageHelper.legacySection(waitText));
+        MessageHelper.send(player, waitText);
+        MessageHelper.showTitle(
+                player,
+                mc("joininaccounts1", "<red><bold>Подтвердите вход"),
+                mc("joininaccounts2", "<gray>Откройте Telegram")
         );
         return true;
     }
@@ -195,9 +200,8 @@ public final class TwoFactorAuthService {
             for (String friend : user.friends) {
                 User friendUser = User.getUser(friend);
                 if (friendUser != null && friendUser.activetg) {
-                    friendUser.sendMessage(ChatColor.translateAlternateColorCodes('&',
-                            AuthTG.getMessage("friendjoin", "TG")
-                                    .replace("{PLAYER}", user.playername)));
+                    friendUser.sendMessage(AuthTG.getMessage("friendjoin", "TG")
+                            .replace("{PLAYER}", user.playername));
                 } else if (friendUser != null) {
                     AuthTG.loader.removeFriend(friendUser.uuid, user.playername);
                     AuthTG.loader.removeFriend(user.uuid, friendUser.playername);
@@ -212,7 +216,7 @@ public final class TwoFactorAuthService {
                 time
         );
 
-        player.sendMessage(color(mc("loginsuccess", "&aВы успешно вошли.")));
+        MessageHelper.send(player, mc("loginsuccess", "<green>Вы успешно вошли."));
 
         FreezerEvent.unfreezeplayer(player.getName());
 
@@ -222,7 +226,7 @@ public final class TwoFactorAuthService {
         }
 
         MuterEvent.unmute(player.getName());
-        player.resetTitle();
+        player.clearTitle();
         MailTwoFactorCodeStore.remove(player.getUniqueId());
 
         if (AuthTG.kickTimeout != 0) {
@@ -230,24 +234,16 @@ public final class TwoFactorAuthService {
         }
     }
 
-    private static boolean blockUnavailableConfiguredTwoFactor(Player player) {
-        player.sendMessage(color(mc("prefer2faunavailable",
-                "&cВыбранный метод 2FA сейчас недоступен, и запасного метода тоже нет.")));
-        return true;
-    }
-
     private static boolean blockRequiredTwoFactorWithoutMethod(Player player) {
-        String text = color(mc("twofactorrequirednomethod",
-                "&cНа сервере требуется 2FA, но у вас не настроен ни Telegram, ни подтверждённая почта."));
+        String text = mc("twofactorrequirednomethod",
+                "<red>На сервере требуется 2FA, но у вас не настроен ни Telegram, ни подтверждённая почта.");
 
-        MuterEvent.mute(player.getName(), text);
-        player.sendMessage(text);
-        player.sendTitle(
-                color(mc("twofactorrequiredtitle", "&c&lТребуется 2FA")),
-                mc("twofactorrequiredsubtitle", "&7Привяжите Telegram или подтвердите почту"),
-                0,
-                1000000000,
-                0
+        MuterEvent.mute(player.getName(), MessageHelper.legacySection(text));
+        MessageHelper.send(player, text);
+        MessageHelper.showTitle(
+                player,
+                mc("twofactorrequiredtitle", "<red><bold>Требуется 2FA"),
+                mc("twofactorrequiredsubtitle", "<gray>Привяжите Telegram или подтвердите почту")
         );
         return true;
     }
@@ -290,9 +286,5 @@ public final class TwoFactorAuthService {
     private static String mc(String key, String fallback) {
         String value = AuthTG.getMessage(key, "MC");
         return value == null || value.isBlank() ? fallback : value;
-    }
-
-    private static String color(String text) {
-        return ChatColor.translateAlternateColorCodes('&', text);
     }
 }

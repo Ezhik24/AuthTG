@@ -1,6 +1,5 @@
 package org.ezhik.authTG.commandMC;
 
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -10,6 +9,7 @@ import org.ezhik.authTG.User;
 import org.ezhik.authTG.events.FreezerEvent;
 import org.ezhik.authTG.events.MuterEvent;
 import org.ezhik.authTG.handlers.AuthHandler;
+import org.ezhik.authTG.util.MessageHelper;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -29,17 +29,17 @@ public class CodeCMD implements CommandExecutor {
         Player player = (Player) commandSender;
 
         if (!AuthTG.isTelegramEnabled()) {
-            player.sendMessage(ChatColor.RED + "Telegram integration is disabled in config.yml");
+            MessageHelper.send(player, "<red>Telegram integration is disabled in config.yml");
             return false;
         }
 
         if (strings.length == 0) {
-            commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("codeusage", "MC")));
+            MessageHelper.send(commandSender, AuthTG.getMessage("codeusage", "MC"));
             return false;
         }
 
         if (!strings[0].equals(code.get(player.getUniqueId()))) {
-            player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("codeuncorect", "MC")));
+            MessageHelper.send(player, AuthTG.getMessage("codeuncorect", "MC"));
             return false;
         }
 
@@ -47,18 +47,22 @@ public class CodeCMD implements CommandExecutor {
             FreezerEvent.unfreezeplayer(player.getName());
             MuterEvent.unmute(player.getName());
             player.resetTitle();
-            AuthHandler.removeTimeout(player.getUniqueId());
+
+            if (AuthTG.kickTimeout != 0) {
+                AuthHandler.removeTimeout(player.getUniqueId());
+            }
         }
 
         if (AuthTG.loader.getActiveTG(player.getUniqueId())) {
             AuthTG.loader.setActiveTG(player.getUniqueId(), false);
             AuthTG.loader.setTwofactor(player.getUniqueId(), false);
             code.remove(player.getUniqueId());
-            player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("codeunlink", "MC")));
+            MessageHelper.send(player, AuthTG.getMessage("codeunlink", "MC"));
         } else {
             AuthTG.loader.setActiveTG(player.getUniqueId(), true);
             code.remove(player.getUniqueId());
-            player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("codelink", "MC")));
+            MessageHelper.send(player, AuthTG.getMessage("codelink", "MC"));
+
             if (AuthTG.notRegAndLogin) {
                 player.resetTitle();
                 MuterEvent.unmute(player.getName());
@@ -67,11 +71,13 @@ public class CodeCMD implements CommandExecutor {
                 AuthTG.loader.setIpRegistration(player.getUniqueId(), player.getAddress().getAddress().toString());
                 AuthTG.loader.setPlayerName(player.getUniqueId(), player.getName());
             }
+
             User user = User.getUser(player.getUniqueId());
             if (user != null) {
                 user.sendMessage(AuthTG.getMessage("codelinkplayer", "TG"));
             }
         }
+
         return true;
     }
 }

@@ -1,7 +1,6 @@
 package org.ezhik.authTG.events;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -9,6 +8,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.Inventory;
 import org.ezhik.authTG.AuthTG;
+import org.ezhik.authTG.util.MessageHelper;
 import org.ezhik.authTG.IPManager;
 import org.ezhik.authTG.User;
 import org.ezhik.authTG.captcha.Captcha;
@@ -32,8 +32,7 @@ public class OnJoinEvent implements Listener {
                 event.setJoinMessage(null);
                 Handler.kick(
                         p.getName(),
-                        ChatColor.translateAlternateColorCodes('&',
-                                        AuthTG.getMessage("ban", "MC"))
+                        MessageHelper.legacySection(AuthTG.getMessage("ban", "MC"))
                                 .replace("{REASON}", AuthTG.loader.getBanReason(p.getUniqueId()))
                                 .replace("{TIMEBAN}", "навсегда")
                                 .replace("{TIME}", AuthTG.loader.getBanTimeAdmin(p.getUniqueId()))
@@ -53,8 +52,7 @@ public class OnJoinEvent implements Listener {
                 event.setJoinMessage(null);
                 Handler.kick(
                         p.getName(),
-                        ChatColor.translateAlternateColorCodes('&',
-                                        AuthTG.getMessage("ban", "MC"))
+                        MessageHelper.legacySection(AuthTG.getMessage("ban", "MC"))
                                 .replace("{REASON}", AuthTG.loader.getBanReason(p.getUniqueId()))
                                 .replace("{TIMEBAN}", AuthTG.loader.getBanTime(p.getUniqueId()))
                                 .replace("{TIME}", AuthTG.loader.getBanTimeAdmin(p.getUniqueId()))
@@ -92,16 +90,14 @@ public class OnJoinEvent implements Listener {
 
         if (AuthTG.forbiddenNicknames.contains(p.getName())) {
             Handler.kick(p.getName(),
-                    ChatColor.translateAlternateColorCodes('&',
-                            AuthTG.getMessage("forbiddennickname", "MC")));
+                    MessageHelper.legacySection(AuthTG.getMessage("forbiddennickname", "MC")));
             return;
         }
 
         if (p.getName().length() < AuthTG.minLenghtNickname || p.getName().length() > AuthTG.maxLenghtNickname) {
             Handler.kick(
                     p.getName(),
-                    ChatColor.translateAlternateColorCodes('&',
-                            AuthTG.getMessage("nicknamelenght", "MC")
+                    MessageHelper.legacySection(AuthTG.getMessage("nicknamelenght", "MC")
                                     .replace("{MIN}", String.valueOf(AuthTG.minLenghtNickname))
                                     .replace("{MAX}", String.valueOf(AuthTG.maxLenghtNickname)))
             );
@@ -117,14 +113,14 @@ public class OnJoinEvent implements Listener {
 
             Captcha.beginChallenge(p);
 
-            String text = color(mc("captchawaittext",
-                    "&aПройдите капчу, чтобы продолжить вход. Используйте &e/captcha&a."));
-            MuterEvent.mute(p.getName(), text);
-            p.sendMessage(text);
-            p.sendTitle(
-                    color(mc("captchawaittitle", "&c&lПройдите капчу")),
-                    color(mc("captchawaitsubtitle", "&7Напишите /captcha, чтобы открыть меню")),
-                    20, 10000000, 0
+            String text = mc("captchawaittext",
+                    "<green>Пройдите капчу, чтобы продолжить вход. Используйте <yellow>/captcha<green>.");
+            MuterEvent.mute(p.getName(), MessageHelper.legacySection(text));
+            MessageHelper.send(p, text);
+            MessageHelper.showTitle(
+                    p,
+                    mc("captchawaittitle", "<red><bold>Пройдите капчу"),
+                    mc("captchawaitsubtitle", "<gray>Напишите /captcha, чтобы открыть меню")
             );
             return;
         }
@@ -148,14 +144,12 @@ public class OnJoinEvent implements Listener {
         if (AuthTG.notRegAndLogin && AuthTG.authNecessarily) {
             if (AuthTG.isTelegramEnabled()) {
                 if (user != null && user.activetg) {
-                    MuterEvent.mute(p.getName(),
-                            ChatColor.translateAlternateColorCodes('&',
-                                    AuthTG.getMessage("joininaccounttext", "MC")));
-                    p.sendTitle(
-                            ChatColor.translateAlternateColorCodes('&',
-                                    AuthTG.getMessage("joininaccounts1", "MC")),
-                            AuthTG.getMessage("joininaccounts2", "MC"),
-                            20, 10000000, 0
+                    String joinText = AuthTG.getMessage("joininaccounttext", "MC");
+                    MuterEvent.mute(p.getName(), MessageHelper.legacySection(joinText));
+                    MessageHelper.showTitle(
+                            p,
+                            AuthTG.getMessage("joininaccounts1", "MC"),
+                            AuthTG.getMessage("joininaccounts2", "MC")
                     );
 
                     user.sendLoginAcceptedAsync(
@@ -164,14 +158,12 @@ public class OnJoinEvent implements Listener {
                                     .replace("{IP}", p.getAddress().getAddress().getHostAddress())
                     );
                 } else {
-                    MuterEvent.mute(p.getName(),
-                            ChatColor.translateAlternateColorCodes('&',
-                                    AuthTG.getMessage("authtgactivetext", "MC")));
-                    p.sendTitle(
-                            ChatColor.translateAlternateColorCodes('&',
-                                    AuthTG.getMessage("authtgactives1", "MC")),
-                            AuthTG.getMessage("authtgactives2", "MC"),
-                            20, 10000000, 0
+                    String activeText = AuthTG.getMessage("authtgactivetext", "MC");
+                    MuterEvent.mute(p.getName(), MessageHelper.legacySection(activeText));
+                    MessageHelper.showTitle(
+                            p,
+                            AuthTG.getMessage("authtgactives1", "MC"),
+                            AuthTG.getMessage("authtgactives2", "MC")
                     );
                 }
             } else {
@@ -186,28 +178,22 @@ public class OnJoinEvent implements Listener {
         }
 
         if (user != null) {
-            MuterEvent.mute(p.getName(),
-                    ChatColor.translateAlternateColorCodes('&',
-                            AuthTG.getMessage("loginmessage", "MC")));
-            p.sendMessage(ChatColor.translateAlternateColorCodes('&',
-                    AuthTG.getMessage("loginmessage", "MC")));
-            p.sendTitle(
-                    ChatColor.translateAlternateColorCodes('&',
-                            AuthTG.getMessage("logintitles1", "MC")),
-                    AuthTG.getMessage("logintitles2", "MC"),
-                    20, 10000000, 0
+            String loginText = AuthTG.getMessage("loginmessage", "MC");
+            MuterEvent.mute(p.getName(), MessageHelper.legacySection(loginText));
+            MessageHelper.send(p, loginText);
+            MessageHelper.showTitle(
+                    p,
+                    AuthTG.getMessage("logintitles1", "MC"),
+                    AuthTG.getMessage("logintitles2", "MC")
             );
         } else {
-            MuterEvent.mute(p.getName(),
-                    ChatColor.translateAlternateColorCodes('&',
-                            AuthTG.getMessage("registermessage", "MC")));
-            p.sendMessage(ChatColor.translateAlternateColorCodes('&',
-                    AuthTG.getMessage("registermessage", "MC")));
-            p.sendTitle(
-                    ChatColor.translateAlternateColorCodes('&',
-                            AuthTG.getMessage("registertitles1", "MC")),
-                    AuthTG.getMessage("registertitles2", "MC"),
-                    20, 10000000, 0
+            String registerText = AuthTG.getMessage("registermessage", "MC");
+            MuterEvent.mute(p.getName(), MessageHelper.legacySection(registerText));
+            MessageHelper.send(p, registerText);
+            MessageHelper.showTitle(
+                    p,
+                    AuthTG.getMessage("registertitles1", "MC"),
+                    AuthTG.getMessage("registertitles2", "MC")
             );
         }
     }
@@ -217,7 +203,4 @@ public class OnJoinEvent implements Listener {
         return value == null || value.isBlank() ? fallback : value;
     }
 
-    private static String color(String text) {
-        return ChatColor.translateAlternateColorCodes('&', text);
-    }
 }

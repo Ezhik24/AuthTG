@@ -1,11 +1,11 @@
 package org.ezhik.authTG.events;
 
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.ezhik.authTG.AuthTG;
+import org.ezhik.authTG.util.MessageHelper;
 import org.ezhik.authTG.captcha.Captcha;
 
 import java.time.LocalDateTime;
@@ -25,8 +25,8 @@ public class BlockCommandEvent implements Listener {
 
             if (!command.equals("/captcha")) {
                 event.setCancelled(true);
-                player.sendMessage(color(mc("captchawaittext",
-                        "&aПройдите капчу, чтобы продолжить вход. Используйте &e/captcha&a.")));
+                MessageHelper.send(player, mc("captchawaittext",
+                        "<green>Пройдите капчу, чтобы продолжить вход. Используйте <yellow>/captcha<green>."));
             }
             return;
         }
@@ -49,8 +49,7 @@ public class BlockCommandEvent implements Listener {
             String command = event.getMessage().split(" ")[0].toLowerCase(Locale.ROOT);
             if (!allowedCommands.contains(command)) {
                 event.setCancelled(true);
-                player.sendMessage(ChatColor.translateAlternateColorCodes('&',
-                        AuthTG.getMessage("joinblock", "MC")));
+                MessageHelper.send(player, AuthTG.getMessage("joinblock", "MC"));
             }
         }
 
@@ -75,22 +74,20 @@ public class BlockCommandEvent implements Listener {
 
             String message;
             if ("0".equals(String.valueOf(list.get(0)))) {
-                message = ChatColor.translateAlternateColorCodes('&',
-                                AuthTG.getMessage("mute", "MC"))
+                message = MessageHelper.legacySection(AuthTG.getMessage("mute", "MC"))
                         .replace("{TIMEMUTE}", "навсегда")
                         .replace("{REASON}", AuthTG.loader.getMuteReason(player.getUniqueId()))
                         .replace("{TIME}", AuthTG.loader.getMuteTimeAdmin(player.getUniqueId()))
                         .replace("{ADMIN}", AuthTG.loader.getMuteAdmin(player.getUniqueId()));
             } else {
-                message = ChatColor.translateAlternateColorCodes('&',
-                                AuthTG.getMessage("mute", "MC"))
+                message = MessageHelper.legacySection(AuthTG.getMessage("mute", "MC"))
                         .replace("{TIMEMUTE}", AuthTG.loader.getMuteTime(player.getUniqueId()))
                         .replace("{REASON}", AuthTG.loader.getMuteReason(player.getUniqueId()))
                         .replace("{TIME}", AuthTG.loader.getMuteTimeAdmin(player.getUniqueId()))
                         .replace("{ADMIN}", AuthTG.loader.getMuteAdmin(player.getUniqueId()));
             }
 
-            player.sendMessage(message);
+            MessageHelper.send(player, message);
             event.setCancelled(true);
         }
     }
@@ -100,7 +97,4 @@ public class BlockCommandEvent implements Listener {
         return value == null || value.isBlank() ? fallback : value;
     }
 
-    private static String color(String text) {
-        return ChatColor.translateAlternateColorCodes('&', text);
-    }
 }

@@ -1,8 +1,8 @@
 package org.ezhik.authTG.commandTG;
 
-import org.bukkit.ChatColor;
 import org.ezhik.authTG.AuthTG;
 import org.ezhik.authTG.User;
+import org.ezhik.authTG.util.MessageHelper;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
@@ -69,98 +69,106 @@ public class CommandCMDHandler implements CommandHandler {
             sendMessage.setReplyMarkup(inlineKeyboardMarkup);
 
             AuthTG.bot.executeAsync(sendMessage);
-        } else {
-            if (args[1].equals("add")) {
-                if (args.length != 4) {
-                    user.sendMessage(AuthTG.getMessage("cmdaddusage", "TG"));
-                    return;
-                }
-
-                User target = User.getUser(args[2]);
-                if (target == null) {
-                    user.sendMessage(AuthTG.getMessage("cmdusernotfound", "TG"));
-                    return;
-                }
-
-                if (args[3].equals("ban") || args[3].equals("mute") || args[3].equals("kick")) {
-                    if (target.commands != null && target.commands.contains(args[3])) {
-                        user.sendMessage(AuthTG.getMessage("cmdalreadyhas", "TG"));
-                        return;
-                    }
-
-                    AuthTG.loader.addCommand(target.uuid, args[3]);
-                    user.sendMessage(AuthTG.getMessage("cmdaddsuccess", "TG")
-                            .replace("{PERMISSION}", args[3])
-                            .replace("{PLAYER}", target.playername));
-
-                    if (target.activetg) {
-                        target.sendMessage(AuthTG.getMessage("cmdadded", "TG").replace("{COMMAND}", args[3]));
-                    }
-                    if (target.player != null) {
-                        target.player.sendMessage(ChatColor.translateAlternateColorCodes('&',
-                                AuthTG.getMessage("cmdadded", "TG").replace("{COMMAND}", args[3])));
-                    }
-                } else {
-                    user.sendMessage(AuthTG.getMessage("cmdaddusage", "TG"));
-                }
-            } else if (args[1].equals("rem")) {
-                if (args.length != 4) {
-                    user.sendMessage(AuthTG.getMessage("cmdremusage", "TG"));
-                    return;
-                }
-
-                User target = User.getUser(args[2]);
-                if (target == null) {
-                    user.sendMessage(AuthTG.getMessage("cmdusernotfound", "TG"));
-                    return;
-                }
-
-                if (args[3].equals("ban") || args[3].equals("mute") || args[3].equals("kick")) {
-                    if (target.commands != null && !target.commands.contains(args[3])) {
-                        user.sendMessage(AuthTG.getMessage("cmdnoperm", "TG"));
-                        return;
-                    }
-
-                    AuthTG.loader.removeCommand(target.uuid, args[3]);
-
-                    if (target.activetg) {
-                        target.sendMessage(AuthTG.getMessage("cmdrem", "TG").replace("{COMMAND}", args[3]));
-                    }
-                    if (target.player != null) {
-                        target.player.sendMessage(ChatColor.translateAlternateColorCodes('&',
-                                AuthTG.getMessage("cmdrem", "TG").replace("{COMMAND}", args[3])));
-                    }
-
-                    user.sendMessage(AuthTG.getMessage("cmdremsuccess", "TG")
-                            .replace("{PERMISSION}", args[3])
-                            .replace("{PLAYER}", target.playername));
-                } else {
-                    user.sendMessage(AuthTG.getMessage("cmdremusage", "TG"));
-                }
-            } else if (args[1].equals("list")) {
-                if (args.length != 3) {
-                    user.sendMessage(AuthTG.getMessage("cmdlistusage", "TG"));
-                    return;
-                }
-
-                User target = User.getUser(args[2]);
-                if (target == null) {
-                    user.sendMessage(AuthTG.getMessage("cmdusernotfound", "TG"));
-                    return;
-                }
-
-                if (target.commands != null && target.commands.isEmpty()) {
-                    user.sendMessage(AuthTG.getMessage("cmdlistempty", "TG"));
-                    return;
-                }
-
-                String commands = target.commands.toString().replace("[", "").replace("]", "");
-                user.sendMessage(AuthTG.getMessage("cmdlist", "TG")
-                        .replace("{PLAYER}", target.playername)
-                        .replace("{COMMANDS}", commands));
-            } else {
-                user.sendMessage(AuthTG.getMessage("cmdusage", "TG"));
-            }
+            return;
         }
+
+        if (args[1].equals("add")) {
+            if (args.length != 4) {
+                user.sendMessage(AuthTG.getMessage("cmdaddusage", "TG"));
+                return;
+            }
+
+            User target = User.getUser(args[2]);
+            if (target == null) {
+                user.sendMessage(AuthTG.getMessage("cmdusernotfound", "TG"));
+                return;
+            }
+
+            if (args[3].equals("ban") || args[3].equals("mute") || args[3].equals("kick")) {
+                if (target.commands != null && target.commands.contains(args[3])) {
+                    user.sendMessage(AuthTG.getMessage("cmdalreadyhas", "TG"));
+                    return;
+                }
+
+                AuthTG.loader.addCommand(target.uuid, args[3]);
+                user.sendMessage(AuthTG.getMessage("cmdaddsuccess", "TG")
+                        .replace("{PERMISSION}", args[3])
+                        .replace("{PLAYER}", target.playername));
+
+                if (target.activetg) {
+                    target.sendMessage(AuthTG.getMessage("cmdadded", "TG").replace("{COMMAND}", args[3]));
+                }
+                if (target.player != null) {
+                    MessageHelper.send(target.player,
+                            AuthTG.getMessage("cmdadded", "MC").replace("{COMMAND}", args[3]));
+                }
+            } else {
+                user.sendMessage(AuthTG.getMessage("cmdaddusage", "TG"));
+            }
+            return;
+        }
+
+        if (args[1].equals("rem")) {
+            if (args.length != 4) {
+                user.sendMessage(AuthTG.getMessage("cmdremusage", "TG"));
+                return;
+            }
+
+            User target = User.getUser(args[2]);
+            if (target == null) {
+                user.sendMessage(AuthTG.getMessage("cmdusernotfound", "TG"));
+                return;
+            }
+
+            if (args[3].equals("ban") || args[3].equals("mute") || args[3].equals("kick")) {
+                if (target.commands != null && !target.commands.contains(args[3])) {
+                    user.sendMessage(AuthTG.getMessage("cmdnoperm", "TG"));
+                    return;
+                }
+
+                AuthTG.loader.removeCommand(target.uuid, args[3]);
+
+                if (target.activetg) {
+                    target.sendMessage(AuthTG.getMessage("cmdrem", "TG").replace("{COMMAND}", args[3]));
+                }
+                if (target.player != null) {
+                    MessageHelper.send(target.player,
+                            AuthTG.getMessage("cmdrem", "MC").replace("{COMMAND}", args[3]));
+                }
+
+                user.sendMessage(AuthTG.getMessage("cmdremsuccess", "TG")
+                        .replace("{PERMISSION}", args[3])
+                        .replace("{PLAYER}", target.playername));
+            } else {
+                user.sendMessage(AuthTG.getMessage("cmdremusage", "TG"));
+            }
+            return;
+        }
+
+        if (args[1].equals("list")) {
+            if (args.length != 3) {
+                user.sendMessage(AuthTG.getMessage("cmdlistusage", "TG"));
+                return;
+            }
+
+            User target = User.getUser(args[2]);
+            if (target == null) {
+                user.sendMessage(AuthTG.getMessage("cmdusernotfound", "TG"));
+                return;
+            }
+
+            if (target.commands != null && target.commands.isEmpty()) {
+                user.sendMessage(AuthTG.getMessage("cmdlistempty", "TG"));
+                return;
+            }
+
+            String commands = target.commands.toString().replace("[", "").replace("]", "");
+            user.sendMessage(AuthTG.getMessage("cmdlist", "TG")
+                    .replace("{PLAYER}", target.playername)
+                    .replace("{COMMANDS}", commands));
+            return;
+        }
+
+        user.sendMessage(AuthTG.getMessage("cmdusage", "TG"));
     }
 }

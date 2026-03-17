@@ -1,7 +1,6 @@
 package org.ezhik.authTG.commandMC;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -12,6 +11,7 @@ import org.ezhik.authTG.TwoFactorPreferenceRepository;
 import org.ezhik.authTG.mail.MailCodeSession;
 import org.ezhik.authTG.mail.MailCodeStore;
 import org.ezhik.authTG.mail.MailDeliveryService;
+import org.ezhik.authTG.util.MessageHelper;
 
 import java.util.Locale;
 import java.util.UUID;
@@ -33,12 +33,12 @@ public class MailCMD implements CommandExecutor {
         Player player = (Player) commandSender;
 
         if (!MailDeliveryService.isEnabled()) {
-            player.sendMessage(color(AuthTG.getMessage("maildisabled", "MC")));
+            MessageHelper.send(player, AuthTG.getMessage("maildisabled", "MC"));
             return true;
         }
 
         if (args.length == 0) {
-            player.sendMessage(color(AuthTG.getMessage("mailusage", "MC")));
+            MessageHelper.send(player, AuthTG.getMessage("mailusage", "MC"));
             return true;
         }
 
@@ -54,30 +54,30 @@ public class MailCMD implements CommandExecutor {
             case "status":
                 return handleStatus(player);
             default:
-                player.sendMessage(color(AuthTG.getMessage("mailusage", "MC")));
+                MessageHelper.send(player, AuthTG.getMessage("mailusage", "MC"));
                 return true;
         }
     }
 
     private boolean handleLink(Player player, String[] args) {
         if (args.length != 2) {
-            player.sendMessage(color(AuthTG.getMessage("maillinkusage", "MC")));
+            MessageHelper.send(player, AuthTG.getMessage("maillinkusage", "MC"));
             return true;
         }
 
         if (!AuthTG.loader.isActive(player.getUniqueId())) {
-            player.sendMessage(color(AuthTG.getMessage("mailnotactive", "MC")));
+            MessageHelper.send(player, AuthTG.getMessage("mailnotactive", "MC"));
             return true;
         }
 
         if (!MailDeliveryService.hasValidProvider()) {
-            player.sendMessage(color(AuthTG.getMessage("mailtransportinvalid", "MC")));
+            MessageHelper.send(player, AuthTG.getMessage("mailtransportinvalid", "MC"));
             return true;
         }
 
         String email = args[1].trim().toLowerCase(Locale.ROOT);
         if (!EMAIL_PATTERN.matcher(email).matches()) {
-            player.sendMessage(color(AuthTG.getMessage("mailinvalidemail", "MC")));
+            MessageHelper.send(player, AuthTG.getMessage("mailinvalidemail", "MC"));
             return true;
         }
 
@@ -86,15 +86,15 @@ public class MailCMD implements CommandExecutor {
 
         if (MailDeliveryService.isLocalMode()) {
             MailCodeStore.create(uuid, email, code, MailDeliveryService.getCodeExpireSeconds());
-            player.sendMessage(color(AuthTG.getMessage("maillinksent", "MC")));
-            player.sendMessage(color(AuthTG.getMessage("maillocalcode", "MC").replace("{CODE}", code)));
+            MessageHelper.send(player, AuthTG.getMessage("maillinksent", "MC"));
+            MessageHelper.send(player, AuthTG.getMessage("maillocalcode", "MC").replace("{CODE}", code));
             return true;
         }
 
         String playerName = player.getName();
         String ip = getPlayerIp(player);
 
-        player.sendMessage(color(AuthTG.getMessage("mailsending", "MC")));
+        MessageHelper.send(player, AuthTG.getMessage("mailsending", "MC"));
 
         Bukkit.getScheduler().runTaskAsynchronously(AuthTG.getInstance(), () -> {
             boolean sent = MailDeliveryService.sendLinkCode(playerName, uuid, ip, email, code);
@@ -107,9 +107,9 @@ public class MailCMD implements CommandExecutor {
 
                 if (sent) {
                     MailCodeStore.create(uuid, email, code, MailDeliveryService.getCodeExpireSeconds());
-                    online.sendMessage(color(AuthTG.getMessage("maillinksent", "MC")));
+                    MessageHelper.send(online, AuthTG.getMessage("maillinksent", "MC"));
                 } else {
-                    online.sendMessage(color(AuthTG.getMessage("mailsenderror", "MC")));
+                    MessageHelper.send(online, AuthTG.getMessage("mailsenderror", "MC"));
                 }
             });
         });
@@ -119,7 +119,7 @@ public class MailCMD implements CommandExecutor {
 
     private boolean handleVerify(Player player, String[] args) {
         if (args.length != 2) {
-            player.sendMessage(color(AuthTG.getMessage("mailverifyusage", "MC")));
+            MessageHelper.send(player, AuthTG.getMessage("mailverifyusage", "MC"));
             return true;
         }
 
@@ -127,24 +127,23 @@ public class MailCMD implements CommandExecutor {
         MailCodeSession session = MailCodeStore.get(uuid);
 
         if (session == null) {
-            player.sendMessage(color(AuthTG.getMessage("mailverifyexpired", "MC")));
+            MessageHelper.send(player, AuthTG.getMessage("mailverifyexpired", "MC"));
             return true;
         }
 
         String inputCode = args[1].trim();
 
         if (!MailCodeStore.verify(uuid, inputCode)) {
-            player.sendMessage(color(AuthTG.getMessage("mailverifywrong", "MC")));
+            MessageHelper.send(player, AuthTG.getMessage("mailverifywrong", "MC"));
             return true;
         }
 
         AuthTG.loader.setEmail(uuid, session.getEmail());
         AuthTG.loader.setVerifiedEmail(uuid, true);
 
-        player.sendMessage(color(
+        MessageHelper.send(player,
                 AuthTG.getMessage("mailverifysuccess", "MC")
-                        .replace("{EMAIL}", session.getEmail())
-        ));
+                        .replace("{EMAIL}", session.getEmail()));
         return true;
     }
 
@@ -156,7 +155,7 @@ public class MailCMD implements CommandExecutor {
         MailCodeStore.remove(uuid);
 
         if ((email == null || email.isBlank()) && !verified) {
-            player.sendMessage(color(AuthTG.getMessage("mailunlinkempty", "MC")));
+            MessageHelper.send(player, AuthTG.getMessage("mailunlinkempty", "MC"));
             return true;
         }
 
@@ -174,7 +173,7 @@ public class MailCMD implements CommandExecutor {
             }
         }
 
-        player.sendMessage(color(AuthTG.getMessage("mailunlinksuccess", "MC")));
+        MessageHelper.send(player, AuthTG.getMessage("mailunlinksuccess", "MC"));
         return true;
     }
 
@@ -183,10 +182,9 @@ public class MailCMD implements CommandExecutor {
 
         MailCodeSession pending = MailCodeStore.get(uuid);
         if (pending != null) {
-            player.sendMessage(color(
+            MessageHelper.send(player,
                     AuthTG.getMessage("mailstatuspending", "MC")
-                            .replace("{EMAIL}", pending.getEmail())
-            ));
+                            .replace("{EMAIL}", pending.getEmail()));
         }
 
         String email = AuthTG.loader.getEmail(uuid);
@@ -194,21 +192,19 @@ public class MailCMD implements CommandExecutor {
 
         if (email == null || email.isBlank()) {
             if (pending == null) {
-                player.sendMessage(color(AuthTG.getMessage("mailstatusnone", "MC")));
+                MessageHelper.send(player, AuthTG.getMessage("mailstatusnone", "MC"));
             }
             return true;
         }
 
         if (verified) {
-            player.sendMessage(color(
+            MessageHelper.send(player,
                     AuthTG.getMessage("mailstatusverified", "MC")
-                            .replace("{EMAIL}", email)
-            ));
+                            .replace("{EMAIL}", email));
         } else {
-            player.sendMessage(color(
+            MessageHelper.send(player,
                     AuthTG.getMessage("mailstatusnotverified", "MC")
-                            .replace("{EMAIL}", email)
-            ));
+                            .replace("{EMAIL}", email));
         }
 
         return true;
@@ -219,9 +215,5 @@ public class MailCMD implements CommandExecutor {
             return player.getAddress().getAddress().getHostAddress();
         }
         return "unknown";
-    }
-
-    private String color(String text) {
-        return ChatColor.translateAlternateColorCodes('&', text);
     }
 }

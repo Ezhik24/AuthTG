@@ -4,11 +4,13 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.ezhik.authTG.AuthTG;
 import org.ezhik.authTG.User;
 import org.ezhik.authTG.events.OnJoinEvent;
 import org.ezhik.authTG.handlers.Handler;
+import org.ezhik.authTG.util.MessageHelper;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -33,6 +35,7 @@ public final class Captcha {
     private static final Map<UUID, Integer> ATTEMPTS = new ConcurrentHashMap<>();
     private static final Map<UUID, Material> CORRECTS = new ConcurrentHashMap<>();
     private static final Set<UUID> PENDING = ConcurrentHashMap.newKeySet();
+    private static final Set<UUID> OPENING = ConcurrentHashMap.newKeySet();
 
     private static final int MAX_ATTEMPTS = 3;
 
@@ -41,6 +44,33 @@ public final class Captcha {
 
     public static boolean isPending(UUID uuid) {
         return uuid != null && PENDING.contains(uuid);
+    }
+
+    public static boolean isOpening(UUID uuid) {
+        return uuid != null && OPENING.contains(uuid);
+    }
+
+    public static boolean isCaptchaInventory(InventoryView view) {
+        if (view == null || view.getTopInventory() == null) {
+            return false;
+        }
+
+        if (view.getTopInventory().getHolder() instanceof CaptchaHolder) {
+            return true;
+        }
+
+        String title = view.getTitle();
+        if (title == null) {
+            return false;
+        }
+
+        for (Material material : MATERIALS) {
+            if (title.equals(buildInventoryTitle(material))) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public static void beginChallenge(Player player) {
@@ -63,7 +93,18 @@ public final class Captcha {
             beginChallenge(player);
         }
 
-        player.openInventory(buildCaptcha(player));
+        OPENING.add(uuid);
+
+        Bukkit.getScheduler().runTaskLater(AuthTG.getInstance(), () -> {
+            Player online = Bukkit.getPlayer(uuid);
+            if (online == null || !online.isOnline() || !PENDING.contains(uuid)) {
+                OPENING.remove(uuid);
+                return;
+            }
+
+            online.openInventory(buildCaptcha(online));
+            Bukkit.getScheduler().runTaskLater(AuthTG.getInstance(), () -> OPENING.remove(uuid), 5L);
+        }, 1L);
     }
 
     public static void clear(UUID uuid) {
@@ -72,6 +113,7 @@ public final class Captcha {
         }
 
         PENDING.remove(uuid);
+        OPENING.remove(uuid);
         ATTEMPTS.remove(uuid);
         CORRECTS.remove(uuid);
     }
@@ -91,7 +133,7 @@ public final class Captcha {
 
         if (clickedMaterial == correct) {
             player.closeInventory();
-            player.sendMessage("§aКапча успешно пройдена.");
+            MessageHelper.send(player, mc("captchasuccess"));
 
             clear(uuid);
 
@@ -106,21 +148,30 @@ public final class Captcha {
         int triesLeft = ATTEMPTS.getOrDefault(uuid, MAX_ATTEMPTS) - 1;
         if (triesLeft <= 0) {
             clear(uuid);
-            Handler.kick(player.getName(), "§cПопробуйте снова пройти капчу.");
+            Handler.kick(player.getName(), MessageHelper.legacySection(mc("captchakick")));
             return;
         }
 
         ATTEMPTS.put(uuid, triesLeft);
         player.closeInventory();
-        player.sendMessage("§eКапча не пройдена. Осталось попыток: " + triesLeft);
-        player.sendMessage("§7Напишите §e/captcha §7чтобы открыть её снова.");
+
+        MessageHelper.send(
+                player,
+                mc("captchafail").replace("{ATTEMPTS}", String.valueOf(triesLeft))
+        );
+        MessageHelper.send(player, mc("captchareopen"));
 
         Bukkit.getScheduler().runTaskLater(AuthTG.getInstance(), () -> {
             Player online = Bukkit.getPlayer(uuid);
             if (online == null || !online.isOnline() || !isPending(uuid)) {
                 return;
             }
-            online.sendTitle("§c§lКапча", "§7Напишите /captcha", 0, 40, 10);
+
+            MessageHelper.showTitle(
+                    online,
+                    mc("captchatitlemain"),
+                    mc("captchatitlesub")
+            );
         }, 2L);
     }
 
@@ -128,8 +179,11 @@ public final class Captcha {
         Material correct = MATERIALS.get(ThreadLocalRandom.current().nextInt(MATERIALS.size()));
         CORRECTS.put(player.getUniqueId(), correct);
 
-        String title = "§aВыберите " + russianName(correct) + " шерсть";
-        Inventory inventory = Bukkit.createInventory(new CaptchaHolder(), 45, title);
+        Inventory inventory = Bukkit.createInventory(
+                new CaptchaHolder(),
+                45,
+                buildInventoryTitle(correct)
+        );
 
         for (int i = 0; i < inventory.getSize(); i++) {
             Material randomMaterial = MATERIALS.get(ThreadLocalRandom.current().nextInt(MATERIALS.size()));
@@ -139,16 +193,28 @@ public final class Captcha {
         return inventory;
     }
 
-    private static String russianName(Material material) {
+    private static String buildInventoryTitle(Material material) {
+        return MessageHelper.legacySection(
+                mc("captchainventory")
+                        .replace("{WOOL}", woolName(material))
+        );
+    }
+
+    private static String woolName(Material material) {
         return switch (material) {
-            case RED_WOOL -> "красную";
-            case WHITE_WOOL -> "белую";
-            case BLACK_WOOL -> "черную";
-            case YELLOW_WOOL -> "желтую";
-            case PURPLE_WOOL -> "фиолетовую";
-            case BLUE_WOOL -> "синюю";
-            case GREEN_WOOL -> "зеленую";
-            default -> "";
+            case RED_WOOL -> mc("captchawoolred");
+            case WHITE_WOOL -> mc("captchawoolwhite");
+            case BLACK_WOOL -> mc("captchawoolblack");
+            case YELLOW_WOOL -> mc("captchawoolyellow");
+            case PURPLE_WOOL -> mc("captchawoolpurple");
+            case BLUE_WOOL -> mc("captchawoolblue");
+            case GREEN_WOOL -> mc("captchawoolgreen");
+            default -> mc("captchawoolunknown");
         };
+    }
+
+    private static String mc(String key) {
+        String value = AuthTG.getMessage(key, "MC");
+        return value == null ? key : value;
     }
 }

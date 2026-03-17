@@ -371,3 +371,21 @@ messages: # Сообщения EN: Messages
   captchawaitsubtitle: '&7Выберите нужный цвет в меню'
   captchaopened: '&f&l[&c&lAuthTG&f&l] &aКапча открыта.'
   captchanotpending: '&f&l[&c&lAuthTG&f&l] &cСейчас капча не требуется.'
+
+  captchasuccess: "<green>Капча успешно пройдена."
+  captchakick: "<red>Попробуйте снова пройти капчу."
+  captchafail: "<yellow>Капча не пройдена. Осталось попыток: <red>{ATTEMPTS}"
+  captchareopen: "<gray>Напишите <yellow>/captcha <gray>чтобы открыть её снова."
+  captchatitlemain: "<red><bold>Капча"
+  captchatitlesub: "<gray>Напишите <yellow>/captcha"
+
+  captchainventory: "<green>Выберите {WOOL} шерсть"
+
+  captchawoolred: "красную"
+  captchawoolwhite: "белую"
+  captchawoolblack: "черную"
+  captchawoolyellow: "желтую"
+  captchawoolpurple: "фиолетовую"
+  captchawoolblue: "синюю"
+  captchawoolgreen: "зеленую"
+  captchawoolunknown: "нужную"

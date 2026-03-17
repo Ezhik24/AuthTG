@@ -1,7 +1,7 @@
 package org.ezhik.authTG;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
+import org.ezhik.authTG.util.MessageHelper;
 import org.bukkit.entity.Player;
 import org.ezhik.authTG.commandMC.CodeCMD;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -98,8 +98,7 @@ public class User {
         );
 
         if (player != null) {
-            player.sendMessage(ChatColor.translateAlternateColorCodes('&',
-                    AuthTG.getMessage("codemsgactivated", "MC")));
+            MessageHelper.send(player, AuthTG.getMessage("codemsgactivated", "MC"));
         }
 
         CodeCMD.code.put(uuid, code);

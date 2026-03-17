@@ -33,7 +33,10 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 import javax.sql.DataSource;
 import java.io.File;
 import java.io.IOException;
+import java.net.Authenticator;
+import java.net.PasswordAuthentication;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -296,6 +299,7 @@ public final class AuthTG extends JavaPlugin {
 
         DefaultBotOptions options = new DefaultBotOptions();
         options.setGetUpdatesTimeout(50);
+        configureProxy(options);
 
         bot = new BotTelegram(
                 getConfig().getString("bot.token"),
@@ -319,6 +323,66 @@ public final class AuthTG extends JavaPlugin {
             logger.log(Level.INFO, "[AuthTG] Telegram polling started");
         } catch (TelegramApiException e) {
             logger.log(Level.SEVERE, "Error: " + e.getMessage(), e);
+        }
+    }
+
+    private void configureProxy(DefaultBotOptions options) {
+        ConfigurationSection proxy = getConfig().getConfigurationSection("bot.proxy");
+        if (proxy == null || !proxy.getBoolean("enabled", false)) {
+            return;
+        }
+
+        String host = proxy.getString("host", "").trim();
+        int port = proxy.getInt("port", 0);
+        String typeRaw = proxy.getString("type", "SOCKS5");
+        String username = proxy.getString("username", "").trim();
+        String password = proxy.getString("password", "");
+
+        if (host.isEmpty() || port <= 0) {
+            logger.log(Level.WARNING, "[AuthTG] bot.proxy.enabled=true, but host/port are invalid. Proxy ignored.");
+            return;
+        }
+
+        DefaultBotOptions.ProxyType proxyType = parseProxyType(typeRaw);
+        if (proxyType == null) {
+            logger.log(Level.WARNING, "[AuthTG] Unknown proxy type: " + typeRaw + ". Use HTTP, SOCKS4 or SOCKS5.");
+            return;
+        }
+
+        options.setProxyHost(host);
+        options.setProxyPort(port);
+        options.setProxyType(proxyType);
+
+        if (!username.isEmpty()) {
+            Authenticator.setDefault(new Authenticator() {
+                @Override
+                protected PasswordAuthentication getPasswordAuthentication() {
+                    if (host.equalsIgnoreCase(getRequestingHost()) && port == getRequestingPort()) {
+                        return new PasswordAuthentication(username, password.toCharArray());
+                    }
+                    return null;
+                }
+            });
+        }
+
+        logger.log(Level.INFO, "[AuthTG] Proxy enabled: " + proxyType + " " + host + ":" + port);
+    }
+
+    private DefaultBotOptions.ProxyType parseProxyType(String typeRaw) {
+        if (typeRaw == null) {
+            return DefaultBotOptions.ProxyType.SOCKS5;
+        }
+
+        String type = typeRaw.trim().toUpperCase(Locale.ROOT);
+        switch (type) {
+            case "HTTP":
+                return DefaultBotOptions.ProxyType.HTTP;
+            case "SOCKS4":
+                return DefaultBotOptions.ProxyType.SOCKS4;
+            case "SOCKS5":
+                return DefaultBotOptions.ProxyType.SOCKS5;
+            default:
+                return null;
         }
     }
 

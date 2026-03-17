@@ -4,7 +4,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
-import org.ezhik.authTG.captcha.CaptchaHolder;
+import org.ezhik.authTG.captcha.Captcha;
 
 public class InventoryEvent implements Listener {
 
@@ -14,12 +14,16 @@ public class InventoryEvent implements Listener {
             return;
         }
 
-        if (event.getView().getTopInventory().getHolder() instanceof CaptchaHolder) {
+        if (Captcha.isOpening(event.getPlayer().getUniqueId())) {
             return;
         }
 
-        event.getView().close();
+        if (Captcha.isCaptchaInventory(event.getView())) {
+            return;
+        }
+
         event.setCancelled(true);
+        event.getView().close();
     }
 
     @EventHandler
@@ -28,7 +32,7 @@ public class InventoryEvent implements Listener {
             return;
         }
 
-        if (event.getView().getTopInventory().getHolder() instanceof CaptchaHolder) {
+        if (Captcha.isCaptchaInventory(event.getView())) {
             return;
         }
 

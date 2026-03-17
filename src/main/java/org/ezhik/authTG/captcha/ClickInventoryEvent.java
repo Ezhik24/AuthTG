@@ -14,17 +14,13 @@ public class ClickInventoryEvent implements Listener {
             return;
         }
 
-        if (!(event.getView().getTopInventory().getHolder() instanceof CaptchaHolder)) {
+        if (!Captcha.isCaptchaInventory(event.getView())) {
             return;
         }
 
         event.setCancelled(true);
 
         if (event.getClickedInventory() == null) {
-            return;
-        }
-
-        if (!(event.getClickedInventory().getHolder() instanceof CaptchaHolder)) {
             return;
         }
 

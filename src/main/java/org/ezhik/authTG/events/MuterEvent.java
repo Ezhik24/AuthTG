@@ -1,11 +1,12 @@
 package org.ezhik.authTG.events;
 
-import org.bukkit.ChatColor;
+import org.ezhik.authTG.util.MessageHelper;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.ezhik.authTG.AuthTG;
+import org.ezhik.authTG.util.MessageHelper;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -32,11 +33,11 @@ public class MuterEvent implements Listener {
             }
             if (AuthTG.loader.isMuted(event.getPlayer().getUniqueId())) {
                 if (list.get(0).toString().equals("0")) {
-                    String message = ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("mute", "MC")).replace("{TIMEMUTE}", "навсегда").replace("{REASON}", AuthTG.loader.getMuteReason(event.getPlayer().getUniqueId())).replace("{TIME}", AuthTG.loader.getMuteTimeAdmin(event.getPlayer().getUniqueId())).replace("{ADMIN}", AuthTG.loader.getMuteAdmin(event.getPlayer().getUniqueId())).replace("{BR}", "\n");
-                    event.getPlayer().sendMessage(message);
+                    String message = MessageHelper.legacySection(AuthTG.getMessage("mute", "MC")).replace("{TIMEMUTE}", "навсегда").replace("{REASON}", AuthTG.loader.getMuteReason(event.getPlayer().getUniqueId())).replace("{TIME}", AuthTG.loader.getMuteTimeAdmin(event.getPlayer().getUniqueId())).replace("{ADMIN}", AuthTG.loader.getMuteAdmin(event.getPlayer().getUniqueId())).replace("{BR}", "\n");
+                    MessageHelper.send(event.getPlayer(), message);
                 } else {
-                    String message = ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("mute", "MC")).replace("{TIMEMUTE}", AuthTG.loader.getMuteTime(event.getPlayer().getUniqueId())).replace("{REASON}", AuthTG.loader.getMuteReason(event.getPlayer().getUniqueId())).replace("{TIME}", AuthTG.loader.getMuteTimeAdmin(event.getPlayer().getUniqueId())).replace("{ADMIN}", AuthTG.loader.getMuteAdmin(event.getPlayer().getUniqueId())).replace("{BR}", "\n");
-                    event.getPlayer().sendMessage(message);
+                    String message = MessageHelper.legacySection(AuthTG.getMessage("mute", "MC")).replace("{TIMEMUTE}", AuthTG.loader.getMuteTime(event.getPlayer().getUniqueId())).replace("{REASON}", AuthTG.loader.getMuteReason(event.getPlayer().getUniqueId())).replace("{TIME}", AuthTG.loader.getMuteTimeAdmin(event.getPlayer().getUniqueId())).replace("{ADMIN}", AuthTG.loader.getMuteAdmin(event.getPlayer().getUniqueId())).replace("{BR}", "\n");
+                    MessageHelper.send(event.getPlayer(), message);
                 }
                 event.setCancelled(true);
             }

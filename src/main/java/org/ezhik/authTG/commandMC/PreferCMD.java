@@ -1,6 +1,5 @@
 package org.ezhik.authTG.commandMC;
 
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -8,6 +7,7 @@ import org.bukkit.entity.Player;
 import org.ezhik.authTG.AuthTG;
 import org.ezhik.authTG.TwoFactorMethod;
 import org.ezhik.authTG.TwoFactorPreferenceRepository;
+import org.ezhik.authTG.util.MessageHelper;
 
 import java.util.logging.Level;
 
@@ -21,22 +21,22 @@ public class PreferCMD implements CommandExecutor {
         }
 
         if (AuthTG.getDataSource() == null) {
-            commandSender.sendMessage(color(mc("preferstorageunavailable",
-                    "&cКоманда /prefer доступна только при включённом MySQL.")));
+            MessageHelper.send(commandSender, mc("preferstorageunavailable",
+                    "<red>Команда /prefer доступна только при включённом MySQL."));
             return true;
         }
 
         Player player = (Player) commandSender;
 
         if (!AuthTG.loader.isActive(player.getUniqueId())) {
-            player.sendMessage(color(mc("prefernotactive",
-                    "&cСначала зарегистрируйтесь.")));
+            MessageHelper.send(player, mc("prefernotactive",
+                    "<red>Сначала зарегистрируйтесь."));
             return true;
         }
 
         if (args.length != 2 || !args[0].equalsIgnoreCase("2fa")) {
-            player.sendMessage(color(mc("preferusage",
-                    "&cИспользование: /prefer 2fa <mail|tg|off>")));
+            MessageHelper.send(player, mc("preferusage",
+                    "<red>Использование: /prefer 2fa <mail|tg|off>"));
             return true;
         }
 
@@ -51,77 +51,73 @@ public class PreferCMD implements CommandExecutor {
             case "none":
                 return handleOff(player);
             default:
-                player.sendMessage(color(mc("preferusage",
-                        "&cИспользование: /prefer 2fa <mail|tg|off>")));
+                MessageHelper.send(player, mc("preferusage",
+                        "<red>Использование: /prefer 2fa <mail|tg|off>"));
                 return true;
         }
     }
 
     private boolean handleTelegram(Player player) {
         if (!AuthTG.isTelegramEnabled()) {
-            player.sendMessage(color(mc("prefertgdisabled",
-                    "&cTelegram 2FA сейчас отключён в config.yml (tg: false).")));
+            MessageHelper.send(player, mc("prefertgdisabled",
+                    "<red>Telegram 2FA сейчас отключён в config.yml (tg: false)."));
             return true;
         }
 
         if (!AuthTG.loader.getActiveTG(player.getUniqueId())) {
-            player.sendMessage(color(mc("prefertgnotlinked",
-                    "&cТелеграм не привязан.")));
+            MessageHelper.send(player, mc("prefertgnotlinked",
+                    "<red>Телеграм не привязан."));
             return true;
         }
 
         AuthTG.loader.setTwofactor(player.getUniqueId(), true);
         TwoFactorPreferenceRepository.set(player.getUniqueId(), TwoFactorMethod.TG);
 
-        player.sendMessage(color(mc("prefersettg",
-                "&aТеперь предпочтительный метод 2FA: Telegram.")));
+        MessageHelper.send(player, mc("prefersettg",
+                "<green>Теперь предпочтительный метод 2FA: Telegram."));
         return true;
     }
 
     private boolean handleMail(Player player) {
         if (!AuthTG.loader.isVerifiedEmail(player.getUniqueId())) {
-            player.sendMessage(color(mc("prefermailnotverified",
-                    "&cСначала привяжите и подтвердите почту через /mail link и /mail verify.")));
+            MessageHelper.send(player, mc("prefermailnotverified",
+                    "<red>Сначала привяжите и подтвердите почту через <yellow>/mail link</yellow> и <yellow>/mail verify</yellow>."));
             return true;
         }
 
         String email = AuthTG.loader.getEmail(player.getUniqueId());
         if (email == null || email.isBlank()) {
-            player.sendMessage(color(mc("prefermailnotverified",
-                    "&cСначала привяжите и подтвердите почту через /mail link и /mail verify.")));
+            MessageHelper.send(player, mc("prefermailnotverified",
+                    "<red>Сначала привяжите и подтвердите почту через <yellow>/mail link</yellow> и <yellow>/mail verify</yellow>."));
             return true;
         }
 
         AuthTG.loader.setTwofactor(player.getUniqueId(), false);
         TwoFactorPreferenceRepository.set(player.getUniqueId(), TwoFactorMethod.MAIL);
 
-        player.sendMessage(color(mc("prefersetmail",
-                "&aТеперь предпочтительный метод 2FA: почта &e{EMAIL}&a.")
-                .replace("{EMAIL}", email)));
+        MessageHelper.send(player, mc("prefersetmail",
+                "<green>Теперь предпочтительный метод 2FA: почта <yellow>{EMAIL}<green>.")
+                .replace("{EMAIL}", email));
         return true;
     }
 
     private boolean handleOff(Player player) {
         if (AuthTG.authNecessarily) {
-            player.sendMessage(color(mc("preferoffblocked",
-                    "&cПри authNecessarily нельзя отключить 2FA.")));
+            MessageHelper.send(player, mc("preferoffblocked",
+                    "<red>При authNecessarily нельзя отключить 2FA."));
             return true;
         }
 
         AuthTG.loader.setTwofactor(player.getUniqueId(), false);
         TwoFactorPreferenceRepository.set(player.getUniqueId(), TwoFactorMethod.OFF);
 
-        player.sendMessage(color(mc("preferoff",
-                "&aПредпочтительный метод 2FA сброшен.")));
+        MessageHelper.send(player, mc("preferoff",
+                "<green>Предпочтительный метод 2FA сброшен."));
         return true;
     }
 
     private String mc(String key, String fallback) {
         String value = AuthTG.getMessage(key, "MC");
         return value == null || value.isBlank() ? fallback : value;
-    }
-
-    private String color(String text) {
-        return ChatColor.translateAlternateColorCodes('&', text);
     }
 }
