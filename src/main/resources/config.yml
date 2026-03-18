@@ -1,11 +1,21 @@
 # Приветствую! Это конфиг с настройками AuthTG
 # Hi! This is a config with AuthTG settings
-bot: # Настройки бота EN: Settings of bot
-  token: changeme # Токен бота EN: Bot token
-  username: changeme # Имя бота EN: Bot username
+tg: true
+
 captcha:
-  enabled: true # Включить/выключить каптчу
-  timeoutCaptcha: 3 # Сколько не спрашивать у игрока каптчу
+  enabled: true
+  timeoutCaptcha: 3
+
+bot:
+  token: changeme
+  username: changeme
+  proxy:
+    enabled: false
+    type: "SOCKS5" # HTTP | SOCKS4 | SOCKS5
+    host: "127.0.0.1"
+    port: 1080
+    username: ""
+    password: ""
 mysql: # Настройки базы данных EN: Database settings
   use: false # Использовать базу данных EN: Use database
   host: 'localhost' # Хост базы данных,УКАЗЫВАЙТЕ ТУТ ЖЕ ПОРТ,ЕСЛИ ИСПОЛЬЗУЕТСЯ EN: Host of database, ENTER HERE PORT IF YOU USE
@@ -76,6 +86,11 @@ mail:
       #uuid: "{UUID}"
       #ip: "{IP}"
 
+    twoFactorFields:
+      nickname: "{PLAYER}"
+      email: "{EMAIL}"
+      code: "{CODE}"
+
   smtp:
     host: "smtp.gmail.com"
     port: 587
@@ -99,10 +114,17 @@ mail:
       - "Почта: {EMAIL}"
       - "Если вы не запрашивали привязку почты, просто проигнорируйте это письмо."
 
+    twoFactorSubject: "Код входа для {PLAYER}"
+    twoFactorBody:
+      - "Здравствуйте, {PLAYER}!"
+      - "Ваш код для входа: {CODE}"
+      - "Если это были не вы, срочно смените пароль."
+
     connectTimeoutMs: 10000
     timeoutMs: 10000
     writeTimeoutMs: 10000
     debug: false
+
 
 onceUsed: # НЕ ТРОГАЙТЕ ЭТО EN: Do not touch
   mysql: false

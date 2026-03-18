@@ -1,9 +1,10 @@
 name: AuthTG
-version: '2.6.2'
+version: '2.6.3'
 main: org.ezhik.authTG.AuthTG
-api-version: '1.16'
+api-version: '1.21'
 authors: [Ezhik24, ABBAfan]
 softdepend: ["PlaceholderAPI"]
+
 commands:
   register:
     description: 'Register'
@@ -17,6 +18,10 @@ commands:
     description: 'AuthTGCMD'
   code:
     description: 'Code'
+  2fa:
+    description: 'Mail 2FA code'
+  prefer:
+    description: 'Preferred 2FA method'
   mcbc:
     description: 'MCBC'
   tgbc:
@@ -51,3 +56,5 @@ commands:
     description: 'Unlink'
   mail:
     description: 'Mail verification'
+  captcha:
+    description: 'Open captcha menu'

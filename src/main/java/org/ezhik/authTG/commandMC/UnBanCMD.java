@@ -8,6 +8,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.ezhik.authTG.AuthTG;
+import org.ezhik.authTG.util.MessageHelper;
 
 import java.util.UUID;
 
@@ -17,41 +18,41 @@ public class UnBanCMD implements CommandExecutor {
         if (commandSender instanceof Player) {
             Player player = (Player) commandSender;
             if (!commandSender.hasPermission("authtg.unban")) {
-                player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("unbannoperm", "MC")));
+                MessageHelper.send(player, AuthTG.getMessage("unbannoperm", "MC"));
                 return false;
             }
             if (strings.length == 0) {
-                player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("unbanusage", "MC")));
+                MessageHelper.send(player, AuthTG.getMessage("unbanusage", "MC"));
                 return false;
             }
             UUID targetuuid = AuthTG.loader.getUUIDbyPlayerName(strings[0]);
             if (targetuuid == null) {
-                player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("unbannotfound", "MC")));
+                MessageHelper.send(player, AuthTG.getMessage("unbannotfound", "MC"));
                 return false;
             }
             if (!AuthTG.loader.isBanned(targetuuid)) {
-                player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("unbannotbanned", "MC")));
+                MessageHelper.send(player, AuthTG.getMessage("unbannotbanned", "MC"));
                 return false;
             }
             AuthTG.loader.deleteBan(targetuuid);
-            player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("unban", "MC").replace("{PLAYER}", strings[0])));
+            MessageHelper.send(player, AuthTG.getMessage("unban", "MC").replace("{PLAYER}", strings[0]));
         } else {
             ConsoleCommandSender console = Bukkit.getConsoleSender();
             if (strings.length == 0) {
-                console.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("unbanusage", "MC")));
+                MessageHelper.send(console, AuthTG.getMessage("unbanusage", "MC"));
                 return false;
             }
             UUID targetuuid = AuthTG.loader.getUUIDbyPlayerName(strings[0]);
             if (targetuuid == null) {
-                console.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("unbannotfound", "MC")));
+                MessageHelper.send(console, AuthTG.getMessage("unbannotfound", "MC"));
                 return false;
             }
             if (!AuthTG.loader.isBanned(targetuuid)) {
-                console.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("unbannotbanned", "MC")));
+                MessageHelper.send(console, AuthTG.getMessage("unbannotbanned", "MC"));
                 return false;
             }
             AuthTG.loader.deleteBan(targetuuid);
-            console.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("unban", "MC").replace("{PLAYER}", strings[0])));
+            MessageHelper.send(console, AuthTG.getMessage("unban", "MC").replace("{PLAYER}", strings[0]));
         }
         return true;
     }

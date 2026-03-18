@@ -70,4 +70,22 @@ public final class MailDeliveryService {
                 return false;
         }
     }
+
+    public static boolean sendTwoFactorCode(String playerName, UUID uuid, String ip, String email, String code) {
+        Provider provider = getProvider();
+
+        switch (provider) {
+            case LOCAL:
+                return true;
+            case API:
+                return MailApiService.sendTwoFactorCode(playerName, uuid, ip, email, code);
+            case SMTP:
+                return MailSmtpService.sendTwoFactorCode(playerName, uuid, ip, email, code);
+            case INVALID:
+            default:
+                AuthTG.logger.log(Level.WARNING,
+                        "[AuthTG] Invalid mail.provider in config.yml. Allowed values: LOCAL, API, SMTP");
+                return false;
+        }
+    }
 }

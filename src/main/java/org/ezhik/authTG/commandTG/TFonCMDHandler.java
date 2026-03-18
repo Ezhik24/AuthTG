@@ -1,6 +1,8 @@
 package org.ezhik.authTG.commandTG;
 
 import org.ezhik.authTG.AuthTG;
+import org.ezhik.authTG.TwoFactorMethod;
+import org.ezhik.authTG.TwoFactorPreferenceRepository;
 import org.ezhik.authTG.User;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
@@ -9,14 +11,18 @@ public class TFonCMDHandler implements CommandHandler {
     public void execute(Update update) {
         if (AuthTG.authNecessarily || AuthTG.notRegAndLogin) {
             AuthTG.bot.deleteMessage(update.getMessage());
-        } else {
-            User user = User.getCurrentUser(update.getMessage().getChatId());
-            if (user != null) {
-                AuthTG.loader.setTwofactor(user.uuid, true);
-                user.sendMessage(AuthTG.getMessage("tfonsuccess", "TG"));
-            } else {
-                AuthTG.bot.sendMessage(update.getMessage().getChatId(), AuthTG.getMessage("tfonntactive", "TG"));
+            return;
+        }
+
+        User user = User.getCurrentUser(update.getMessage().getChatId());
+        if (user != null) {
+            AuthTG.loader.setTwofactor(user.uuid, true);
+            if (AuthTG.getDataSource() != null) {
+                TwoFactorPreferenceRepository.set(user.uuid, TwoFactorMethod.TG);
             }
+            user.sendMessage(AuthTG.getMessage("tfonsuccess", "TG"));
+        } else {
+            AuthTG.bot.sendMessage(update.getMessage().getChatId(), AuthTG.getMessage("tfonntactive", "TG"));
         }
     }
 }

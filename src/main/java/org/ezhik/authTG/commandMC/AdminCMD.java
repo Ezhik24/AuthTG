@@ -1,78 +1,106 @@
 package org.ezhik.authTG.commandMC;
 
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.ezhik.authTG.AuthTG;
 import org.ezhik.authTG.User;
+import org.ezhik.authTG.util.MessageHelper;
 
 public class AdminCMD implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
         if (!commandSender.hasPermission("authtg.admin")) {
-            commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("adminnoperm", "MC")));
+            MessageHelper.send(commandSender, AuthTG.getMessage("adminnoperm", "MC"));
             return false;
         }
+
         if (strings.length == 0) {
-            commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("adminhelp", "MC")));
+            MessageHelper.send(commandSender, AuthTG.getMessage("adminhelp", "MC"));
             return false;
         }
-        Player player = (Player) commandSender;
-        if (strings[0].equals("add")) {
+
+        Player player = commandSender instanceof Player ? (Player) commandSender : null;
+
+        if (strings[0].equalsIgnoreCase("add")) {
             if (strings.length < 2) {
-                commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("adminhelpadd", "MC")));
+                MessageHelper.send(commandSender, AuthTG.getMessage("adminhelpadd", "MC"));
                 return false;
             }
+
             User user = User.getUser(strings[1]);
             if (user == null) {
-                commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("adminusernotfound", "MC")));
+                MessageHelper.send(commandSender, AuthTG.getMessage("adminusernotfound", "MC"));
                 return false;
             }
+
             if (user.isadmin) {
-                commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("adminalreadyadmin", "MC")));
+                MessageHelper.send(commandSender, AuthTG.getMessage("adminalreadyadmin", "MC"));
                 return false;
             }
+
             AuthTG.loader.setAdmin(user.uuid);
-            player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("adminadded", "MC")));
-            if (user.activetg) user.sendMessage(AuthTG.getMessage("adminadd", "TG"));
-            if (user.player != null) user.player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("adminadd", "MC")));
+
+            MessageHelper.send(commandSender, AuthTG.getMessage("adminadded", "MC"));
+
+            if (user.activetg) {
+                user.sendMessage(AuthTG.getMessage("adminadd", "TG"));
+            }
+
+            if (user.player != null) {
+                MessageHelper.send(user.player, AuthTG.getMessage("adminadd", "MC"));
+            }
+
+            return true;
         }
-        else if (strings[0].equals("rem")) {
+
+        if (strings[0].equalsIgnoreCase("rem")) {
             if (strings.length < 2) {
-                commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("adminhelprem", "MC")));
+                MessageHelper.send(commandSender, AuthTG.getMessage("adminhelprem", "MC"));
                 return false;
             }
+
             User user = User.getUser(strings[1]);
             if (user == null) {
-                commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("adminusernotfound", "MC")));
+                MessageHelper.send(commandSender, AuthTG.getMessage("adminusernotfound", "MC"));
                 return false;
             }
+
             if (!user.isadmin) {
-                commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("adminnotadmin", "MC")));
+                MessageHelper.send(commandSender, AuthTG.getMessage("adminnotadmin", "MC"));
                 return false;
             }
+
             AuthTG.loader.removeAdmin(user.uuid);
-            if (user.player != null) user.player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("adminrem", "MC")));
-            if (user.activetg) user.sendMessage(AuthTG.getMessage("adminrem", "TG"));
-            player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("adminremoved", "MC")));
-        }
-        else if (strings[0].equals("list")) {
-            if (AuthTG.loader.getAdminList().isEmpty()) {
-                commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("adminlistnotfound", "MC")));
-                return false;
-            } else {
-                player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("adminlist", "MC")));
-                for (String playername : AuthTG.loader.getAdminList()) {
-                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("adminlistplayer", "MC").replace("{PLAYER}", playername)));
-                }
-                return true;
+
+            if (user.player != null) {
+                MessageHelper.send(user.player, AuthTG.getMessage("adminrem", "MC"));
             }
-        } else {
-            commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("adminhelp", "MC")));
-            return false;
+
+            if (user.activetg) {
+                user.sendMessage(AuthTG.getMessage("adminrem", "TG"));
+            }
+
+            MessageHelper.send(commandSender, AuthTG.getMessage("adminremoved", "MC"));
+            return true;
         }
-        return true;
+
+        if (strings[0].equalsIgnoreCase("list")) {
+            if (AuthTG.loader.getAdminList().isEmpty()) {
+                MessageHelper.send(commandSender, AuthTG.getMessage("adminlistnotfound", "MC"));
+                return false;
+            }
+
+            MessageHelper.send(commandSender, AuthTG.getMessage("adminlist", "MC"));
+            for (String playername : AuthTG.loader.getAdminList()) {
+                MessageHelper.send(commandSender,
+                        AuthTG.getMessage("adminlistplayer", "MC").replace("{PLAYER}", playername));
+            }
+            return true;
+        }
+
+        MessageHelper.send(commandSender, AuthTG.getMessage("adminhelp", "MC"));
+        return false;
     }
 }

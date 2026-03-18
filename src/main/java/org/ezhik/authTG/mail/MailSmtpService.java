@@ -22,6 +22,30 @@ public final class MailSmtpService {
     }
 
     public static boolean sendLinkCode(String playerName, UUID uuid, String ip, String email, String code) {
+        return sendCode(playerName, uuid, ip, email, code,
+                "mail.smtp.subject",
+                "mail.smtp.body",
+                null,
+                null);
+    }
+
+    public static boolean sendTwoFactorCode(String playerName, UUID uuid, String ip, String email, String code) {
+        return sendCode(playerName, uuid, ip, email, code,
+                "mail.smtp.twoFactorSubject",
+                "mail.smtp.twoFactorBody",
+                "mail.smtp.subject",
+                "mail.smtp.body");
+    }
+
+    private static boolean sendCode(String playerName,
+                                    UUID uuid,
+                                    String ip,
+                                    String email,
+                                    String code,
+                                    String subjectPath,
+                                    String bodyPath,
+                                    String subjectFallbackPath,
+                                    String bodyFallbackPath) {
         FileConfiguration config = AuthTG.getInstance().getConfig();
 
         String host = trimToNull(config.getString("mail.smtp.host", ""));
@@ -62,8 +86,8 @@ public final class MailSmtpService {
             return false;
         }
 
-        String subject = config.getString("mail.smtp.subject", "Mail verification code for {PLAYER}");
-        String body = getBody(config, playerName, uuid, ip, email, code);
+        String subject = getString(config, subjectPath, "Mail verification code for {PLAYER}", subjectFallbackPath);
+        String body = getBody(config, bodyPath, bodyFallbackPath);
 
         subject = replacePlaceholders(subject, playerName, uuid, ip, email, code);
         body = replacePlaceholders(body, playerName, uuid, ip, email, code);
@@ -141,12 +165,13 @@ public final class MailSmtpService {
     }
 
     private static String getBody(FileConfiguration config,
-                                  String playerName,
-                                  UUID uuid,
-                                  String ip,
-                                  String email,
-                                  String code) {
-        Object rawBody = config.get("mail.smtp.body");
+                                  String primaryPath,
+                                  String fallbackPath) {
+        Object rawBody = config.get(primaryPath);
+
+        if (rawBody == null && fallbackPath != null) {
+            rawBody = config.get(fallbackPath);
+        }
 
         if (rawBody instanceof List<?>) {
             List<?> lines = (List<?>) rawBody;
@@ -162,8 +187,30 @@ public final class MailSmtpService {
             return builder.toString();
         }
 
-        String fallback = config.getString("mail.smtp.body", "Your verification code: {CODE}");
-        return fallback == null ? "Your verification code: {CODE}" : fallback;
+        if (rawBody instanceof String) {
+            return (String) rawBody;
+        }
+
+        return "Your verification code: {CODE}";
+    }
+
+    private static String getString(FileConfiguration config,
+                                    String primaryPath,
+                                    String defaultValue,
+                                    String fallbackPath) {
+        String value = config.getString(primaryPath);
+        if (value != null && !value.isBlank()) {
+            return value;
+        }
+
+        if (fallbackPath != null) {
+            value = config.getString(fallbackPath);
+            if (value != null && !value.isBlank()) {
+                return value;
+            }
+        }
+
+        return defaultValue;
     }
 
     private static String replacePlaceholders(String value,

@@ -7,16 +7,28 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
 public class ClickInventoryEvent implements Listener {
+
     @EventHandler
     public void onClick(InventoryClickEvent event) {
-        if (!(event.getWhoClicked() instanceof Player)) return;
-        Player p = (Player) event.getWhoClicked();
+        if (!(event.getWhoClicked() instanceof Player player)) {
+            return;
+        }
 
-        if (!(event.getInventory().getHolder() instanceof CaptchaHolder)) return;
+        if (!Captcha.isCaptchaInventory(event.getView())) {
+            return;
+        }
+
         event.setCancelled(true);
 
-        if (event.getCurrentItem() == null) return;
-        Material click = event.getCurrentItem().getType();
-        Captcha.checkCaptcha(p, click);
+        if (event.getClickedInventory() == null) {
+            return;
+        }
+
+        if (event.getCurrentItem() == null) {
+            return;
+        }
+
+        Material clicked = event.getCurrentItem().getType();
+        Captcha.checkCaptcha(player, clicked);
     }
 }

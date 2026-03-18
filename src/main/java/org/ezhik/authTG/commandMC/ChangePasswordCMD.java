@@ -6,6 +6,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.ezhik.authTG.AuthTG;
+import org.ezhik.authTG.util.MessageHelper;
 
 import java.util.logging.Level;
 
@@ -19,19 +20,19 @@ public class ChangePasswordCMD implements CommandExecutor {
         }
         Player player = (Player) commandSender;
         if (!(strings.length == 3)) {
-            player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("cpusage", "MC")));
+            MessageHelper.send(player, AuthTG.getMessage("cpusage", "MC"));
             return false;
         }
         if (!AuthTG.loader.passwordValid(player.getUniqueId(), strings[0])) {
-            player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("cpoldpassnotvalid", "MC")));
+            MessageHelper.send(player, AuthTG.getMessage("cpoldpassnotvalid", "MC"));
             return false;
         }
         if (!strings[1].equals(strings[2])) {
-            player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("cpnotmatch", "MC")));
+            MessageHelper.send(player, AuthTG.getMessage("cpnotmatch", "MC"));
             return false;
         }
         AuthTG.loader.setPasswordHash(player.getUniqueId(), strings[1]);
-        player.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("cpsuccess", "MC")));
+        MessageHelper.send(player, AuthTG.getMessage("cpsuccess", "MC"));
         return true;
     }
 }

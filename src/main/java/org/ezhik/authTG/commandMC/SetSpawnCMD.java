@@ -8,6 +8,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.ezhik.authTG.AuthTG;
+import org.ezhik.authTG.util.MessageHelper;
 
 import java.io.File;
 import java.util.logging.Level;
@@ -21,7 +22,7 @@ public class SetSpawnCMD implements CommandExecutor {
             return false;
         }
         if (!commandSender.hasPermission("authtg.setspawn")) {
-            commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("setspawnnoperm", "MC")));
+            MessageHelper.send(commandSender, AuthTG.getMessage("setspawnnoperm", "MC"));
             return false;
         }
         if (strings.length == 0) {
@@ -41,7 +42,7 @@ public class SetSpawnCMD implements CommandExecutor {
             } catch (Exception e) {
                 AuthTG.logger.log(Level.SEVERE, "Cannot save config.yml");
             }
-            commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("setspawnsuccess", "MC")));
+            MessageHelper.send(commandSender, AuthTG.getMessage("setspawnsuccess", "MC"));
             return true;
         }
         if (strings[0].equals("none")) {
@@ -60,7 +61,7 @@ public class SetSpawnCMD implements CommandExecutor {
             } catch (Exception e) {
                 AuthTG.logger.log(Level.SEVERE, "Cannot save config.yml");
             }
-            commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', AuthTG.getMessage("setspawnnone", "MC")));
+            MessageHelper.send(commandSender, AuthTG.getMessage("setspawnnone", "MC"));
             return true;
         }
         return true;
