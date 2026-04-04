@@ -2,7 +2,9 @@
 # Hi! This is a config with AuthTG settings
 tg: true
 
-
+vk:
+  enabled: true
+  token: changeme
 bot:
   token: changeme
   username: changeme

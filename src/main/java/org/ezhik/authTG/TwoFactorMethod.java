@@ -3,7 +3,8 @@ package org.ezhik.authTG;
 public enum TwoFactorMethod {
     OFF,
     TG,
-    MAIL;
+    MAIL,
+    VK;
 
     public static TwoFactorMethod fromStoredValue(String value) {
         if (value == null || value.isBlank()) {

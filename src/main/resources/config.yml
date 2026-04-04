@@ -5,6 +5,9 @@ tg: true
 captcha:
   enabled: true
   timeoutCaptcha: 3
+vk:
+  enabled: true
+  token: changeme
 
 bot:
   token: changeme
