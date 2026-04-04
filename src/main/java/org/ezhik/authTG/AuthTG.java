@@ -45,6 +45,7 @@ public final class AuthTG extends JavaPlugin {
 
     public static Loader loader;
     public static BotTelegram bot;
+    public static BotVK vk;
     public static Logger logger;
 
     private static AuthTG instance;
@@ -55,6 +56,7 @@ public final class AuthTG extends JavaPlugin {
     public static boolean authNecessarily;
     public static boolean activeChatinTG;
     public static boolean telegramEnabled;
+    public static boolean vkEnabled;
 
     public static List<String> mutecommands;
     public static List<String> commandsPreAuthorization;
@@ -111,6 +113,7 @@ public final class AuthTG extends JavaPlugin {
 
         MuterEvent.setMutedPlayers(loader.getMutedPlayers());
         initTelegramBot();
+        initVKBot();
     }
 
     @Override
@@ -125,6 +128,14 @@ public final class AuthTG extends JavaPlugin {
             }
             mysqlPool = null;
         }
+
+        if (vk != null) {
+            try {
+                vk.shutdown();
+            } catch (Exception ignored) {
+            }
+            vk = null;
+        }
     }
 
     public static AuthTG getInstance() {
@@ -137,6 +148,9 @@ public final class AuthTG extends JavaPlugin {
 
     public static boolean isTelegramEnabled() {
         return telegramEnabled;
+    }
+    public static boolean isVKEnabled() {
+        return vkEnabled;
     }
 
     public static DataSource getDataSource() {
@@ -324,6 +338,11 @@ public final class AuthTG extends JavaPlugin {
         } catch (TelegramApiException e) {
             logger.log(Level.SEVERE, "Error: " + e.getMessage(), e);
         }
+    }
+
+    private void initVKBot() {
+        vk = new BotVK(getConfig().getString("vk.token"));
+        vk.initializationBot();
     }
 
     private void configureProxy(DefaultBotOptions options) {
@@ -531,6 +550,7 @@ public final class AuthTG extends JavaPlugin {
         ConfigurationSection config = getInstance().getConfig();
 
         telegramEnabled = config.getBoolean("tg", true);
+        vkEnabled = config.getBoolean("vk.enabled", true);
         maxAccountTGCount = config.getInt("maxAccountTGCount");
         forbiddenNicknames = config.getStringList("forbiddenNicknames");
         notRegAndLogin = config.getBoolean("notRegAndLogin");
