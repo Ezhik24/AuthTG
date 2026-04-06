@@ -128,6 +128,14 @@ public final class AuthTG extends JavaPlugin {
             }
             mysqlPool = null;
         }
+
+        if (vk != null) {
+            try {
+                vk.shutdown();
+            } catch (Exception ignored) {
+            }
+            vk = null;
+        }
     }
 
     public static AuthTG getInstance() {

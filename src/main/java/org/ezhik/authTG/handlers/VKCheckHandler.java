@@ -1,21 +1,23 @@
 package org.ezhik.authTG.handlers;
 
-import okhttp3.Request;
-import okhttp3.Response;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.ezhik.authTG.AuthTG;
+import org.ezhik.authTG.BotVK;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.IOException;
-import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class VKCheckHandler extends BukkitRunnable {
+    private final BotVK vk;
     private final String server;
-    private String ts;
     private final String key;
+    private volatile String ts;
 
-    public VKCheckHandler(String server, String ts, String key) {
+    private final AtomicBoolean inFlight = new AtomicBoolean(false);
+
+    public VKCheckHandler(BotVK vk, String server, String ts, String key) {
+        this.vk = vk;
         this.server = server;
         this.ts = ts;
         this.key = key;
@@ -23,32 +25,86 @@ public class VKCheckHandler extends BukkitRunnable {
 
     @Override
     public void run() {
-        String url = server + "?act=a_check&key=" + key + "&ts=" + ts + "&wait=25";
-        Request request = new Request.Builder().url(url).build();
-        AuthTG.vk.checkEvent(request).thenAccept(responseLp -> {
+        if (!AuthTG.isVKEnabled()) {
+            cancel();
+            return;
+        }
 
-            JSONObject json = null;
+        if (!inFlight.compareAndSet(false, true)) {
+            return;
+        }
+
+        vk.checkEvent(server, key, ts).whenComplete((json, throwable) -> {
             try {
-                json = new JSONObject(responseLp.body().string());
-            } catch (IOException e) {
-                AuthTG.logger.severe("[AuthTG] Exception " + e);
-            }
-            ts = json.getString("ts");
-            JSONArray updates = json.getJSONArray("updates");
-
-            for (int i = 0; i < updates.length(); i++) {
-                JSONObject event = updates.getJSONObject(i);
-                String type = event.getString("type");
-                if (type.equals("message_new")) {
-                    JSONObject object = event.getJSONObject("object");
-                    JSONObject jsonObject = object.getJSONObject("message");
-                    int userId = jsonObject.getInt("peer_id");
-                    String text = jsonObject.getString("text");
-
-
-                    AuthTG.vk.sendMessage(userId, text);
-                    break;
+                if (throwable != null) {
+                    AuthTG.logger.warning("[AuthTG] VK long poll request failed: " + throwable.getMessage());
+                    return;
                 }
+
+                if (json == null) {
+                    return;
+                }
+
+                if (json.has("failed")) {
+                    int failed = json.optInt("failed", 0);
+
+                    if (failed == 1) {
+                        String newTs = json.optString("ts", null);
+                        if (newTs != null && !newTs.isBlank()) {
+                            ts = newTs;
+                        }
+                        return;
+                    }
+
+                    AuthTG.logger.warning("[AuthTG] VK long poll returned failed=" + failed + ". Re-init VK bot is recommended.");
+                    return;
+                }
+
+                String newTs = json.optString("ts", null);
+                if (newTs != null && !newTs.isBlank()) {
+                    ts = newTs;
+                }
+
+                JSONArray updates = json.optJSONArray("updates");
+                if (updates == null || updates.isEmpty()) {
+                    return;
+                }
+
+                for (int i = 0; i < updates.length(); i++) {
+                    JSONObject event = updates.optJSONObject(i);
+                    if (event == null) {
+                        continue;
+                    }
+
+                    String type = event.optString("type", "");
+                    if (!"message_new".equals(type)) {
+                        continue;
+                    }
+
+                    JSONObject object = event.optJSONObject("object");
+                    if (object == null) {
+                        continue;
+                    }
+
+                    JSONObject message = object.optJSONObject("message");
+                    if (message == null) {
+                        continue;
+                    }
+
+                    int peerId = message.optInt("peer_id", 0);
+                    String text = message.optString("text", "");
+
+                    if (peerId <= 0) {
+                        continue;
+                    }
+
+                    // пока просто echo, как у тебя и было
+                    vk.sendMessage(peerId, text);
+                }
+            } catch (Exception e) {
+                AuthTG.logger.severe("[AuthTG] VK long poll handler exception: " + e.getMessage());
+            } finally {
+                inFlight.set(false);
             }
         });
     }

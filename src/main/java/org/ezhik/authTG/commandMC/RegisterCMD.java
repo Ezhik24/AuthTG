@@ -5,17 +5,25 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.ezhik.authTG.AuthTG;
-import org.ezhik.authTG.util.MessageHelper;
 import org.ezhik.authTG.events.FreezerEvent;
 import org.ezhik.authTG.events.MuterEvent;
 import org.ezhik.authTG.handlers.AuthHandler;
+import org.ezhik.authTG.util.AsyncBridge;
+import org.ezhik.authTG.util.MessageHelper;
 
 import java.util.logging.Level;
 
 public class RegisterCMD implements CommandExecutor {
+
+    private record RegisterCheckResult(
+            boolean alreadyRegistered,
+            int ipRegistrations
+    ) {
+    }
+
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
-        if (!(commandSender instanceof Player)) {
+        if (!(commandSender instanceof Player player)) {
             AuthTG.logger.log(Level.INFO, AuthTG.getMessage("notplayer", "CE"));
             return false;
         }
@@ -30,51 +38,86 @@ public class RegisterCMD implements CommandExecutor {
             return false;
         }
 
-        Player player = (Player) commandSender;
+        String password = strings[0];
+        String repeatPassword = strings[1];
 
-        if (AuthTG.loader.isActive(player.getUniqueId())) {
-            MessageHelper.send(player, AuthTG.getMessage("alreadyreg", "MC"));
-            return false;
-        }
-
-        if (strings[0].length() < AuthTG.minLenghtPassword || strings[0].length() > AuthTG.maxLenghtPassword) {
+        if (password.length() < AuthTG.minLenghtPassword || password.length() > AuthTG.maxLenghtPassword) {
             MessageHelper.send(player, AuthTG.getMessage("registerlenght", "MC")
                     .replace("{MIN}", String.valueOf(AuthTG.minLenghtPassword))
                     .replace("{MAX}", String.valueOf(AuthTG.maxLenghtPassword)));
             return false;
         }
 
-        if (!strings[0].equals(strings[1])) {
+        if (!password.equals(repeatPassword)) {
             MessageHelper.send(player, AuthTG.getMessage("registernomatch", "MC"));
             return false;
         }
 
-        if (AuthTG.loader.getIpsRegistration(player.getAddress().getAddress().toString()) >= AuthTG.ipregmax) {
-            MessageHelper.send(player, AuthTG.getMessage("registeripregmax", "MC"));
-            return false;
-        }
+        final var uuid = player.getUniqueId();
+        final var playerName = player.getName();
+        final var ip = player.getAddress() != null && player.getAddress().getAddress() != null
+                ? player.getAddress().getAddress().toString()
+                : "";
 
-        AuthTG.loader.setPlayerName(player.getUniqueId(), player.getName());
-        AuthTG.loader.setPasswordHash(player.getUniqueId(), strings[0]);
-        AuthTG.loader.setActive(player.getUniqueId(), true);
-        AuthTG.loader.setIpRegistration(player.getUniqueId(), player.getAddress().getAddress().toString());
+        AsyncBridge.supplyAsync(
+                () -> new RegisterCheckResult(
+                        AuthTG.loader.isActive(uuid),
+                        AuthTG.loader.getIpsRegistration(ip)
+                ),
+                result -> {
+                    Player online = player.isOnline() ? player : null;
+                    if (online == null) {
+                        return;
+                    }
 
-        if (AuthTG.authNecessarily && AuthTG.isTelegramEnabled()) {
-            String activeText = AuthTG.getMessage("authtgactivetext", "MC");
-            MessageHelper.send(player, activeText);
-            MuterEvent.mute(player.getName(), MessageHelper.legacySection(activeText));
-            MessageHelper.showTitle(
-                    player,
-                    AuthTG.getMessage("authtgactives1", "MC"),
-                    AuthTG.getMessage("authtgactives2", "MC")
-            );
-        } else {
-            MessageHelper.send(player, AuthTG.getMessage("registersuccess", "MC"));
-            FreezerEvent.unfreezeplayer(player.getName());
-            MuterEvent.unmute(player.getName());
-            player.resetTitle();
-            AuthHandler.removeTimeout(player.getUniqueId());
-        }
+                    if (result.alreadyRegistered()) {
+                        MessageHelper.send(online, AuthTG.getMessage("alreadyreg", "MC"));
+                        return;
+                    }
+
+                    if (result.ipRegistrations() >= AuthTG.ipregmax) {
+                        MessageHelper.send(online, AuthTG.getMessage("registeripregmax", "MC"));
+                        return;
+                    }
+
+                    AsyncBridge.runAsync(() -> {
+                        AuthTG.loader.setPlayerName(uuid, playerName);
+                        AuthTG.loader.setPasswordHash(uuid, password);
+                        AuthTG.loader.setActive(uuid, true);
+                        AuthTG.loader.setIpRegistration(uuid, ip);
+
+                        AsyncBridge.runSync(() -> {
+                            Player current = player.isOnline() ? player : null;
+                            if (current == null) {
+                                return;
+                            }
+
+                            if (AuthTG.authNecessarily && AuthTG.isTelegramEnabled()) {
+                                String activeText = AuthTG.getMessage("authtgactivetext", "MC");
+                                MessageHelper.send(current, activeText);
+                                MuterEvent.mute(current.getName(), MessageHelper.legacySection(activeText));
+                                MessageHelper.showTitle(
+                                        current,
+                                        AuthTG.getMessage("authtgactives1", "MC"),
+                                        AuthTG.getMessage("authtgactives2", "MC")
+                                );
+                            } else {
+                                MessageHelper.send(current, AuthTG.getMessage("registersuccess", "MC"));
+                                FreezerEvent.unfreezeplayer(current.getName());
+                                MuterEvent.unmute(current.getName());
+                                current.resetTitle();
+                                AuthHandler.removeTimeout(current.getUniqueId());
+                            }
+                        });
+                    });
+                },
+                throwable -> {
+                    AuthTG.logger.severe("[AuthTG] Register async error: " + throwable.getMessage());
+                    if (player.isOnline()) {
+                        MessageHelper.send(player, "<red>Произошла ошибка при регистрации.");
+                    }
+                }
+        );
 
         return true;
     }
