@@ -45,6 +45,7 @@ public final class AuthTG extends JavaPlugin {
 
     public static Loader loader;
     public static BotTelegram bot;
+    public static BotVK vk;
     public static Logger logger;
 
     private static AuthTG instance;
@@ -55,6 +56,7 @@ public final class AuthTG extends JavaPlugin {
     public static boolean authNecessarily;
     public static boolean activeChatinTG;
     public static boolean telegramEnabled;
+    public static boolean vkEnabled;
 
     public static List<String> mutecommands;
     public static List<String> commandsPreAuthorization;
@@ -68,6 +70,7 @@ public final class AuthTG extends JavaPlugin {
     public static int timeoutSession;
     public static int kickTimeout;
     public static int maxAccountTGCount;
+    public static int maxAccountVKCount;
 
     public static double locationX;
     public static double locationY;
@@ -111,6 +114,7 @@ public final class AuthTG extends JavaPlugin {
 
         MuterEvent.setMutedPlayers(loader.getMutedPlayers());
         initTelegramBot();
+        initVKBot();
     }
 
     @Override
@@ -125,6 +129,14 @@ public final class AuthTG extends JavaPlugin {
             }
             mysqlPool = null;
         }
+
+        if (vk != null) {
+            try {
+                vk.shutdown();
+            } catch (Exception ignored) {
+            }
+            vk = null;
+        }
     }
 
     public static AuthTG getInstance() {
@@ -137,6 +149,9 @@ public final class AuthTG extends JavaPlugin {
 
     public static boolean isTelegramEnabled() {
         return telegramEnabled;
+    }
+    public static boolean isVKEnabled() {
+        return vkEnabled;
     }
 
     public static DataSource getDataSource() {
@@ -326,6 +341,11 @@ public final class AuthTG extends JavaPlugin {
         }
     }
 
+    private void initVKBot() {
+        vk = new BotVK(getConfig().getString("vk.token"), getConfig().getInt("vk.groupId"));
+        vk.initializationBot();
+    }
+
     private void configureProxy(DefaultBotOptions options) {
         ConfigurationSection proxy = getConfig().getConfigurationSection("bot.proxy");
         if (proxy == null || !proxy.getBoolean("enabled", false)) {
@@ -411,6 +431,7 @@ public final class AuthTG extends JavaPlugin {
         registerCommand("unlink", new UnLinkCMD());
         registerCommand("authtg", new AuthTGCMD());
         registerCommand("mail", new MailCMD());
+        registerCommand("vk", new VKCMD());
     }
 
     private void registerTabCompleters() {
@@ -505,6 +526,9 @@ public final class AuthTG extends JavaPlugin {
         if ("TG".equals(channel)) {
             return messagesConfig.getString("messages.telegram." + path, "").replace("{BR}", "\n");
         }
+        if ("VK".equals(channel)) {
+            return messagesConfig.getString("messages.vk." + path, "").replace("{BR}", "\n");
+        }
 
         logger.log(Level.SEVERE, "Message path not found, please contact the developer");
         return "";
@@ -531,7 +555,9 @@ public final class AuthTG extends JavaPlugin {
         ConfigurationSection config = getInstance().getConfig();
 
         telegramEnabled = config.getBoolean("tg", true);
+        vkEnabled = config.getBoolean("vk.enabled", true);
         maxAccountTGCount = config.getInt("maxAccountTGCount");
+        maxAccountVKCount = config.getInt("maxAccountVKCount");
         forbiddenNicknames = config.getStringList("forbiddenNicknames");
         notRegAndLogin = config.getBoolean("notRegAndLogin");
         authNecessarily = config.getBoolean("authNecessarily");

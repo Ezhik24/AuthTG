@@ -2,7 +2,7 @@ name: AuthTG
 version: '2.7'
 main: org.ezhik.authTG.AuthTG
 api-version: '1.19'
-authors: [Ezhik24, ABBAfan]
+authors: [Ezhik24, ABBAfan, gas333t]
 softdepend: ["PlaceholderAPI"]
 
 commands:
@@ -58,3 +58,5 @@ commands:
     description: 'Mail verification'
   captcha:
     description: 'Open captcha menu'
+  vk:
+    description: 'VK'

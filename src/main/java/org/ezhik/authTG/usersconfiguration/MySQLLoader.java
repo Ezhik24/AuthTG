@@ -606,6 +606,86 @@ public class MySQLLoader implements Loader {
         return null;
     }
 
+    @Override
+    public void setPeerID(UUID uuid, int peerID) {
+        String sql = "UPDATE AuthTGUsers SET peerid=? WHERE uuid=?";
+        try (Connection c = ds.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setInt(1, peerID);
+            ps.setString(2, uuid.toString());
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public int getPeerID(UUID uuid) {
+        String sql = "SELECT peerid FROM AuthTGUsers WHERE uuid=?";
+        try (Connection c = ds.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setString(1, uuid.toString());
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) return rs.getInt("peerID");
+            }
+        } catch (SQLException e) {
+            AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
+        }
+        return 0;
+    }
+
+    @Override
+    public void setActiveVK(UUID uuid, boolean active) {
+        String sql = "UPDATE AuthTGUsers SET activevk=? WHERE uuid=?";
+        try (Connection c = ds.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setBoolean(1, active);
+            ps.setString(2, uuid.toString());
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public boolean isActiveVK(UUID uuid) {
+        String sql = "SELECT activevk FROM AuthTGUsers WHERE uuid=?";
+        try (Connection c = ds.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setString(1, uuid.toString());
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) return rs.getBoolean("activevk");
+            }
+        } catch (SQLException e) {
+            AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
+        }
+        return false;
+    }
+
+    @Override
+    public List<UUID> getPlayerNames(int peerid) {
+        String sql = "SELECT uuid FROM AuthTGUsers WHERE peerid=? AND activk=true";
+        List<UUID> list = new ArrayList<>();
+        try (Connection c = ds.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setInt(1, peerid);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    UUID u = UUID.fromString(rs.getString("uuid"));
+                    if (!list.contains(u)) list.add(u);
+                }
+            }
+            return list;
+        } catch (SQLException e) {
+            AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
+        }
+        return null;
+    }
+
+    @Override
+    public void setPlayerNames(int chatid, UUID uuid) {
+    }
+
     @Override public String getBanTime(UUID uuid) { return getOneString("SELECT timeBan FROM AuthTGBans WHERE uuid=?", uuid); }
     @Override public String getBanReason(UUID uuid) { return getOneString("SELECT reason FROM AuthTGBans WHERE uuid=?", uuid); }
     @Override public String getBanAdmin(UUID uuid) { return getOneString("SELECT admin FROM AuthTGBans WHERE uuid=?", uuid); }

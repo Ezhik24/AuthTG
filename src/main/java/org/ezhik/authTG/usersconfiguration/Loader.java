@@ -125,4 +125,16 @@ public interface Loader {
     void setCaptchaTimeout(UUID uuid, LocalDateTime time);
 
     LocalDateTime getCaptchaTimeout(UUID uuid);
+
+    void setPeerID(UUID uuid, int peerID);
+
+    int getPeerID(UUID uuid);
+
+    void setActiveVK(UUID uuid, boolean active);
+
+    boolean isActiveVK(UUID uuid);
+
+    List<UUID> getPlayerNames(int peerid);
+
+    void setPlayerNames(int chatid, UUID uuid);
 }

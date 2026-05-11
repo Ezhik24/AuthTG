@@ -1,6 +1,7 @@
 package org.ezhik.authTG;
 
 import org.bukkit.Bukkit;
+import org.ezhik.authTG.commandMC.VKCMD;
 import org.ezhik.authTG.util.MessageHelper;
 import org.bukkit.entity.Player;
 import org.ezhik.authTG.commandMC.CodeCMD;
@@ -24,6 +25,8 @@ public class User {
     public String playername;
     public List<String> friends;
     public boolean isadmin;
+    public boolean activevk;
+    public int peerid;
     public Set<String> commands;
 
     private User(UUID uuid) {
@@ -40,6 +43,8 @@ public class User {
         this.chatid = AuthTG.loader.getChatID(uuid);
         this.isadmin = AuthTG.loader.isAdmin(uuid);
         this.commands = AuthTG.loader.getCommands(uuid);
+        this.activevk = AuthTG.loader.isActiveVK(uuid);
+        this.peerid = AuthTG.loader.getPeerID(uuid);
     }
 
     public static String generateConfirmationCode() {
@@ -102,6 +107,25 @@ public class User {
         }
 
         CodeCMD.code.put(uuid, code);
+    }
+
+    public static void registerVK(int peerid, UUID uuid) {
+        Player player = Bukkit.getPlayer(uuid);
+        AuthTG.loader.setPeerID(uuid, peerid);
+        AuthTG.loader.setActiveVK(uuid, false);
+        AuthTG.loader.setTwofactor(uuid, true);
+        AuthTG.loader.setPlayerNames(peerid, uuid);
+
+        String code = generateConfirmationCode();
+        AuthTG.vk.sendMessage(
+                peerid,
+                AuthTG.getMessage("codemsgactivated", "VK").replace("{CODE}", code)
+        );
+
+        if (player != null) {
+            MessageHelper.send(player, AuthTG.getMessage("codemsgactivatedvk", "MC"));
+        }
+        VKCMD.code.put(uuid, code);
     }
 
     public void sendMessage(String message) {

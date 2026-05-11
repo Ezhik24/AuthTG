@@ -8,7 +8,7 @@ import java.util.logging.Level;
 
 public final class MySQLSchemaMigrator {
 
-    private static final int LATEST_VERSION = 6;
+    private static final int LATEST_VERSION = 7;
 
     private MySQLSchemaMigrator() {
     }
@@ -31,6 +31,7 @@ public final class MySQLSchemaMigrator {
                     case 4 -> migrateToV4(c, databaseName);
                     case 5 -> migrateToV5(c, databaseName); // preferred2fa
                     case 6 -> migrateToV6(c, databaseName); // captchaTimeout
+                    case 7 -> migrateToV7(c, databaseName); // VK
                     default -> throw new IllegalStateException("Unknown schema version: " + next);
                 }
 
@@ -102,6 +103,8 @@ public final class MySQLSchemaMigrator {
                             "admin BOOLEAN NOT NULL DEFAULT false," +
                             "ip varchar(72)," +
                             "time varchar(120)," +
+                            "peerid varchar(36)," +
+                            "activevk BOOLEAN NOT NULL DEFAULT false," +
                             "PRIMARY KEY (priKey)" +
                             ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4"
             );
@@ -211,6 +214,18 @@ public final class MySQLSchemaMigrator {
         if (!columnExists(c, db, "AuthTGUsers", "captchaTimeout")) {
             try (Statement st = c.createStatement()) {
                 st.executeUpdate("ALTER TABLE AuthTGUsers ADD COLUMN captchaTimeout VARCHAR(120) NULL");
+            }
+        }
+    }
+    private static void migrateToV7(Connection c, String db) throws SQLException {
+        if (!columnExists(c, db, "AuthTGUsers", "peerid")) {
+            try (Statement st = c.createStatement()) {
+                st.executeUpdate("ALTER TABLE AuthTGUsers ADD COLUMN peerid VARCHAR(36) NULL");
+            }
+        }
+        if (!columnExists(c, db, "AuthTGUsers", "activevk")) {
+            try (Statement st = c.createStatement()) {
+                st.executeUpdate("ALTER TABLE AuthTGUsers ADD COLUMN activevk BOOLEAN NOT NULL DEFAULT false");
             }
         }
     }

@@ -2,7 +2,10 @@
 # Hi! This is a config with AuthTG settings
 tg: true
 
-
+vk:
+  enabled: true
+  groupId: 0
+  token: changeme
 bot:
   token: changeme
   username: changeme
@@ -53,6 +56,7 @@ kickTimeout: 30 # Время в секундах, через которое иг
 activeChatinTG: true # Должен ли работать чат в телеграме EN: Must chat in Telegram
 forbiddenNicknames: ['Notch'] # Запрещенные ники с которых нельзя зайти на сервер EN: Forbidden nicknames from which you cannot enter the server
 maxAccountTGCount: 5 # Максимальное кол-во аккаунтов привязанных к телеграму (если 0,то без ограничений) EN: Maximum number of accounts linked to telegram (if 0, there are no limits)
+maxAccountVKCount: 5
 ipregmax: 10 # Максимальное кол-во аккаунтов зарегистрированных по одному IP EN: please use translator
 spawn: # Спавн EN: Spawn
   x: 0

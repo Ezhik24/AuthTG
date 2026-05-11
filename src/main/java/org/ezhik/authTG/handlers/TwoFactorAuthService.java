@@ -1,5 +1,6 @@
 package org.ezhik.authTG.handlers;
 
+import com.sun.mail.imap.protocol.BODY;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.ezhik.authTG.AuthTG;
@@ -29,7 +30,8 @@ public final class TwoFactorAuthService {
         UUID uuid = player.getUniqueId();
         boolean telegramAvailable = canUseTelegram(user);
         boolean mailAvailable = canUseMail(uuid);
-        boolean hasAnyAvailableMethod = telegramAvailable || mailAvailable;
+        boolean vkAvailable = canUseVK(user);
+        boolean hasAnyAvailableMethod = telegramAvailable || mailAvailable || vkAvailable;
 
         if (!hasAnyAvailableMethod) {
             if (AuthTG.authNecessarily) {
@@ -49,6 +51,9 @@ public final class TwoFactorAuthService {
                     if (mailAvailable) {
                         return beginMailChallenge(player);
                     }
+                    if (vkAvailable) {
+                        return beginVKChallenge(player, user);
+                    }
                     break;
 
                 case MAIL:
@@ -57,6 +62,20 @@ public final class TwoFactorAuthService {
                     }
                     if (telegramAvailable) {
                         return beginTelegramChallenge(player, user);
+                    }
+                    if (vkAvailable) {
+                        return beginVKChallenge(player, user);
+                    }
+                    break;
+                case VK:
+                    if (vkAvailable) {
+                        return beginVKChallenge(player, user);
+                    }
+                    if (telegramAvailable) {
+                        return beginTelegramChallenge(player, user);
+                    }
+                    if (mailAvailable) {
+                        return beginMailChallenge(player);
                     }
                     break;
 
@@ -67,6 +86,9 @@ public final class TwoFactorAuthService {
                         }
                         if (mailAvailable) {
                             return beginMailChallenge(player);
+                        }
+                        if (vkAvailable) {
+                            return beginVKChallenge(player, user);
                         }
                         return blockRequiredTwoFactorWithoutMethod(player);
                     }
@@ -81,6 +103,9 @@ public final class TwoFactorAuthService {
             if (mailAvailable) {
                 return beginMailChallenge(player);
             }
+            if (vkAvailable) {
+                return beginVKChallenge(player, user);
+            }
             return blockRequiredTwoFactorWithoutMethod(player);
         }
 
@@ -90,6 +115,9 @@ public final class TwoFactorAuthService {
             }
             if (mailAvailable) {
                 return beginMailChallenge(player);
+            }
+            if (vkAvailable) {
+                return beginVKChallenge(player, user);
             }
             return false;
         }
@@ -189,6 +217,23 @@ public final class TwoFactorAuthService {
         return true;
     }
 
+    public static boolean beginVKChallenge(Player player, User user) {
+        if (player == null || user == null) {
+            return false;
+        }
+        AuthTG.vk.sendLoginAccept(user.peerid, AuthTG.getMessage("vkloginaccepted", "VK").replace("{PLAYER}", user.playername), player.getUniqueId());
+
+        String waitText = mc("joininaccounttextvk", "<green>Подтвердите вход в VK.");
+        MuterEvent.mute(player.getName(), MessageHelper.legacySection(waitText));
+        MessageHelper.send(player, waitText);
+        MessageHelper.showTitle(
+                player,
+                mc("joininaccounts1vk", "<red><bold>Подтвердите вход"),
+                mc("joininaccounts2vk", "<gray>Откройте VK")
+        );
+        return true;
+    }
+
     public static void completeLogin(Player player) {
         if (player == null) {
             return;
@@ -263,6 +308,9 @@ public final class TwoFactorAuthService {
 
         String email = AuthTG.loader.getEmail(uuid);
         return email != null && !email.isBlank();
+    }
+    private static boolean canUseVK(User user) {
+        return AuthTG.isVKEnabled() && user != null && user.activevk;
     }
 
     private static String buildTelegramMessage(Player player, User user) {

@@ -19,6 +19,7 @@ import java.util.logging.Logger;
 public class YAMLLoader implements Loader{
     public Map<Long,UUID> currentuser = new HashMap<>();
     public Map<Long,List<UUID>> playernames = new HashMap<>();
+    public Map<Integer, List<UUID>> playervk = new HashMap<>();
     public Map<String,UUID> uuidbyplayername = new HashMap<>();
     public Map<String,UUID> adminlist = new HashMap<>();
     public Map<String,Integer> ipInteger = new HashMap<>();
@@ -1099,5 +1100,90 @@ public class YAMLLoader implements Loader{
         }
         if (config.getString("captchaTimeout") == null) return LocalDateTime.now();
         return LocalDateTime.parse(config.getString("captchaTimeout"), DateTimeFormatter.ofPattern("HH:mm:ss dd.MM.yyyy"));
+    }
+
+    @Override
+    public void setPeerID(UUID uuid, int peerID) {
+        File file = new File("plugins/AuthTG/users/" + uuid + ".yml");
+        YamlConfiguration config = new YamlConfiguration();
+        try {
+            config.load(file);
+        } catch (IOException e) {
+            AuthTG.logger.log(Level.SEVERE, "Error loading file: " + e);
+        } catch (InvalidConfigurationException e) {
+            AuthTG.logger.log(Level.SEVERE, "Error loading file: " + e);
+        }
+        config.set("peerID", peerID);
+        try {
+            config.save(file);
+        } catch (IOException e) {
+            AuthTG.logger.log(Level.SEVERE, "Error saving file: " + e);
+        }
+    }
+
+    @Override
+    public int getPeerID(UUID uuid) {
+        File file = new File("plugins/AuthTG/users/" + uuid + ".yml");
+        YamlConfiguration config = new YamlConfiguration();
+        try {
+            config.load(file);
+        } catch (IOException e) {
+            AuthTG.logger.log(Level.SEVERE, "Error loading file: " + e);
+        } catch (InvalidConfigurationException e) {
+            AuthTG.logger.log(Level.SEVERE, "Error loading file: " + e);
+        }
+        return config.getInt("peerID");
+    }
+
+    @Override
+    public void setActiveVK(UUID uuid, boolean active) {
+        File file = new File("plugins/AuthTG/users/" + uuid + ".yml");
+        YamlConfiguration config = new YamlConfiguration();
+        try {
+            config.load(file);
+        } catch (IOException e) {
+            AuthTG.logger.log(Level.SEVERE, "Error loading file: " + e);
+        } catch (InvalidConfigurationException e) {
+            AuthTG.logger.log(Level.SEVERE, "Error loading file: " + e);
+        }
+        config.set("activeVK", active);
+        try {
+            config.save(file);
+        } catch (IOException e) {
+            AuthTG.logger.log(Level.SEVERE, "Error saving file: " + e);
+        }
+    }
+
+    @Override
+    public boolean isActiveVK(UUID uuid) {
+        File file = new File("plugins/AuthTG/users/" + uuid + ".yml");
+        YamlConfiguration config = new YamlConfiguration();
+        try {
+            config.load(file);
+        } catch (IOException e) {
+            AuthTG.logger.log(Level.SEVERE, "Error loading file: " + e);
+        } catch (InvalidConfigurationException e) {
+            AuthTG.logger.log(Level.SEVERE, "Error loading file: " + e);
+        }
+        return config.getBoolean("activeVK");
+    }
+
+    @Override
+    public List<UUID> getPlayerNames(int peerid) {
+        if (playervk.containsKey(peerid)) {
+            return playervk.get(peerid);
+        }
+        return new ArrayList<>();
+    }
+
+    @Override
+    public void setPlayerNames(int chatid, UUID uuid) {
+        if (playervk.containsKey(chatid)) {
+            playervk.get(chatid).add(uuid);
+        } else {
+            List<UUID> list = new ArrayList<>();
+            list.add(uuid);
+            playervk.put(chatid, list);
+        }
     }
 }
