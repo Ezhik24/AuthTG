@@ -166,6 +166,26 @@ public class OnJoinEvent implements Listener {
                             AuthTG.getMessage("authtgactives2", "MC")
                     );
                 }
+            } else if (AuthTG.isVKEnabled()) {
+                if (user != null && user.activevk) {
+                    String joinText = AuthTG.getMessage("joininaccounttextvk", "MC");
+                    MuterEvent.mute(p.getName(), MessageHelper.legacySection(joinText));
+                    MessageHelper.showTitle(
+                            p,
+                            AuthTG.getMessage("joininaccounts1vk", "MC"),
+                            AuthTG.getMessage("joininaccounts2vk", "MC")
+                    );
+
+                    AuthTG.vk.sendLoginAccept(user.peerid, AuthTG.getMessage("vkloginaccepted", "VK").replace("{PLAYER}", user.playername), p.getUniqueId());
+                } else {
+                    String activeText = AuthTG.getMessage("authtgactivetext", "MC");
+                    MuterEvent.mute(p.getName(), MessageHelper.legacySection(activeText));
+                    MessageHelper.showTitle(
+                            p,
+                            AuthTG.getMessage("authtgactives1", "MC"),
+                            AuthTG.getMessage("authtgactives2", "MC")
+                    );
+                }
             } else {
                 FreezerEvent.unfreezeplayer(p.getName());
                 MuterEvent.unmute(p.getName());
@@ -180,7 +200,7 @@ public class OnJoinEvent implements Listener {
         if (user != null) {
             String loginText = AuthTG.getMessage("loginmessage", "MC");
             MuterEvent.mute(p.getName(), MessageHelper.legacySection(loginText));
-            MessageHelper.send(p, loginText);
+            MessageHelper.send(p, MessageHelper.legacySection(loginText));
             MessageHelper.showTitle(
                     p,
                     AuthTG.getMessage("logintitles1", "MC"),
@@ -189,7 +209,7 @@ public class OnJoinEvent implements Listener {
         } else {
             String registerText = AuthTG.getMessage("registermessage", "MC");
             MuterEvent.mute(p.getName(), MessageHelper.legacySection(registerText));
-            MessageHelper.send(p, registerText);
+            MessageHelper.send(p, MessageHelper.legacySection(registerText));
             MessageHelper.showTitle(
                     p,
                     AuthTG.getMessage("registertitles1", "MC"),

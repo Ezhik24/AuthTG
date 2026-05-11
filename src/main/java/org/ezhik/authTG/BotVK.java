@@ -6,18 +6,35 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 import org.bukkit.Bukkit;
+import org.ezhik.authTG.callbackQueryVK.CallbackQueryVK;
+import org.ezhik.authTG.callbackQueryVK.NoCallbackQuery;
+import org.ezhik.authTG.callbackQueryVK.YesCallbackQuery;
+import org.ezhik.authTG.commandTG.CommandHandler;
+import org.ezhik.authTG.commandVK.StartCMDHandler;
+import org.ezhik.authTG.commandVK.VKCommandHandler;
 import org.ezhik.authTG.handlers.VKCheckHandler;
+import org.ezhik.authTG.nextStep.NextStepHandler;
+import org.ezhik.authTG.nextStepVK.NextStepVK;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.Map;
+import java.util.Random;
+import java.util.UUID;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import static org.ezhik.authTG.AuthTG.isVKEnabled;
 
 public class BotVK {
     private final String token;
     private static final String API = "https://api.vk.com/method/";
     private static final String VERSION = "5.199";
-    private static final int GROUP_ID = 217145799;
+    private final int GROUP_ID;
+
+    public static final Map<String, VKCommandHandler> commandHandler = new ConcurrentHashMap<>();
+    public static final Map<Integer, NextStepVK> nextStepHandler = new ConcurrentHashMap<>();
+    public static final Map<String, CallbackQueryVK> callbackQueryHandler = new ConcurrentHashMap<>();
 
     private final OkHttpClient client = new OkHttpClient.Builder()
             .readTimeout(60, TimeUnit.SECONDS)
@@ -33,12 +50,18 @@ public class BotVK {
 
     private final AtomicBoolean shutdown = new AtomicBoolean(false);
 
-    public BotVK(String token) {
+    public BotVK(String token, int groupId) {
         this.token = token;
+        this.GROUP_ID = groupId;
+
+        commandHandler.put("/start", new StartCMDHandler());
+
+        callbackQueryHandler.put("ys", new YesCallbackQuery());
+        callbackQueryHandler.put("no", new NoCallbackQuery());
     }
 
     public void initializationBot() {
-        if (!AuthTG.isVKEnabled()) {
+        if (!isVKEnabled()) {
             AuthTG.logger.warning("[AuthTG] VK integration is disabled in config.yml (vk.enabled: false)");
             return;
         }
@@ -106,7 +129,7 @@ public class BotVK {
     }
 
     public void sendMessage(int peerId, String message) {
-        if (!AuthTG.isVKEnabled() || shutdown.get()) {
+        if (!isVKEnabled() || shutdown.get()) {
             return;
         }
 
@@ -138,6 +161,49 @@ public class BotVK {
                     return null;
                 });
     }
+    public void sendLoginAccept(int peerId, String message, UUID uuid) {
+        String keyboardJson = "{"
+                + "\"one_time\": false,"
+                + "\"buttons\": [["
+                + "{"
+                + "\"action\": {"
+                + "\"type\": \"text\","
+                + "\"label\": \"" + AuthTG.getMessage("yesbtn", "VK") + "\","
+                + "\"payload\": \"{\\\"answer\\\":\\\"ys\\\",\\\"uuid\\\":\\\"" + uuid + "\\\"}\""
+                + "},"
+                + "\"color\": \"positive\""
+                + "},"
+                + "{"
+                + "\"action\": {"
+                + "\"type\": \"text\","
+                + "\"label\": \"" + AuthTG.getMessage("nobtn", "VK") + "\","
+                + "\"payload\": \"{\\\"answer\\\":\\\"no\\\",\\\"uuid\\\":\\\"" + uuid + "\\\"}\""
+                + "},"
+                + "\"color\": \"negative\""
+                + "}"
+                + "]]"
+                + "}";
+
+        RequestBody body = new FormBody.Builder()
+                .add("access_token", token)
+                .add("v", VERSION)
+                .add("peer_id", String.valueOf(peerId))
+                .add("message", message)
+                .add("random_id", String.valueOf(System.currentTimeMillis() / 1000 + new Random().nextInt(10000)))
+                .add("keyboard", keyboardJson)
+                .build();
+
+        Request request = new Request.Builder()
+                .url(API + "messages.send")
+                .post(body)
+                .build();
+
+        CompletableFuture.runAsync(() -> executeSendMessage(request), vkIoExecutor)
+                .exceptionally(throwable -> {
+                    AuthTG.logger.severe("[AuthTG] VK sendMessage failed: " + throwable.getMessage());
+                    return null;
+                });
+    }
 
     private void executeSendMessage(Request request) {
         try (Response response = client.newCall(request).execute()) {
@@ -157,7 +223,7 @@ public class BotVK {
     }
 
     public CompletableFuture<JSONObject> checkEvent(String server, String key, String ts) {
-        if (!AuthTG.isVKEnabled() || shutdown.get()) {
+        if (!isVKEnabled() || shutdown.get()) {
             return CompletableFuture.completedFuture(null);
         }
 
@@ -190,5 +256,17 @@ public class BotVK {
         vkIoExecutor.shutdownNow();
         client.dispatcher().executorService().shutdownNow();
         client.connectionPool().evictAll();
+    }
+
+    public void setNextStepHandler(Integer peerid, NextStepVK nextStepHandler) {
+        if (!isVKEnabled()) return;
+        if (peerid == null || nextStepHandler == null) return;
+        this.nextStepHandler.put(peerid, nextStepHandler);
+    }
+
+    public void remNextStepHandler(Integer peerid) {
+        if (!isVKEnabled()) return;
+        if (peerid == null) return;
+        this.nextStepHandler.remove(peerid);
     }
 }

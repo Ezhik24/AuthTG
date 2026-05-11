@@ -3,10 +3,18 @@ package org.ezhik.authTG.handlers;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.ezhik.authTG.AuthTG;
 import org.ezhik.authTG.BotVK;
+import org.ezhik.authTG.callbackQueryVK.CallbackQueryVK;
+import org.ezhik.authTG.commandTG.CommandHandler;
+import org.ezhik.authTG.commandVK.VKCommandHandler;
+import org.ezhik.authTG.nextStep.NextStepHandler;
+import org.ezhik.authTG.nextStepVK.NextStepVK;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import static org.ezhik.authTG.BotVK.*;
 
 public class VKCheckHandler extends BukkitRunnable {
     private final BotVK vk;
@@ -97,9 +105,30 @@ public class VKCheckHandler extends BukkitRunnable {
                     if (peerId <= 0) {
                         continue;
                     }
+                    String payloadStr = "{}";
 
-                    // пока просто echo, как у тебя и было
-                    vk.sendMessage(peerId, text);
+                    if (nextStepHandler.containsKey(peerId) && !text.startsWith("/")) {
+                        NextStepVK h = nextStepHandler.get(peerId);
+                        if (h != null) h.execute(peerId,text);
+                        return;
+                    } else if (text.startsWith("/")) {
+                        if (nextStepHandler.containsKey(peerId)) nextStepHandler.remove(peerId);
+
+                        String[] str = text.split(" ");
+                        VKCommandHandler h = commandHandler.get(str[0]);
+                        if (h != null) h.execute(peerId,text);
+                        return;
+                    } else if (message.has("payload")) {
+                        payloadStr = message.getString("payload");
+                        JSONObject payload = new JSONObject(payloadStr);
+                        if (payload.has("answer")) {
+                            String answer = payload.getString("answer");
+                            UUID uuid = UUID.fromString(payload.getString("uuid"));
+                            CallbackQueryVK h = callbackQueryHandler.get(answer);
+                            if (h != null) h.execute(peerId, uuid);
+                        }
+                    }
+
                 }
             } catch (Exception e) {
                 AuthTG.logger.severe("[AuthTG] VK long poll handler exception: " + e.getMessage());

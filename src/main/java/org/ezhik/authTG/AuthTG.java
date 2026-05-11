@@ -70,6 +70,7 @@ public final class AuthTG extends JavaPlugin {
     public static int timeoutSession;
     public static int kickTimeout;
     public static int maxAccountTGCount;
+    public static int maxAccountVKCount;
 
     public static double locationX;
     public static double locationY;
@@ -341,7 +342,7 @@ public final class AuthTG extends JavaPlugin {
     }
 
     private void initVKBot() {
-        vk = new BotVK(getConfig().getString("vk.token"));
+        vk = new BotVK(getConfig().getString("vk.token"), getConfig().getInt("vk.groupId"));
         vk.initializationBot();
     }
 
@@ -430,6 +431,7 @@ public final class AuthTG extends JavaPlugin {
         registerCommand("unlink", new UnLinkCMD());
         registerCommand("authtg", new AuthTGCMD());
         registerCommand("mail", new MailCMD());
+        registerCommand("vk", new VKCMD());
     }
 
     private void registerTabCompleters() {
@@ -524,6 +526,9 @@ public final class AuthTG extends JavaPlugin {
         if ("TG".equals(channel)) {
             return messagesConfig.getString("messages.telegram." + path, "").replace("{BR}", "\n");
         }
+        if ("VK".equals(channel)) {
+            return messagesConfig.getString("messages.vk." + path, "").replace("{BR}", "\n");
+        }
 
         logger.log(Level.SEVERE, "Message path not found, please contact the developer");
         return "";
@@ -552,6 +557,7 @@ public final class AuthTG extends JavaPlugin {
         telegramEnabled = config.getBoolean("tg", true);
         vkEnabled = config.getBoolean("vk.enabled", true);
         maxAccountTGCount = config.getInt("maxAccountTGCount");
+        maxAccountVKCount = config.getInt("maxAccountVKCount");
         forbiddenNicknames = config.getStringList("forbiddenNicknames");
         notRegAndLogin = config.getBoolean("notRegAndLogin");
         authNecessarily = config.getBoolean("authNecessarily");
