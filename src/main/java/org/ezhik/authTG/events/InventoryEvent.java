@@ -23,7 +23,6 @@ public class InventoryEvent implements Listener {
         }
 
         event.setCancelled(true);
-        event.getView().close();
     }
 
     @EventHandler

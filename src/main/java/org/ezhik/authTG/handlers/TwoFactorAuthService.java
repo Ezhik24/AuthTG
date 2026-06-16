@@ -280,16 +280,32 @@ public final class TwoFactorAuthService {
     }
 
     private static boolean blockRequiredTwoFactorWithoutMethod(Player player) {
-        String text = mc("twofactorrequirednomethod",
-                "<red>На сервере требуется 2FA, но у вас не настроен ни Telegram, ни подтверждённая почта.");
-
-        MuterEvent.mute(player.getName(), MessageHelper.legacySection(text));
-        MessageHelper.send(player, text);
-        MessageHelper.showTitle(
-                player,
-                mc("twofactorrequiredtitle", "<red><bold>Требуется 2FA"),
-                mc("twofactorrequiredsubtitle", "<gray>Привяжите Telegram или подтвердите почту")
-        );
+        if (AuthTG.isTelegramEnabled() && AuthTG.authNecessarilyPrefer.equals("TG")) {
+            String activeText = AuthTG.getMessage("authtgactivetext", "MC");
+            MessageHelper.send(player, activeText);
+            MuterEvent.mute(player.getName(), MessageHelper.legacySection(activeText));
+            MessageHelper.showTitle(
+                    player,
+                    AuthTG.getMessage("authtgactives1", "MC"),
+                    AuthTG.getMessage("authtgactives2", "MC")
+            );
+        } else if (AuthTG.isVKEnabled() && AuthTG.authNecessarilyPrefer.equals("VK")) {
+            String activeText = AuthTG.getMessage("authvkactivetext", "MC");
+            MuterEvent.mute(player.getName(), MessageHelper.legacySection(activeText));
+            MessageHelper.showTitle(
+                    player,
+                    AuthTG.getMessage("authvkactives1", "MC"),
+                    AuthTG.getMessage("authvkactives1", "MC")
+            );
+        } else if (AuthTG.getInstance().getConfig().getBoolean("mail.enabled") && AuthTG.authNecessarilyPrefer.equals("MAIL")) {
+            String activeText = AuthTG.getMessage("authemactivetext", "MC");
+            MuterEvent.mute(player.getName(), MessageHelper.legacySection(activeText));
+            MessageHelper.showTitle(
+                    player,
+                    AuthTG.getMessage("authemactives1", "MC"),
+                    AuthTG.getMessage("authemactives1", "MC")
+            );
+        }
         return true;
     }
 

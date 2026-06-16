@@ -47,6 +47,8 @@ public class PreferCMD implements CommandExecutor {
                 return handleTelegram(player);
             case "mail":
                 return handleMail(player);
+            case "vk":
+                return handleVK(player);
             case "off":
             case "none":
                 return handleOff(player);
@@ -75,6 +77,27 @@ public class PreferCMD implements CommandExecutor {
 
         MessageHelper.send(player, mc("prefersettg",
                 "<green>Теперь предпочтительный метод 2FA: Telegram."));
+        return true;
+    }
+
+    private boolean handleVK(Player player) {
+        if (!AuthTG.isVKEnabled()) {
+            MessageHelper.send(player, mc("prefervkdisabled",
+                    "<red>VK 2FA сейчас отключён в config.yml (vk.enabled: false)."));
+            return true;
+        }
+
+        if (!AuthTG.loader.isActiveVK(player.getUniqueId())) {
+            MessageHelper.send(player, mc("prefervknotlinked",
+                    "<red>VK не привязан."));
+            return true;
+        }
+
+        AuthTG.loader.setTwofactor(player.getUniqueId(), true);
+        TwoFactorPreferenceRepository.set(player.getUniqueId(), TwoFactorMethod.VK);
+
+        MessageHelper.send(player, mc("prefersetvk",
+                "<green>Теперь предпочтительный метод 2FA: VK."));
         return true;
     }
 

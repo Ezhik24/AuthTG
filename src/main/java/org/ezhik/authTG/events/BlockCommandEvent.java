@@ -33,7 +33,7 @@ public class BlockCommandEvent implements Listener {
 
         if (MuterEvent.isMute(player)) {
             Set<String> allowedCommands = new LinkedHashSet<>(List.of(
-                    "/login", "/register", "/reg", "/l", "/code", "/2fa"
+                    "/login", "/register", "/reg", "/l", "/code", "/2fa", "/vk"
             ));
 
             for (String cmd : AuthTG.commandsPreAuthorization) {

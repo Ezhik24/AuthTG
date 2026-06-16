@@ -2,6 +2,7 @@ package org.ezhik.authTG.commandMC;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -15,10 +16,6 @@ import java.util.logging.Logger;
 public class SetPasswordCMD implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String label, String[] strings) {
-        if (!(commandSender instanceof Player)) {
-            AuthTG.logger.log(Level.INFO,AuthTG.getMessage("notplayer", "CE"));
-            return false;
-        }
         if (strings.length != 3) {
             MessageHelper.send(commandSender, AuthTG.getMessage("setpasswordusage", "MC"));
             return false;
@@ -27,11 +24,7 @@ public class SetPasswordCMD implements CommandExecutor {
             MessageHelper.send(commandSender, AuthTG.getMessage("setpasswordnoperm", "MC"));
             return false;
         }
-        Player player = Bukkit.getPlayer(strings[0]);
-        if (player == null) {
-            MessageHelper.send(commandSender, AuthTG.getMessage("setpassplnotfound", "MC"));
-            return false;
-        }
+        OfflinePlayer player = Bukkit.getOfflinePlayer(strings[0]);
         if (!strings[1].equals(strings[2])) {
             MessageHelper.send(commandSender, AuthTG.getMessage("setpassnotmatch", "MC"));
             return false;

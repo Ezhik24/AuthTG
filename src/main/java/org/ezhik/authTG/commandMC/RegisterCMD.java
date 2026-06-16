@@ -92,15 +92,25 @@ public class RegisterCMD implements CommandExecutor {
                                 return;
                             }
 
-                            if (AuthTG.authNecessarily && AuthTG.isTelegramEnabled()) {
-                                String activeText = AuthTG.getMessage("authtgactivetext", "MC");
-                                MessageHelper.send(current, activeText);
-                                MuterEvent.mute(current.getName(), MessageHelper.legacySection(activeText));
-                                MessageHelper.showTitle(
-                                        current,
-                                        AuthTG.getMessage("authtgactives1", "MC"),
-                                        AuthTG.getMessage("authtgactives2", "MC")
-                                );
+                            if (AuthTG.authNecessarily ) {
+                                if (AuthTG.isTelegramEnabled() && AuthTG.authNecessarilyPrefer.equals("TG")) {
+                                    String activeText = AuthTG.getMessage("authtgactivetext", "MC");
+                                    MessageHelper.send(current, activeText);
+                                    MuterEvent.mute(current.getName(), MessageHelper.legacySection(activeText));
+                                    MessageHelper.showTitle(
+                                            current,
+                                            AuthTG.getMessage("authtgactives1", "MC"),
+                                            AuthTG.getMessage("authtgactives2", "MC")
+                                    );
+                                } else if (AuthTG.isVKEnabled() && AuthTG.authNecessarilyPrefer.equals("VK")) {
+                                    String activeText = AuthTG.getMessage("authtgactivetext", "MC");
+                                    MuterEvent.mute(current.getName(), MessageHelper.legacySection(activeText));
+                                    MessageHelper.showTitle(
+                                            current,
+                                            AuthTG.getMessage("authtgactives1", "MC"),
+                                            AuthTG.getMessage("authtgactives2", "MC")
+                                    );
+                                }
                             } else {
                                 MessageHelper.send(current, AuthTG.getMessage("registersuccess", "MC"));
                                 FreezerEvent.unfreezeplayer(current.getName());

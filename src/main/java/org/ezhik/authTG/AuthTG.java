@@ -57,6 +57,7 @@ public final class AuthTG extends JavaPlugin {
     public static boolean activeChatinTG;
     public static boolean telegramEnabled;
     public static boolean vkEnabled;
+    public static boolean openimmediately;
 
     public static List<String> mutecommands;
     public static List<String> commandsPreAuthorization;
@@ -75,7 +76,10 @@ public final class AuthTG extends JavaPlugin {
     public static double locationX;
     public static double locationY;
     public static double locationZ;
+
     public static String world;
+    public static String authNecessarilyPrefer;
+
     public static ConfigurationSection macro;
 
     private static MySQLPool mysqlPool;
@@ -561,9 +565,11 @@ public final class AuthTG extends JavaPlugin {
         forbiddenNicknames = config.getStringList("forbiddenNicknames");
         notRegAndLogin = config.getBoolean("notRegAndLogin");
         authNecessarily = config.getBoolean("authNecessarily");
+        authNecessarilyPrefer = config.getString("authNecessarilyPrefer");
         activeChatinTG = config.getBoolean("activeChatinTG");
         mutecommands = config.getStringList("mutecommands");
         commandsPreAuthorization = config.getStringList("commandsPreAuthorization");
+        openimmediately = config.getBoolean("captcha.openimmediately");
         minLenghtNickname = config.getInt("minLenghtNickname");
         maxLenghtNickname = config.getInt("maxLenghtNickname");
         minLenghtPassword = config.getInt("minLenghtPassword");

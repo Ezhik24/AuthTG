@@ -2,10 +2,15 @@
 # Hi! This is a config with AuthTG settings
 tg: true
 
-vk:
+captcha:
   enabled: true
+  timeoutCaptcha: 3
+  openimmediately: true
+vk:
+  enabled: false
   groupId: 0
   token: changeme
+
 bot:
   token: changeme
   username: changeme
@@ -16,9 +21,6 @@ bot:
     port: 1080
     username: ""
     password: ""
-captcha:
-  enabled: true # Включить/выключить каптчу
-  timeoutCaptcha: 3 # Сколько не спрашивать у игрока каптчу
 mysql: # Настройки базы данных EN: Database settings
   use: false # Использовать базу данных EN: Use database
   host: 'localhost' # Хост базы данных,УКАЗЫВАЙТЕ ТУТ ЖЕ ПОРТ,ЕСЛИ ИСПОЛЬЗУЕТСЯ EN: Host of database, ENTER HERE PORT IF YOU USE
@@ -47,6 +49,7 @@ mutecommands: ['/tell'] # Команды, которые нельзя испол
 commandsPreAuthorization: ['/tell'] # Команды,которые будут доступны перед авторизацией EN: Commands that will be available before
 notRegAndLogin: false # Без /register и /login EN: Without /register and /login
 authNecessarily: false # Обязательная авторизация EN: Necessary authorization
+authNecessarilyPrefer: "TG" # Предпочитаемая авторизация EN: Preferred authorization
 minLenghtNickname: 3 # Минимальная длина ника EN: Min length nickname
 maxLenghtNickname: 15 # Максимальная длина ника EN: Max length nickname
 minLenghtPassword: 3 # Минимальная длина пароля EN: Min length password
@@ -128,6 +131,10 @@ mail:
     timeoutMs: 10000
     writeTimeoutMs: 10000
     debug: false
+
+nicknameCase:
+  enabled: true
+  blockOnlineSameNameIgnoreCase: true
 
 
 onceUsed: # НЕ ТРОГАЙТЕ ЭТО EN: Do not touch

@@ -14,11 +14,28 @@ import java.util.regex.Pattern;
 public final class MessageHelper {
 
     private static final MiniMessage MINI_MESSAGE = MiniMessage.miniMessage();
-    private static final LegacyComponentSerializer LEGACY_AMPERSAND = LegacyComponentSerializer.legacyAmpersand();
-    private static final LegacyComponentSerializer LEGACY_SECTION = LegacyComponentSerializer.legacySection();
 
-    private static final Pattern MINI_MESSAGE_TAG_PATTERN = Pattern.compile("<[^<>]+>");
-    private static final Pattern HEX_PATTERN = Pattern.compile("&#([A-Fa-f0-9]{6})");
+    private static final LegacyComponentSerializer LEGACY_AMPERSAND =
+            LegacyComponentSerializer.legacyAmpersand();
+
+    private static final LegacyComponentSerializer LEGACY_SECTION =
+            LegacyComponentSerializer.legacySection();
+
+    private static final Pattern MINI_MESSAGE_TAG_PATTERN = Pattern.compile(
+            "</?(?:#[A-Fa-f0-9]{6}|[A-Za-z][A-Za-z0-9_-]*)(?::[^<>]*)?>"
+    );
+
+    private static final Pattern LEGACY_SECTION_PATTERN = Pattern.compile(
+            "§[0-9A-FK-ORXa-fk-orx]"
+    );
+
+    private static final Pattern LEGACY_AMPERSAND_PATTERN = Pattern.compile(
+            "&[0-9A-FK-ORXa-fk-orx]"
+    );
+
+    private static final Pattern HEX_PATTERN = Pattern.compile(
+            "&#([A-Fa-f0-9]{6})"
+    );
 
     private MessageHelper() {
     }
@@ -70,11 +87,31 @@ public final class MessageHelper {
 
         String normalized = normalizeHex(text);
 
-        if (looksLikeMiniMessage(normalized)) {
-            return MINI_MESSAGE.deserialize(normalized);
+        if (containsLegacySection(normalized)) {
+            return LEGACY_SECTION.deserialize(normalized);
         }
 
-        return LEGACY_AMPERSAND.deserialize(normalized);
+        if (containsLegacyAmpersand(normalized)) {
+            return LEGACY_AMPERSAND.deserialize(normalized);
+        }
+
+        if (looksLikeMiniMessage(normalized)) {
+            try {
+                return MINI_MESSAGE.deserialize(normalized);
+            } catch (RuntimeException ignored) {
+                return Component.text(normalized);
+            }
+        }
+
+        return Component.text(normalized);
+    }
+
+    private static boolean containsLegacySection(String text) {
+        return LEGACY_SECTION_PATTERN.matcher(text).find();
+    }
+
+    private static boolean containsLegacyAmpersand(String text) {
+        return LEGACY_AMPERSAND_PATTERN.matcher(text).find();
     }
 
     private static boolean looksLikeMiniMessage(String text) {
@@ -87,10 +124,12 @@ public final class MessageHelper {
 
         while (matcher.find()) {
             String hex = matcher.group(1);
+
             StringBuilder legacy = new StringBuilder("&x");
             for (char c : hex.toCharArray()) {
                 legacy.append('&').append(c);
             }
+
             matcher.appendReplacement(buffer, Matcher.quoteReplacement(legacy.toString()));
         }
 

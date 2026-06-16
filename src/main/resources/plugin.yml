@@ -1,5 +1,5 @@
 name: AuthTG
-version: '2.8'
+version: '2.9'
 main: org.ezhik.authTG.AuthTG
 api-version: '1.19'
 authors: [Ezhik24, ABBAfan, gas333t]

@@ -29,7 +29,7 @@ public class OnJoinEvent implements Listener {
 
         if (AuthTG.loader.getBanTime(p.getUniqueId()) != null) {
             if (AuthTG.loader.getBanTime(p.getUniqueId()).equals("0")) {
-                event.setJoinMessage(null);
+                event.joinMessage(null);
                 Handler.kick(
                         p.getName(),
                         MessageHelper.legacySection(AuthTG.getMessage("ban", "MC"))
@@ -49,7 +49,7 @@ public class OnJoinEvent implements Listener {
             if (date.isAfter(date1)) {
                 AuthTG.loader.deleteBan(p.getUniqueId());
             } else {
-                event.setJoinMessage(null);
+                event.joinMessage(null);
                 Handler.kick(
                         p.getName(),
                         MessageHelper.legacySection(AuthTG.getMessage("ban", "MC"))
@@ -110,6 +110,13 @@ public class OnJoinEvent implements Listener {
 
         if (AuthTG.getInstance().getConfig().getBoolean("captcha.enabled", false)
                 && CaptchaTimeoutStore.shouldShowCaptcha(p.getUniqueId())) {
+            if (AuthTG.openimmediately) {
+                Captcha.beginChallenge(p);
+                Captcha.openFor(p);
+                MessageHelper.send(p, mc("captchaopened",
+                        "<green>Открываем капчу..."));
+                return;
+            }
 
             Captcha.beginChallenge(p);
 
@@ -142,7 +149,7 @@ public class OnJoinEvent implements Listener {
         }
 
         if (AuthTG.notRegAndLogin && AuthTG.authNecessarily) {
-            if (AuthTG.isTelegramEnabled()) {
+            if (AuthTG.isTelegramEnabled() && AuthTG.authNecessarilyPrefer.equals("TG")) {
                 if (user != null && user.activetg) {
                     String joinText = AuthTG.getMessage("joininaccounttext", "MC");
                     MuterEvent.mute(p.getName(), MessageHelper.legacySection(joinText));
@@ -166,7 +173,7 @@ public class OnJoinEvent implements Listener {
                             AuthTG.getMessage("authtgactives2", "MC")
                     );
                 }
-            } else if (AuthTG.isVKEnabled()) {
+            } else if (AuthTG.isVKEnabled() && AuthTG.authNecessarilyPrefer.equals("VK")) {
                 if (user != null && user.activevk) {
                     String joinText = AuthTG.getMessage("joininaccounttextvk", "MC");
                     MuterEvent.mute(p.getName(), MessageHelper.legacySection(joinText));

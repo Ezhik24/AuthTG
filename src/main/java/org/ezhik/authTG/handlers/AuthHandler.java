@@ -1,9 +1,11 @@
 package org.ezhik.authTG.handlers;
 
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.ezhik.authTG.AuthTG;
+import org.ezhik.authTG.util.MessageHelper;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,7 +22,7 @@ public class AuthHandler extends BukkitRunnable {
                     if (entry.getValue() > 0) {
                         entry.setValue(entry.getValue() - 1);
                     } else {
-                        player.kickPlayer(AuthTG.getMessage("kicktimeout", "MC"));
+                        player.kick(MessageHelper.component(AuthTG.getMessage("kicktimeout", "MC")));
                         timeoutMap.remove(entry.getKey());
                     }
                 } else {
