@@ -200,7 +200,7 @@ public class OnJoinEvent implements Listener {
         if (user != null) {
             String loginText = AuthTG.getMessage("loginmessage", "MC");
             MuterEvent.mute(p.getName(), MessageHelper.legacySection(loginText));
-            MessageHelper.send(p, MessageHelper.legacySection(loginText));
+            MessageHelper.send(p, loginText);
             MessageHelper.showTitle(
                     p,
                     AuthTG.getMessage("logintitles1", "MC"),
@@ -209,7 +209,7 @@ public class OnJoinEvent implements Listener {
         } else {
             String registerText = AuthTG.getMessage("registermessage", "MC");
             MuterEvent.mute(p.getName(), MessageHelper.legacySection(registerText));
-            MessageHelper.send(p, MessageHelper.legacySection(registerText));
+            MessageHelper.send(p, registerText);
             MessageHelper.showTitle(
                     p,
                     AuthTG.getMessage("registertitles1", "MC"),
