@@ -26,6 +26,17 @@ messages: # Сообщения EN: Messages
     vkloginaccepted: '[Бот@{PLAYER}] На ваш аккаунт кто-то вошел'
     yesbtn: 'Да'
     nobtn: 'Нет'
+    tfoffntactive: '[Бот] Вы не привязали аккаунт!'
+    tfonntactive: '[Бот] Вы не привязали аккаунт!'
+    tfoffsuccess: '[Бот@{PLAYER}] Двухфакторная авторизация выключена'
+    tfonsuccess: '[Бот@{PLAYER}] Двухфакторная авторизация включена'
+    resetpassnotactive: '[Бот] Вы не привязывали аккаунт!'
+    resetpasssuccess: 'Ваш новый пароль: {PASSWORD} . Не забудьте его сменить когда войдете на сервер! (/changepassword)'
+    kickmeplayer: '[Бот@{PLAYER}] Вы были кикнуты через Телеграм!'
+    kickmesuccess: '[Бот@{PLAYER}] Вы успешно кикнули свой Аккаунт!'
+    kickmeplnotonline: '[Бот@{PLAYER}] Вы не в игре!'
+    kickmenotactive: '[Бот] Вы не привязывали аккаунт!'
+
   telegram: # Сообщения в телеграме EN: Telegram messages
     macronoargs: 'Вы ввели неверное количество аргументов!'
     macronoperm: 'У вас нет прав на использование этой команды!'
@@ -266,6 +277,8 @@ messages: # Сообщения EN: Messages
     loginmessage: '<#F4FBFF><bold>[<#FFB26F><bold>AuthTG<#F4FBFF><bold>] <#65E0E6><bold>Войдите в аккаунт, используйте /login <пароль>'
     authtgactives1: '<#FFB26F><bold>Привяжите аккаунт'
     authtgactives2: 'к Телеграму'
+    authvkactives1: '<#FFB26F><bold>Привяжите аккаунт'
+    authvkactives2: 'к VK'
     authtgactivetext: '<#F4FBFF><bold>[<#FFB26F><bold>AuthTG<#F4FBFF><bold>] <#65E0E6><bold>Привяжите аккаунт к Телеграму'
     joininaccounttext: '<#F4FBFF><bold>[<#FFB26F><bold>AuthTG<#F4FBFF><bold>] <#65E0E6><bold>Потвердите AuthTG через Телеграм'
     joininaccounts1: '<#FFB26F><bold>Потвердите AuthTG'
@@ -294,7 +307,6 @@ messages: # Сообщения EN: Messages
     registerlenght: '<#F4FBFF><bold>[<#FFB26F><bold>AuthTG<#F4FBFF><bold>] <#FFB26F><bold>Пароль должен быть от {MIN} до {MAX} символов'
     setpasswordusage: '<#F4FBFF><bold>[<#FFB26F><bold>AuthTG<#F4FBFF><bold>] <#65E0E6><bold>Использование: /setpassword <игрок> <пароль> <повтор пароль>'
     setpasswordnoperm: '<#F4FBFF><bold>[<#FFB26F><bold>AuthTG<#F4FBFF><bold>] <#FFB26F><bold>У вас нет прав!'
-    setpassplnotfound: '<#F4FBFF><bold>[<#FFB26F><bold>AuthTG<#F4FBFF><bold>] <#FFB26F><bold>Игрок не найден'
     setpassnotmatch: '<#F4FBFF><bold>[<#FFB26F><bold>AuthTG<#F4FBFF><bold>] <#FFB26F><bold>Пароли не совпадают'
     setpasssuccess: '<#F4FBFF><bold>[<#FFB26F><bold>AuthTG<#F4FBFF><bold>] <#65E0E6><bold>Вы успешно поставили пароль игроку: {PLAYER}'
     loginpassnovalid: '<#F4FBFF><bold>[<#FFB26F><bold>AuthTG<#F4FBFF><bold>] <#FFB26F><bold>Неверный пароль'
@@ -357,7 +369,9 @@ messages: # Сообщения EN: Messages
     preferusage: '<#F4FBFF><bold>[<#FFB26F><bold>AuthTG<#F4FBFF><bold>] <#FFB26F>Использование: /prefer 2fa <mail|tg|off>'
     prefernotactive: '<#F4FBFF><bold>[<#FFB26F><bold>AuthTG<#F4FBFF><bold>] <#FFB26F>Сначала зарегистрируйтесь.'
     prefertgnotlinked: '<#F4FBFF><bold>[<#FFB26F><bold>AuthTG<#F4FBFF><bold>] <#FFB26F>Телеграм не привязан.'
+    prefervknotlinked: '<#F4FBFF><bold>[<#FFB26F><bold>AuthTG<#F4FBFF><bold>] <#FFB26F>VK не привязан.'
     prefersettg: '<#F4FBFF><bold>[<#FFB26F><bold>AuthTG<#F4FBFF><bold>] <#65E0E6>Теперь предпочтительный метод 2FA: Telegram.'
+    prefersetvk: '<#F4FBFF><bold>[<#FFB26F><bold>AuthTG<#F4FBFF><bold>] <#65E0E6>Теперь предпочтительный метод 2FA: VK.'
     prefermailblocked: '<#F4FBFF><bold>[<#FFB26F><bold>AuthTG<#F4FBFF><bold>] <#FFB26F>При authNecessarily нельзя выбрать mail 2FA.'
     prefermailnotverified: '<#F4FBFF><bold>[<#FFB26F><bold>AuthTG<#F4FBFF><bold>] <#FFB26F>Сначала привяжите и подтвердите почту через /mail link и /mail verify.'
     prefersetmail: '<#F4FBFF><bold>[<#FFB26F><bold>AuthTG<#F4FBFF><bold>] <#65E0E6>Теперь предпочтительный метод 2FA: почта <#7496EA>{EMAIL}<#65E0E6>.'
@@ -380,6 +394,7 @@ messages: # Сообщения EN: Messages
 
     preferstorageunavailable: '<#F4FBFF><bold>[<#FFB26F><bold>AuthTG<#F4FBFF><bold>] <#FFB26F>Команда /prefer доступна только при включённом MySQL.'
     prefertgdisabled: '<#F4FBFF><bold>[<#FFB26F><bold>AuthTG<#F4FBFF><bold>] <#FFB26F>Telegram 2FA сейчас отключён в config.yml (tg: false).'
+    prefervkdisabled: '<#F4FBFF><bold>[<#FFB26F><bold>AuthTG<#F4FBFF><bold>] <#FFB26F>Вконтакте 2FA сейчас отключён в config.yml (vk.enabled: false).'
     twofactorrequirednomethod: '<#F4FBFF><bold>[<#FFB26F><bold>AuthTG<#F4FBFF><bold>] <#FFB26F>На сервере требуется 2FA, но у вас не настроен ни Telegram, ни подтверждённая почта.'
     twofactorrequiredtitle: '<#FFB26F><bold>Требуется 2FA'
     twofactorrequiredsubtitle: '<#7496EA>Привяжите Telegram или подтвердите почту'
@@ -407,3 +422,6 @@ messages: # Сообщения EN: Messages
     captchawoolblue: "синюю"
     captchawoolgreen: "зеленую"
     captchawoolunknown: "нужную"
+
+    nicknamecaseinvalid: '<#F4FBFF><bold>[<#FFB26F><bold>AuthTG<#F4FBFF><bold>] <#FFB26F><bold>Ник введён в неверном регистре. <#65E0E6><bold>Правильно: {CORRECT_PLAYER}. <#FFB26F><bold>Вы ввели: {PLAYER}.'
+    nicknamecasecheckerror: '<#F4FBFF><bold>[<#FFB26F><bold>AuthTG<#F4FBFF><bold>] <#FFB26F><bold>Не удалось проверить регистр ника. Попробуйте позже.'

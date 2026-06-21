@@ -18,6 +18,7 @@ import java.util.logging.Logger;
 
 public class YAMLLoader implements Loader{
     public Map<Long,UUID> currentuser = new HashMap<>();
+    public Map<Integer,UUID> currentuservk = new HashMap<>();
     public Map<Long,List<UUID>> playernames = new HashMap<>();
     public Map<Integer, List<UUID>> playervk = new HashMap<>();
     public Map<String,UUID> uuidbyplayername = new HashMap<>();
@@ -42,6 +43,9 @@ public class YAMLLoader implements Loader{
                             playernames.put(config.getLong("chatid"), list);
                         }
                         this.currentuser.put(config.getLong("chatid"), UUID.fromString(file.getName().replace(".yml", "")));
+                    }
+                    if (config.contains("peerID") && config.getBoolean("activeVK")) {
+                        this.currentuservk.put(config.getInt("peerID"), UUID.fromString(file.getName().replace(".yml", "")));
                     }
                     if (config.getBoolean("admin")) {
                         adminlist.put(config.getString("playername"), UUID.fromString(file.getName().replace(".yml", "")));
@@ -296,8 +300,20 @@ public class YAMLLoader implements Loader{
     }
 
     @Override
+    public UUID getCurrentUUID(int peerid) {
+        if (currentuservk.containsKey(peerid)) {
+            return currentuservk.get(peerid);
+        }
+        return null;
+    }
+
+    @Override
     public void setCurrentUUID(UUID uuid, Long chatid) {
         this.currentuser.put(chatid, uuid);
+    }
+    @Override
+    public void setCurrentUUID(UUID uuid, int peerid) {
+        this.currentuservk.put(peerid, uuid);
     }
 
     @Override

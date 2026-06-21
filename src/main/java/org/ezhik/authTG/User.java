@@ -84,6 +84,14 @@ public class User {
             return getUser(uuid);
         }
     }
+    public static User getCurrentUser(int peerid) {
+        UUID uuid = AuthTG.loader.getCurrentUUID(peerid);
+        if (uuid == null) {
+            return null;
+        } else {
+            return getUser(uuid);
+        }
+    }
 
     public static void register(Message message, UUID uuid) {
         Player player = Bukkit.getPlayer(uuid);
@@ -115,6 +123,7 @@ public class User {
         AuthTG.loader.setActiveVK(uuid, false);
         AuthTG.loader.setTwofactor(uuid, true);
         AuthTG.loader.setPlayerNames(peerid, uuid);
+        AuthTG.loader.setCurrentUUID(uuid, peerid);
 
         String code = generateConfirmationCode();
         AuthTG.vk.sendMessage(

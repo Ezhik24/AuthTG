@@ -32,7 +32,11 @@ public interface Loader {
 
     UUID getCurrentUUID(Long chatid);
 
+    UUID getCurrentUUID(int peerid);
+
     void setCurrentUUID(UUID uuid, Long chatid);
+
+    void setCurrentUUID(UUID uuid, int peerid);
 
     void setChatID(UUID uuid, Long chatid);
 

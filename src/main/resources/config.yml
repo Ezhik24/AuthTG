@@ -5,8 +5,9 @@ tg: true
 captcha:
   enabled: true
   timeoutCaptcha: 3
+  openimmediately: true
 vk:
-  enabled: true
+  enabled: false
   groupId: 0
   token: changeme
 
@@ -37,10 +38,10 @@ mysql: # Настройки базы данных EN: Database settings
 macro:
   # Example | Пример
   # testcmd: - Команда,которая будет в тг EN: Command that will be in tg
-    # mccmd: 'whitelist [arg1] [arg2]' - Команда,которая будет вызываться в боте (если есть аргументы к команде,прописывайте их [arg1] и т.д.) EN: Command that will be called in the bot (if there are arguments to the command, write them [arg1] and so on.)
-    # nsmsg: 'test' - Сообщение,которое будет написано если введена обычная команда без аргументов (В этом сообщении обычно указывается: 'Введите аргументы для команды') EN: Message that will be written if the normal command is entered without arguments (In this message it is usually specified: 'Enter the arguments for the command')
-    #MODIFIED BY GAS333T: [arg1]*  - отделит все аргументы внутрь себя, то есть tgbc [arg1]* с командой "/tgbc привет мир" возьмет арпгументы "привет мир" в один [arg1] EN: use translator pls.
-#EXAMPLE
+  # mccmd: 'whitelist [arg1] [arg2]' - Команда,которая будет вызываться в боте (если есть аргументы к команде,прописывайте их [arg1] и т.д.) EN: Command that will be called in the bot (if there are arguments to the command, write them [arg1] and so on.)
+  # nsmsg: 'test' - Сообщение,которое будет написано если введена обычная команда без аргументов (В этом сообщении обычно указывается: 'Введите аргументы для команды') EN: Message that will be written if the normal command is entered without arguments (In this message it is usually specified: 'Enter the arguments for the command')
+  #MODIFIED BY GAS333T: [arg1]*  - отделит все аргументы внутрь себя, то есть tgbc [arg1]* с командой "/tgbc привет мир" возьмет арпгументы "привет мир" в один [arg1] EN: use translator pls.
+  #EXAMPLE
   bc:
     mccmd: "tgbc [arg1]*"
     nsmsg: "Write message to users with telegram auth"
@@ -48,6 +49,7 @@ mutecommands: ['/tell'] # Команды, которые нельзя испол
 commandsPreAuthorization: ['/tell'] # Команды,которые будут доступны перед авторизацией EN: Commands that will be available before
 notRegAndLogin: false # Без /register и /login EN: Without /register and /login
 authNecessarily: false # Обязательная авторизация EN: Necessary authorization
+authNecessarilyPrefer: "TG" # Предпочитаемая авторизация EN: Preferred authorization
 minLenghtNickname: 3 # Минимальная длина ника EN: Min length nickname
 maxLenghtNickname: 15 # Максимальная длина ника EN: Max length nickname
 minLenghtPassword: 3 # Минимальная длина пароля EN: Min length password
@@ -129,6 +131,10 @@ mail:
     timeoutMs: 10000
     writeTimeoutMs: 10000
     debug: false
+
+nicknameCase:
+  enabled: true
+  blockOnlineSameNameIgnoreCase: true
 
 
 onceUsed: # НЕ ТРОГАЙТЕ ЭТО EN: Do not touch

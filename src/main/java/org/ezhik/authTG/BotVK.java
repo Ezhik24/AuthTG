@@ -10,8 +10,7 @@ import org.ezhik.authTG.callbackQueryVK.CallbackQueryVK;
 import org.ezhik.authTG.callbackQueryVK.NoCallbackQuery;
 import org.ezhik.authTG.callbackQueryVK.YesCallbackQuery;
 import org.ezhik.authTG.commandTG.CommandHandler;
-import org.ezhik.authTG.commandVK.StartCMDHandler;
-import org.ezhik.authTG.commandVK.VKCommandHandler;
+import org.ezhik.authTG.commandVK.*;
 import org.ezhik.authTG.handlers.VKCheckHandler;
 import org.ezhik.authTG.nextStep.NextStepHandler;
 import org.ezhik.authTG.nextStepVK.NextStepVK;
@@ -55,6 +54,11 @@ public class BotVK {
         this.GROUP_ID = groupId;
 
         commandHandler.put("/start", new StartCMDHandler());
+        commandHandler.put("/link", new StartCMDHandler());
+        commandHandler.put("/tfon", new TFOnCMDHandler());
+        commandHandler.put("/tfoff", new TFOffCMDHandler());
+        commandHandler.put("/resetpassword", new ResetPasswordHandler());
+        commandHandler.put("/kickme", new KickMeCMDHandler());
 
         callbackQueryHandler.put("ys", new YesCallbackQuery());
         callbackQueryHandler.put("no", new NoCallbackQuery());

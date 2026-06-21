@@ -36,6 +36,7 @@ public final class Captcha {
     private static final Map<UUID, Material> CORRECTS = new ConcurrentHashMap<>();
     private static final Set<UUID> PENDING = ConcurrentHashMap.newKeySet();
     private static final Set<UUID> OPENING = ConcurrentHashMap.newKeySet();
+    private static final Set<UUID> CLOSING_AFTER_CLICK = ConcurrentHashMap.newKeySet();
 
     private static final int MAX_ATTEMPTS = 3;
 
@@ -93,7 +94,13 @@ public final class Captcha {
             beginChallenge(player);
         }
 
-        OPENING.add(uuid);
+        if (isCaptchaInventory(player.getOpenInventory())) {
+            return;
+        }
+
+        if (!OPENING.add(uuid)) {
+            return;
+        }
 
         Bukkit.getScheduler().runTaskLater(AuthTG.getInstance(), () -> {
             Player online = Bukkit.getPlayer(uuid);
@@ -107,6 +114,36 @@ public final class Captcha {
         }, 1L);
     }
 
+    public static void reopenIfClosedWithoutClick(Player player) {
+        if (player == null) {
+            return;
+        }
+
+        UUID uuid = player.getUniqueId();
+        if (!PENDING.contains(uuid)) {
+            return;
+        }
+
+        if (CLOSING_AFTER_CLICK.contains(uuid)) {
+            return;
+        }
+
+        long delay = OPENING.contains(uuid) ? 6L : 1L;
+
+        Bukkit.getScheduler().runTaskLater(AuthTG.getInstance(), () -> {
+            Player online = Bukkit.getPlayer(uuid);
+            if (online == null || !online.isOnline() || !PENDING.contains(uuid)) {
+                return;
+            }
+
+            if (CLOSING_AFTER_CLICK.contains(uuid) || isCaptchaInventory(online.getOpenInventory())) {
+                return;
+            }
+
+            openFor(online);
+        }, delay);
+    }
+
     public static void clear(UUID uuid) {
         if (uuid == null) {
             return;
@@ -114,6 +151,7 @@ public final class Captcha {
 
         PENDING.remove(uuid);
         OPENING.remove(uuid);
+        CLOSING_AFTER_CLICK.remove(uuid);
         ATTEMPTS.remove(uuid);
         CORRECTS.remove(uuid);
     }
@@ -127,12 +165,12 @@ public final class Captcha {
         Material correct = CORRECTS.get(uuid);
 
         if (correct == null) {
-            player.closeInventory();
+            closeAfterClick(player);
             return;
         }
 
         if (clickedMaterial == correct) {
-            player.closeInventory();
+            closeAfterClick(player);
             MessageHelper.send(player, mc("captchasuccess"));
 
             clear(uuid);
@@ -153,7 +191,7 @@ public final class Captcha {
         }
 
         ATTEMPTS.put(uuid, triesLeft);
-        player.closeInventory();
+        closeAfterClick(player);
 
         MessageHelper.send(
                 player,
@@ -175,15 +213,25 @@ public final class Captcha {
         }, 2L);
     }
 
+    private static void closeAfterClick(Player player) {
+        UUID uuid = player.getUniqueId();
+        CLOSING_AFTER_CLICK.add(uuid);
+        player.closeInventory();
+
+        Bukkit.getScheduler().runTaskLater(AuthTG.getInstance(), () -> CLOSING_AFTER_CLICK.remove(uuid), 3L);
+    }
+
     private static Inventory buildCaptcha(Player player) {
         Material correct = MATERIALS.get(ThreadLocalRandom.current().nextInt(MATERIALS.size()));
         CORRECTS.put(player.getUniqueId(), correct);
 
+        CaptchaHolder holder = new CaptchaHolder();
         Inventory inventory = Bukkit.createInventory(
-                new CaptchaHolder(),
+                holder,
                 45,
                 buildInventoryTitle(correct)
         );
+        holder.setInventory(inventory);
 
         for (int i = 0; i < inventory.getSize(); i++) {
             Material randomMaterial = MATERIALS.get(ThreadLocalRandom.current().nextInt(MATERIALS.size()));

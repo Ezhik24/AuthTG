@@ -231,12 +231,45 @@ public class MySQLLoader implements Loader {
     }
 
     @Override
+    public UUID getCurrentUUID(int peerid) {
+        String sql = "SELECT uuid FROM AuthTGUsers WHERE peerid=? AND currentUUID=true LIMIT 1";
+        try (Connection c = ds.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setInt(1, peerid);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) return UUID.fromString(rs.getString("uuid"));
+            }
+        } catch (SQLException e) {
+            AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
+        }
+        return null;
+    }
+
+    @Override
     public void setCurrentUUID(UUID uuid, Long chatid) {
         String clear = "UPDATE AuthTGUsers SET currentUUID=false WHERE chatid=?";
         String set = "UPDATE AuthTGUsers SET currentUUID=true WHERE uuid=?";
         try (Connection c = ds.getConnection()) {
             try (PreparedStatement ps = c.prepareStatement(clear)) {
                 ps.setLong(1, chatid);
+                ps.executeUpdate();
+            }
+            try (PreparedStatement ps = c.prepareStatement(set)) {
+                ps.setString(1, uuid.toString());
+                ps.executeUpdate();
+            }
+        } catch (SQLException e) {
+            AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public void setCurrentUUID(UUID uuid, int peerid) {
+        String clear = "UPDATE AuthTGUsers SET currentUUID=false WHERE peerid=?";
+        String set = "UPDATE AuthTGUsers SET currentUUID=true WHERE uuid=?";
+        try (Connection c = ds.getConnection()) {
+            try (PreparedStatement ps = c.prepareStatement(clear)) {
+                ps.setInt(1, peerid);
                 ps.executeUpdate();
             }
             try (PreparedStatement ps = c.prepareStatement(set)) {
