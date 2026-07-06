@@ -34,10 +34,11 @@ public class MySQLLoader implements Loader {
 
     @Override
     public void setPasswordHash(UUID uuid, String password) {
+        String passwordHash = PasswordHasher.hashPassword(password);
         String sql = "UPDATE AuthTGUsers SET password=? WHERE uuid=?";
         try (Connection c = ds.getConnection();
              PreparedStatement ps = c.prepareStatement(sql)) {
-            ps.setString(1, PasswordHasher.hashPassword(password));
+            ps.setString(1, passwordHash);
             ps.setString(2, uuid.toString());
             ps.executeUpdate();
         } catch (SQLException e) {
@@ -81,13 +82,35 @@ public class MySQLLoader implements Loader {
             ps.setString(1, uuid.toString());
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
-                    return PasswordHasher.hashPassword(password).equals(rs.getString("password"));
+                    String storedHash = rs.getString("password");
+                    if (!PasswordHasher.verifyPassword(password, storedHash)) {
+                        return false;
+                    }
+                    rehashPasswordIfNeeded(c, uuid, password, storedHash);
+                    return true;
                 }
             }
         } catch (SQLException e) {
             AuthTG.logger.log(Level.SEVERE, "SQLException: " + e.getMessage());
         }
         return false;
+    }
+
+    private void rehashPasswordIfNeeded(Connection c, UUID uuid, String password, String storedHash) {
+        if (!PasswordHasher.needsRehash(storedHash)) {
+            return;
+        }
+
+        String sql = "UPDATE AuthTGUsers SET password=? WHERE uuid=?";
+        try (PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setString(1, PasswordHasher.hashPassword(password));
+            ps.setString(2, uuid.toString());
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            AuthTG.logger.log(Level.SEVERE, "SQLException while migrating password hash: " + e.getMessage(), e);
+        } catch (RuntimeException e) {
+            AuthTG.logger.log(Level.SEVERE, "Cannot migrate password hash to Argon2id", e);
+        }
     }
 
     @Override

@@ -76,9 +76,12 @@ public final class AuthTG extends JavaPlugin {
     public static double locationX;
     public static double locationY;
     public static double locationZ;
+    public static float locationYaw;
+    public static float locationPitch;
 
     public static String world;
     public static String authNecessarilyPrefer;
+    public static PasswordHasher.HashAlgorithm passwordHashAlgorithm;
 
     public static ConfigurationSection macro;
 
@@ -574,11 +577,17 @@ public final class AuthTG extends JavaPlugin {
         maxLenghtNickname = config.getInt("maxLenghtNickname");
         minLenghtPassword = config.getInt("minLenghtPassword");
         maxLenghtPassword = config.getInt("maxLenghtPassword");
+        passwordHashAlgorithm = PasswordHasher.parseHashAlgorithm(config.getString("passwordHashAlgorithm", "ARGON2ID"));
+        if (passwordHashAlgorithm == PasswordHasher.HashAlgorithm.SHA256) {
+            logger.log(Level.WARNING, "[AuthTG] passwordHashAlgorithm=SHA256 is legacy and not recommended for public servers.");
+        }
         timeoutSession = config.getInt("timeoutSession");
         kickTimeout = config.getInt("kickTimeout");
         locationX = config.getDouble("spawn.x");
         locationY = config.getDouble("spawn.y");
         locationZ = config.getDouble("spawn.z");
+        locationYaw = (float) config.getDouble("spawn.yaw", 0.0);
+        locationPitch = (float) config.getDouble("spawn.pitch", 0.0);
         world = config.getString("spawn.world");
         macro = config.getConfigurationSection("macro");
         ipregmax = config.getInt("ipregmax");

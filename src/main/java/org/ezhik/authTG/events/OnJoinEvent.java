@@ -81,7 +81,9 @@ public class OnJoinEvent implements Listener {
                     Bukkit.getWorld(AuthTG.world),
                     AuthTG.locationX,
                     AuthTG.locationY,
-                    AuthTG.locationZ
+                    AuthTG.locationZ,
+                    AuthTG.locationYaw,
+                    AuthTG.locationPitch
             );
             FreezerEvent.beforeFreeze.put(p.getName(), playerloc);
             Handler.teleport(p.getName(), loc);

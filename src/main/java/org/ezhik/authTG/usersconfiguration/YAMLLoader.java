@@ -92,6 +92,7 @@ public class YAMLLoader implements Loader{
 
     @Override
     public void setPasswordHash(UUID uuid, String password) {
+        String passwordHash = PasswordHasher.hashPassword(password);
         File file = new File("plugins/AuthTG/users/" + uuid + ".yml");
         YamlConfiguration playerconf = new YamlConfiguration();
         try {
@@ -101,7 +102,7 @@ public class YAMLLoader implements Loader{
         } catch (InvalidConfigurationException e) {
             AuthTG.logger.log(Level.SEVERE, "Error load file: " + e);
         }
-        playerconf.set("password", PasswordHasher.hashPassword(password));
+        playerconf.set("password", passwordHash);
         try {
             playerconf.save(file);
         } catch (IOException e) {
@@ -156,7 +157,27 @@ public class YAMLLoader implements Loader{
         } catch (InvalidConfigurationException e) {
             AuthTG.logger.log(Level.SEVERE, "Error load file: " + e);
         }
-        return config.getString("password").equals(PasswordHasher.hashPassword(password));
+        String storedHash = config.getString("password");
+        if (!PasswordHasher.verifyPassword(password, storedHash)) {
+            return false;
+        }
+        rehashPasswordIfNeeded(file, config, password, storedHash);
+        return true;
+    }
+
+    private void rehashPasswordIfNeeded(File file, YamlConfiguration config, String password, String storedHash) {
+        if (!PasswordHasher.needsRehash(storedHash)) {
+            return;
+        }
+
+        try {
+            config.set("password", PasswordHasher.hashPassword(password));
+            config.save(file);
+        } catch (IOException e) {
+            AuthTG.logger.log(Level.SEVERE, "Error saving migrated password hash: " + e, e);
+        } catch (RuntimeException e) {
+            AuthTG.logger.log(Level.SEVERE, "Cannot migrate password hash to Argon2id", e);
+        }
     }
 
     @Override
