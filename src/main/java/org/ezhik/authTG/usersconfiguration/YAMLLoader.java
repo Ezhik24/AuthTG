@@ -969,6 +969,8 @@ public class YAMLLoader implements Loader{
         YamlConfiguration config = new YamlConfiguration();
         try {
             config.load(file);
+        } catch (FileNotFoundException e) {
+            return null;
         } catch (IOException e) {
             AuthTG.logger.log(Level.SEVERE, "Error loading file: " + e);
         } catch (InvalidConfigurationException e) {
@@ -1164,6 +1166,8 @@ public class YAMLLoader implements Loader{
         YamlConfiguration config = new YamlConfiguration();
         try {
             config.load(file);
+        } catch (FileNotFoundException e) {
+            return 0;
         } catch (IOException e) {
             AuthTG.logger.log(Level.SEVERE, "Error loading file: " + e);
         } catch (InvalidConfigurationException e) {
@@ -1197,6 +1201,8 @@ public class YAMLLoader implements Loader{
         YamlConfiguration config = new YamlConfiguration();
         try {
             config.load(file);
+        } catch (FileNotFoundException e) {
+            return false;
         } catch (IOException e) {
             AuthTG.logger.log(Level.SEVERE, "Error loading file: " + e);
         } catch (InvalidConfigurationException e) {
