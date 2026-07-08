@@ -3,12 +3,14 @@ package org.ezhik.authTG;
 import org.bukkit.Bukkit;
 import org.ezhik.authTG.util.MessageHelper;
 import org.bukkit.configuration.ConfigurationSection;
+import org.ezhik.authTG.api.TelegramUpdateInterceptor;
 import org.ezhik.authTG.calbackQuery.*;
 import org.ezhik.authTG.commandTG.*;
 import org.ezhik.authTG.handlers.Handler;
 import org.ezhik.authTG.nextStep.NextStepHandler;
 import org.telegram.telegrambots.bots.DefaultBotOptions;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
+import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
@@ -17,11 +19,14 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
@@ -35,6 +40,7 @@ public class BotTelegram extends TelegramLongPollingBot {
     private final Map<String, UUID> userData = new ConcurrentHashMap<>();
     private final Map<Long, NextStepHandler> nextStepHandler = new ConcurrentHashMap<>();
     private final Map<String, CallbackQueryHandler> callbackQueryHandler = new ConcurrentHashMap<>();
+    private final CopyOnWriteArrayList<TelegramUpdateInterceptor> updateInterceptors = new CopyOnWriteArrayList<>();
     private final ExecutorService telegramIoExecutor = Executors.newSingleThreadExecutor(r -> {
         Thread thread = new Thread(r, "AuthTG-TelegramIO");
         thread.setDaemon(true);
@@ -102,6 +108,10 @@ public class BotTelegram extends TelegramLongPollingBot {
         if (!isTelegramEnabled()) return;
 
         try {
+            if (dispatchUpdateInterceptors(update)) {
+                return;
+            }
+
             if (update.hasMessage() && update.getMessage() != null && update.getMessage().hasText()) {
                 handleMessage(update);
             }
@@ -112,6 +122,25 @@ public class BotTelegram extends TelegramLongPollingBot {
         } catch (Exception e) {
             AuthTG.logger.log(Level.WARNING, "[AuthTG] onUpdateReceived error: " + e.getMessage(), e);
         }
+    }
+
+    private boolean dispatchUpdateInterceptors(Update update) {
+        if (update == null || updateInterceptors.isEmpty()) {
+            return false;
+        }
+
+        for (TelegramUpdateInterceptor interceptor : updateInterceptors) {
+            try {
+                if (interceptor.onTelegramUpdate(update, this)) {
+                    return true;
+                }
+            } catch (Exception e) {
+                AuthTG.logger.log(Level.WARNING,
+                        "[AuthTG] Telegram update interceptor error: " + e.getMessage(), e);
+            }
+        }
+
+        return false;
     }
 
     private void handleMessage(Update update) {
@@ -222,6 +251,34 @@ public class BotTelegram extends TelegramLongPollingBot {
         if (!isTelegramEnabled()) return;
         if (sendMessage == null) return;
         telegramIoExecutor.execute(() -> executeSendMessageNow(sendMessage));
+    }
+
+    public CompletableFuture<Message> sendMessageAsync(SendMessage sendMessage) {
+        return executeMethodAsync(sendMessage);
+    }
+
+    public <T extends Serializable> CompletableFuture<T> executeMethodAsync(BotApiMethod<T> method) {
+        CompletableFuture<T> future = new CompletableFuture<>();
+
+        if (!isTelegramEnabled()) {
+            future.completeExceptionally(new IllegalStateException("Telegram integration is disabled"));
+            return future;
+        }
+
+        if (method == null) {
+            future.completeExceptionally(new IllegalArgumentException("Telegram method is null"));
+            return future;
+        }
+
+        telegramIoExecutor.execute(() -> {
+            try {
+                future.complete(execute(method));
+            } catch (TelegramApiException e) {
+                future.completeExceptionally(e);
+            }
+        });
+
+        return future;
     }
 
     private void executeSendMessageNow(SendMessage sendMessage) {
@@ -350,10 +407,21 @@ public class BotTelegram extends TelegramLongPollingBot {
         return userData.get(username);
     }
 
+    public void registerUpdateInterceptor(TelegramUpdateInterceptor interceptor) {
+        if (interceptor == null) return;
+        updateInterceptors.addIfAbsent(interceptor);
+    }
+
+    public void unregisterUpdateInterceptor(TelegramUpdateInterceptor interceptor) {
+        if (interceptor == null) return;
+        updateInterceptors.remove(interceptor);
+    }
+
     public void shutdown() {
         nextStepHandler.clear();
         userData.clear();
         callbackQueryHandler.clear();
+        updateInterceptors.clear();
         telegramIoExecutor.shutdownNow();
     }
 }
