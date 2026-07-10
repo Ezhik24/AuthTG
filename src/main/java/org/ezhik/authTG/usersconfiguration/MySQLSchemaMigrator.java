@@ -8,7 +8,7 @@ import java.util.logging.Level;
 
 public final class MySQLSchemaMigrator {
 
-    private static final int LATEST_VERSION = 7;
+    private static final int LATEST_VERSION = 8;
 
     private MySQLSchemaMigrator() {
     }
@@ -32,6 +32,7 @@ public final class MySQLSchemaMigrator {
                     case 5 -> migrateToV5(c, databaseName); // preferred2fa
                     case 6 -> migrateToV6(c, databaseName); // captchaTimeout
                     case 7 -> migrateToV7(c, databaseName); // VK
+                    case 8 -> migrateToV8(c, databaseName); // Argon2id password hashes
                     default -> throw new IllegalStateException("Unknown schema version: " + next);
                 }
 
@@ -91,7 +92,7 @@ public final class MySQLSchemaMigrator {
                             "priKey INT NOT NULL AUTO_INCREMENT," +
                             "uuid varchar(36) NOT NULL," +
                             "playername varchar(120) NOT NULL," +
-                            "password varchar(64)," +
+                            "password varchar(255)," +
                             "active BOOLEAN NOT NULL DEFAULT false," +
                             "twofactor BOOLEAN NOT NULL DEFAULT false," +
                             "activeTG BOOLEAN NOT NULL DEFAULT false," +
@@ -230,7 +231,13 @@ public final class MySQLSchemaMigrator {
         }
     }
 
+    private static void migrateToV8(Connection c, String db) throws SQLException {
+        ensurePasswordColumnLength(c, db);
+    }
+
     private static void reconcileOptionalColumns(Connection c, String db) throws SQLException {
+        ensurePasswordColumnLength(c, db);
+
         if (!columnExists(c, db, "AuthTGUsers", "preferred2fa")) {
             try (Statement st = c.createStatement()) {
                 st.executeUpdate("ALTER TABLE AuthTGUsers ADD COLUMN preferred2fa VARCHAR(16) NULL");
@@ -244,6 +251,16 @@ public final class MySQLSchemaMigrator {
         }
     }
 
+    private static void ensurePasswordColumnLength(Connection c, String db) throws SQLException {
+        if (!varcharColumnShorterThan(c, db, "AuthTGUsers", "password", 255)) {
+            return;
+        }
+
+        try (Statement st = c.createStatement()) {
+            st.executeUpdate("ALTER TABLE AuthTGUsers MODIFY COLUMN password VARCHAR(255) NULL");
+        }
+    }
+
     private static boolean columnExists(Connection c, String db, String table, String column) throws SQLException {
         String sql = "SELECT 1 FROM information_schema.columns " +
                 "WHERE table_schema=? AND table_name=? AND column_name=? LIMIT 1";
@@ -253,6 +270,25 @@ public final class MySQLSchemaMigrator {
             ps.setString(3, column);
             try (ResultSet rs = ps.executeQuery()) {
                 return rs.next();
+            }
+        }
+    }
+
+    private static boolean varcharColumnShorterThan(Connection c, String db, String table, String column, int minLength)
+            throws SQLException {
+        String sql = "SELECT character_maximum_length FROM information_schema.columns " +
+                "WHERE table_schema=? AND table_name=? AND column_name=? LIMIT 1";
+        try (PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setString(1, db);
+            ps.setString(2, table);
+            ps.setString(3, column);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (!rs.next()) {
+                    return false;
+                }
+
+                long length = rs.getLong("character_maximum_length");
+                return !rs.wasNull() && length < minLength;
             }
         }
     }

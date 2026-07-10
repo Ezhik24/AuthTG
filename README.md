@@ -85,7 +85,7 @@ AuthTG-main/
     │   ├── BotTelegram.java             # Telegram long polling bot
     │   ├── BotVK.java                   # VK long poll bot
     │   ├── User.java                    # модель пользователя и привязка аккаунтов
-    │   ├── PasswordHasher.java          # SHA-256 хеширование паролей
+    │   ├── PasswordHasher.java          # Argon2id-хеширование и legacy SHA-256 проверка
     │   ├── IPManager.java               # авторизованные IP-сессии
     │   ├── commandMC/                   # Minecraft-команды
     │   ├── commandTG/                   # Telegram-команды
@@ -161,6 +161,7 @@ target/
 
 - `org.bstats` -> `org.ezhik.authTG`
 - `com.zaxxer.hikari` -> `org.ezhik.authTG.libs.hikari`
+- `de.mkammerer.argon2` -> `org.ezhik.authTG.libs.argon2`
 
 ### Основные зависимости
 
@@ -170,6 +171,7 @@ target/
 | `telegrambots` | Telegram Bot API |
 | `mysql-connector-j` | MySQL-драйвер |
 | `HikariCP` | пул соединений MySQL |
+| `argon2-jvm` | Argon2id-хеширование паролей |
 | `jakarta.mail` | SMTP-отправка писем |
 | `okhttp` | VK API-запросы |
 | `org.json` | разбор VK Long Poll ответов |
@@ -308,23 +310,25 @@ minLenghtNickname: 3
 maxLenghtNickname: 15
 minLenghtPassword: 3
 maxLenghtPassword: 32
+passwordHashAlgorithm: "ARGON2ID"
 timeoutSession: 60
 kickTimeout: 30
 forbiddenNicknames: ['Notch']
 ipregmax: 10
 ```
 
-| Ключ | Описание |
-|---|---|
-| `notRegAndLogin` | отключает классическую схему `/register` + `/login` |
-| `authNecessarily` | требует обязательное подтверждение через внешний метод авторизации |
-| `authNecessarilyPrefer` | предпочитаемый метод: `TG`, `VK` или `MAIL` |
-| `minLenghtNickname` / `maxLenghtNickname` | минимальная/максимальная длина ника |
-| `minLenghtPassword` / `maxLenghtPassword` | минимальная/максимальная длина пароля |
-| `timeoutSession` | время IP-сессии в минутах |
-| `kickTimeout` | через сколько секунд кикать неавторизованного игрока; `0` отключает таймер |
-| `forbiddenNicknames` | список запрещённых ников |
-| `ipregmax` | максимум регистраций с одного IP |
+| Ключ | Описание                                                                                                                   |
+|---|----------------------------------------------------------------------------------------------------------------------------|
+| `notRegAndLogin` | отключает классическую схему `/register` + `/login`                                                                        |
+| `authNecessarily` | требует обязательное подтверждение через внешний метод авторизации                                                         |
+| `authNecessarilyPrefer` | предпочитаемый метод: `TG`, `VK` или `MAIL`                                                                                |
+| `minLenghtNickname` / `maxLenghtNickname` | минимальная/максимальная длина ника                                                                                        |
+| `minLenghtPassword` / `maxLenghtPassword` | минимальная/максимальная длина пароля                                                                                      |
+| `passwordHashAlgorithm` | целевой алгоритм для новых паролей и ленивой миграции: `ARGON2ID` или `SHA256`; `SHA256` оставлен только для совместимости |
+| `timeoutSession` | время IP-сессии в минутах                                                                                                  |
+| `kickTimeout` | через сколько секунд кикать неавторизованного игрока; `0` отключает таймер                                                 |
+| `forbiddenNicknames` | список запрещённых ников                                                                                                   |
+| `ipregmax` | максимум регистраций с одного IP                                                                                           |
 
 > В названиях ключей используется `Lenght`, как в исходном конфиге. Не переименовывайте их в `Length`, иначе код их не прочитает.
 
@@ -353,10 +357,12 @@ spawn:
   x: 0
   y: 0
   z: 0
+  yaw: 0
+  pitch: 0
   world: 'none'
 ```
 
-Если `spawn.world` равен `none`, игрок замораживается на текущей позиции. Если указан мир и координаты, игрок при входе до авторизации переносится на этот spawn.
+Если `spawn.world` равен `none`, игрок замораживается на текущей позиции. Если указан мир, координаты и направление взгляда, игрок при входе до авторизации переносится на этот spawn.
 
 Настройка через команду:
 
@@ -934,7 +940,7 @@ plugins/AuthTG/temp-messages.yml
 - Ограничьте доступ к базе по IP/firewall.
 - Для Telegram/VK включайте только нужные интеграции.
 - Проверяйте, что `maxAccountTGCount`, `maxAccountVKCount` и `ipregmax` соответствуют правилам сервера.
-- Учитывайте, что пароль хешируется через SHA-256. Для максимально строгой защиты в будущем стоит рассмотреть BCrypt/Argon2 с солью.
+- По умолчанию новые пароли хешируются через Argon2id. `passwordHashAlgorithm: "SHA256"` оставлен для совместимости, но не рекомендуется для публичных серверов.
 
 
 ## Troubleshooting

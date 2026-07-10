@@ -54,6 +54,7 @@ minLenghtNickname: 3 # Минимальная длина ника EN: Min length
 maxLenghtNickname: 15 # Максимальная длина ника EN: Max length nickname
 minLenghtPassword: 3 # Минимальная длина пароля EN: Min length password
 maxLenghtPassword: 32 # Максимальная длина пароля EN: Max length password
+passwordHashAlgorithm: "ARGON2ID" # ARGON2ID | SHA256. SHA256 устарел и не рекомендуется EN: SHA256 is legacy and not recommended
 timeoutSession: 60 # Время в минутах,через которое у игрока сбросится сессия EN: Time in minutes after which the player will reset the session
 kickTimeout: 30 # Время в секундах, через которое игрок будет кикнут если не авторизовался EN: Time in seconds, after which the player will be kicked if not authorized
 activeChatinTG: true # Должен ли работать чат в телеграме EN: Must chat in Telegram
@@ -65,6 +66,8 @@ spawn: # Спавн EN: Spawn
   x: 0
   y: 0
   z: 0
+  yaw: 0
+  pitch: 0
   world: 'none'
 
 mail:
@@ -139,4 +142,3 @@ nicknameCase:
 
 onceUsed: # НЕ ТРОГАЙТЕ ЭТО EN: Do not touch
   mysql: false
-

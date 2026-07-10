@@ -1,7 +1,6 @@
 package org.ezhik.authTG.commandMC;
 
-import jdk.javadoc.doclet.Taglet;
-import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -27,15 +26,20 @@ public class SetSpawnCMD implements CommandExecutor {
         }
         if (strings.length == 0) {
             Player player = (Player) commandSender;
-            AuthTG.locationX = player.getLocation().getX();
-            AuthTG.locationY = player.getLocation().getY();
-            AuthTG.locationZ = player.getLocation().getZ();
-            AuthTG.world = player.getLocation().getWorld().getName();
+            Location location = player.getLocation();
+            AuthTG.locationX = location.getX();
+            AuthTG.locationY = location.getY();
+            AuthTG.locationZ = location.getZ();
+            AuthTG.locationYaw = location.getYaw();
+            AuthTG.locationPitch = location.getPitch();
+            AuthTG.world = location.getWorld().getName();
             File file = new File("plugins/AuthTG/config.yml");
             YamlConfiguration yamlConfiguration = YamlConfiguration.loadConfiguration(file);
             yamlConfiguration.set("spawn.x", AuthTG.locationX);
             yamlConfiguration.set("spawn.y", AuthTG.locationY);
             yamlConfiguration.set("spawn.z", AuthTG.locationZ);
+            yamlConfiguration.set("spawn.yaw", AuthTG.locationYaw);
+            yamlConfiguration.set("spawn.pitch", AuthTG.locationPitch);
             yamlConfiguration.set("spawn.world", AuthTG.world);
             try {
                 yamlConfiguration.save(file);
@@ -49,12 +53,16 @@ public class SetSpawnCMD implements CommandExecutor {
             AuthTG.locationX = 0;
             AuthTG.locationY = 0;
             AuthTG.locationZ = 0;
+            AuthTG.locationYaw = 0;
+            AuthTG.locationPitch = 0;
             AuthTG.world = "none";
             File file = new File("plugins/AuthTG/config.yml");
             YamlConfiguration yamlConfiguration = YamlConfiguration.loadConfiguration(file);
             yamlConfiguration.set("spawn.x", AuthTG.locationX);
             yamlConfiguration.set("spawn.y", AuthTG.locationY);
             yamlConfiguration.set("spawn.z", AuthTG.locationZ);
+            yamlConfiguration.set("spawn.yaw", AuthTG.locationYaw);
+            yamlConfiguration.set("spawn.pitch", AuthTG.locationPitch);
             yamlConfiguration.set("spawn.world", AuthTG.world);
             try {
                 yamlConfiguration.save(file);
