@@ -1,5 +1,7 @@
 package org.ezhik.authTG.commandMC;
 
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -8,6 +10,7 @@ import org.ezhik.authTG.AuthTG;
 import org.ezhik.authTG.events.FreezerEvent;
 import org.ezhik.authTG.events.MuterEvent;
 import org.ezhik.authTG.handlers.AuthHandler;
+import org.ezhik.authTG.handlers.Handler;
 import org.ezhik.authTG.util.AsyncBridge;
 import org.ezhik.authTG.util.MessageHelper;
 
@@ -112,6 +115,20 @@ public class RegisterCMD implements CommandExecutor {
                                     );
                                 }
                             } else {
+                                if (AuthTG.velocity) {
+                                    AuthTG.sendVelocityAuthPacket(player, "auth_success");
+                                    if (!AuthTG.velocityAfterAuthorizationWorld.equals("none")) {
+                                        Location loc = new Location(
+                                                Bukkit.getWorld(AuthTG.velocityAfterAuthorizationWorld),
+                                                AuthTG.velocityAfterAuthorizationX,
+                                                AuthTG.velocityAfterAuthorizationY,
+                                                AuthTG.velocityAfterAuthorizationZ,
+                                                AuthTG.velocityAfterAuthorizationYaw,
+                                                AuthTG.velocityAfterAuthorizationPitch
+                                        );
+                                        Handler.teleport(player.getName(), loc);
+                                    }
+                                }
                                 MessageHelper.send(current, AuthTG.getMessage("registersuccess", "MC"));
                                 FreezerEvent.unfreezeplayer(current.getName());
                                 MuterEvent.unmute(current.getName());

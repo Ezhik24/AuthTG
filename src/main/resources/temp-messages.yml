@@ -279,7 +279,11 @@ messages: # Сообщения EN: Messages
     authtgactives2: 'к Телеграму'
     authvkactives1: '<#FFB26F><bold>Привяжите аккаунт'
     authvkactives2: 'к VK'
+    authemactives1: '<#FFB26F><bold>Привяжите аккаунт'
+    authemactives2: 'к VK'
     authtgactivetext: '<#F4FBFF><bold>[<#FFB26F><bold>AuthTG<#F4FBFF><bold>] <#65E0E6><bold>Привяжите аккаунт к Телеграму'
+    authvkactivetext: '<#F4FBFF><bold>[<#FFB26F><bold>AuthTG<#F4FBFF><bold>] <#65E0E6><bold>Привяжите аккаунт к VK'
+    authemactivetext: '<#F4FBFF><bold>[<#FFB26F><bold>AuthTG<#F4FBFF><bold>] <#65E0E6><bold>Привяжите аккаунт к Email'
     joininaccounttext: '<#F4FBFF><bold>[<#FFB26F><bold>AuthTG<#F4FBFF><bold>] <#65E0E6><bold>Потвердите AuthTG через Телеграм'
     joininaccounts1: '<#FFB26F><bold>Потвердите AuthTG'
     joininaccounts2: 'через Телеграм'
@@ -425,3 +429,8 @@ messages: # Сообщения EN: Messages
 
     nicknamecaseinvalid: '<#F4FBFF><bold>[<#FFB26F><bold>AuthTG<#F4FBFF><bold>] <#FFB26F><bold>Ник введён в неверном регистре. <#65E0E6><bold>Правильно: {CORRECT_PLAYER}. <#FFB26F><bold>Вы ввели: {PLAYER}.'
     nicknamecasecheckerror: '<#F4FBFF><bold>[<#FFB26F><bold>AuthTG<#F4FBFF><bold>] <#FFB26F><bold>Не удалось проверить регистр ника. Попробуйте позже.'
+
+    setspawnvelocityerror: '<#F4FBFF><bold>[<#FFB26F><bold>AuthTG<#F4FBFF><bold>] <#65E0E6>Использование: /setspawn velocity <authorization|afterauthorization>'
+    setspawnvelocitynone: '<#F4FBFF><bold>[<#FFB26F><bold>AuthTG<#F4FBFF><bold>] <#65E0E6>Вы успешно поставили спавн: none! (velocity).'
+    setspawnvelocity: '<#F4FBFF><bold>[<#FFB26F><bold>AuthTG<#F4FBFF><bold>] <#65E0E6>Вы успешно поставили спавн: {SPAWN}! (velocity).'
+    velocitydisabled: '<#F4FBFF><bold>[<#FFB26F><bold>AuthTG<#F4FBFF><bold>] <#FFB26F>Velocity сейчас отключён в config.yml (velocity.enabled: false).'

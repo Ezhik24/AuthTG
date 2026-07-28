@@ -72,22 +72,38 @@ public class OnJoinEvent implements Listener {
             }
             return;
         }
-
-        if (AuthTG.world.equals("none")) {
-            FreezerEvent.freezeplayer(p, p.getLocation());
+        if (!AuthTG.velocity) {
+            if (AuthTG.world.equals("none")) {
+                FreezerEvent.freezeplayer(p, p.getLocation());
+            } else {
+                Location playerloc = p.getLocation();
+                Location loc = new Location(
+                        Bukkit.getWorld(AuthTG.world),
+                        AuthTG.locationX,
+                        AuthTG.locationY,
+                        AuthTG.locationZ,
+                        AuthTG.locationYaw,
+                        AuthTG.locationPitch
+                );
+                FreezerEvent.beforeFreeze.put(p.getName(), playerloc);
+                Handler.teleport(p.getName(), loc);
+                FreezerEvent.freezeplayer(p, loc);
+            }
         } else {
-            Location playerloc = p.getLocation();
-            Location loc = new Location(
-                    Bukkit.getWorld(AuthTG.world),
-                    AuthTG.locationX,
-                    AuthTG.locationY,
-                    AuthTG.locationZ,
-                    AuthTG.locationYaw,
-                    AuthTG.locationPitch
-            );
-            FreezerEvent.beforeFreeze.put(p.getName(), playerloc);
-            Handler.teleport(p.getName(), loc);
-            FreezerEvent.freezeplayer(p, loc);
+            if (AuthTG.velocityAuthorizationWorld.equals("none")) {
+                FreezerEvent.freezeplayer(p, p.getLocation());
+            } else {
+                Location loc = new Location(
+                        Bukkit.getWorld(AuthTG.velocityAuthorizationWorld),
+                        AuthTG.velocityAuthorizationX,
+                        AuthTG.velocityAuthorizationY,
+                        AuthTG.velocityAuthorizationZ,
+                        AuthTG.velocityAuthorizationYaw,
+                        AuthTG.velocityAuthorizationPitch
+                );
+                Handler.teleport(p.getName(), loc);
+                FreezerEvent.freezeplayer(p, loc);
+            }
         }
 
         if (AuthTG.forbiddenNicknames.contains(p.getName())) {
@@ -143,6 +159,19 @@ public class OnJoinEvent implements Listener {
         }
 
         if (AuthTG.notRegAndLogin && !AuthTG.authNecessarily) {
+            if (AuthTG.velocity) {
+                if (!AuthTG.velocityAfterAuthorizationWorld.equals("none")) {
+                    Location loc = new Location(
+                            Bukkit.getWorld(AuthTG.velocityAfterAuthorizationWorld),
+                            AuthTG.velocityAfterAuthorizationX,
+                            AuthTG.velocityAfterAuthorizationY,
+                            AuthTG.velocityAfterAuthorizationZ,
+                            AuthTG.velocityAfterAuthorizationYaw,
+                            AuthTG.velocityAfterAuthorizationPitch
+                    );
+                    Handler.teleport(p.getName(), loc);
+                }
+            }
             FreezerEvent.unfreezeplayer(p.getName());
             if (AuthTG.kickTimeout != 0) {
                 AuthHandler.removeTimeout(p.getUniqueId());
@@ -152,6 +181,7 @@ public class OnJoinEvent implements Listener {
 
         if (AuthTG.notRegAndLogin && AuthTG.authNecessarily) {
             if (AuthTG.isTelegramEnabled() && AuthTG.authNecessarilyPrefer.equals("TG")) {
+                if (AuthTG.velocity) AuthTG.sendVelocityAuthPacket(p, "auth_start");
                 if (user != null && user.activetg) {
                     String joinText = AuthTG.getMessage("joininaccounttext", "MC");
                     MuterEvent.mute(p.getName(), MessageHelper.legacySection(joinText));
@@ -176,6 +206,7 @@ public class OnJoinEvent implements Listener {
                     );
                 }
             } else if (AuthTG.isVKEnabled() && AuthTG.authNecessarilyPrefer.equals("VK")) {
+                if (AuthTG.velocity) AuthTG.sendVelocityAuthPacket(p, "auth_start");
                 if (user != null && user.activevk) {
                     String joinText = AuthTG.getMessage("joininaccounttextvk", "MC");
                     MuterEvent.mute(p.getName(), MessageHelper.legacySection(joinText));
@@ -196,6 +227,19 @@ public class OnJoinEvent implements Listener {
                     );
                 }
             } else {
+                if (AuthTG.velocity) {
+                    if (!AuthTG.velocityAfterAuthorizationWorld.equals("none")) {
+                        Location loc = new Location(
+                                Bukkit.getWorld(AuthTG.velocityAfterAuthorizationWorld),
+                                AuthTG.velocityAfterAuthorizationX,
+                                AuthTG.velocityAfterAuthorizationY,
+                                AuthTG.velocityAfterAuthorizationZ,
+                                AuthTG.velocityAfterAuthorizationYaw,
+                                AuthTG.velocityAfterAuthorizationPitch
+                        );
+                        Handler.teleport(p.getName(), loc);
+                    }
+                }
                 FreezerEvent.unfreezeplayer(p.getName());
                 MuterEvent.unmute(p.getName());
                 p.resetTitle();
@@ -206,6 +250,7 @@ public class OnJoinEvent implements Listener {
             return;
         }
 
+        if (AuthTG.velocity) AuthTG.sendVelocityAuthPacket(p, "auth_start");
         if (user != null) {
             String loginText = AuthTG.getMessage("loginmessage", "MC");
             MuterEvent.mute(p.getName(), MessageHelper.legacySection(loginText));

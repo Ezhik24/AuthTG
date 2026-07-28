@@ -8,6 +8,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.ezhik.authTG.captcha.ClickInventoryEvent;
 import org.ezhik.authTG.commandMC.*;
@@ -31,6 +32,8 @@ import org.telegram.telegrambots.meta.generics.BotSession;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
 import javax.sql.DataSource;
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.net.Authenticator;
@@ -58,6 +61,7 @@ public final class AuthTG extends JavaPlugin {
     public static boolean telegramEnabled;
     public static boolean vkEnabled;
     public static boolean openimmediately;
+    public static boolean velocity;
 
     public static List<String> mutecommands;
     public static List<String> commandsPreAuthorization;
@@ -79,7 +83,23 @@ public final class AuthTG extends JavaPlugin {
     public static float locationYaw;
     public static float locationPitch;
 
+    public static double velocityAuthorizationX;
+    public static double velocityAuthorizationY;
+    public static double velocityAuthorizationZ;
+    public static float velocityAuthorizationYaw;
+    public static float velocityAuthorizationPitch;
+
+    public static double velocityAfterAuthorizationX;
+    public static double velocityAfterAuthorizationY;
+    public static double velocityAfterAuthorizationZ;
+    public static float velocityAfterAuthorizationYaw;
+    public static float velocityAfterAuthorizationPitch;
+
+
     public static String world;
+    public static String velocityAuthorizationWorld;
+    public static String velocityAfterAuthorizationWorld;
+
     public static String authNecessarilyPrefer;
     public static PasswordHasher.HashAlgorithm passwordHashAlgorithm;
 
@@ -122,12 +142,15 @@ public final class AuthTG extends JavaPlugin {
         MuterEvent.setMutedPlayers(loader.getMutedPlayers());
         initTelegramBot();
         initVKBot();
+
+        getServer().getMessenger().registerOutgoingPluginChannel(this, "authtg:main");
     }
 
     @Override
     public void onDisable() {
         logger.log(Level.INFO, "Plugin stopped");
         stopTelegramBot();
+        getServer().getMessenger().unregisterOutgoingPluginChannel(this);
 
         if (mysqlPool != null) {
             try {
@@ -143,6 +166,19 @@ public final class AuthTG extends JavaPlugin {
             } catch (Exception ignored) {
             }
             vk = null;
+        }
+    }
+
+    public static void sendVelocityAuthPacket(Player player, String action) {
+        try (ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
+             DataOutputStream dataOut = new DataOutputStream(byteOut)) {
+
+            dataOut.writeUTF(action);
+            dataOut.writeUTF(player.getUniqueId().toString());
+
+            player.sendPluginMessage(instance, "authtg:main", byteOut.toByteArray());
+        } catch (Exception e) {
+            logger.log(Level.SEVERE, "Cannot send velocity packet", e);
         }
     }
 
@@ -591,5 +627,21 @@ public final class AuthTG extends JavaPlugin {
         world = config.getString("spawn.world");
         macro = config.getConfigurationSection("macro");
         ipregmax = config.getInt("ipregmax");
+
+        velocity = config.getBoolean("velocity.enabled");
+
+        velocityAuthorizationX = config.getDouble("velocity.worlds.authorization.x");
+        velocityAuthorizationY = config.getDouble("velocity.worlds.authorization.y");
+        velocityAuthorizationZ = config.getDouble("velocity.worlds.authorization.z");
+        velocityAuthorizationYaw = (float) config.getDouble("velocity.worlds.authorization.yaw", 0.0);
+        velocityAuthorizationPitch = (float) config.getDouble("velocity.worlds.authorization.pitch", 0.0);
+        velocityAuthorizationWorld = config.getString("velocity.worlds.authorization.world");
+
+        velocityAfterAuthorizationX = config.getDouble("velocity.worlds.after-authorization.x");
+        velocityAfterAuthorizationY = config.getDouble("velocity.worlds.after-authorization.y");
+        velocityAfterAuthorizationZ = config.getDouble("velocity.worlds.after-authorization.z");
+        velocityAfterAuthorizationYaw = (float) config.getDouble("velocity.worlds.after-authorization.yaw", 0.0);
+        velocityAfterAuthorizationPitch = (float) config.getDouble("velocity.worlds.after-authorization.pitch", 0.0);
+        velocityAfterAuthorizationWorld = config.getString("velocity.worlds.after-authorization.world");
     }
 }
