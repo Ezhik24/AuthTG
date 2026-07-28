@@ -21,6 +21,25 @@ bot:
     port: 1080
     username: ""
     password: ""
+
+velocity:
+  enabled: false
+  worlds:
+    authorization:
+      x: 0
+      y: 0
+      z: 0
+      yaw: 0
+      pitch: 0
+      world: 'none'
+    after-authorization:
+      x: 0
+      y: 0
+      z: 0
+      yaw: 0
+      pitch: 0
+      world: 'none'
+
 mysql: # Настройки базы данных EN: Database settings
   use: false # Использовать базу данных EN: Use database
   host: 'localhost' # Хост базы данных,УКАЗЫВАЙТЕ ТУТ ЖЕ ПОРТ,ЕСЛИ ИСПОЛЬЗУЕТСЯ EN: Host of database, ENTER HERE PORT IF YOU USE

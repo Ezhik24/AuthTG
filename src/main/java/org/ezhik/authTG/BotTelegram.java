@@ -4,7 +4,7 @@ import org.bukkit.Bukkit;
 import org.ezhik.authTG.util.MessageHelper;
 import org.bukkit.configuration.ConfigurationSection;
 import org.ezhik.authTG.api.TelegramUpdateInterceptor;
-import org.ezhik.authTG.calbackQuery.*;
+import org.ezhik.authTG.callbackQueryTG.*;
 import org.ezhik.authTG.commandTG.*;
 import org.ezhik.authTG.handlers.Handler;
 import org.ezhik.authTG.nextStep.NextStepHandler;

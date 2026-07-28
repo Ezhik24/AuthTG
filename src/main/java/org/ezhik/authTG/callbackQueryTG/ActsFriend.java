@@ -1,4 +1,4 @@
-package org.ezhik.authTG.calbackQuery;
+package org.ezhik.authTG.callbackQueryTG;
 
 import org.ezhik.authTG.AuthTG;
 import org.ezhik.authTG.User;

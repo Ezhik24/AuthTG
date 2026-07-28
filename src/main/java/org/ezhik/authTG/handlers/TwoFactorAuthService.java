@@ -2,6 +2,7 @@ package org.ezhik.authTG.handlers;
 
 import com.sun.mail.imap.protocol.BODY;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.ezhik.authTG.AuthTG;
 import org.ezhik.authTG.IPManager;
@@ -260,6 +261,20 @@ public final class TwoFactorAuthService {
                 player.getAddress().getAddress().toString(),
                 time
         );
+        if (AuthTG.velocity) {
+            AuthTG.sendVelocityAuthPacket(player, "auth_success");
+            if (!AuthTG.velocityAfterAuthorizationWorld.equals("none")) {
+                Location loc = new Location(
+                        Bukkit.getWorld(AuthTG.velocityAfterAuthorizationWorld),
+                        AuthTG.velocityAfterAuthorizationX,
+                        AuthTG.velocityAfterAuthorizationY,
+                        AuthTG.velocityAfterAuthorizationZ,
+                        AuthTG.velocityAfterAuthorizationYaw,
+                        AuthTG.velocityAfterAuthorizationPitch
+                );
+                Handler.teleport(player.getName(), loc);
+            }
+        }
 
         MessageHelper.send(player, mc("loginsuccess", "<green>Вы успешно вошли."));
 

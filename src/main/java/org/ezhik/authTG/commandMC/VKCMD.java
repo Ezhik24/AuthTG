@@ -1,5 +1,7 @@
 package org.ezhik.authTG.commandMC;
 
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -9,6 +11,7 @@ import org.ezhik.authTG.User;
 import org.ezhik.authTG.events.FreezerEvent;
 import org.ezhik.authTG.events.MuterEvent;
 import org.ezhik.authTG.handlers.AuthHandler;
+import org.ezhik.authTG.handlers.Handler;
 import org.ezhik.authTG.util.MessageHelper;
 import org.jetbrains.annotations.NotNull;
 
@@ -47,6 +50,20 @@ public class VKCMD implements CommandExecutor {
             FreezerEvent.unfreezeplayer(player.getName());
             MuterEvent.unmute(player.getName());
             player.resetTitle();
+            if (AuthTG.velocity) {
+                AuthTG.sendVelocityAuthPacket(player, "auth_success");
+                if (!AuthTG.velocityAfterAuthorizationWorld.equals("none")) {
+                    Location loc = new Location(
+                            Bukkit.getWorld(AuthTG.velocityAfterAuthorizationWorld),
+                            AuthTG.velocityAfterAuthorizationX,
+                            AuthTG.velocityAfterAuthorizationY,
+                            AuthTG.velocityAfterAuthorizationZ,
+                            AuthTG.velocityAfterAuthorizationYaw,
+                            AuthTG.velocityAfterAuthorizationPitch
+                    );
+                    Handler.teleport(player.getName(), loc);
+                }
+            }
 
             if (AuthTG.kickTimeout != 0) {
                 AuthHandler.removeTimeout(player.getUniqueId());

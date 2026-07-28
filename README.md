@@ -90,7 +90,7 @@ AuthTG-main/
     │   ├── commandMC/                   # Minecraft-команды
     │   ├── commandTG/                   # Telegram-команды
     │   ├── commandVK/                   # VK-команды
-    │   ├── calbackQuery/                # обработчики Telegram callback-кнопок
+    │   ├── callbackQueryTG/                # обработчики Telegram callback-кнопок
     │   ├── callbackQueryVK/             # обработчики VK callback-кнопок
     │   ├── captcha/                     # inventory captcha
     │   ├── events/                      # Bukkit events
@@ -108,8 +108,6 @@ AuthTG-main/
         ├── temp-config.yml
         └── temp-messages.yml
 ```
-
-> В проекте папка `calbackQuery` названа именно так. Если переименовывать её, нужно одновременно менять `package` и импорты.
 
 
 ## Быстрый старт
@@ -165,18 +163,18 @@ target/
 
 ### Основные зависимости
 
-| Зависимость | Назначение |
-|---|---|
-| `paper-api` | Bukkit/Paper API |
-| `telegrambots` | Telegram Bot API |
-| `mysql-connector-j` | MySQL-драйвер |
-| `HikariCP` | пул соединений MySQL |
-| `argon2-jvm` | Argon2id-хеширование паролей |
-| `jakarta.mail` | SMTP-отправка писем |
-| `okhttp` | VK API-запросы |
-| `org.json` | разбор VK Long Poll ответов |
-| `bstats-bukkit` | метрики bStats |
-| `placeholderapi` | плейсхолдеры, если установлен PlaceholderAPI |
+| Зависимость | Назначение                                                 |
+|---|------------------------------------------------------------|
+| `paper-api` | Bukkit/Paper API                                           |
+| `telegrambots` | Telegram Bot API                                           |
+| `mysql-connector-j` | MySQL-драйвер                                              |
+| `HikariCP` | пул соединений MySQL                                       |
+| `argon2-jvm` | Argon2id-хеширование паролей                               |
+| `jakarta.mail` | SMTP-отправка писем                                        |
+| `okhttp` | VK API-запросы                                             |
+| `org.json` | разбор VK Long Poll ответов                                |
+| `bstats-bukkit` | метрики bStats                                             |
+| `placeholderapi` | плейсхолдеры, если установлен PlaceholderAPI               |
 
 
 ## Установка на сервер
