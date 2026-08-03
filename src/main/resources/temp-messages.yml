@@ -434,3 +434,8 @@ messages: # Сообщения EN: Messages
     setspawnvelocitynone: '<#F4FBFF><bold>[<#FFB26F><bold>AuthTG<#F4FBFF><bold>] <#65E0E6>Вы успешно поставили спавн: none! (velocity).'
     setspawnvelocity: '<#F4FBFF><bold>[<#FFB26F><bold>AuthTG<#F4FBFF><bold>] <#65E0E6>Вы успешно поставили спавн: {SPAWN}! (velocity).'
     velocitydisabled: '<#F4FBFF><bold>[<#FFB26F><bold>AuthTG<#F4FBFF><bold>] <#FFB26F>Velocity сейчас отключён в config.yml (velocity.enabled: false).'
+
+    ipnoperm: '<#F4FBFF><bold>[<#FFB26F><bold>AuthTG<#F4FBFF><bold>] <#FFB26F><bold>У вас нет прав для использования этой команды!'
+    ipusage: '<#F4FBFF><bold>[<#FFB26F><bold>AuthTG<#F4FBFF><bold>] <#FFB26F><bold>Команда введена неверно,введите: /ip <ник>'
+    ipnotfound: '<#F4FBFF><bold>[<#FFB26F><bold>AuthTG<#F4FBFF><bold>] <#FFB26F><bold>Ник не найден.'
+    ipsuccess: '<#F4FBFF><bold>[<#FFB26F><bold>AuthTG<#F4FBFF><bold>] <#65E0E6><bold>IP игрока: {PLAYER} : {IP}.'

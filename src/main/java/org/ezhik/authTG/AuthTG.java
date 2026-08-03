@@ -475,6 +475,7 @@ public final class AuthTG extends JavaPlugin {
         registerCommand("authtg", new AuthTGCMD());
         registerCommand("mail", new MailCMD());
         registerCommand("vk", new VKCMD());
+        registerCommand("ip", new IPCMD());
     }
 
     private void registerTabCompleters() {

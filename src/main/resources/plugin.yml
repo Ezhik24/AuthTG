@@ -1,5 +1,5 @@
 name: AuthTG
-version: '2.9.1'
+version: '3.0'
 main: org.ezhik.authTG.AuthTG
 api-version: '1.19'
 authors: [Ezhik24, ABBAfan, gas333t]
@@ -60,3 +60,5 @@ commands:
     description: 'Open captcha menu'
   vk:
     description: 'VK'
+  ip:
+    description: 'IP'
