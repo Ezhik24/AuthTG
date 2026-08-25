@@ -122,10 +122,10 @@ AuthTG-main/
 3. Запустите сервер один раз, чтобы сгенерировалась папка `plugins/AuthTG/`.
 4. Остановите сервер.
 5. Настройте `plugins/AuthTG/config.yml`:
-   - `bot.token` и `bot.username`, если нужен Telegram;
-   - `vk.enabled`, `vk.groupId`, `vk.token`, если нужен VK;
-   - `mysql.use`, если нужно MySQL-хранилище;
-   - `mail.provider`, если нужна email-верификация.
+    - `bot.token` и `bot.username`, если нужен Telegram;
+    - `vk.enabled`, `vk.groupId`, `vk.token`, если нужен VK;
+    - `mysql.use`, если нужно MySQL-хранилище;
+    - `mail.provider`, если нужна email-верификация.
 6. Запустите сервер снова.
 7. Игрок регистрируется в Minecraft:
 
@@ -402,9 +402,9 @@ spawn:
 9. Бот отправит код.
 10. Игрок вводит в Minecraft:
 
-   ```text
-   /code <код>
-   ```
+```text
+/code <код>
+```
 
 После успешной привязки Telegram может использоваться для подтверждения входа, уведомлений, друзей, модераторских команд и broadcast-сообщений.
 
@@ -998,7 +998,6 @@ kickTimeout: 30
 captcha:
   timeoutCaptcha: 3
 ```
-
 Значение указано в днях.
 
 ### Сообщения выглядят неправильно
