@@ -59,6 +59,7 @@ public class BotVK {
         commandHandler.put("/tfoff", new TFOffCMDHandler());
         commandHandler.put("/resetpassword", new ResetPasswordHandler());
         commandHandler.put("/kickme", new KickMeCMDHandler());
+        commandHandler.put("/unlink", new UnLinkCMDHandler());
 
         callbackQueryHandler.put("ys", new YesCallbackQuery());
         callbackQueryHandler.put("no", new NoCallbackQuery());
