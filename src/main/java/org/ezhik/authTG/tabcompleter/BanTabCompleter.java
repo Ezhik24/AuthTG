@@ -14,11 +14,12 @@ public class BanTabCompleter implements TabCompleter {
     public @Nullable List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
         if (commandSender instanceof Player) {
             if (commandSender.hasPermission("authtg.ban")) {
+                if (strings.length == 1) return TabCompleteHelper.onlinePlayers(strings[0]);
                 if (strings.length == 2) {
-                    return List.of("100s", "100m", "10h", "1d", "-s");
+                    return TabCompleteHelper.filter(List.of("100s", "100m", "10h", "1d", "-s"), strings[1]);
                 }
             }
         }
-        return null;
+        return List.of();
     }
 }

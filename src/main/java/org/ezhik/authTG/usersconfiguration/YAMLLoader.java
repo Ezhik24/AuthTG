@@ -69,6 +69,23 @@ public class YAMLLoader implements Loader{
     }
 
     @Override
+    public synchronized void importUser(UUID uuid, String playername, String passwordHash, String email) {
+        File file = new File("plugins/AuthTG/users/" + uuid + ".yml");
+        YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
+        config.set("playername", playername);
+        config.set("password", passwordHash);
+        config.set("active", true);
+        if (email != null && !email.isBlank()) config.set("email", email);
+        try {
+            config.save(file);
+            uuidbyplayername.put(playername, uuid);
+        } catch (IOException e) {
+            AuthTG.logger.log(Level.SEVERE, "Error saving imported AuthMe user: " + e, e);
+            throw new IllegalStateException("Cannot import AuthMe user " + playername, e);
+        }
+    }
+
+    @Override
     public void setPlayerName(UUID uuid, String playername) {
         File file = new File("plugins/AuthTG/users/" + uuid + ".yml");
         YamlConfiguration playerconf = new YamlConfiguration();

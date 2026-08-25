@@ -11,7 +11,7 @@ placeholders: # Подстановки для placeholders EN: Placeholders
     moderator: 'Модератор'
     user: 'Пользователь'
 messages: # Сообщения EN: Messages
-  console: # Консольные сообщения EN: Console messages
+  console:
     notplayer: '[AuthTG] This command can only be used by players!'
   vk:
     startmaxacc: '[Бот] Вы достигли максимального количества аккаунтов привязанных к VK!'
@@ -36,6 +36,9 @@ messages: # Сообщения EN: Messages
     kickmesuccess: '[Бот@{PLAYER}] Вы успешно кикнули свой Аккаунт!'
     kickmeplnotonline: '[Бот@{PLAYER}] Вы не в игре!'
     kickmenotactive: '[Бот] Вы не привязывали аккаунт!'
+    unlinkplntonline: '[Бот] Ваш аккаунт не в сети!'
+    unlinknotactive: '[Бот] Вы не привязали аккаунт!'
+    unlinkcode: '[Бот] Чтобы отвязать аккаунт, введите в майнкрафте /vk {CODE}'
 
   telegram: # Сообщения в телеграме EN: Telegram messages
     macronoargs: 'Вы ввели неверное количество аргументов!'
@@ -263,6 +266,7 @@ messages: # Сообщения EN: Messages
     cmdsecondmute: '<#7496EA>Мут'
     chatminecraft: '<#F4FBFF><bold>[<#FFB26F><bold>AuthTG<#F4FBFF><bold>] <#FFB26F>{PLAYER} <#F4FBFF>отправил сообщение из оффлайна: <#65E0E6>{MESSAGE}'
     codemsgdeactivated: '<#F4FBFF><bold>[<#FFB26F><bold>AuthTG<#F4FBFF><bold>] <#FFB26F><bold>Чтобы отвязать аккаунт, введите /code <код из Телеграма>, если это не вы,то проигнорируйте это сообщение.'
+    codemsgdeactivatedvk: '<#F4FBFF><bold>[<#FFB26F><bold>AuthTG<#F4FBFF><bold>] <#FFB26F><bold>Чтобы отвязать аккаунт, введите /vk <код из Телеграма>, если это не вы,то проигнорируйте это сообщение.'
     codemsgactivated: '<#F4FBFF><bold>[<#FFB26F><bold>AuthTG<#F4FBFF><bold>] <#65E0E6><bold>Введите /code <код из телеграма>. Если это не вы,то проигнорируйте это сообщение'
     codemsgactivatedvk: '<#F4FBFF><bold>[<#FFB26F><bold>AuthTG<#F4FBFF><bold>] <#65E0E6><bold>Введите /vk <код из vk>. Если это не вы,то проигнорируйте это сообщение'
     joinanother: 'Кто-то уже играет с этого никнейма...'
@@ -306,6 +310,7 @@ messages: # Сообщения EN: Messages
     registeroff: '<#F4FBFF><bold>[<#FFB26F><bold>AuthTG<#F4FBFF><bold>] <#FFB26F><bold>Команда отключена'
     registerusage: '<#F4FBFF><bold>[<#FFB26F><bold>AuthTG<#F4FBFF><bold>] <#FFB26F><bold>Команда введена неверно,введите: /register <пароль> <повтор пароля>'
     alreadyreg: '<#F4FBFF><bold>[<#FFB26F><bold>AuthTG<#F4FBFF><bold>] <#FFB26F><bold>Вы уже зарегистрированы.Если Вы хотите сбросить аккаунт обратитесь к Администратору'
+    alreadylogin: '<#F4FBFF><bold>[<#FFB26F><bold>AuthTG<#F4FBFF><bold>] <#65E0E6><bold>Вы уже авторизованы'
     registernotmatch: '<#F4FBFF><bold>[<#FFB26F><bold>AuthTG<#F4FBFF><bold>] <#FFB26F><bold>Пароли не совпадают'
     registersuccess: '<#F4FBFF><bold>[<#FFB26F><bold>AuthTG<#F4FBFF><bold>] <#65E0E6><bold>Вы успешно зарегистрировались'
     registerlenght: '<#F4FBFF><bold>[<#FFB26F><bold>AuthTG<#F4FBFF><bold>] <#FFB26F><bold>Пароль должен быть от {MIN} до {MAX} символов'

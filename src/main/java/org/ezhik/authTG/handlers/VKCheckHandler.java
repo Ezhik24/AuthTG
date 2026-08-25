@@ -18,11 +18,12 @@ import static org.ezhik.authTG.BotVK.*;
 
 public class VKCheckHandler extends BukkitRunnable {
     private final BotVK vk;
-    private final String server;
-    private final String key;
+    private volatile String server;
+    private volatile String key;
     private volatile String ts;
 
     private final AtomicBoolean inFlight = new AtomicBoolean(false);
+    private final AtomicBoolean reinitInProgress = new AtomicBoolean(false);
 
     public VKCheckHandler(BotVK vk, String server, String ts, String key) {
         this.vk = vk;
@@ -64,7 +65,14 @@ public class VKCheckHandler extends BukkitRunnable {
                         return;
                     }
 
+                    if (failed == 2 || failed == 3) {
+                        AuthTG.logger.warning("[AuthTG] VK long poll returned failed=" + failed + ". Re-init VK bot.");
+                        scheduleReinit(failed == 3);
+                        return;
+                    }
+
                     AuthTG.logger.warning("[AuthTG] VK long poll returned failed=" + failed + ". Re-init VK bot is recommended.");
+                    scheduleReinit(true);
                     return;
                 }
 
@@ -134,6 +142,42 @@ public class VKCheckHandler extends BukkitRunnable {
                 AuthTG.logger.severe("[AuthTG] VK long poll handler exception: " + e.getMessage());
             } finally {
                 inFlight.set(false);
+            }
+        });
+    }
+    private void scheduleReinit(boolean updateTs) {
+        if (!reinitInProgress.compareAndSet(false, true)){
+            return;
+        }
+        vk.getLongPollServerAsync().whenComplete((lpResponse, throwable) -> {
+            try {
+                if (throwable != null || lpResponse == null) {
+                    AuthTG.logger.severe("[AuthTG] VK long poll re-init failed: " +
+                            (throwable != null ? throwable.getMessage() : "null response"));
+                    return;
+                }
+
+                if (!lpResponse.has("response")) {
+                    AuthTG.logger.severe("[AuthTG] VK long poll re-init failed: no response field: " + lpResponse);
+                    return;
+                }
+
+                JSONObject response = lpResponse.getJSONObject("response");
+                String newServer = response.getString("server");
+                String newKey = response.getString("key");
+                String newTs = response.getString("ts");
+
+                this.server = newServer;
+                this.key = newKey;
+                if (updateTs) {
+                    this.ts = newTs;
+                }
+
+                AuthTG.logger.info("[AuthTG] VK Long Poll re-initialized successfully (server/key updated)");
+            } catch (Exception e) {
+                AuthTG.logger.severe("[AuthTG] Cannot parse VK long poll re-init response: " + e.getMessage());
+            } finally {
+                reinitInProgress.set(false);
             }
         });
     }

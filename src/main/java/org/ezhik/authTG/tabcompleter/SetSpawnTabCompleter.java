@@ -15,10 +15,10 @@ public class SetSpawnTabCompleter implements TabCompleter {
         if (commandSender instanceof Player) {
             if (commandSender.hasPermission("authtg.setspawn")) {
                 if (strings.length == 1) {
-                    return List.of("none");
+                    return TabCompleteHelper.filter(List.of("none"), strings[0]);
                 }
             }
         }
-        return null;
+        return List.of();
     }
 }

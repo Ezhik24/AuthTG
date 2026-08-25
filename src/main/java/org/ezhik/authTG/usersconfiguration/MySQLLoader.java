@@ -20,6 +20,26 @@ public class MySQLLoader implements Loader {
     }
 
     @Override
+    public void importUser(UUID uuid, String playername, String passwordHash, String email) {
+        String sql = "INSERT INTO AuthTGUsers(uuid, playername, password, active, currentUUID, email) " +
+                "VALUES (?, ?, ?, true, false, ?) " +
+                "ON DUPLICATE KEY UPDATE playername=VALUES(playername), password=VALUES(password), " +
+                "active=true, email=COALESCE(VALUES(email), email)";
+        try (Connection c = ds.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setString(1, uuid.toString());
+            ps.setString(2, playername);
+            ps.setString(3, passwordHash);
+            if (email == null || email.isBlank()) ps.setNull(4, Types.VARCHAR);
+            else ps.setString(4, email);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            AuthTG.logger.log(Level.SEVERE, "SQLException while importing user: " + e.getMessage(), e);
+            throw new IllegalStateException("Cannot import AuthMe user " + playername, e);
+        }
+    }
+
+    @Override
     public void setPlayerName(UUID uuid, String playername) {
         String sql = "INSERT INTO AuthTGUsers(uuid, playername, currentUUID) VALUES (?, ?, false)";
         try (Connection c = ds.getConnection();

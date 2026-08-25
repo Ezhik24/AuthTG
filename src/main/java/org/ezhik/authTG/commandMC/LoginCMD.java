@@ -5,6 +5,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.ezhik.authTG.AuthTG;
+import org.ezhik.authTG.IPManager;
 import org.ezhik.authTG.User;
 import org.ezhik.authTG.handlers.TwoFactorAuthService;
 import org.ezhik.authTG.util.AsyncBridge;
@@ -30,6 +31,11 @@ public class LoginCMD implements CommandExecutor {
 
         if (AuthTG.notRegAndLogin) {
             MessageHelper.send(commandSender, AuthTG.getMessage("loginoff", "MC"));
+            return false;
+        }
+
+        if (IPManager.isAuthorized(player)) {
+            MessageHelper.send(player, AuthTG.getMessage("alreadylogin", "MC"));
             return false;
         }
 

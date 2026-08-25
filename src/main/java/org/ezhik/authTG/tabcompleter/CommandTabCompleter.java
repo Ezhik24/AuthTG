@@ -15,30 +15,36 @@ public class CommandTabCompleter implements TabCompleter {
             Player player = (Player) commandSender;
             if (strings.length == 1) {
                 if (AuthTG.loader.isAdmin(player.getUniqueId())) {
-                    return List.of("add", "rem", "list");
+                    return TabCompleteHelper.filter(List.of("add", "rem", "list"), strings[0]);
                 } else {
-                    return null;
+                    return List.of();
                 }
+            }
+            if (strings.length == 2 && (strings[0].equalsIgnoreCase("add") || strings[0].equalsIgnoreCase("rem"))) {
+                return TabCompleteHelper.onlinePlayers(strings[1]);
             }
             if (strings.length == 3) {
                 if (AuthTG.loader.isAdmin(player.getUniqueId())) {
                     if (strings[0].equals("add") || strings[0].equals("rem")) {
-                        return List.of("ban", "mute", "kick");
+                        return TabCompleteHelper.filter(List.of("ban", "mute", "kick"), strings[2]);
                     }
                 } else {
-                    return null;
+                    return List.of();
                 }
             }
         } else {
             if (strings.length == 1) {
-                return List.of("add", "rem", "list");
+                return TabCompleteHelper.filter(List.of("add", "rem", "list"), strings[0]);
+            }
+            if (strings.length == 2 && (strings[0].equalsIgnoreCase("add") || strings[0].equalsIgnoreCase("rem"))) {
+                return TabCompleteHelper.onlinePlayers(strings[1]);
             }
             if (strings.length == 3) {
                 if (strings[0].equals("add") || strings[0].equals("rem")) {
-                    return List.of("ban", "mute", "kick");
+                    return TabCompleteHelper.filter(List.of("ban", "mute", "kick"), strings[2]);
                 }
             }
         }
-        return null;
+        return List.of();
     }
 }

@@ -4,6 +4,9 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 public interface Loader {
+    /** Creates or updates a registered user while preserving an external password hash. */
+    void importUser(UUID uuid, String playername, String passwordHash, String email);
+
     void setPlayerName(UUID uuid, String playername);
 
     void setPasswordHash(UUID uuid, String password);

@@ -11,9 +11,12 @@ public class AdminTabCompleter implements TabCompleter {
     public List<String> onTabComplete(CommandSender commandSender, Command command, String s, String[] strings) {
         if (strings.length == 1) {
             if (commandSender.hasPermission("authTG.admin")) {
-                return List.of("add", "rem", "list");
+                return TabCompleteHelper.filter(List.of("add", "rem", "list"), strings[0]);
             }
         }
-        return null;
+        if (strings.length == 2 && (strings[0].equalsIgnoreCase("add") || strings[0].equalsIgnoreCase("rem"))) {
+            return TabCompleteHelper.onlinePlayers(strings[1]);
+        }
+        return List.of();
     }
 }

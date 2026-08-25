@@ -254,6 +254,9 @@ public class BotTelegram extends TelegramLongPollingBot {
     }
 
     public CompletableFuture<Message> sendMessageAsync(SendMessage sendMessage) {
+        if (sendMessage != null && sendMessage.getParseMode() == null) {
+            sendMessage.setParseMode("MarkdownV2");
+        }
         return executeMethodAsync(sendMessage);
     }
 
@@ -284,6 +287,8 @@ public class BotTelegram extends TelegramLongPollingBot {
     private void executeSendMessageNow(SendMessage sendMessage) {
         if (!isTelegramEnabled()) return;
 
+        if (sendMessage.getParseMode() == null) sendMessage.setParseMode("MarkdownV2");
+
         try {
             execute(sendMessage);
 
@@ -308,6 +313,18 @@ public class BotTelegram extends TelegramLongPollingBot {
 
                     AuthTG.logger.log(Level.WARNING,
                             "[AuthTG] Telegram chatId " + parsedChatId + " not found. Disabled TG for this chatId.");
+                }
+                return;
+            }
+
+            if (e.getErrorCode() == 400 && e.getApiResponse() != null
+                    && e.getApiResponse().contains("can't parse entities")
+                    && sendMessage.getParseMode() != null) {
+                try {
+                    sendMessage.setParseMode(null);
+                    execute(sendMessage);
+                } catch (TelegramApiException fallbackError) {
+                    AuthTG.logger.log(Level.WARNING, "[AuthTG] Telegram plain-text fallback error: " + fallbackError.getMessage());
                 }
                 return;
             }

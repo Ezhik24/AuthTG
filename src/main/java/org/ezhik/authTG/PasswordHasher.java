@@ -23,6 +23,7 @@ public class PasswordHasher {
     private static final int ARGON2_SALT_LENGTH_BYTES = 16;
 
     private static final Pattern LEGACY_SHA256_PATTERN = Pattern.compile("^[a-fA-F0-9]{64}$");
+    private static final Pattern AUTHME_SHA256_PATTERN = Pattern.compile("^\\$SHA\\$([^$]+)\\$([a-fA-F0-9]{64})$");
 
     public static String hashPassword(String password) {
         if (password == null) {
@@ -85,6 +86,10 @@ public class PasswordHasher {
             return verifyLegacySha256(password, storedHash);
         }
 
+        if (isAuthMeSha256Hash(storedHash)) {
+            return verifyAuthMeSha256(password, storedHash);
+        }
+
         return false;
     }
 
@@ -98,7 +103,7 @@ public class PasswordHasher {
             return isArgon2idHash(storedHash);
         }
 
-        if (isLegacySha256Hash(storedHash)) {
+        if (isLegacySha256Hash(storedHash) || isAuthMeSha256Hash(storedHash)) {
             return true;
         }
 
@@ -116,6 +121,10 @@ public class PasswordHasher {
 
     public static boolean isLegacySha256Hash(String storedHash) {
         return storedHash != null && LEGACY_SHA256_PATTERN.matcher(storedHash).matches();
+    }
+
+    public static boolean isAuthMeSha256Hash(String storedHash) {
+        return storedHash != null && AUTHME_SHA256_PATTERN.matcher(storedHash).matches();
     }
 
     private static HashAlgorithm getTargetAlgorithm() {
@@ -158,6 +167,15 @@ public class PasswordHasher {
             AuthTG.logger.log(Level.SEVERE, "Error verifying legacy password hash", e);
             return false;
         }
+    }
+
+    private static boolean verifyAuthMeSha256(String password, String storedHash) {
+        var matcher = AUTHME_SHA256_PATTERN.matcher(storedHash);
+        if (!matcher.matches()) return false;
+        String innerHash = bytesToHex(sha256(password));
+        byte[] actual = sha256(innerHash + matcher.group(1));
+        byte[] expected = hexToBytes(matcher.group(2));
+        return MessageDigest.isEqual(actual, expected);
     }
 
     private static String hashLegacySha256(String password) {
