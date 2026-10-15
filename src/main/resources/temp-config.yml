@@ -4,6 +4,11 @@ tg: true
 
 captcha:
   enabled: true
+<<<<<<< HEAD
+=======
+  # TEXT_MAP - код на карте и ввод /captcha <код>; WOOL - инвентарь с цветной шерстью
+  type: "TEXT_MAP"
+>>>>>>> 1d55b6e (3.2)
   timeoutCaptcha: 3
   openimmediately: true
 vk:

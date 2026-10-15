@@ -3,9 +3,17 @@ version: '3.1'
 main: org.ezhik.authTG.AuthTG
 api-version: '1.19'
 authors: [Ezhik24, ABBAfan, gas333t]
+<<<<<<< HEAD
 softdepend: ["PlaceholderAPI", "AuthMe"]
 
 commands:
+=======
+softdepend: ["PlaceholderAPI", "AuthMe", "FastLoginPlus"]
+
+commands:
+  premium:
+    description: 'Enable verified premium login (requires two confirmations)'
+>>>>>>> 1d55b6e (3.2)
   register:
     description: 'Register'
     aliases:

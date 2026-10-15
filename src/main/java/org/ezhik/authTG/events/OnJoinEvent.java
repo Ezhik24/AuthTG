@@ -16,8 +16,11 @@ import org.ezhik.authTG.captcha.CaptchaTimeoutStore;
 import org.ezhik.authTG.handlers.AuthHandler;
 import org.ezhik.authTG.handlers.Handler;
 
+<<<<<<< HEAD
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+=======
+>>>>>>> 1d55b6e (3.2)
 
 public class OnJoinEvent implements Listener {
 
@@ -25,6 +28,7 @@ public class OnJoinEvent implements Listener {
     public void onJoin(PlayerJoinEvent event) {
         Player p = event.getPlayer();
         User user = User.getUser(p.getUniqueId());
+<<<<<<< HEAD
         LocalDateTime date = LocalDateTime.now();
 
         if (AuthTG.loader.getBanTime(p.getUniqueId()) != null) {
@@ -62,6 +66,8 @@ public class OnJoinEvent implements Listener {
             }
         }
 
+=======
+>>>>>>> 1d55b6e (3.2)
         if (IPManager.isAuthorized(p)) {
             if (AuthTG.isTelegramEnabled() && user != null && user.activetg) {
                 user.sendMessage(
@@ -270,6 +276,10 @@ public class OnJoinEvent implements Listener {
                     AuthTG.getMessage("registertitles2", "MC")
             );
         }
+<<<<<<< HEAD
+=======
+        org.ezhik.authTG.handlers.PremiumAuthService.detectAndLogin(p, user);
+>>>>>>> 1d55b6e (3.2)
     }
 
     private static String mc(String key, String fallback) {

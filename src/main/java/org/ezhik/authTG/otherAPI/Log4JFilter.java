@@ -1,5 +1,6 @@
 package org.ezhik.authTG.otherAPI;
 
+<<<<<<< HEAD
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.Filter;
@@ -145,6 +146,41 @@ public class Log4JFilter implements Filter {
 
     @Override
     public boolean isStopped() {
+=======
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.Filter;
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.filter.AbstractFilter;
+
+import java.util.Locale;
+import java.util.Set;
+
+public final class Log4JFilter extends AbstractFilter {
+    private static final Set<String> SECRET_COMMANDS = Set.of(
+            "/login", "/l", "/register", "/reg", "/changepassword", "/cp",
+            "/setpassword", "/code", "/2fa", "/vk"
+    );
+
+    @Override
+    public Filter.Result filter(LogEvent event) {
+        if (event == null || event.getMessage() == null) return Result.NEUTRAL;
+        return containsSecretCommand(event.getMessage().getFormattedMessage()) ? Result.DENY : Result.NEUTRAL;
+    }
+
+    static boolean containsSecretCommand(String message) {
+        if (message == null) return false;
+        String lower = message.toLowerCase(Locale.ROOT);
+        for (String command : SECRET_COMMANDS) {
+            int index = lower.indexOf(command);
+            while (index >= 0) {
+                int end = index + command.length();
+                boolean left = index == 0 || Character.isWhitespace(lower.charAt(index - 1));
+                boolean argument = end < lower.length() && Character.isWhitespace(lower.charAt(end));
+                if (left && argument) return true;
+                index = lower.indexOf(command, index + 1);
+            }
+        }
+>>>>>>> 1d55b6e (3.2)
         return false;
     }
 }

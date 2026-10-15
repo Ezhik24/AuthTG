@@ -12,6 +12,11 @@ import org.ezhik.authTG.AuthTG;
 import org.ezhik.authTG.security.NicknameCaseGuard;
 import org.ezhik.authTG.util.MessageHelper;
 
+<<<<<<< HEAD
+=======
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+>>>>>>> 1d55b6e (3.2)
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -28,6 +33,11 @@ public final class PlayerJoinAnotherEvent implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onPlayerPreLogin(AsyncPlayerPreLoginEvent event) {
+<<<<<<< HEAD
+=======
+        if (denyBannedPlayer(event)) return;
+
+>>>>>>> 1d55b6e (3.2)
         String requestedName = event.getName();
         String normalizedName = NicknameCaseGuard.normalize(requestedName);
 
@@ -71,6 +81,34 @@ public final class PlayerJoinAnotherEvent implements Listener {
         onlineNamesLowerCase.remove(NicknameCaseGuard.normalize(event.getPlayer().getName()));
     }
 
+<<<<<<< HEAD
+=======
+    private boolean denyBannedPlayer(AsyncPlayerPreLoginEvent event) {
+        String banTime = AuthTG.loader.getBanTime(event.getUniqueId());
+        if (banTime == null) return false;
+
+        if (!"0".equals(banTime)) {
+            try {
+                LocalDateTime expires = LocalDateTime.parse(banTime, DateTimeFormatter.ofPattern("HH:mm:ss dd.MM.yyyy"));
+                if (LocalDateTime.now().isAfter(expires)) {
+                    AuthTG.loader.deleteBan(event.getUniqueId());
+                    return false;
+                }
+            } catch (RuntimeException exception) {
+                AuthTG.logger.warning("Invalid ban expiration for " + event.getUniqueId() + ": " + banTime);
+            }
+        }
+
+        String message = MessageHelper.legacySection(AuthTG.getMessage("ban", "MC"))
+                .replace("{REASON}", String.valueOf(AuthTG.loader.getBanReason(event.getUniqueId())))
+                .replace("{TIMEBAN}", "0".equals(banTime) ? "навсегда" : banTime)
+                .replace("{TIME}", String.valueOf(AuthTG.loader.getBanTimeAdmin(event.getUniqueId())))
+                .replace("{ADMIN}", String.valueOf(AuthTG.loader.getBanAdmin(event.getUniqueId())));
+        event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_BANNED, message);
+        return true;
+    }
+
+>>>>>>> 1d55b6e (3.2)
     private boolean isNicknameCaseCheckEnabled() {
         return AuthTG.getInstance().getConfig().getBoolean("nicknameCase.enabled", true);
     }

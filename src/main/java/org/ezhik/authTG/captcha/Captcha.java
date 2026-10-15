@@ -6,6 +6,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
+<<<<<<< HEAD
+=======
+import org.bukkit.inventory.meta.MapMeta;
+import org.bukkit.map.MapRenderer;
+import org.bukkit.map.MapView;
+>>>>>>> 1d55b6e (3.2)
 import org.ezhik.authTG.AuthTG;
 import org.ezhik.authTG.User;
 import org.ezhik.authTG.events.OnJoinEvent;
@@ -33,6 +39,11 @@ public final class Captcha {
     );
 
     private static final Map<UUID, Integer> ATTEMPTS = new ConcurrentHashMap<>();
+<<<<<<< HEAD
+=======
+    private static final Map<UUID, String> TEXT_CODES = new ConcurrentHashMap<>();
+    private static final Map<UUID, ItemStack> PREVIOUS_ITEMS = new ConcurrentHashMap<>();
+>>>>>>> 1d55b6e (3.2)
     private static final Map<UUID, Material> CORRECTS = new ConcurrentHashMap<>();
     private static final Set<UUID> PENDING = ConcurrentHashMap.newKeySet();
     private static final Set<UUID> OPENING = ConcurrentHashMap.newKeySet();
@@ -84,7 +95,16 @@ public final class Captcha {
         ATTEMPTS.putIfAbsent(uuid, MAX_ATTEMPTS);
     }
 
+<<<<<<< HEAD
     public static void openFor(Player player) {
+=======
+    public static boolean isTextMode() {
+        return "TEXT_MAP".equalsIgnoreCase(AuthTG.getInstance().getConfig().getString("captcha.type", "TEXT_MAP"));
+    }
+
+    public static void openFor(Player player) {
+        if (isTextMode()) { openTextMap(player); return; }
+>>>>>>> 1d55b6e (3.2)
         if (player == null || !player.isOnline()) {
             return;
         }
@@ -154,6 +174,45 @@ public final class Captcha {
         CLOSING_AFTER_CLICK.remove(uuid);
         ATTEMPTS.remove(uuid);
         CORRECTS.remove(uuid);
+<<<<<<< HEAD
+=======
+        TEXT_CODES.remove(uuid);
+        Player online = Bukkit.getPlayer(uuid);
+        ItemStack previous = PREVIOUS_ITEMS.remove(uuid);
+        if (online != null && previous != null) online.getInventory().setItemInMainHand(previous);
+    }
+
+    public static void checkText(Player player, String answer) {
+        if (player == null || !isPending(player.getUniqueId())) return;
+        String expected = TEXT_CODES.get(player.getUniqueId());
+        if (expected != null && expected.equalsIgnoreCase(answer == null ? "" : answer.trim())) { complete(player); return; }
+        fail(player);
+    }
+
+    private static void openTextMap(Player player) {
+        if (player == null || !player.isOnline()) return;
+        UUID uuid = player.getUniqueId();
+        if (!PENDING.contains(uuid)) beginChallenge(player);
+        String code = randomCode();
+        TEXT_CODES.put(uuid, code);
+        PREVIOUS_ITEMS.putIfAbsent(uuid, player.getInventory().getItemInMainHand().clone());
+        MapView view = Bukkit.createMap(player.getWorld());
+        for (MapRenderer renderer : view.getRenderers()) view.removeRenderer(renderer);
+        view.addRenderer(new TextCaptchaRenderer(code));
+        ItemStack map = new ItemStack(Material.FILLED_MAP);
+        MapMeta meta = (MapMeta) map.getItemMeta();
+        meta.setMapView(view);
+        map.setItemMeta(meta);
+        player.getInventory().setItemInMainHand(map);
+        MessageHelper.send(player, "<yellow>Введите код с карты: <white>/captcha <код>");
+    }
+
+    private static String randomCode() {
+        String alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+        StringBuilder code = new StringBuilder(6);
+        for (int i = 0; i < 6; i++) code.append(alphabet.charAt(ThreadLocalRandom.current().nextInt(alphabet.length())));
+        return code.toString();
+>>>>>>> 1d55b6e (3.2)
     }
 
     public static void checkCaptcha(Player player, Material clickedMaterial) {
@@ -213,6 +272,31 @@ public final class Captcha {
         }, 2L);
     }
 
+<<<<<<< HEAD
+=======
+    private static void complete(Player player) {
+        UUID uuid = player.getUniqueId();
+        MessageHelper.send(player, mc("captchasuccess"));
+        clear(uuid);
+        int timeoutDays = Math.max(0, AuthTG.getInstance().getConfig().getInt("captcha.timeoutCaptcha", 3));
+        CaptchaTimeoutStore.setTimeout(uuid, LocalDateTime.now().plusDays(timeoutDays));
+        OnJoinEvent.loadRegistration(player, User.getUser(uuid));
+    }
+
+    private static void fail(Player player) {
+        UUID uuid = player.getUniqueId();
+        int triesLeft = ATTEMPTS.getOrDefault(uuid, MAX_ATTEMPTS) - 1;
+        if (triesLeft <= 0) {
+            clear(uuid);
+            Handler.kick(player.getName(), MessageHelper.legacySection(mc("captchakick")));
+            return;
+        }
+        ATTEMPTS.put(uuid, triesLeft);
+        MessageHelper.send(player, mc("captchafail").replace("{ATTEMPTS}", String.valueOf(triesLeft)));
+        openTextMap(player);
+    }
+
+>>>>>>> 1d55b6e (3.2)
     private static void closeAfterClick(Player player) {
         UUID uuid = player.getUniqueId();
         CLOSING_AFTER_CLICK.add(uuid);

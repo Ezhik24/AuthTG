@@ -27,9 +27,18 @@ public class CaptchaCMD implements CommandExecutor {
             return true;
         }
 
+<<<<<<< HEAD
         Captcha.openFor(player);
         MessageHelper.send(player, mc("captchaopened",
                 "<green>Открываем капчу..."));
+=======
+        if (Captcha.isTextMode() && args.length > 0) {
+            Captcha.checkText(player, args[0]);
+        } else {
+            Captcha.openFor(player);
+            MessageHelper.send(player, mc("captchaopened", "<green>Открываем капчу..."));
+        }
+>>>>>>> 1d55b6e (3.2)
         return true;
     }
 

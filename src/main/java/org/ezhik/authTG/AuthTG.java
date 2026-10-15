@@ -451,6 +451,10 @@ public final class AuthTG extends JavaPlugin {
 
     private void registerCommands() {
         registerCommand("register", new RegisterCMD());
+<<<<<<< HEAD
+=======
+        registerCommand("premium", new PremiumCMD());
+>>>>>>> 1d55b6e (3.2)
         registerCommand("login", new LoginCMD());
         registerCommand("code", new CodeCMD());
         registerCommand("2fa", new TwoFactorCodeCMD());
